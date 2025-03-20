@@ -1,13 +1,22 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scale_up/presentation/views/authentication/login_page.dart';
 import 'package:scale_up/presentation/views/authentication/sign_up_page.dart';
+import 'package:scale_up/presentation/views/home/app_scaffold.dart';
 import 'package:scale_up/presentation/views/home/home_page.dart';
+import 'package:scale_up/presentation/views/home/profile_page.dart';
+import 'package:scale_up/presentation/views/home/courses_page.dart';
 
 class AppRoutes {
   static const String loginPath = '/login';
   static const String signUpPath = '/register';
   static const String homePath = '/home';
+  static const String coursePath = '/courses';
+  static const String profilePath = '/profile';
 }
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.loginPath,
@@ -23,10 +32,27 @@ final GoRouter router = GoRouter(
             builder: (context, state) => const SignUpPage(),
           ),
         ]),
-    GoRoute(
-      path: AppRoutes.homePath,
-      name: 'home',
-      builder: (context, state) => const HomePage(),
+    ShellRoute(
+      navigatorKey: _shellNavigatorKey,
+      builder: (context, state, child) => AppScaffold(child: child),
+      routes: [
+        GoRoute(
+          path: AppRoutes.homePath,
+          name: 'home',
+          parentNavigatorKey: _shellNavigatorKey,
+          builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: AppRoutes.coursePath,
+          name: 'courses',
+          builder:(context, state) => const CoursesPage(),
+        ),
+        GoRoute(
+          path: AppRoutes.profilePath,
+          name: 'profile',
+          builder:(context, state) => const ProfilePage(),
+        )
+      ]
     )
   ],
 );

@@ -91,7 +91,7 @@ class HomePage extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Card.filled(
+                  child: Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -114,6 +114,7 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
+      
     );
   }
 }
@@ -133,47 +134,52 @@ class CourseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        border: Border.all(
-          color: Colors.black,
-          width: 1.0,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              spacing: 8,
-              children: [
-                Icon(icon),
+      child: InkWell(
+        onTap: (){
+          print("Bolshit");
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(
+              color: Colors.black,
+              width: 1.0,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  spacing: 8,
+                  children: [
+                    Icon(icon),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
                 Text(
-                  label,
+                  "Progress",
                   style: TextStyle(
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
                   ),
                 ),
+                SizedBox(height: 5,),
+                LinearProgressIndicator(
+                  value: progressBarValue,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                )
               ],
             ),
-            Text(
-              "Progress",
-              style: TextStyle(
-                fontSize: 12.0,
-              ),
-            ),
-            SizedBox(height: 5,),
-            LinearProgressIndicator(
-              value: progressBarValue,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-            )
-          ],
+          ),
         ),
-      ),
-    ),
+      )
     );
   }
 }
