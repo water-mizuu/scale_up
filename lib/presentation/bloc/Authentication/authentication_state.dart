@@ -9,7 +9,7 @@ class AuthenticationState {
   final AuthenticationStatus status;
   final String? emailError;
   final String? passwordError;
-  final User? user;
+  // final User? user;
   final int carouselPosition;
 
   AuthenticationState({
@@ -19,11 +19,14 @@ class AuthenticationState {
     this.emailError,
     this.passwordError,
     this.status = AuthenticationStatus.unknown,
-    this.user,
+    // this.user,
     this.carouselPosition = 0,
   });
   bool get isValid =>
-      emailError == null && passwordError == null && email.isNotEmpty && password.isNotEmpty;
+      emailError == null &&
+      passwordError == null &&
+      email.isNotEmpty &&
+      password.isNotEmpty;
 
   AuthenticationState copyWith({
     String? email,
@@ -32,7 +35,7 @@ class AuthenticationState {
     String? passwordError,
     bool? isSubmitting,
     AuthenticationStatus? status,
-    User? user,
+    // User? user,
     int? carouselPosition,
   }) {
     return AuthenticationState(
@@ -42,7 +45,7 @@ class AuthenticationState {
       passwordError: passwordError,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       status: status ?? this.status,
-      user: user ?? this.user,
+      // user: user ?? this.user,
       carouselPosition: carouselPosition ?? this.carouselPosition,
     );
   }

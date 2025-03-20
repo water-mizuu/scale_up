@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 import 'package:scale_up/presentation/router/app_router.dart';
+//import 'package:scale_up/firebase_auth/firebase_authentication.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -9,7 +12,8 @@ class SignUpPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           leading: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: SizedBox(
               height: 24.0,
               child: IconButton(
@@ -75,6 +79,7 @@ class SignUpFieldGroup extends StatelessWidget {
       child: Column(
         spacing: 8.0,
         children: [
+          SignUpUsernameField(),
           SignUpEmailField(),
           SignUpPasswordField(),
         ],
@@ -89,10 +94,27 @@ class SignUpEmailField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        onChanged: (value) => {},
+        onChanged: (value) =>
+            context.read<SignupPageBloc>().add(SignupPageEmailChanged(value)),
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           label: Text('Email'),
+        ));
+  }
+}
+
+class SignUpUsernameField extends StatelessWidget {
+  const SignUpUsernameField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        onChanged: (value) => context
+            .read<SignupPageBloc>()
+            .add(SignupPageUsernameChanged(value)),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          label: Text('Username'),
         ));
   }
 }
@@ -103,7 +125,9 @@ class SignUpPasswordField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-        onChanged: (value) => {},
+        onChanged: (value) => context
+            .read<SignupPageBloc>()
+            .add(SignupPagePasswordChanged(value)),
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           label: Text('Password'),
@@ -120,7 +144,8 @@ class SignUpButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-              onPressed: () {},
+              onPressed: () =>
+                  context.read<SignupPageBloc>().add(SignupButtonPressed()),
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Text(

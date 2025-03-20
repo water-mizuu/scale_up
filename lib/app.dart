@@ -3,6 +3,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
 import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 import 'package:scale_up/presentation/router/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,12 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: <SingleChildWidget>[
-        BlocProvider(create: (context) => AuthenticationBloc(repository: _authenticationRepository))
+        BlocProvider(
+            create: (context) =>
+                SignupPageBloc(repository: _authenticationRepository)),
+        BlocProvider(
+            create: (context) =>
+                AuthenticationBloc(repository: _authenticationRepository))
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

@@ -1,11 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:scale_up/data/models/user.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({required AuthenticationRepositoryImpl repository})
       : _repository = repository,
         super(AuthenticationState()) {
@@ -32,19 +34,24 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   void _onSubmitted(AuthenticationFormSubmitted event, Emitter emit) async {
     emit(state.copyWith(isSubmitting: true));
+
     try {
-      final user = User.empty;
-      await Future.delayed(const Duration(milliseconds: 300));
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: state.email, password: state.password);
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.authenticated,
-        user: user,
       ));
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.unauthenticated,
       ));
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
     }
   }
 }

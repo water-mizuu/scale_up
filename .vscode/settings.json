@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/Users/mackenziecerenio/Developer/Flutter/scale_up/windows"
+  "cmake.sourceDirectory": "/Users/mackenziecerenio/Developer/Flutter/scale_up/windows",
+  "dart.flutterSdkPath": ".fvm/versions/3.29.2"
 }
