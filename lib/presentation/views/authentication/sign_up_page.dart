@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 import 'package:scale_up/presentation/router/app_router.dart';
 //import 'package:scale_up/firebase_auth/firebase_authentication.dart';
@@ -9,33 +10,48 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: SizedBox(
-              height: 24.0,
-              child: IconButton(
-                  onPressed: () {
-                    router.pop();
-                  },
-                  icon: Icon(Icons.arrow_back_ios)),
+    return BlocListener<SignupPageBloc, SignupPageState>(
+      listener: (context, state) {
+        if (state.status == SignUpStatus.successful) {
+          final String email = context.read<SignupPageBloc>().state.email;
+          final String password = context.read<SignupPageBloc>().state.password;
+          context
+              .read<AuthenticationBloc>()
+              .add(AuthenticationEmailChanged(email));
+          context
+              .read<AuthenticationBloc>()
+              .add(AuthenticationPasswordChanged(password));
+          context.read<AuthenticationBloc>().add(AuthenticationFormSubmitted());
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            leading: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+              child: SizedBox(
+                height: 24.0,
+                child: IconButton(
+                    onPressed: () {
+                      router.pop();
+                    },
+                    icon: Icon(Icons.arrow_back_ios)),
+              ),
             ),
           ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            spacing: 16.0,
-            children: [
-              PageHeader(),
-              ImageContainer(),
-              SignUpFieldGroup(),
-              SignUpButton(),
-            ],
-          ),
-        ));
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              spacing: 16.0,
+              children: [
+                PageHeader(),
+                ImageContainer(),
+                SignUpFieldGroup(),
+                SignUpButton(),
+              ],
+            ),
+          )),
+    );
   }
 }
 
@@ -79,7 +95,7 @@ class SignUpFieldGroup extends StatelessWidget {
       child: Column(
         spacing: 8.0,
         children: [
-          SignUpUsernameField(),
+          // SignUpUsernameField(),
           SignUpEmailField(),
           SignUpPasswordField(),
         ],

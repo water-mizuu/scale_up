@@ -12,7 +12,7 @@ class Carousel extends StatefulWidget {
 class _CarouselState extends State<Carousel> {
   List<CardContentAttribute> attributes = [
     CardContentAttribute(
-      image: Image.asset('assets/illustrations/topic.png', fit: BoxFit.cover),
+      image: Image.asset('assets/illustrations/topic.png'),
       title: 'ScaleUp',
       description: 'A unit conversion learning application.',
     ),

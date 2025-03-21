@@ -37,9 +37,11 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
     } else {
       try {
         await UserAuth().signup(email: state.email, password: state.password);
-        emit(state.copyWith(successMessage: "Signup successful"));
+        emit(state.copyWith(status: SignUpStatus.successful,));
       } catch (e) {
-        emit(state.copyWith(errorMessage: "Signup failed: ${e.toString()}"));
+        emit(state.copyWith(
+          status: SignUpStatus.unsuccessful,
+          errorMessage: "Signup failed: ${e.toString()}"));
       }
     }
   }
