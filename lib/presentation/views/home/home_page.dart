@@ -13,15 +13,17 @@ class HomePage extends StatelessWidget {
           spacing: 16.0,
           children: [
             UserBar(),
-            Column(
-              spacing: 16.0,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SearchBar(),
-                FeaturedCourseContainer(),
-                OngoingCoursesContainer(),
-                ExploreCoursesContainer(),
-              ],
+            Expanded(
+              child: Column(
+                spacing: 16.0,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SearchBar(),
+                  FeaturedCourseContainer(),
+                  OngoingCoursesContainer(),
+                  ExploreCoursesContainer(),
+                ],
+              ),
             ),
           ],
         ),
@@ -51,28 +53,25 @@ class OngoingCoursesContainer extends StatelessWidget {
             TextButton(onPressed: () {}, child: Text("See All")),
           ],
         ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: [
-                  Row(
-                    spacing: 8,
-                    children: [
-                      CourseTile(
-                          label: "Distance",
-                          icon: Icons.straighten,
-                          progressBarValue: 0.2),
-                      CourseTile(
-                          label: "Temperature",
-                          icon: Icons.thermostat,
-                          progressBarValue: 0.7),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 8,
+            children: <Widget>[
+              CourseTile(
+                  label: "Distance",
+                  icon: Icons.straighten,
+                  progressBarValue: 0.2),
+              CourseTile(
+                  label: "Temperature",
+                  icon: Icons.thermostat,
+                  progressBarValue: 0.7),
+              CourseTile(
+                  label: "Temperature",
+                  icon: Icons.thermostat,
+                  progressBarValue: 0.7),
+            ],
+          ),
         ),
       ],
     );
@@ -237,8 +236,7 @@ class CourseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: InkWell(
+    return InkWell(
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
@@ -250,40 +248,42 @@ class CourseTile extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                spacing: 8,
-                children: [
-                  Icon(icon),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.bold,
+          child: IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  spacing: 8,
+                  children: [
+                    Icon(icon),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Text(
-                "Progress",
-                style: TextStyle(
-                  fontSize: 12.0,
+                  ],
                 ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              LinearProgressIndicator(
-                value: progressBarValue,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-              )
-            ],
+                Text(
+                  "Progress",
+                  style: TextStyle(
+                    fontSize: 12.0,
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                LinearProgressIndicator(
+                  value: progressBarValue,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                )
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
