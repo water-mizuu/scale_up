@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class UserAuth {
@@ -29,6 +27,9 @@ class UserAuth {
         case "operation-not-allowed":
           message =
               "Email/password accounts are not enabled. Please contact support.";
+          break;
+        case "network-request-failed":
+          message = "A network error occurred. Please check your connection and try again.";
           break;
         default:
           message = "An unknown error occurred. Please try again.";
