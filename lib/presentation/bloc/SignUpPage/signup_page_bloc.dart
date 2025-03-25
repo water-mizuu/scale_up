@@ -13,7 +13,6 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
     on<SignupPagePasswordChanged>(_onPasswordChanged);
     on<SignupPageEmailChanged>(_onEmailChanged);
     on<SignupButtonPressed>(_onButtonPressed);
-    on<GoogleSignUpButtonPressed>(_onGoogleSignUp);
   }
 
   void _onUsernameChanged(SignupPageUsernameChanged event, Emitter emit) {
@@ -47,30 +46,6 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
             status: SignUpStatus.unsuccessful,
             errorMessage: "Signup failed: ${e.toString()}"));
       }
-    }
-  }
-
-  Future<void> _onGoogleSignUp(
-      GoogleSignUpButtonPressed event, Emitter emit) async {
-    try {
-      final UserCredential? userCredential = await UserAuth().googleSignUp();
-      if (userCredential != null) {
-        emit(state.copyWith(
-          status: SignUpStatus.successful,
-          successMessage: "Google Sign-Up Successful!",
-        ));
-      } else {
-        print(userCredential);
-        emit(state.copyWith(
-          status: SignUpStatus.unsuccessful,
-          errorMessage: "Google Sign-Up Failed",
-        ));
-      }
-    } catch (e) {
-      emit(state.copyWith(
-        status: SignUpStatus.unsuccessful,
-        errorMessage: "Google Sign-Up Error: ${e.toString()}",
-      ));
     }
   }
 }

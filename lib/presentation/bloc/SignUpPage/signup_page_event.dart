@@ -19,4 +19,3 @@ class SignupPageEmailChanged extends SignupPageEvent {
 
 class SignupButtonPressed extends SignupPageEvent {}
 
-class GoogleSignUpButtonPressed extends SignupPageEvent {}

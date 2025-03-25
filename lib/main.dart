@@ -8,15 +8,16 @@ import 'dart:io' show Platform;
 void main() async {
   // Set up window manager to resize screen to mobile
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  if (Platform.isMacOS || Platform.isWindows) {
+  if (Platform.isMacOS || Platform.isWindows)  {
+    await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
+      
       size: Size(372, 817),
       center: true,
       backgroundColor: Colors.transparent,
