@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 import 'package:scale_up/presentation/router/app_router.dart';
+import 'package:scale_up/presentation/views/authentication/widgets/log_in_with_google_button.dart';
+import 'package:scale_up/presentation/views/authentication/widgets/sign_up_with_google_button.dart';
 //import 'package:scale_up/firebase_auth/firebase_authentication.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -48,6 +50,8 @@ class SignUpPage extends StatelessWidget {
                 ImageContainer(),
                 SignUpFieldGroup(),
                 SignUpButton(),
+                Text('or'),
+                SignUpWithGoogleButton(),
               ],
             ),
           )),

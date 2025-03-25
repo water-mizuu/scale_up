@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
+import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 
-class LogInWithGoogleButton extends StatelessWidget {
-  const LogInWithGoogleButton({super.key});
+class SignUpWithGoogleButton extends StatelessWidget {
+  const SignUpWithGoogleButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +13,8 @@ class LogInWithGoogleButton extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
               onPressed: () => context
-                  .read<AuthenticationBloc>()
-                  .add(GoogleSignInButtonPressed()),
+                  .read<SignupPageBloc>()
+                  .add(GoogleSignUpButtonPressed()),
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Row(
@@ -23,7 +24,7 @@ class LogInWithGoogleButton extends StatelessWidget {
                     Image.asset('assets/logos/google.png',
                         height: 18.0, width: 18.0),
                     Text(
-                      'Log in with Google',
+                      'Sign up with Google',
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ],

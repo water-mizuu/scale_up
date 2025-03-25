@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
 import 'package:scale_up/firebase_auth/firebase_authentication.dart';
@@ -12,6 +13,7 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
     on<SignupPagePasswordChanged>(_onPasswordChanged);
     on<SignupPageEmailChanged>(_onEmailChanged);
     on<SignupButtonPressed>(_onButtonPressed);
+    on<GoogleSignUpButtonPressed>(_onGoogleSignUp);
   }
 
   void _onUsernameChanged(SignupPageUsernameChanged event, Emitter emit) {
@@ -37,12 +39,38 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
     } else {
       try {
         await UserAuth().signup(email: state.email, password: state.password);
-        emit(state.copyWith(status: SignUpStatus.successful,));
+        emit(state.copyWith(
+          status: SignUpStatus.successful,
+        ));
       } catch (e) {
         emit(state.copyWith(
-          status: SignUpStatus.unsuccessful,
-          errorMessage: "Signup failed: ${e.toString()}"));
+            status: SignUpStatus.unsuccessful,
+            errorMessage: "Signup failed: ${e.toString()}"));
       }
+    }
+  }
+
+  Future<void> _onGoogleSignUp(
+      GoogleSignUpButtonPressed event, Emitter emit) async {
+    try {
+      final UserCredential? userCredential = await UserAuth().googleSignUp();
+      if (userCredential != null) {
+        emit(state.copyWith(
+          status: SignUpStatus.successful,
+          successMessage: "Google Sign-Up Successful!",
+        ));
+      } else {
+        print(userCredential);
+        emit(state.copyWith(
+          status: SignUpStatus.unsuccessful,
+          errorMessage: "Google Sign-Up Failed",
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        status: SignUpStatus.unsuccessful,
+        errorMessage: "Google Sign-Up Error: ${e.toString()}",
+      ));
     }
   }
 }

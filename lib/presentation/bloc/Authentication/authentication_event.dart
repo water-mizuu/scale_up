@@ -21,3 +21,5 @@ class AuthenticationFormSwiped extends AuthenticationEvent {
   final int position;
   AuthenticationFormSwiped(this.position);
 }
+
+class GoogleSignInButtonPressed extends AuthenticationEvent {}
