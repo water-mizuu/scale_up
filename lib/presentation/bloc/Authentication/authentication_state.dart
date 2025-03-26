@@ -51,15 +51,6 @@ class AuthenticationState {
     // User? user = undefined,
     Object? carouselPosition = undefined,
   }) {
-    print((
-      email,
-      password,
-      emailError,
-      passwordError,
-      isSubmitting,
-      status,
-      carouselPosition,
-    ));
     return AuthenticationState(
       email: email.or(this.email),
       password: password.or(this.password),

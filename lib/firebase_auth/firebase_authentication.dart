@@ -63,32 +63,33 @@ class UserAuth {
     await _auth.signOut();
   }
 
+  /// throws [PlatformException]
   Future<UserCredential?> googleSignIn() async {
-    try {
-      // await _googleSignIn.signOut();
+    // try {
+    // await _googleSignIn.signOut();
 
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      if (googleUser == null) return null;
+    if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-      return await _auth.signInWithCredential(credential);
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Google Sign-In Successful!",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.SNACKBAR,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
-      return null;
-    }
+    return await _auth.signInWithCredential(credential);
+    // } catch (e) {
+    //   Fluttertoast.showToast(
+    //     msg: "Google Sign-In Successful!",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.SNACKBAR,
+    //     backgroundColor: Colors.green,
+    //     textColor: Colors.white,
+    //   );
+    //   return null;
+    // }
   }
 }

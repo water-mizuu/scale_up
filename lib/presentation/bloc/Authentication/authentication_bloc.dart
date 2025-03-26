@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
-import 'package:scale_up/firebase_auth/firebase_authentication.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -39,8 +38,11 @@ class AuthenticationBloc
     emit(state.copyWith(isSubmitting: true));
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: state.email, password: state.password);
+      await _repository.loginEmailPassword(
+        email: state.email,
+        password: state.password,
+      );
+
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.authenticated,
@@ -67,20 +69,16 @@ class AuthenticationBloc
     emit(state.copyWith(isSubmitting: true));
 
     try {
-      final UserCredential? userCredential = await UserAuth().googleSignIn();
-      if (kDebugMode) {
-        print(userCredential);
+      var creds = await _repository.loginGoogle();
+      if (creds == null) {
+        emit(state.copyWith(isSubmitting: false));
+        return;
       }
-      if (userCredential != null) {
-        emit(state.copyWith(
-          isSubmitting: false,
-          status: AuthenticationStatus.authenticated,
-        ));
-      } else {
-        if (kDebugMode) {
-          print("Failed");
-        }
-      }
+
+      emit(state.copyWith(
+        isSubmitting: false,
+        status: AuthenticationStatus.authenticated,
+      ));
     } catch (e) {
       emit(state.copyWith(
         isSubmitting: false,
@@ -96,7 +94,7 @@ class AuthenticationBloc
     emit(state.copyWith(isSubmitting: true));
 
     try {
-      await UserAuth().signOut();
+      await _repository.logOut();
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.unauthenticated,

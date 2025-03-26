@@ -303,11 +303,20 @@ class UserBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4.0,
             children: [
-              Text(
-                'Hello ${(firebase_auth.FirebaseAuth.instance.currentUser!.displayName ?? "User").toLowerCase()}',
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.start,
-              ),
+              StreamBuilder(
+                  stream: firebase_auth.FirebaseAuth.instance.userChanges(),
+                  builder: (context, snapshot) {
+                    var user = firebase_auth.FirebaseAuth.instance.currentUser;
+
+                    return Text(
+                      'Hello ${(user?.displayName ?? "User").toLowerCase()}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.start,
+                    );
+                  }),
               Text(
                 'Welcome back',
                 style: TextStyle(fontSize: 12.0),
