@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:scale_up/presentation/views/authentication/login_page.dart';
 import 'package:scale_up/presentation/views/authentication/sign_up_page.dart';
 import 'package:scale_up/presentation/views/home/app_scaffold.dart';
+import 'package:scale_up/presentation/views/home/courses_page.dart';
 import 'package:scale_up/presentation/views/home/home_page.dart';
 import 'package:scale_up/presentation/views/home/profile_page.dart';
-import 'package:scale_up/presentation/views/home/courses_page.dart';
 
 class AppRoutes {
   static const String loginPath = '/login';
@@ -45,14 +45,14 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: AppRoutes.coursePath,
           name: 'courses',
-          builder:(context, state) => const CoursesPage(),
+          builder: (context, state) => const CoursesPage(),
         ),
         GoRoute(
           path: AppRoutes.profilePath,
           name: 'profile',
-          builder:(context, state) => const ProfilePage(),
+          builder: (context, state) => const ProfilePage(),
         )
-      ]
+      ],
     )
   ],
 );

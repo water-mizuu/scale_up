@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:scale_up/data/models/user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
 import 'package:scale_up/firebase_auth/firebase_authentication.dart';
 
@@ -49,10 +49,13 @@ class AuthenticationBloc
         isSubmitting: false,
         status: AuthenticationStatus.unauthenticated,
       ));
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+
+      if (kDebugMode) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
       }
     }
   }
@@ -62,21 +65,27 @@ class AuthenticationBloc
 
     try {
       final UserCredential? userCredential = await UserAuth().googleSignIn();
-      print(userCredential);
+      if (kDebugMode) {
+        print(userCredential);
+      }
       if (userCredential != null) {
         emit(state.copyWith(
           isSubmitting: false,
           status: AuthenticationStatus.authenticated,
         ));
       } else {
-        print("Failed");
+        if (kDebugMode) {
+          print("Failed");
+        }
       }
     } catch (e) {
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.unauthenticated,
       ));
-      print("Google Sign-In Failed: $e");
+      if (kDebugMode) {
+        print("Google Sign-In Failed: $e");
+      }
     }
   }
 }

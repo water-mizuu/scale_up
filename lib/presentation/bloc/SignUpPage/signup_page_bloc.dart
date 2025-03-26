@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
 import 'package:scale_up/firebase_auth/firebase_authentication.dart';
 
-part 'signup_page_state.dart';
 part 'signup_page_event.dart';
+part 'signup_page_state.dart';
 
 class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
   SignupPageBloc({required AuthenticationRepositoryImpl repository})

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 
@@ -306,7 +304,7 @@ class UserBar extends StatelessWidget {
             spacing: 4.0,
             children: [
               Text(
-                'Hello ${firebase_auth.FirebaseAuth.instance.currentUser!.displayName!.toLowerCase()}',
+                'Hello ${(firebase_auth.FirebaseAuth.instance.currentUser!.displayName ?? "User").toLowerCase()}',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.start,
               ),
