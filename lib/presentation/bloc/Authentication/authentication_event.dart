@@ -23,3 +23,5 @@ class AuthenticationFormSwiped extends AuthenticationEvent {
 }
 
 class GoogleSignInButtonPressed extends AuthenticationEvent {}
+
+class LogoutButtonPressed extends AuthenticationEvent {}

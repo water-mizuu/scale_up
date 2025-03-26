@@ -2,6 +2,8 @@ part of 'authentication_bloc.dart';
 
 enum AuthenticationStatus { unknown, unauthenticated, authenticated }
 
+const undefined = #undefined;
+
 class AuthenticationState {
   final String email;
   final String password;
@@ -28,7 +30,7 @@ class AuthenticationState {
       email.isNotEmpty &&
       password.isNotEmpty;
 
-  AuthenticationState copyWith({
+  late final AuthenticationState Function({
     String? email,
     String? password,
     String? emailError,
@@ -37,16 +39,40 @@ class AuthenticationState {
     AuthenticationStatus? status,
     // User? user,
     int? carouselPosition,
+  }) copyWith = _copyWith;
+
+  AuthenticationState _copyWith({
+    Object? email = undefined,
+    Object? password = undefined,
+    Object? emailError = undefined,
+    Object? passwordError = undefined,
+    Object? isSubmitting = undefined,
+    Object? status = undefined,
+    // User? user = undefined,
+    Object? carouselPosition = undefined,
   }) {
+    print((
+      email,
+      password,
+      emailError,
+      passwordError,
+      isSubmitting,
+      status,
+      carouselPosition,
+    ));
     return AuthenticationState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      emailError: emailError,
-      passwordError: passwordError,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      status: status ?? this.status,
-      // user: user ?? this.user,
-      carouselPosition: carouselPosition ?? this.carouselPosition,
+      email: email.or(this.email),
+      password: password.or(this.password),
+      emailError: emailError.or(this.emailError),
+      passwordError: passwordError.or(this.passwordError),
+      isSubmitting: isSubmitting.or(this.isSubmitting),
+      status: status.or(this.status),
+      // user: user.or(this.user),
+      carouselPosition: carouselPosition.or(this.carouselPosition),
     );
   }
+}
+
+extension on Object? {
+  T or<T>(T value) => this == undefined ? value : this as T;
 }

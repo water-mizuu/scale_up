@@ -18,6 +18,7 @@ class AuthenticationBloc
     on<AuthenticationRevoked>((event, emit) {});
     on<AuthenticationFormSwiped>((event, emit) {});
     on<GoogleSignInButtonPressed>(_onGoogleSignIn);
+    on<LogoutButtonPressed>(_onLogoutButtonPressed);
   }
 
   final AuthenticationRepositoryImpl _repository;
@@ -43,6 +44,8 @@ class AuthenticationBloc
       emit(state.copyWith(
         isSubmitting: false,
         status: AuthenticationStatus.authenticated,
+        email: state.email,
+        password: state.password,
       ));
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
@@ -85,6 +88,29 @@ class AuthenticationBloc
       ));
       if (kDebugMode) {
         print("Google Sign-In Failed: $e");
+      }
+    }
+  }
+
+  void _onLogoutButtonPressed(LogoutButtonPressed event, Emitter emit) async {
+    emit(state.copyWith(isSubmitting: true));
+
+    try {
+      await UserAuth().signOut();
+      emit(state.copyWith(
+        isSubmitting: false,
+        status: AuthenticationStatus.unauthenticated,
+        email: '',
+        password: '',
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isSubmitting: false,
+        status: AuthenticationStatus.authenticated,
+      ));
+
+      if (kDebugMode) {
+        print("Logout Failed: $e");
       }
     }
   }

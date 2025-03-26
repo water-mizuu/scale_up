@@ -41,10 +41,11 @@ class _AppState extends State<App> {
         debugShowCheckedModeBanner: false,
         routerConfig: router,
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigoAccent,
-          brightness: Brightness.light,
-        )),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigoAccent,
+            brightness: Brightness.light,
+          ),
+        ),
       ),
     );
   }

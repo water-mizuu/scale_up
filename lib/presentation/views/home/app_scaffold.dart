@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 
 class AppScaffold extends StatefulWidget {
   final Widget? child;
@@ -32,18 +34,25 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: _changeTab,
-        currentIndex: currentIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state.status == AuthenticationStatus.unauthenticated) {
+          context.goNamed('login');
+        }
+      },
+      child: Scaffold(
+        body: widget.child,
+        bottomNavigationBar: BottomNavigationBar(
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: _changeTab,
+          currentIndex: currentIndex,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+          ],
+        ),
       ),
     );
   }
