@@ -73,10 +73,11 @@ class ImageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(54.0),
+    return 
+      Expanded(child:Padding(
+      padding: EdgeInsets.all(56.0),
       child: Image.asset('assets/illustrations/signup.png'),
-    );
+    ));
   }
 }
 
@@ -130,16 +131,34 @@ class SignUpUsernameField extends StatelessWidget {
   }
 }
 
-class SignUpPasswordField extends StatelessWidget {
+class SignUpPasswordField extends StatefulWidget {
   const SignUpPasswordField({super.key});
+
+  @override
+  State<SignUpPasswordField> createState() => _SignUpPasswordFieldState();
+}
+
+class _SignUpPasswordFieldState extends State<SignUpPasswordField> {
+bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        obscureText: _obscureText,
         onChanged: (value) => context
             .read<SignupPageBloc>()
             .add(SignupPagePasswordChanged(value)),
         decoration: InputDecoration(
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscureText ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscureText = !_obscureText;
+              });
+            },
+          ),
           border: OutlineInputBorder(),
           label: Text('Password'),
         ));
