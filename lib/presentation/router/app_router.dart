@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 import 'package:scale_up/presentation/views/authentication/login_page.dart';
 import 'package:scale_up/presentation/views/authentication/sign_up_page.dart';
 import 'package:scale_up/presentation/views/home/app_scaffold.dart';
@@ -21,19 +19,20 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutes.loginPath,
+  initialLocation: AppRoutes.homePath,
   routes: [
     GoRoute(
-        path: AppRoutes.loginPath,
-        name: 'login',
-        builder: (context, state) => const LoginPage(),
-        routes: [
-          GoRoute(
-            path: AppRoutes.signUpPath,
-            name: 'signup',
-            builder: (context, state) => const SignUpPage(),
-          ),
-        ]),
+      path: AppRoutes.loginPath,
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
+      routes: [
+        GoRoute(
+          path: AppRoutes.signUpPath,
+          name: 'signup',
+          builder: (context, state) => const SignUpPage(),
+        ),
+      ],
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) => AppScaffold(child: child),

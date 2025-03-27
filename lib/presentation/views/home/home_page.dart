@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
+import 'package:scale_up/presentation/views/authentication/widgets/course_tile.dart';
+import 'package:scale_up/presentation/widgets/styles.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,20 +59,28 @@ class OngoingCoursesContainer extends StatelessWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             spacing: 8,
             children: <Widget>[
               CourseTile(
-                  label: "Distance",
-                  icon: Icons.straighten,
-                  progressBarValue: 0.2),
+                label: "Distance",
+                sublabel: "Unit 1",
+                icon: Icons.straighten,
+                baseColor: Colors.pink,
+                progressBarValue: 0.2,
+              ),
               CourseTile(
-                  label: "Temperature",
-                  icon: Icons.thermostat,
-                  progressBarValue: 0.7),
+                label: "Temperature",
+                icon: Icons.thermostat,
+                baseColor: Colors.orange,
+                progressBarValue: 0.7,
+              ),
               CourseTile(
-                  label: "Temperature",
-                  icon: Icons.thermostat,
-                  progressBarValue: 0.7),
+                baseColor: Colors.green,
+                label: "Temperature",
+                icon: Icons.thermostat,
+                progressBarValue: 0.7,
+              ),
             ],
           ),
         ),
@@ -100,28 +110,33 @@ class ExploreCoursesContainer extends StatelessWidget {
             TextButton(onPressed: () {}, child: Text("See All")),
           ],
         ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: [
-                  Row(
-                    spacing: 8,
-                    children: [
-                      CourseTile(
-                          label: "Placeholder",
-                          icon: Icons.straighten,
-                          progressBarValue: 0.0),
-                      CourseTile(
-                          label: "Placeholder",
-                          icon: Icons.thermostat,
-                          progressBarValue: 0.0),
-                    ],
-                  )
-                ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 8,
+            children: [
+              CourseTile(
+                label: "Placeholder",
+                icon: Icons.straighten,
+                progressBarValue: 0.0,
+                baseColor: Colors.blueAccent,
               ),
-            ),
-          ],
+              CourseTile(
+                label: "Placeholder 3",
+                sublabel: "Sublabel what if i have a long subtitle",
+                icon: Icons.thermostat,
+                progressBarValue: 0.0,
+                baseColor: Colors.blueAccent,
+              ),
+              CourseTile(
+                label: "Placeholder 2",
+                sublabel: "Sublabel what if i have a long subtitle",
+                icon: Icons.thermostat,
+                progressBarValue: 0.0,
+                baseColor: Colors.blueAccent,
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -153,50 +168,11 @@ class FeaturedCourse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        border: Border.all(
-          color: Colors.black,
-          width: 1.0,
-        ),
-      ),
-      child: CourseTile(
-        label: 'Area',
-        icon: Icons.square_foot,
-        progressBarValue: 0.73,
-      ),
-      // child: InkWell(
-      //   onTap: () {},
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //     children: [
-      //       Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text(
-      //             "Volume",
-      //             style: TextStyle(
-      //               fontSize: 16,
-      //               fontWeight: FontWeight.bold,
-      //             ),
-      //           ),
-      //           Text(
-      //             "Let us do something rawr",
-      //             style: TextStyle(
-      //               fontSize: 14,
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //       Image.asset(
-      //         "assets/illustrations/topic.png",
-      //         height: 80,
-      //         fit: BoxFit.cover,
-      //       )
-      //     ],
-      //   ),
-      // ),
+    return CourseTile(
+      label: 'Area',
+      icon: Icons.square_foot,
+      progressBarValue: 0.73,
+      baseColor: Colors.blueAccent,
     );
   }
 }
@@ -224,70 +200,6 @@ class SearchBar extends StatelessWidget {
   }
 }
 
-class CourseTile extends StatelessWidget {
-  const CourseTile(
-      {required this.label,
-      required this.icon,
-      required this.progressBarValue,
-      super.key});
-
-  final IconData icon;
-  final String label;
-  final double progressBarValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          border: Border.all(
-            color: Colors.black,
-            width: 1.0,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: IntrinsicWidth(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  spacing: 8,
-                  children: [
-                    Icon(icon),
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 13.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  "Progress",
-                  style: TextStyle(
-                    fontSize: 12.0,
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                LinearProgressIndicator(
-                  value: progressBarValue,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class UserBar extends StatelessWidget {
   const UserBar({
     super.key,
@@ -296,44 +208,40 @@ class UserBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 8.0,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4.0,
+            spacing: 2.0,
             children: [
+              Text(
+                'Welcome back',
+                style: TextStyle(fontSize: 12.0),
+                textAlign: TextAlign.start,
+              ),
               StreamBuilder(
                   stream: firebase_auth.FirebaseAuth.instance.userChanges(),
                   builder: (context, snapshot) {
                     var user = firebase_auth.FirebaseAuth.instance.currentUser;
 
                     return Text(
-                      'Hello, ${(user?.displayName ?? "User").toLowerCase()}',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Hello ${(user?.displayName ?? "User").toLowerCase()}',
+                      style: Styles.subtitle,
                       textAlign: TextAlign.start,
                     );
                   }),
-              Text(
-                'Welcome back',
-                style: TextStyle(fontSize: 12.0),
-                textAlign: TextAlign.start,
-              ),
             ],
           ),
         ),
-        IconButton.filled(
-          onPressed: () {},
-          padding: EdgeInsets.all(12.0),
-          color: Colors.black,
-          style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.white)),
-          icon: Icon(Icons.notifications),
+        Ink(
+          decoration: ShapeDecoration(
+            color: Colors.blue,
+            shape: CircleBorder(),
+          ),
+          child: CircleAvatar(
+            child: Icon(Icons.person),
+          ),
         ),
-        CircleAvatar(radius: 22.0, child: Text('X'))
       ],
     );
   }

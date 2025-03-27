@@ -24,32 +24,34 @@ class SignUpPage extends StatelessWidget {
         }
       },
       child: Scaffold(
-          appBar: AppBar(
-            leading: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-              child: SizedBox(
-                height: 24.0,
-                child: IconButton(
-                    onPressed: () {
-                      router.pop();
-                    },
-                    icon: Icon(Icons.arrow_back_ios)),
-              ),
+        appBar: AppBar(
+          title: Text(
+            'Sign Up',
+            style: TextStyle(fontSize: 20.0),
+            textAlign: TextAlign.center,
+          ),
+          leading: SizedBox(
+            height: 24.0,
+            child: IconButton(
+              onPressed: () {
+                router.pop();
+              },
+              icon: Icon(Icons.arrow_back_ios),
             ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              spacing: 16.0,
-              children: [
-                PageHeader(),
-                ImageContainer(),
-                SignUpFieldGroup(),
-                SignUpButton(),
-              ],
-            ),
-          )),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            spacing: 16.0,
+            children: [
+              ImageContainer(),
+              SignUpFieldGroup(),
+              SignUpButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -61,13 +63,7 @@ class PageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Sign Up',
-          style: TextStyle(fontSize: 22.0),
-          textAlign: TextAlign.center,
-        ),
-      ],
+      children: [],
     );
   }
 }
