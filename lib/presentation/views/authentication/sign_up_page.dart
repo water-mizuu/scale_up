@@ -94,7 +94,7 @@ class SignUpFieldGroup extends StatelessWidget {
       child: Column(
         spacing: 8.0,
         children: [
-          // SignUpUsernameField(),
+          SignUpUsernameField(),
           SignUpEmailField(),
           SignUpPasswordField(),
         ],

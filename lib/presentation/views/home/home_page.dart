@@ -309,7 +309,7 @@ class UserBar extends StatelessWidget {
                     var user = firebase_auth.FirebaseAuth.instance.currentUser;
 
                     return Text(
-                      'Hello ${(user?.displayName ?? "User").toLowerCase()}',
+                      'Hello, ${(user?.displayName ?? "User").toLowerCase()}',
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,

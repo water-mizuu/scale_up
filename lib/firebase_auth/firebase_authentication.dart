@@ -10,10 +10,29 @@ class UserAuth {
   Future<void> signup({
     required String email,
     required String password,
+    required String username,
   }) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+      if (user != null) {
+        await user.updateDisplayName(username);
+        await user.reload();
+      }
+
+      Fluttertoast.showToast(
+        msg: "Sign up successful!",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.SNACKBAR,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 14.0,
+      );
     } on FirebaseAuthException catch (e) {
       String message = "";
       switch (e.code) {

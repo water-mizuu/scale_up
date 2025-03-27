@@ -36,7 +36,10 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
           errorMessage: "Password must be at least 6 characters"));
     } else {
       try {
-        await UserAuth().signup(email: state.email, password: state.password);
+        await UserAuth().signup(
+            username: state.username,
+            email: state.email,
+            password: state.password);
         emit(state.copyWith(
           status: SignUpStatus.successful,
         ));
