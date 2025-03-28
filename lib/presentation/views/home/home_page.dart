@@ -43,6 +43,7 @@ class OngoingCoursesContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 8.0,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,19 +66,25 @@ class OngoingCoursesContainer extends StatelessWidget {
               CourseTile(
                 label: "Distance",
                 sublabel: "Unit 1",
+                questionsDone: 7,
+                questionsTotal: 10,
                 icon: Icons.straighten,
                 baseColor: Colors.pink,
                 progressBarValue: 0.2,
               ),
               CourseTile(
                 label: "Temperature",
-                icon: Icons.thermostat,
+                questionsDone: 7,
+                questionsTotal: 10,
                 baseColor: Colors.orange,
+                icon: Icons.thermostat,
                 progressBarValue: 0.7,
               ),
               CourseTile(
-                baseColor: Colors.green,
                 label: "Temperature",
+                questionsDone: 7,
+                questionsTotal: 10,
+                baseColor: Colors.green,
                 icon: Icons.thermostat,
                 progressBarValue: 0.7,
               ),
@@ -97,6 +104,7 @@ class ExploreCoursesContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 8.0,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,6 +125,8 @@ class ExploreCoursesContainer extends StatelessWidget {
             children: [
               CourseTile(
                 label: "Placeholder",
+                questionsDone: 7,
+                questionsTotal: 10,
                 icon: Icons.straighten,
                 progressBarValue: 0.0,
                 baseColor: Colors.blueAccent,
@@ -124,6 +134,8 @@ class ExploreCoursesContainer extends StatelessWidget {
               CourseTile(
                 label: "Placeholder 3",
                 sublabel: "Sublabel what if i have a long subtitle",
+                questionsDone: 7,
+                questionsTotal: 10,
                 icon: Icons.thermostat,
                 progressBarValue: 0.0,
                 baseColor: Colors.blueAccent,
@@ -131,8 +143,10 @@ class ExploreCoursesContainer extends StatelessWidget {
               CourseTile(
                 label: "Placeholder 2",
                 sublabel: "Sublabel what if i have a long subtitle",
+                questionsDone: 7,
+                questionsTotal: 10,
                 icon: Icons.thermostat,
-                progressBarValue: 0.0,
+                progressBarValue: 1.0,
                 baseColor: Colors.blueAccent,
               ),
             ],
@@ -162,14 +176,15 @@ class FeaturedCourseContainer extends StatelessWidget {
 }
 
 class FeaturedCourse extends StatelessWidget {
-  const FeaturedCourse({
-    super.key,
-  });
+  const FeaturedCourse({super.key});
 
   @override
   Widget build(BuildContext context) {
+    /// TODO: Base this featured course from something else.
     return CourseTile(
       label: 'Area',
+      questionsDone: 4,
+      questionsTotal: 5,
       icon: Icons.square_foot,
       progressBarValue: 0.73,
       baseColor: Colors.blueAccent,
@@ -201,9 +216,7 @@ class SearchBar extends StatelessWidget {
 }
 
 class UserBar extends StatelessWidget {
-  const UserBar({
-    super.key,
-  });
+  const UserBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -220,16 +233,17 @@ class UserBar extends StatelessWidget {
                 textAlign: TextAlign.start,
               ),
               StreamBuilder(
-                  stream: firebase_auth.FirebaseAuth.instance.userChanges(),
-                  builder: (context, snapshot) {
-                    var user = firebase_auth.FirebaseAuth.instance.currentUser;
+                stream: firebase_auth.FirebaseAuth.instance.userChanges(),
+                builder: (context, snapshot) {
+                  var user = firebase_auth.FirebaseAuth.instance.currentUser;
 
-                    return Text(
-                      'Hello ${(user?.displayName ?? "User").toLowerCase()}',
-                      style: Styles.subtitle,
-                      textAlign: TextAlign.start,
-                    );
-                  }),
+                  return Text(
+                    'Hello, ${(user?.displayName ?? "User").toLowerCase()}',
+                    style: Styles.subtitle,
+                    textAlign: TextAlign.start,
+                  );
+                },
+              ),
             ],
           ),
         ),

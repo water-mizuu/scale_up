@@ -1,64 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scale_up/presentation/widgets/styles.dart';
+
+const TextStyle mini = TextStyle(fontSize: 12);
+typedef _CourseTileProps = ({
+  String label,
+  String? sublabel,
+  IconData icon,
+  int questionsDone,
+  int questionsTotal,
+  double progressBarValue,
+  Color baseColor,
+});
 
 class CourseTile extends StatelessWidget {
   const CourseTile({
     required this.label,
     this.sublabel,
+    required this.questionsDone,
+    required this.questionsTotal,
     required this.icon,
     required this.progressBarValue,
     required this.baseColor,
+    this.onTap,
     super.key,
   });
 
   final IconData icon;
+  final int questionsDone;
+  final int questionsTotal;
   final String label;
   final String? sublabel;
   final double progressBarValue;
   final Color baseColor;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
-    /// Ink is used here to basically make the shadow persistent.
-    return Ink(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8.0,
-            spreadRadius: 2.0,
-          ),
-        ],
+    return Provider<_CourseTileProps>.value(
+      /// This provider is used to pass the properties to the children.
+      ///   This is an alternative to prop drilling.
+      value: (
+        label: label,
+        sublabel: sublabel,
+        icon: icon,
+        questionsDone: questionsDone,
+        questionsTotal: questionsTotal,
+        progressBarValue: progressBarValue,
+        baseColor: baseColor,
       ),
 
-      /// This material widget makes sure that the ink doesn't overflow
-      ///   through clipping like in scroll views.
-      child: Material(
-        /// The first ink handles the background color.
-        child: Ink(
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            color: Colors.white,
-          ),
-          child: InkWell(
-            borderRadius: borderRadius,
-            onTap: () {},
-            child: IntrinsicWidth(
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CourseTileWhite(
-                      label: label,
-                      sublabel: sublabel,
-                      progressBarValue: progressBarValue,
-                      baseColor: baseColor,
-                    ),
-                    CourseTileColored(baseColor: baseColor, icon: icon),
-                  ],
+      /// Ink is used here to basically make the shadow persistent.
+      child: Ink(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8.0,
+              spreadRadius: 2.0,
+            ),
+          ],
+        ),
+
+        /// This material widget makes sure that the ink doesn't overflow
+        ///   through clipping like in scroll views.
+        child: Material(
+          /// The first ink handles the background color.
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              color: Colors.white,
+            ),
+            child: InkWell(
+              borderRadius: borderRadius,
+              onTap: onTap,
+              child: IntrinsicWidth(
+                child: IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CourseTileWhite(),
+                      CourseTileColored(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -70,33 +97,36 @@ class CourseTile extends StatelessWidget {
 }
 
 class CourseTileWhite extends StatelessWidget {
-  const CourseTileWhite({
-    super.key,
-    required this.label,
-    required this.sublabel,
-    required this.progressBarValue,
-    required this.baseColor,
-  });
+  const CourseTileWhite({super.key});
 
-  final String label;
-  final String? sublabel;
-  final double progressBarValue;
-  final Color baseColor;
+  // Length
+  // Unit 1
+  //
+  // SI Units (m)
 
   @override
   Widget build(BuildContext context) {
+    var _CourseTileProps(
+      :label,
+      :sublabel,
+      :questionsDone,
+      :questionsTotal,
+      :progressBarValue,
+      :baseColor,
+    ) = context.read<_CourseTileProps>();
+
     return Expanded(
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
-          spacing: 2.0,
+          spacing: 20.0,
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: 80,
-                maxWidth: 130,
+                minWidth: 110,
+                maxWidth: 160,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,13 +142,19 @@ class CourseTileWhite extends StatelessWidget {
             ),
             Row(
               spacing: 8.0,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CourseProgression(
-                  progressBarValue: progressBarValue,
-                  baseColor: baseColor,
+                Text("$questionsDone/$questionsTotal", style: mini),
+                Row(
+                  spacing: 4.0,
+                  children: [
+                    CourseProgression(
+                      progressBarValue: progressBarValue,
+                      baseColor: baseColor,
+                    ),
+                    Text("${(progressBarValue * 100).round()}%", style: mini)
+                  ],
                 ),
-                Text("${(progressBarValue * 100).round()}%"),
               ],
             )
           ],
@@ -129,19 +165,14 @@ class CourseTileWhite extends StatelessWidget {
 }
 
 class CourseTileColored extends StatelessWidget {
-  const CourseTileColored({
-    super.key,
-    required this.baseColor,
-    required this.icon,
-  });
-
-  final Color baseColor;
-  final IconData icon;
+  const CourseTileColored({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var _CourseTileProps(:baseColor, :icon) = context.read();
+
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 4.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         gradient: LinearGradient(
