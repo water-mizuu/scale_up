@@ -12,10 +12,14 @@ class SignupPagePasswordChanged extends SignupPageEvent {
   SignupPagePasswordChanged(this.password);
 }
 
+class SignUpPageConfirmPasswordChanged extends SignupPageEvent {
+  final String confirmPassword;
+  SignUpPageConfirmPasswordChanged(this.confirmPassword);
+}
+
 class SignupPageEmailChanged extends SignupPageEvent {
   final String email;
   SignupPageEmailChanged(this.email);
 }
 
 class SignupButtonPressed extends SignupPageEvent {}
-

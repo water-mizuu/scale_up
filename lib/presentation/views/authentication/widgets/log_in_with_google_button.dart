@@ -11,24 +11,22 @@ class LogInWithGoogleButton extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton(
-              onPressed: () => context
-                  .read<AuthenticationBloc>()
-                  .add(GoogleSignInButtonPressed()),
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 8.0,
-                  children: [
-                    Image.asset('assets/logos/google.png',
-                        height: 18.0, width: 18.0),
-                    Text(
-                      'Log in with Google',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-              )),
+            onPressed: () => context.read<AuthenticationBloc>().add(GoogleSignInButtonPressed()),
+            child: Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 8.0,
+                children: [
+                  Image.asset('assets/logos/google.png', height: 18.0, width: 18.0),
+                  Text(
+                    'Log in with Google',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );
