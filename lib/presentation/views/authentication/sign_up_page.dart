@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
 import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
-import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_validator.dart';
 import 'package:scale_up/presentation/router/app_router.dart';
+import 'package:scale_up/presentation/views/authentication/image_container.sign_up_page.dart';
+import 'package:scale_up/presentation/views/authentication/page_header.sign_up_page.dart';
+import 'package:scale_up/presentation/views/authentication/sign_up_button.sign_up_page.dart';
+import 'package:scale_up/presentation/views/authentication/sign_up_field_group.sign_up_page.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -49,162 +52,6 @@ class SignUpPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class PageHeader extends StatelessWidget {
-  const PageHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Create an account',
-      style: TextStyle(fontSize: 20.0),
-      textAlign: TextAlign.center,
-    );
-  }
-}
-
-class ImageContainer extends StatelessWidget {
-  const ImageContainer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(56.0),
-        child: Image.asset('assets/illustrations/signup.png'),
-      ),
-    );
-  }
-}
-
-class SignUpFieldGroup extends StatelessWidget {
-  const SignUpFieldGroup({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Column(
-        spacing: 8.0,
-        children: [
-          SignUpUsernameField(),
-          SignUpEmailField(),
-          SignUpPasswordField(),
-          SignUpConfirmPasswordField()
-        ],
-      ),
-    );
-  }
-}
-
-class SignUpEmailField extends StatelessWidget with SignupPageValidator {
-  const SignUpEmailField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validateEmail,
-      onChanged: (v) => context.read<SignupPageBloc>().add(SignupPageEmailChanged(v)),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        label: Text('Email'),
-      ),
-    );
-  }
-}
-
-class SignUpUsernameField extends StatelessWidget with SignupPageValidator {
-  const SignUpUsernameField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validateUsername,  
-      onChanged: (v) => context.read<SignupPageBloc>().add(SignupPageUsernameChanged(v)),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        label: Text('Username'),
-      ),
-    );
-  }
-}
-
-class SignUpPasswordField extends StatefulWidget {
-  const SignUpPasswordField({super.key});
-
-  @override
-  State<SignUpPasswordField> createState() => _SignUpPasswordFieldState();
-}
-
-class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPageValidator {
-  bool _obscureText = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: _obscureText,
-      validator: validatePassword,
-      onChanged: (v) => context.read<SignupPageBloc>().add(SignupPagePasswordChanged(v)),
-      decoration: InputDecoration(
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility : Icons.visibility_off,
-          ),
-          onPressed: () {
-            setState(() {
-              _obscureText = !_obscureText;
-            });
-          },
-        ),
-        border: OutlineInputBorder(),
-        label: Text('Password'),
-      ),
-    );
-  }
-}
-
-class SignUpConfirmPasswordField extends StatelessWidget with SignupPageValidator {
-  const SignUpConfirmPasswordField({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var signUpPageBloc = context.read<SignupPageBloc>();
-
-    return TextFormField(
-      obscureText: true,
-      validator: (v) => validateConfirmPassword(v, signUpPageBloc.state.password),
-      onChanged: (v) => signUpPageBloc.add(SignUpPageConfirmPasswordChanged(v)),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        label: Text('Confirm Password'),
-      ),
-    );
-  }
-}
-
-class SignUpButton extends StatelessWidget {
-  const SignUpButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: FilledButton(
-            onPressed: () => context.read<SignupPageBloc>().add(SignupButtonPressed()),
-            child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text(
-                'Sign Up',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

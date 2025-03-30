@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
+import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
 
-class LoginButton extends StatelessWidget {
-  const LoginButton({super.key});
+class SignUpButton extends StatelessWidget {
+  const SignUpButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +11,11 @@ class LoginButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-            onPressed: !context.watch<AuthenticationBloc>().state.isSubmitting
-                ? () => context.read<AuthenticationBloc>().add(AuthenticationFormSubmitted())
-                : null,
+            onPressed: () => context.read<SignupPageBloc>().add(SignupButtonPressed()),
             child: Padding(
               padding: EdgeInsets.all(12.0),
               child: Text(
-                'Login',
+                'Sign Up',
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
