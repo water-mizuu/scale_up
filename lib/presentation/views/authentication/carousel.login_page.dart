@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
+import 'package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart';
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -37,7 +37,7 @@ class _CarouselState extends State<Carousel> {
           Expanded(
             child: PageView.builder(
               onPageChanged: (pageposition) =>
-                  context.read<AuthenticationBloc>().add(AuthenticationFormSwiped(pageposition)),
+                  context.read<LoginPageBloc>().add(LoginPageFormSwiped(pageposition)),
               itemCount: attributes.length,
               itemBuilder: (context, index) {
                 return CarouselCard(attribute: attributes[index]);
@@ -97,7 +97,7 @@ class PaginationCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+    return BlocBuilder<LoginPageBloc, LoginPageState>(
       builder: (context, state) {
         if (state.carouselPosition == p) {
           return Container(

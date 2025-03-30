@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scale_up/presentation/views/authentication/widgets/log_in_with_google_button.dart';
-import 'package:scale_up/presentation/views/authentication/widgets/login_button.dart';
-import 'package:scale_up/presentation/views/authentication/widgets/sign_up_hyperlink_button.dart';
+import 'package:scale_up/presentation/views/authentication/login_button.login_page.dart';
+import 'package:scale_up/presentation/views/authentication/login_with_google_button.login_page.dart';
+import 'package:scale_up/presentation/views/authentication/sign_up_hyperlink_button.login_page.dart';
 
 class LoginButtonGroup extends StatelessWidget {
   const LoginButtonGroup({super.key});
@@ -13,7 +13,7 @@ class LoginButtonGroup extends StatelessWidget {
       children: [
         LoginButton(),
         Text('or'),
-        LogInWithGoogleButton(),
+        LoginWithGoogleButton(),
         SignUpHyperlinkButton(),
       ],
     );

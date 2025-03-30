@@ -1,6 +1,6 @@
 {
   "cmake.sourceDirectory": "/Users/mackenziecerenio/Developer/Flutter/scale_up/windows",
-  "dart.flutterSdkPath": ".fvm/versions/3.29.2",
+  // "dart.flutterSdkPath": ".fvm/versions/3.29.2",
   "editor.wordWrapColumn": 100,
   "editor.rulers": [
     100

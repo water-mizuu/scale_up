@@ -1,6 +1,6 @@
 part of 'signup_page_bloc.dart';
 
-enum SignUpStatus { unknown, invalid, submitting, successful }
+enum SignUpStatus { unknown, invalid, validating, successful }
 
 class SignupPageState {
   final String username;

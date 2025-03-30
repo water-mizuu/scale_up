@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
@@ -13,15 +14,58 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignupPageBloc, SignupPageState>(
-      listener: (context, state) {
-        if (state.status == SignUpStatus.successful) {
-          var SignupPageState(:email, :password) = context.read<SignupPageBloc>().state;
+    return BlocProvider(
+      lazy: false,
+      create: (_) => SignupPageBloc(),
+      child: SignUpPageView(),
+    );
+  }
+}
 
-          context.read<AuthenticationBloc>()
-            ..add(AuthenticationEmailChanged(email))
-            ..add(AuthenticationPasswordChanged(password))
-            ..add(AuthenticationFormSubmitted());
+class SignUpPageView extends StatelessWidget {
+  const SignUpPageView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        /// We were able to sign up successfully.
+        if (state.status == AuthenticationStatus.authenticated) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Sign up successful."),
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          router.goNamed('login');
+          return;
+        }
+
+        if (state
+            case AuthenticationState(
+              status: AuthenticationStatus.unauthenticated,
+              error: FirebaseAuthException(:var code)
+            )) {
+          var message = switch (code) {
+            "weak-password" => //
+              "The password is too weak. Please try a stronger one!",
+            "email-already-in-use" =>
+              "The email is already connected with another account. Please try another email.",
+            "invalid-email" => "The email address is not valid. Please check and try again.",
+            "operation-not-allowed" =>
+              "Email/password accounts are not enabled. Please contact support.",
+            "network-request-failed" =>
+              "A network error occurred. Please check your connection and try again.",
+            _ => "An unknown error occurred. Please try again.",
+          };
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 2),
+            ),
+          );
         }
       },
       child: Scaffold(

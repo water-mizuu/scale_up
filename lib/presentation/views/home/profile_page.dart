@@ -25,9 +25,7 @@ class ProfilePage extends StatelessWidget {
                 child: TextButton(
                   child: Text('Logout'),
                   onPressed: () {
-                    context
-                        .read<AuthenticationBloc>()
-                        .add(LogoutButtonPressed());
+                    context.read<AuthenticationBloc>().add(LogoutAuthenticationEvent());
                   },
                 ),
               ),

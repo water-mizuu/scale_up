@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:scale_up/presentation/views/authentication/widgets/course_tile.dart';
-import 'package:scale_up/presentation/widgets/styles.dart';
+import 'package:scale_up/presentation/views/home/widgets/styles.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

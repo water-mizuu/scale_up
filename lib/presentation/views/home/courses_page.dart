@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scale_up/presentation/bloc/CoursesPage/courses_page_cubit.dart';
 import 'package:scale_up/presentation/views/authentication/widgets/course_tile.dart';
-import 'package:scale_up/presentation/widgets/styles.dart';
+import 'package:scale_up/presentation/views/home/widgets/styles.dart';
 
 typedef Category = ({
   String label,

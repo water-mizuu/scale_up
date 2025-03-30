@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scale_up/presentation/widgets/styles.dart';
+import 'package:scale_up/presentation/views/home/widgets/styles.dart';
 
 const TextStyle mini = TextStyle(fontSize: 12);
 typedef _CourseTileProps = ({
