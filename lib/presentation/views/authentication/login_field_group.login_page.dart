@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart';
-import 'package:scale_up/presentation/views/authentication/login_email_field.login_page.dart';
-import 'package:scale_up/presentation/views/authentication/login_password_field.login_page.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/views/authentication/login_email_field.login_page.dart";
+import "package:scale_up/presentation/views/authentication/login_password_field.login_page.dart";
 
 class LoginFieldGroup extends StatelessWidget {
   const LoginFieldGroup({super.key});
@@ -12,7 +11,7 @@ class LoginFieldGroup extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Form(
-        key: context.read<LoginPageBloc>().formKey,
+        key: context.read<GlobalKey<FormState>>(),
         child: Column(
           spacing: 16.0,
           children: [

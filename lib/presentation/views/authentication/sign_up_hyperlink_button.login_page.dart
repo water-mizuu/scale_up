@@ -1,6 +1,6 @@
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:scale_up/presentation/router/app_router.dart';
+import "package:flutter/gestures.dart";
+import "package:flutter/material.dart";
+import "package:scale_up/presentation/router/app_router.dart";
 
 class SignUpHyperlinkButton extends StatelessWidget {
   const SignUpHyperlinkButton({super.key});
@@ -23,7 +23,7 @@ class SignUpHyperlinkButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    router.pushNamed('signup');
+                    router.pushNamed("signup");
                   },
               ),
             ],

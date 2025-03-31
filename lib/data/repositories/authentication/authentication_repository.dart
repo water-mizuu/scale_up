@@ -1,7 +1,7 @@
-import 'dart:async';
+import "dart:async";
 
-import 'package:firebase_auth/firebase_auth.dart' hide User;
-import 'package:scale_up/firebase_auth/firebase_authentication.dart';
+import "package:firebase_auth/firebase_auth.dart" hide User;
+import "package:scale_up/firebase_auth/firebase_authentication.dart";
 
 final class AuthenticationRepository {
   // Future<User?> signIn({required String username, required String password});

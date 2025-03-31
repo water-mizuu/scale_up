@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -17,13 +17,13 @@ class ProfilePage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('PROFILE PAGE'),
+                Text("PROFILE PAGE"),
               ],
             ),
             Expanded(
               child: Center(
                 child: TextButton(
-                  child: Text('Logout'),
+                  child: Text("Logout"),
                   onPressed: () {
                     context.read<AuthenticationBloc>().add(LogoutAuthenticationEvent());
                   },

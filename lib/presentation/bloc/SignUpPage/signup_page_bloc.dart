@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/firebase_auth/firebase_authentication.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 
-part 'signup_page_event.dart';
-part 'signup_page_state.dart';
+part "signup_page_event.dart";
+part "signup_page_state.dart";
 
 class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
   SignupPageBloc() : super(SignupPageState(formKey: GlobalKey<FormState>())) {

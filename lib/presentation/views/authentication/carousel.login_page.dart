@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart";
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -12,20 +12,20 @@ class Carousel extends StatefulWidget {
 class _CarouselState extends State<Carousel> {
   List<CardContentAttribute> attributes = [
     CardContentAttribute(
-      image: Image.asset('assets/illustrations/topic.png'),
-      title: 'ScaleUp',
-      description: 'A unit conversion learning application.',
+      image: Image.asset("assets/illustrations/topic.png"),
+      title: "ScaleUp",
+      description: "A unit conversion learning application.",
     ),
     CardContentAttribute(
-      image: Image.asset('assets/illustrations/courses.png'),
-      title: 'Numerous Lessons',
+      image: Image.asset("assets/illustrations/courses.png"),
+      title: "Numerous Lessons",
       description:
-          'Enter in short lessons of step-by-step procedures on how to convert various real-world units',
+          "Enter in short lessons of step-by-step procedures on how to convert various real-world units",
     ),
     CardContentAttribute(
-      image: Image.asset('assets/illustrations/quizzes.png'),
-      title: 'Interactive Quizzes',
-      description: 'Strengthen and Retain your learnings with tailored and replayable quizzes.',
+      image: Image.asset("assets/illustrations/quizzes.png"),
+      title: "Interactive Quizzes",
+      description: "Strengthen and Retain your learnings with tailored and replayable quizzes.",
     ),
   ];
 

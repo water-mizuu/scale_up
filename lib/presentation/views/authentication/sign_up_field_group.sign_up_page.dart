@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:scale_up/presentation/views/authentication/'
-    'sign_up_confirm_password_field.sign_up_page.dart';
-import 'package:scale_up/presentation/views/authentication/'
-    'sign_up_email_field.sign_up_page.dart';
-import 'package:scale_up/presentation/views/authentication/'
-    'sign_up_password_field.sign_up_page.dart';
-import 'package:scale_up/presentation/views/authentication/'
-    'sign_up_username_field.sign_up_page.dart';
+import "package:flutter/material.dart";
+import "package:scale_up/presentation/views/authentication/"
+    "sign_up_confirm_password_field.sign_up_page.dart";
+import "package:scale_up/presentation/views/authentication/"
+    "sign_up_email_field.sign_up_page.dart";
+import "package:scale_up/presentation/views/authentication/"
+    "sign_up_password_field.sign_up_page.dart";
+import "package:scale_up/presentation/views/authentication/"
+    "sign_up_username_field.sign_up_page.dart";
 
 class SignUpFieldGroup extends StatelessWidget {
   const SignUpFieldGroup({super.key});

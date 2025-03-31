@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart";
 
 class LoginPasswordField extends StatefulWidget {
   const LoginPasswordField({super.key});
@@ -30,7 +30,7 @@ class _LoginPasswordFieldState extends State<LoginPasswordField> with LoginPageV
           },
         ),
         border: OutlineInputBorder(),
-        label: Text('Password'),
+        label: Text("Password"),
       ),
     );
   }

@@ -1,4 +1,4 @@
-part of 'signup_page_bloc.dart';
+part of "signup_page_bloc.dart";
 
 enum SignUpStatus { unknown, invalid, validating, successful }
 
@@ -12,10 +12,10 @@ class SignupPageState {
   final String? errorMessage;
 
   const SignupPageState({
-    this.username = '',
-    this.password = '',
-    this.confirmPassword = '',
-    this.email = '',
+    this.username = "",
+    this.password = "",
+    this.confirmPassword = "",
+    this.email = "",
     this.status = SignUpStatus.unknown,
     this.errorMessage,
     required this.formKey,

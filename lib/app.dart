@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
-import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
-import 'package:scale_up/presentation/router/app_router.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:fluttertoast/fluttertoast.dart";
+import "package:provider/provider.dart";
+import "package:provider/single_child_widget.dart";
+import "package:scale_up/data/repositories/authentication/authentication_repository.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/router/app_router.dart";
 
 class App extends StatefulWidget {
   // Singleton

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
-import 'package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 
 class LoginWithGoogleButton extends StatelessWidget {
   const LoginWithGoogleButton({super.key});
@@ -13,9 +12,9 @@ class LoginWithGoogleButton extends StatelessWidget {
         Expanded(
           child: OutlinedButton(
             onPressed: () {
-              if (context.read<LoginPageBloc>().formKey.currentState?.validate() == true) {
-                context.read<AuthenticationBloc>().add(GoogleSignInAuthenticationEvent());
-              }
+              context //
+                  .read<AuthenticationBloc>()
+                  .add(GoogleSignInAuthenticationEvent());
             },
             child: Padding(
               padding: EdgeInsets.all(12.0),
@@ -23,9 +22,9 @@ class LoginWithGoogleButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 8.0,
                 children: [
-                  Image.asset('assets/logos/google.png', height: 18.0, width: 18.0),
+                  Image.asset("assets/logos/google.png", height: 18.0, width: 18.0),
                   Text(
-                    'Log in with Google',
+                    "Log in with Google",
                     style: TextStyle(fontSize: 16.0),
                   ),
                 ],
