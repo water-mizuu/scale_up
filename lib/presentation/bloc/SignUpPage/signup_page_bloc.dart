@@ -1,14 +1,11 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
-import 'package:scale_up/firebase_auth/firebase_authentication.dart';
+import "package:flutter/cupertino.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 
-part 'signup_page_event.dart';
-part 'signup_page_state.dart';
+part "signup_page_event.dart";
+part "signup_page_state.dart";
 
 class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
-  SignupPageBloc({required AuthenticationRepositoryImpl repository})
-      : super(SignupPageState(formKey: GlobalKey<FormState>())) {
+  SignupPageBloc() : super(SignupPageState(formKey: GlobalKey<FormState>())) {
     on<SignupPageUsernameChanged>(_onUsernameChanged);
     on<SignupPagePasswordChanged>(_onPasswordChanged);
     on<SignUpPageConfirmPasswordChanged>(_onConfirmPasswordChanged);
@@ -40,14 +37,8 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
 
   Future<void> _onButtonPressed(SignupButtonPressed event, Emitter emit) async {
     if (state.formKey.currentState?.validate() case true) {
-      emit(state.copyWith(status: SignUpStatus.submitting));
+      emit(state.copyWith(status: SignUpStatus.validating));
       try {
-        await UserAuth().signup(
-          username: state.username,
-          email: state.email,
-          password: state.password,
-        );
-
         emit(state.copyWith(status: SignUpStatus.successful));
       } catch (e) {
         emit(state.copyWith(status: SignUpStatus.invalid));

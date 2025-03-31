@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
 
 class SignUpButton extends StatelessWidget {
   const SignUpButton({super.key});
@@ -11,11 +12,25 @@ class SignUpButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-            onPressed: () => context.read<SignupPageBloc>().add(SignupButtonPressed()),
+            onPressed: () {
+              /// Validate the form.
+              if (context.read<SignupPageBloc>().formKey.currentState?.validate() == true) {
+                var SignupPageState(:username, :email, :password) =
+                    context.read<SignupPageBloc>().state;
+
+                var event = EmailSignUpAuthenticationEvent(
+                  username: username,
+                  email: email,
+                  password: password,
+                );
+
+                context.read<AuthenticationBloc>().add(event);
+              }
+            },
             child: Padding(
               padding: EdgeInsets.all(12.0),
               child: Text(
-                'Sign Up',
+                "Sign Up",
                 style: TextStyle(fontSize: 16.0),
               ),
             ),

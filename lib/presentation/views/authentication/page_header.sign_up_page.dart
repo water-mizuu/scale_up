@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class PageHeader extends StatelessWidget {
   const PageHeader({super.key});
@@ -6,7 +6,7 @@ class PageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Create an account',
+      "Create an account",
       style: TextStyle(fontSize: 20.0),
       textAlign: TextAlign.center,
     );

@@ -1,27 +1,47 @@
-part of 'authentication_bloc.dart';
+sealed class AuthenticationEvent {
+  const AuthenticationEvent();
 
-sealed class AuthenticationEvent {}
+  const factory AuthenticationEvent.emailSignup({
+    required String username,
+    required String email,
+    required String password,
+  }) = EmailSignUpAuthenticationEvent;
 
-class AuthenticationEmailChanged extends AuthenticationEvent {
+  const factory AuthenticationEvent.emailSignIn({
+    required String email,
+    required String password,
+  }) = EmailSignInAuthenticationEvent;
+
+  const factory AuthenticationEvent.googleSignIn() = GoogleSignInAuthenticationEvent;
+  const factory AuthenticationEvent.logout() = LogoutAuthenticationEvent;
+}
+
+class EmailSignUpAuthenticationEvent extends AuthenticationEvent {
+  const EmailSignUpAuthenticationEvent({
+    required this.username,
+    required this.email,
+    required this.password,
+  });
+
+  final String username;
   final String email;
-
-  AuthenticationEmailChanged(this.email);
-}
-
-class AuthenticationPasswordChanged extends AuthenticationEvent {
   final String password;
-  AuthenticationPasswordChanged(this.password);
 }
 
-class AuthenticationFormSubmitted extends AuthenticationEvent {}
+class EmailSignInAuthenticationEvent extends AuthenticationEvent {
+  const EmailSignInAuthenticationEvent({
+    required this.email,
+    required this.password,
+  });
 
-class AuthenticationRevoked extends AuthenticationEvent {}
-
-class AuthenticationFormSwiped extends AuthenticationEvent {
-  final int position;
-  AuthenticationFormSwiped(this.position);
+  final String email;
+  final String password;
 }
 
-class GoogleSignInButtonPressed extends AuthenticationEvent {}
+class GoogleSignInAuthenticationEvent extends AuthenticationEvent {
+  const GoogleSignInAuthenticationEvent();
+}
 
-class LogoutButtonPressed extends AuthenticationEvent {}
+class LogoutAuthenticationEvent extends AuthenticationEvent {
+  const LogoutAuthenticationEvent();
+}

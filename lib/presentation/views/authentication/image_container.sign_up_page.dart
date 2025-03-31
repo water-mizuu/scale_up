@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class ImageContainer extends StatelessWidget {
   const ImageContainer({super.key});
@@ -8,7 +8,7 @@ class ImageContainer extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.all(56.0),
-        child: Image.asset('assets/illustrations/signup.png'),
+        child: Image.asset("assets/illustrations/signup.png"),
       ),
     );
   }

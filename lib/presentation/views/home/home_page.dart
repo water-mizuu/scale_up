@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:flutter/material.dart';
-import 'package:scale_up/presentation/views/authentication/widgets/course_tile.dart';
-import 'package:scale_up/presentation/widgets/styles.dart';
+import "package:firebase_auth/firebase_auth.dart" as firebase_auth;
+import "package:flutter/material.dart";
+import "package:scale_up/presentation/views/authentication/widgets/course_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -168,7 +168,7 @@ class FeaturedCourseContainer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 8.0,
       children: [
-        Text('Daily Practice', style: TextStyle(fontWeight: FontWeight.bold)),
+        Text("Daily Practice", style: TextStyle(fontWeight: FontWeight.bold)),
         FeaturedCourse(),
       ],
     );
@@ -182,7 +182,7 @@ class FeaturedCourse extends StatelessWidget {
   Widget build(BuildContext context) {
     /// TODO: Base this featured course from something else.
     return CourseTile(
-      label: 'Area',
+      label: "Area",
       questionsDone: 4,
       questionsTotal: 5,
       icon: Icons.square_foot,
@@ -228,7 +228,7 @@ class UserBar extends StatelessWidget {
             spacing: 2.0,
             children: [
               Text(
-                'Welcome back',
+                "Welcome back",
                 style: TextStyle(fontSize: 12.0),
                 textAlign: TextAlign.start,
               ),

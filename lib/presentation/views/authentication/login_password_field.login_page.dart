@@ -1,24 +1,23 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
-import "package:scale_up/presentation/bloc/SignUpPage/signup_page_validator.dart";
+import "package:scale_up/presentation/bloc/LoginPage/login_page_bloc.dart";
 
-class SignUpPasswordField extends StatefulWidget {
-  const SignUpPasswordField({super.key});
+class LoginPasswordField extends StatefulWidget {
+  const LoginPasswordField({super.key});
 
   @override
-  State<SignUpPasswordField> createState() => _SignUpPasswordFieldState();
+  State<LoginPasswordField> createState() => _LoginPasswordFieldState();
 }
 
-class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPageValidator {
+class _LoginPasswordFieldState extends State<LoginPasswordField> with LoginPageValidator {
   bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: _obscureText,
       validator: validatePassword,
-      onChanged: (v) => context.read<SignupPageBloc>().add(SignupPagePasswordChanged(v)),
+      obscureText: _obscureText,
+      onChanged: (value) => context.read<LoginPageBloc>().add(LoginPagePasswordChanged(value)),
       decoration: InputDecoration(
         suffixIcon: IconButton(
           icon: Icon(

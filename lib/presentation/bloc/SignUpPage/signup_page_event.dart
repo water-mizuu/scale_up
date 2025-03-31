@@ -1,4 +1,4 @@
-part of 'signup_page_bloc.dart';
+part of "signup_page_bloc.dart";
 
 sealed class SignupPageEvent {}
 

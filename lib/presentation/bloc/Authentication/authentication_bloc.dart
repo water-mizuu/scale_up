@@ -1,115 +1,91 @@
-import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:scale_up/data/repositories/authentication/authentication_repository.dart';
+import "dart:async";
 
-part 'authentication_event.dart';
-part 'authentication_state.dart';
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/data/repositories/authentication/authentication_repository.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_state.dart";
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc({required AuthenticationRepositoryImpl repository})
+export "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
+export "package:scale_up/presentation/bloc/Authentication/authentication_state.dart";
+
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+  AuthenticationBloc({required AuthenticationRepository repository})
       : _repository = repository,
-        super(AuthenticationState()) {
-    on<AuthenticationEmailChanged>(_onEmailChanged);
-    on<AuthenticationPasswordChanged>(_onPasswordChanged);
-    on<AuthenticationFormSubmitted>(_onSubmitted);
-    on<AuthenticationRevoked>((event, emit) {});
-    on<AuthenticationFormSwiped>((event, emit) {});
-    on<GoogleSignInButtonPressed>(_onGoogleSignIn);
-    on<LogoutButtonPressed>(_onLogoutButtonPressed);
+        super(const AuthenticationState()) {
+    on<EmailSignUpAuthenticationEvent>(_onEmailSignup);
+    on<GoogleSignInAuthenticationEvent>(_onGoogleSignIn);
+    on<EmailSignInAuthenticationEvent>(_onEmailSignIn);
+    on<LogoutAuthenticationEvent>(_onLogout);
   }
 
-  final AuthenticationRepositoryImpl _repository;
+  final AuthenticationRepository _repository;
 
-  void _onEmailChanged(AuthenticationEmailChanged event, Emitter emit) {
-    final email = event.email;
-
-    emit(state.copyWith(email: email));
-  }
-
-  void _onPasswordChanged(AuthenticationPasswordChanged event, Emitter emit) {
-    final password = event.password;
-
-    emit(state.copyWith(password: password));
-  }
-
-  void _onSubmitted(AuthenticationFormSubmitted event, Emitter emit) async {
-    emit(state.copyWith(isSubmitting: true));
+  void _onEmailSignup(
+    EmailSignUpAuthenticationEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
 
     try {
-      await _repository.loginEmailPassword(
-        email: state.email,
-        password: state.password,
+      await _repository.emailSignUp(
+        username: event.username,
+        email: event.email,
+        password: event.password,
       );
 
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.authenticated,
-        email: state.email,
-        password: state.password,
-      ));
-    } on FirebaseAuthException catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.unauthenticated,
-      ));
-
-      if (kDebugMode) {
-        if (e.code == 'user-not-found') {
-          print('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          print('Wrong password provided for that user.');
-        }
-      }
+      // Simulate successful authentication
+      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
+    } catch (e) {
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
   }
 
-  void _onGoogleSignIn(GoogleSignInButtonPressed event, Emitter emit) async {
-    emit(state.copyWith(isSubmitting: true));
+  void _onEmailSignIn(
+    EmailSignInAuthenticationEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
 
     try {
-      var creds = await _repository.loginGoogle();
-      if (creds == null) {
-        emit(state.copyWith(isSubmitting: false));
-        return;
-      }
+      await _repository.emailSignIn(email: event.email, password: event.password);
 
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.authenticated,
-      ));
+      // Simulate a network call
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Simulate successful authentication
+      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
     } catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.unauthenticated,
-      ));
-      if (kDebugMode) {
-        print("Google Sign-In Failed: $e");
-      }
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
   }
 
-  void _onLogoutButtonPressed(LogoutButtonPressed event, Emitter emit) async {
-    emit(state.copyWith(isSubmitting: true));
+  void _onGoogleSignIn(
+    GoogleSignInAuthenticationEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
 
     try {
-      await _repository.logOut();
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.unauthenticated,
-        email: '',
-        password: '',
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        isSubmitting: false,
-        status: AuthenticationStatus.authenticated,
-      ));
+      await _repository.googlSignIn();
 
-      if (kDebugMode) {
-        print("Logout Failed: $e");
-      }
+      // Simulate a network call
+      await Future.delayed(const Duration(seconds: 2));
+
+      // Simulate successful authentication
+      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
+    } catch (e) {
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
+    }
+  }
+
+  void _onLogout(LogoutAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    try {
+      await _repository.signOut();
+
+      // Simulate successful logout
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null));
+    } catch (e) {
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
   }
 }

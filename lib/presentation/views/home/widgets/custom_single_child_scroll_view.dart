@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 class ScrollView extends StatefulWidget {
   const ScrollView({
@@ -60,7 +60,7 @@ class _ScrollViewState extends State<ScrollView> {
         child: ListView.builder(
           itemBuilder: (_, index) => Container(
             color: Colors.amber[100],
-            child: Text('Item $index'),
+            child: Text("Item $index"),
           ),
           itemCount: 50,
         ),

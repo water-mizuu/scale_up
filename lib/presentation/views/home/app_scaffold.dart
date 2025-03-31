@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
+import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 
 class AppScaffold extends StatefulWidget {
   final Widget? child;
@@ -18,13 +18,13 @@ class _AppScaffoldState extends State<AppScaffold> {
   void _changeTab(int index) {
     switch (index) {
       case 0:
-        context.goNamed('home');
+        context.goNamed("home");
         break;
       case 1:
-        context.goNamed('courses');
+        context.goNamed("courses");
         break;
       case 2:
-        context.goNamed('profile');
+        context.goNamed("profile");
         break;
     }
     setState(() {
@@ -37,7 +37,7 @@ class _AppScaffoldState extends State<AppScaffold> {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state.status == AuthenticationStatus.unauthenticated) {
-          context.goNamed('login');
+          context.goNamed("login");
         }
       },
       child: Scaffold(
@@ -48,9 +48,9 @@ class _AppScaffoldState extends State<AppScaffold> {
           onTap: _changeTab,
           currentIndex: currentIndex,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
           ],
         ),
       ),
