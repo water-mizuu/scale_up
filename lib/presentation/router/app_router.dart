@@ -15,6 +15,7 @@ class AppRoutes {
   static const String profilePath = "/profile";
 }
 
+// ignore: unused_element
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -40,19 +41,16 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: AppRoutes.homePath,
           name: "home",
-          parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) => const HomePage(),
         ),
         GoRoute(
           path: AppRoutes.coursePath,
           name: "courses",
-          parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) => const CoursesPage(),
         ),
         GoRoute(
           path: AppRoutes.profilePath,
           name: "profile",
-          parentNavigatorKey: _shellNavigatorKey,
           builder: (context, state) => const ProfilePage(),
         )
       ],
