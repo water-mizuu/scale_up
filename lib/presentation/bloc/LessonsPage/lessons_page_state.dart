@@ -1,14 +1,14 @@
-class CoursesPageState {
-  const CoursesPageState({
+class LessonsPageState {
+  const LessonsPageState({
     required this.keywords,
   });
 
   final Set<String> keywords;
 
-  CoursesPageState copyWith({
+  LessonsPageState copyWith({
     Set<String>? keywords,
   }) {
-    return CoursesPageState(
+    return LessonsPageState(
       keywords: keywords ?? this.keywords,
     );
   }

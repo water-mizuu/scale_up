@@ -2,8 +2,8 @@ import "package:flutter/widgets.dart";
 import "package:go_router/go_router.dart";
 import "package:scale_up/presentation/views/authentication/login_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
+import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/app_scaffold.dart";
-import "package:scale_up/presentation/views/home/courses_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
 
@@ -11,7 +11,7 @@ class AppRoutes {
   static const String loginPath = "/login";
   static const String signUpPath = "/register";
   static const String homePath = "/home";
-  static const String coursePath = "/courses";
+  static const String lessonsPath = "/lessons";
   static const String profilePath = "/profile";
 }
 
@@ -44,9 +44,9 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const HomePage(),
         ),
         GoRoute(
-          path: AppRoutes.coursePath,
-          name: "courses",
-          builder: (context, state) => const CoursesPage(),
+          path: AppRoutes.lessonsPath,
+          name: "lessons",
+          builder: (context, state) => const LessonsPage(),
         ),
         GoRoute(
           path: AppRoutes.profilePath,

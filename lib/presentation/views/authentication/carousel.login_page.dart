@@ -17,7 +17,7 @@ class _CarouselState extends State<Carousel> {
       description: "A unit conversion learning application.",
     ),
     CardContentAttribute(
-      image: Image.asset("assets/illustrations/courses.png"),
+      image: Image.asset("assets/illustrations/lessons.png"),
       title: "Numerous Lessons",
       description:
           "Enter in short lessons of step-by-step procedures on how to convert various real-world units",

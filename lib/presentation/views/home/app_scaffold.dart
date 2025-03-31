@@ -21,7 +21,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         context.goNamed("home");
         break;
       case 1:
-        context.goNamed("courses");
+        context.goNamed("lessons");
         break;
       case 2:
         context.goNamed("profile");

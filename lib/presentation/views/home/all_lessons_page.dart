@@ -2,8 +2,8 @@ import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/CoursesPage/courses_page_cubit.dart";
-import "package:scale_up/presentation/views/authentication/widgets/course_tile.dart";
+import "package:scale_up/presentation/bloc/LessonsPage/lessons_page_cubit.dart";
+import "package:scale_up/presentation/views/authentication/widgets/lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 typedef Category = ({
@@ -141,13 +141,13 @@ int _leveshtein(String s, String t) {
   return v0[t.length];
 }
 
-class CoursesPage extends StatelessWidget {
-  const CoursesPage({super.key});
+class LessonsPage extends StatelessWidget {
+  const LessonsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CoursesPageCubit(),
+      create: (context) => LessonsPageCubit(),
       child: Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0.0,
@@ -166,7 +166,7 @@ class CoursesPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SearchBar(),
-                    Expanded(child: CourseBody()),
+                    Expanded(child: LessonBody()),
                   ],
                 ),
               ),
@@ -178,8 +178,8 @@ class CoursesPage extends StatelessWidget {
   }
 }
 
-class CourseBody extends StatelessWidget {
-  const CourseBody({super.key});
+class LessonBody extends StatelessWidget {
+  const LessonBody({super.key});
 
   int _score(Set<String> keywords, Map<String, List<Category>> categoriesByTitle, String title) {
     /// It should always return true if there are no keywords being typed.
@@ -221,7 +221,7 @@ class CourseBody extends StatelessWidget {
         title: categories.where((c) => c.label == title).toList(),
     };
 
-    return BlocBuilder<CoursesPageCubit, CoursesPageState>(
+    return BlocBuilder<LessonsPageCubit, LessonsPageState>(
       builder: (context, state) {
         return SingleChildScrollView(
           child: Column(
@@ -233,7 +233,7 @@ class CourseBody extends StatelessWidget {
                     when score < title.length / 2)
                   (
                     score,
-                    CourseGroup(
+                    LessonGroup(
                       title: title,
                       categoriesByTitle: categoriesByTitle,
                     )
@@ -248,8 +248,8 @@ class CourseBody extends StatelessWidget {
   }
 }
 
-class CourseGroup extends StatelessWidget {
-  const CourseGroup({
+class LessonGroup extends StatelessWidget {
+  const LessonGroup({
     super.key,
     required this.title,
     required this.categoriesByTitle,
@@ -264,25 +264,25 @@ class CourseGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CoursesPageCubit, CoursesPageState>(
-      builder: (context, state) => Column(
-        spacing: 8.0,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(title, style: Styles.title),
-          for (Category category in categoriesByTitle[title] ?? [])
-            if (_match(state.keywords, category.unitsInvolved))
-              CourseTile(
-                icon: category.icon,
-                label: category.label,
-                sublabel: category.sublabel,
-                questionsDone: category.questionsDone,
-                questionsTotal: category.questionsTotal,
-                progressBarValue: category.progressBarValue,
-                baseColor: category.baseColor,
-              ),
-        ],
-      ),
+    var state = context.watch<LessonsPageCubit>().state;
+
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(title, style: Styles.title),
+        for (Category category in categoriesByTitle[title] ?? [])
+          if (_match(state.keywords, category.unitsInvolved))
+            LessonTile(
+              icon: category.icon,
+              label: category.label,
+              sublabel: category.sublabel,
+              questionsDone: category.questionsDone,
+              questionsTotal: category.questionsTotal,
+              progressBarValue: category.progressBarValue,
+              baseColor: category.baseColor,
+            ),
+      ],
     );
   }
 }
@@ -293,7 +293,7 @@ class TitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "All Courses",
+      "All Lessons",
       textAlign: TextAlign.left,
       style: TextStyle(
         fontWeight: FontWeight.bold,
@@ -308,7 +308,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) => context.read<CoursesPageCubit>().updateType(value),
+      onChanged: (value) => context.read<LessonsPageCubit>().updateType(value),
       decoration: InputDecoration(
         prefixIcon: Padding(
           padding: EdgeInsets.all(8),
