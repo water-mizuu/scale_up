@@ -36,7 +36,6 @@ class OngoingLessonsContainer extends StatelessWidget {
                 questionsTotal: 10,
                 icon: Icons.straighten,
                 baseColor: Colors.pink,
-                progressBarValue: 0.2,
               ),
               LessonTile(
                 label: "Temperature",
@@ -44,7 +43,6 @@ class OngoingLessonsContainer extends StatelessWidget {
                 questionsTotal: 10,
                 baseColor: Colors.orange,
                 icon: Icons.thermostat,
-                progressBarValue: 0.7,
               ),
               LessonTile(
                 label: "Temperature",
@@ -52,7 +50,6 @@ class OngoingLessonsContainer extends StatelessWidget {
                 questionsTotal: 10,
                 baseColor: Colors.green,
                 icon: Icons.thermostat,
-                progressBarValue: 0.7,
               ),
             ],
           ),

@@ -19,6 +19,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<AuthenticationTokenChangedEvent>(_onAuthenticationChangeNotification);
 
     _repository.authStateChanges.forEach((user) async {
+      print("New authentication token: $user");
       add(AuthenticationTokenChangedEvent(user: user));
     });
   }
@@ -39,7 +40,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       );
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }

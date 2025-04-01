@@ -7,8 +7,8 @@ import "package:freezed_annotation/freezed_annotation.dart";
 part "lesson_repository.freezed.dart";
 part "lesson_repository.g.dart";
 
-class LessonRepository {
-  LessonRepository();
+class LessonsRepository {
+  LessonsRepository();
 
   final List<Lesson> _lessons = [];
   List<Lesson> get lessons => _lessons;
@@ -22,15 +22,17 @@ class LessonRepository {
     if (kDebugMode) {
       // print(data);
     }
-    var lessons = data["lessons"] as List<dynamic>;
-    // Convert the list of lessons to a list of Lesson objects
-    var lessonList = lessons //
-        .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
-        .toList();
 
-    _lessons
-      ..clear()
-      ..addAll(lessonList);
+    if (data case {"lessons": var lessons as List<dynamic>}) {
+      // Convert the list of lessons to a list of Lesson objects
+      var lessonList = lessons //
+          .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
+          .toList();
+
+      _lessons
+        ..clear()
+        ..addAll(lessonList);
+    }
   }
 }
 

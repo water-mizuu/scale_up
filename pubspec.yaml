@@ -45,6 +45,7 @@ dependencies:
   google_sign_in: ^6.3.0
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
+  default_map: ^0.1.0+1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'lesson_repository.dart';
+part of 'lessons_repository.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

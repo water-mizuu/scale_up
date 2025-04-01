@@ -12,7 +12,6 @@ typedef LessonTileProps = ({
   IconData icon,
   int questionsDone,
   int questionsTotal,
-  double progressBarValue,
   Color baseColor,
 });
 
@@ -23,7 +22,6 @@ class LessonTile extends StatelessWidget {
     required this.questionsDone,
     required this.questionsTotal,
     required this.icon,
-    required this.progressBarValue,
     required this.baseColor,
     this.onTap,
     super.key,
@@ -34,7 +32,6 @@ class LessonTile extends StatelessWidget {
   final int questionsTotal;
   final String label;
   final String? sublabel;
-  final double progressBarValue;
   final Color baseColor;
   final VoidCallback? onTap;
 
@@ -51,7 +48,6 @@ class LessonTile extends StatelessWidget {
         icon: icon,
         questionsDone: questionsDone,
         questionsTotal: questionsTotal,
-        progressBarValue: progressBarValue,
         baseColor: baseColor,
       ),
 

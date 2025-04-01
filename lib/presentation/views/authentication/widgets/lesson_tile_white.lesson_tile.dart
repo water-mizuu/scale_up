@@ -19,9 +19,9 @@ class LessonTileWhite extends StatelessWidget {
       :sublabel,
       :questionsDone,
       :questionsTotal,
-      :progressBarValue,
       :baseColor,
     ) = context.read<LessonTileProps>();
+    var progressBarValue = questionsTotal == 0 ? 0.0 : questionsDone / questionsTotal;
 
     return Expanded(
       child: Padding(

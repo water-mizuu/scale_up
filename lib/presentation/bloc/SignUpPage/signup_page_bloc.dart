@@ -36,13 +36,9 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
   }
 
   Future<void> _onButtonPressed(SignupButtonPressed event, Emitter emit) async {
+    emit(state.copyWith(status: SignUpStatus.validating));
     if (state.formKey.currentState?.validate() case true) {
-      emit(state.copyWith(status: SignUpStatus.validating));
-      try {
-        emit(state.copyWith(status: SignUpStatus.successful));
-      } catch (e) {
-        emit(state.copyWith(status: SignUpStatus.invalid));
-      }
+      emit(state.copyWith(status: SignUpStatus.successful));
     } else {
       emit(state.copyWith(status: SignUpStatus.invalid));
     }

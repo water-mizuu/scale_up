@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/repositories/authentication/authentication_repository.dart";
-import "package:scale_up/data/repositories/lessons/lesson_repository.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 
@@ -17,7 +17,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthenticationRepository _authenticationRepository;
-  late final LessonRepository _lessonRepository;
+  late final LessonsRepository _lessonRepository;
   late final AuthenticationBloc _authenticationBloc;
 
   @override
@@ -25,11 +25,9 @@ class _AppState extends State<App> {
     super.initState();
 
     _authenticationRepository = AuthenticationRepository();
-    _lessonRepository = LessonRepository();
+    _lessonRepository = LessonsRepository();
     _authenticationBloc = AuthenticationBloc(repository: _authenticationRepository);
     unawaited(_lessonRepository.initialize());
-
-    print("Started");
   }
 
   @override

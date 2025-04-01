@@ -12,7 +12,6 @@ class FeaturedLessons extends StatelessWidget {
       questionsDone: 4,
       questionsTotal: 5,
       icon: Icons.square_foot,
-      progressBarValue: 0.73,
       baseColor: Colors.blueAccent,
     );
   }

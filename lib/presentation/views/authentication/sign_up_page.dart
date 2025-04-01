@@ -19,39 +19,27 @@ class SignUpPage extends StatelessWidget {
       create: (_) => SignupPageBloc(),
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
-          switch (state) {
-            case AuthenticationState(
-                status: AuthenticationStatus.authenticated,
-              ):
+          if (state.error case FirebaseAuthException(:var code)) {
+            var message = switch (code) {
+              "weak-password" => //
+                "The password is too weak. Please try a stronger one!",
+              "email-already-in-use" =>
+                "The email is already connected with another account. Please try another email.",
+              "invalid-email" => //
+                "The email address is not valid. Please check and try again.",
+              "operation-not-allowed" => //
+                "Email/password accounts are not enabled. Please contact support.",
+              "network-request-failed" => //
+                "A network error occurred. Please check your connection and try again.",
+              _ => "An unknown error occurred. Please try again. Code: $code",
+            };
 
-              /// The user is authenticated. We can navigate to the home page.
-              router.goNamed("login");
-              return;
-            case AuthenticationState(
-                status: AuthenticationStatus.unauthenticated,
-                error: FirebaseAuthException(:var code)
-              ):
-              var message = switch (code) {
-                "weak-password" => //
-                  "The password is too weak. Please try a stronger one!",
-                "email-already-in-use" =>
-                  "The email is already connected with another account. Please try another email.",
-                "invalid-email" => //
-                  "The email address is not valid. Please check and try again.",
-                "operation-not-allowed" => //
-                  "Email/password accounts are not enabled. Please contact support.",
-                "network-request-failed" => //
-                  "A network error occurred. Please check your connection and try again.",
-                _ => "An unknown error occurred. Please try again.",
-              };
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-              return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                duration: const Duration(seconds: 2),
+              ),
+            );
           }
         },
         child: SignUpPageView(),

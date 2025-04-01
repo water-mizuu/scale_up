@@ -34,25 +34,18 @@ class _AppScaffoldState extends State<AppScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-        if (state.status == AuthenticationStatus.unauthenticated) {
-          context.goNamed("login");
-        }
-      },
-      child: Scaffold(
-        body: widget.child,
-        bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: _changeTab,
-          currentIndex: currentIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
-          ],
-        ),
+    return Scaffold(
+      body: widget.child,
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        onTap: _changeTab,
+        currentIndex: currentIndex,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.auto_stories), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+        ],
       ),
     );
   }

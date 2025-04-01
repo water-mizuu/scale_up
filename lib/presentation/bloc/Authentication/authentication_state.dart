@@ -38,6 +38,9 @@ class AuthenticationState {
       error: error.or(this.error),
     );
   }
+
+  @override
+  String toString() => "AuthenticationState(user: $user, status: $status, error: $error)";
 }
 
 extension on Object? {

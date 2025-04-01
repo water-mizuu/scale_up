@@ -33,7 +33,6 @@ class ExploreLessonsContainer extends StatelessWidget {
                 questionsDone: 7,
                 questionsTotal: 10,
                 icon: Icons.straighten,
-                progressBarValue: 0.0,
                 baseColor: Colors.blueAccent,
               ),
               LessonTile(
@@ -42,7 +41,6 @@ class ExploreLessonsContainer extends StatelessWidget {
                 questionsDone: 7,
                 questionsTotal: 10,
                 icon: Icons.thermostat,
-                progressBarValue: 0.0,
                 baseColor: Colors.blueAccent,
               ),
               LessonTile(
@@ -51,7 +49,6 @@ class ExploreLessonsContainer extends StatelessWidget {
                 questionsDone: 7,
                 questionsTotal: 10,
                 icon: Icons.thermostat,
-                progressBarValue: 1.0,
                 baseColor: Colors.blueAccent,
               ),
             ],
