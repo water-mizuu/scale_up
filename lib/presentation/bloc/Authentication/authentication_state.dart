@@ -1,3 +1,5 @@
+import "package:firebase_auth/firebase_auth.dart";
+
 enum AuthenticationStatus {
   authenticated,
   authenticating,
@@ -10,23 +12,28 @@ const undefined = #undefined;
 
 class AuthenticationState {
   const AuthenticationState({
+    this.user,
     this.status = AuthenticationStatus.none,
     this.error,
   });
 
+  final User? user;
   final AuthenticationStatus status;
   final Object? error;
 
   AuthenticationState Function({
+    User? user,
     AuthenticationStatus? status,
     Object? error,
   }) get copyWith => _copyWith;
 
   AuthenticationState _copyWith({
+    Object? user = undefined,
     Object? status = undefined,
     Object? error = undefined,
   }) {
     return AuthenticationState(
+      user: user.or(this.user),
       status: status.or(this.status),
       error: error.or(this.error),
     );

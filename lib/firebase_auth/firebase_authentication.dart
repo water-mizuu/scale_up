@@ -2,6 +2,11 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:google_sign_in/google_sign_in.dart";
 
 class UserAuth {
+  // Singleton
+  UserAuth._internal();
+  factory UserAuth() => _instance;
+  static final UserAuth _instance = UserAuth._internal();
+
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -32,20 +37,29 @@ class UserAuth {
 
   /// throws [PlatformException]
   Future<UserCredential?> googleSignIn() async {
-    // try {
-    // await _googleSignIn.signOut();
+    var googleUser = await _googleSignIn.signIn();
 
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
+    /// This can be null if the user cancels the sign-in.
     if (googleUser == null) return null;
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.credential(
+    var googleAuth = await googleUser.authentication;
+    var credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
     return await _auth.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> emailSignIn({
+    required String email,
+    required String password,
+  }) async {
+    var userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    return userCredential;
   }
 }

@@ -1,0 +1,153 @@
+{
+  "units_present": [
+    {
+      "type": "length",
+      "conversions": [
+        { "from": "meter", "to": "kilometer", "formula": "from * 1000" }
+      ],
+      "units": [
+        { "id": "meter", "shortcut": "m" },
+        { "id": "kilometer", "shortcut": "km" }
+      ]
+    },
+    {
+      "type": "area",
+      "conversions": [
+        {
+          "from": "square meter",
+          "to": "square kilometer",
+          "formula": "from * 1000000"
+        },
+        {
+          "from": "square meter",
+          "to": "square feet",
+          "formula": "from * 10.764"
+        },
+        {
+          "from": "square feet",
+          "to": "square inches",
+          "formula": "from * 144"
+        }
+      ],
+      "units": [
+        { "id": "square meter", "shortcut": "m²" },
+        { "id": "square kilometer", "shortcut": "km²" },
+        { "id": "square feet", "shortcut": "ft²" },
+        { "id": "square inches", "shortcut": "in²" }
+      ]
+    },
+    {
+      "type": "mass",
+      "conversions": [
+        { "from": "gram", "to": "kilogram", "formula": "from / 1000" },
+        { "from": "gram", "to": "pound", "formula": "from * 0.00220462" },
+        { "from": "pound", "to": "ounce", "formula": "from * 16" }
+      ],
+      "units": [
+        { "id": "gram", "shortcut": "g" },
+        { "id": "kilogram", "shortcut": "kg" },
+        { "id": "pound", "shortcut": "lb" },
+        { "id": "ounce", "shortcut": "oz" }
+      ]
+    },
+    {
+      "type": "temperature",
+      "conversions": [
+        {
+          "from": "celsius",
+          "to": "fahrenheit",
+          "formula": "(from * 9/5) + 32"
+        },
+        { "from": "celsius", "to": "kelvin", "formula": "(from + 273.15)" }
+      ],
+      "units": [
+        { "id": "celsius", "shortcut": "°C" },
+        { "id": "fahrenheit", "shortcut": "°F" },
+        { "id": "kelvin", "shortcut": "K" }
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "category": "Tangible Measurements",
+      "name": "Length",
+      "description": "These are commonly measured using tools such as measuring tapes.",
+      "color": "#FF5733",
+      "units": ["meter", "kilometer", "feet", "inches"],
+      "chapters": [
+        {
+          "name": "Basic Conversion",
+          "question_count": 8,
+          "units": ["meter", "kilometer"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 8,
+          "units": ["meter", "feet"]
+        }
+      ]
+    },
+    {
+      "category": "Tangible Measurements",
+      "name": "Area",
+      "description": "These are the two-dimensional space occupied by an object.",
+      "color": "#FF33A1",
+      "units": [
+        "square meter",
+        "square kilometer",
+        "square feet",
+        "square inches"
+      ],
+      "chapters": [
+        {
+          "name": "Basic Conversion",
+          "question_count": 8,
+          "units": ["square meter", "square kilometer"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 8,
+          "units": ["square meter", "square feet"]
+        }
+      ]
+    },
+    {
+      "category": "Amount of Substance",
+      "name": "Mass",
+      "description": "These are the amount of matter or molecules in an object.",
+      "color": "#33FF57",
+      "units": ["gram", "kilogram", "pound", "ounce"],
+      "chapters": [
+        {
+          "name": "Basic Conversion",
+          "question_count": 8,
+          "units": ["gram", "kilogram"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 8,
+          "units": ["gram", "pound"]
+        }
+      ]
+    },
+    {
+      "category": "Heat or Temperature",
+      "name": "Temperature",
+      "description": "These are the measure of the average kinetic energy of particles in a substance. We perceive temperature as how hot or cold something is.",
+      "color": "#3357FF",
+      "units": ["celsius", "fahrenheit", "kelvin"],
+      "chapters": [
+        {
+          "name": "Basic Conversion",
+          "question_count": 8,
+          "units": ["celsius", "fahrenheit"]
+        },
+        {
+          "name": "Scientifec Conversion",
+          "question_count": 8,
+          "units": ["celsius", "kelvin"]
+        }
+      ]
+    }
+  ]
+}

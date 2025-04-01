@@ -1,19 +1,7 @@
+import "package:firebase_auth/firebase_auth.dart";
+
 sealed class AuthenticationEvent {
   const AuthenticationEvent();
-
-  const factory AuthenticationEvent.emailSignup({
-    required String username,
-    required String email,
-    required String password,
-  }) = EmailSignUpAuthenticationEvent;
-
-  const factory AuthenticationEvent.emailSignIn({
-    required String email,
-    required String password,
-  }) = EmailSignInAuthenticationEvent;
-
-  const factory AuthenticationEvent.googleSignIn() = GoogleSignInAuthenticationEvent;
-  const factory AuthenticationEvent.logout() = LogoutAuthenticationEvent;
 }
 
 class EmailSignUpAuthenticationEvent extends AuthenticationEvent {
@@ -44,4 +32,12 @@ class GoogleSignInAuthenticationEvent extends AuthenticationEvent {
 
 class LogoutAuthenticationEvent extends AuthenticationEvent {
   const LogoutAuthenticationEvent();
+}
+
+class AuthenticationTokenChangedEvent extends AuthenticationEvent {
+  const AuthenticationTokenChangedEvent({
+    required this.user,
+  });
+
+  final User? user;
 }

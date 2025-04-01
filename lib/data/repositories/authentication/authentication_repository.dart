@@ -1,10 +1,10 @@
 import "dart:async";
 
-import "package:firebase_auth/firebase_auth.dart" hide User;
+import "package:firebase_auth/firebase_auth.dart";
 import "package:scale_up/firebase_auth/firebase_authentication.dart";
 
 final class AuthenticationRepository {
-  // Future<User?> signIn({required String username, required String password});
+  Stream<User?> get authStateChanges => FirebaseAuth.instance.authStateChanges();
 
   Future<void> emailSignUp({
     required String username,
@@ -18,17 +18,23 @@ final class AuthenticationRepository {
     );
   }
 
-  Future<void> emailSignIn({
+  Future<User?> emailSignIn({
     required String email,
     required String password,
   }) async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    var credentials = await UserAuth().emailSignIn(
       email: email,
       password: password,
     );
+
+    return credentials.user;
   }
 
-  Future<UserCredential?> googlSignIn() => UserAuth().googleSignIn();
+  Future<User?> googleSignIn() async {
+    var credentials = await UserAuth().googleSignIn();
+
+    return credentials?.user;
+  }
 
   Future<void> signOut() => FirebaseAuth.instance.signOut();
 }

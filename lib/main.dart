@@ -25,10 +25,9 @@ void main() async {
       skipTaskbar: false,
     );
 
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+    await windowManager.waitUntilReadyToShow(windowOptions);
+    await windowManager.show();
+    await windowManager.focus();
   }
 
   runApp(App());

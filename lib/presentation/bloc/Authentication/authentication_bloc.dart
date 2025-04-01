@@ -16,6 +16,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<GoogleSignInAuthenticationEvent>(_onGoogleSignIn);
     on<EmailSignInAuthenticationEvent>(_onEmailSignIn);
     on<LogoutAuthenticationEvent>(_onLogout);
+    on<AuthenticationTokenChangedEvent>(_onAuthenticationChangeNotification);
+
+    _repository.authStateChanges.forEach((user) async {
+      add(AuthenticationTokenChangedEvent(user: user));
+    });
   }
 
   final AuthenticationRepository _repository;
@@ -47,13 +52,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
 
     try {
-      await _repository.emailSignIn(email: event.email, password: event.password);
+      var user = (await _repository.emailSignIn(email: event.email, password: event.password))!;
 
       // Simulate a network call
       await Future.delayed(const Duration(seconds: 2));
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
@@ -66,13 +71,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
 
     try {
-      await _repository.googlSignIn();
-
-      // Simulate a network call
-      await Future.delayed(const Duration(seconds: 2));
+      var user = (await _repository.googleSignIn())!;
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
@@ -83,9 +85,23 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await _repository.signOut();
 
       // Simulate successful logout
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null, user: null));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
     }
+  }
+
+  void _onAuthenticationChangeNotification(
+    AuthenticationTokenChangedEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        user: event.user,
+        status: event.user != null
+            ? AuthenticationStatus.authenticated
+            : AuthenticationStatus.unauthenticated,
+      ),
+    );
   }
 }

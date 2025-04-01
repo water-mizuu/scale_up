@@ -1,4 +1,4 @@
-import "package:flutter/widgets.dart";
+import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:scale_up/presentation/views/authentication/login_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
@@ -13,6 +13,7 @@ class AppRoutes {
   static const String homePath = "/home";
   static const String lessonsPath = "/lessons";
   static const String profilePath = "/profile";
+  static const String _blank = "/blank";
 }
 
 // ignore: unused_element
@@ -20,8 +21,13 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
-  initialLocation: AppRoutes.loginPath,
+  initialLocation: AppRoutes._blank,
   routes: [
+    /// We add a blank route to have the application load this screen first.
+    GoRoute(
+      path: AppRoutes._blank,
+      builder: (context, state) => const Material(),
+    ),
     GoRoute(
       path: AppRoutes.loginPath,
       name: "login",
