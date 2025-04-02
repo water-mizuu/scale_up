@@ -13,7 +13,7 @@ class FeaturedLessonsContainer extends StatelessWidget {
       spacing: 8.0,
       children: [
         Text("Daily Practice", style: TextStyle(fontWeight: FontWeight.bold)),
-        FeaturedLessons(),
+        FeaturedLesson(),
       ],
     );
   }

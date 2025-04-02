@@ -1,17 +1,24 @@
+import "dart:async";
 import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:scale_up/utils/color_luminance.dart";
 
-part "lesson_repository.freezed.dart";
-part "lesson_repository.g.dart";
+part "lessons_repository.freezed.dart";
+part "lessons_repository.g.dart";
 
 class LessonsRepository {
   LessonsRepository();
 
+  final Completer<void> _init = Completer<void>();
   final List<Lesson> _lessons = [];
-  List<Lesson> get lessons => _lessons;
+
+  Future<List<Lesson>> get lessons async {
+    await _init.future;
+    return _lessons;
+  }
 
   Future<void> initialize() async {
     // Initialize the repository, if needed
@@ -32,7 +39,15 @@ class LessonsRepository {
       _lessons
         ..clear()
         ..addAll(lessonList);
+
+      _init.complete();
     }
+  }
+
+  Future<Lesson?> operator [](String id) async {
+    await _init.future;
+
+    return _lessons.where((lesson) => lesson.id == id).firstOrNull;
   }
 }
 
@@ -72,6 +87,7 @@ class Expression {
 @freezed
 abstract class Lesson with _$Lesson {
   const factory Lesson({
+    required String id,
     required String category,
     required String name,
     required String description,
@@ -80,7 +96,10 @@ abstract class Lesson with _$Lesson {
     required List<Chapter> chapters,
   }) = _Lesson;
 
+  const Lesson._();
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
+
+  Color get foregroundColor => color.contrastingTextColor();
 }
 
 @freezed

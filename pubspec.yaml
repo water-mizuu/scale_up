@@ -46,6 +46,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   default_map: ^0.1.0+1
+  scroll_animator: ^0.3.0
 
 dev_dependencies:
   flutter_test:

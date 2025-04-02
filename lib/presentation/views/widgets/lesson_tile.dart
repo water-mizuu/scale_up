@@ -1,55 +1,29 @@
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/views/authentication/widgets/"
-    "lesson_tile_colored.lesson_tile.dart";
-import "package:scale_up/presentation/views/authentication/widgets/"
-    "lesson_tile_white.lesson_tile.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/presentation/router/app_router.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile_colored.lesson_tile.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile_white.lesson_tile.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
-typedef LessonTileProps = ({
-  String label,
-  String? sublabel,
-  IconData icon,
-  int questionsDone,
-  int questionsTotal,
-  Color baseColor,
-});
 
 class LessonTile extends StatelessWidget {
   const LessonTile({
-    required this.label,
-    this.sublabel,
-    required this.questionsDone,
-    required this.questionsTotal,
-    required this.icon,
-    required this.baseColor,
-    this.onTap,
+    required this.lesson,
     super.key,
   });
 
-  final IconData icon;
-  final int questionsDone;
-  final int questionsTotal;
-  final String label;
-  final String? sublabel;
-  final Color baseColor;
-  final VoidCallback? onTap;
+  final Lesson lesson;
 
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
-    return Provider<LessonTileProps>.value(
+    return Provider<Lesson>.value(
       /// This provider is used to pass the properties to the children.
       ///   This is an alternative to prop drilling.
-      value: (
-        label: label,
-        sublabel: sublabel,
-        icon: icon,
-        questionsDone: questionsDone,
-        questionsTotal: questionsTotal,
-        baseColor: baseColor,
-      ),
+      value: lesson,
 
       /// Ink is used here to basically make the shadow persistent.
       child: Ink(
@@ -75,7 +49,12 @@ class LessonTile extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: borderRadius,
-              onTap: onTap,
+              onTap: () {
+                context.goNamed(
+                  AppRoutes.lesson,
+                  pathParameters: {"id": lesson.id},
+                );
+              },
               child: IntrinsicWidth(
                 child: IntrinsicHeight(
                   child: Row(

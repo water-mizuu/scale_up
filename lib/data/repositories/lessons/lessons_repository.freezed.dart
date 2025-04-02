@@ -419,6 +419,7 @@ class __$ConversionCopyWithImpl<$Res> implements _$ConversionCopyWith<$Res> {
 
 /// @nodoc
 mixin _$Lesson implements DiagnosticableTreeMixin {
+  String get id;
   String get category;
   String get name;
   String get description;
@@ -441,6 +442,7 @@ mixin _$Lesson implements DiagnosticableTreeMixin {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'Lesson'))
+      ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('category', category))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('description', description))
@@ -454,6 +456,7 @@ mixin _$Lesson implements DiagnosticableTreeMixin {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Lesson &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.name, name) || other.name == name) &&
@@ -468,6 +471,7 @@ mixin _$Lesson implements DiagnosticableTreeMixin {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       category,
       name,
       description,
@@ -477,7 +481,7 @@ mixin _$Lesson implements DiagnosticableTreeMixin {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Lesson(category: $category, name: $name, description: $description, color: $color, units: $units, chapters: $chapters)';
+    return 'Lesson(id: $id, category: $category, name: $name, description: $description, color: $color, units: $units, chapters: $chapters)';
   }
 }
 
@@ -487,7 +491,8 @@ abstract mixin class $LessonCopyWith<$Res> {
       _$LessonCopyWithImpl;
   @useResult
   $Res call(
-      {String category,
+      {String id,
+      String category,
       String name,
       String description,
       @JsonKey(fromJson: colorFromJson, toJson: colorToJson) Color color,
@@ -507,6 +512,7 @@ class _$LessonCopyWithImpl<$Res> implements $LessonCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? category = null,
     Object? name = null,
     Object? description = null,
@@ -515,6 +521,10 @@ class _$LessonCopyWithImpl<$Res> implements $LessonCopyWith<$Res> {
     Object? chapters = null,
   }) {
     return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       category: null == category
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -545,9 +555,10 @@ class _$LessonCopyWithImpl<$Res> implements $LessonCopyWith<$Res> {
 
 /// @nodoc
 @JsonSerializable()
-class _Lesson with DiagnosticableTreeMixin implements Lesson {
+class _Lesson extends Lesson with DiagnosticableTreeMixin {
   const _Lesson(
-      {required this.category,
+      {required this.id,
+      required this.category,
       required this.name,
       required this.description,
       @JsonKey(fromJson: colorFromJson, toJson: colorToJson)
@@ -555,9 +566,12 @@ class _Lesson with DiagnosticableTreeMixin implements Lesson {
       required final List<String> units,
       required final List<Chapter> chapters})
       : _units = units,
-        _chapters = chapters;
+        _chapters = chapters,
+        super._();
   factory _Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
+  @override
+  final String id;
   @override
   final String category;
   @override
@@ -602,6 +616,7 @@ class _Lesson with DiagnosticableTreeMixin implements Lesson {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'Lesson'))
+      ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('category', category))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('description', description))
@@ -615,6 +630,7 @@ class _Lesson with DiagnosticableTreeMixin implements Lesson {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Lesson &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.name, name) || other.name == name) &&
@@ -629,6 +645,7 @@ class _Lesson with DiagnosticableTreeMixin implements Lesson {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       category,
       name,
       description,
@@ -638,7 +655,7 @@ class _Lesson with DiagnosticableTreeMixin implements Lesson {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Lesson(category: $category, name: $name, description: $description, color: $color, units: $units, chapters: $chapters)';
+    return 'Lesson(id: $id, category: $category, name: $name, description: $description, color: $color, units: $units, chapters: $chapters)';
   }
 }
 
@@ -649,7 +666,8 @@ abstract mixin class _$LessonCopyWith<$Res> implements $LessonCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String category,
+      {String id,
+      String category,
       String name,
       String description,
       @JsonKey(fromJson: colorFromJson, toJson: colorToJson) Color color,
@@ -669,6 +687,7 @@ class __$LessonCopyWithImpl<$Res> implements _$LessonCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? id = null,
     Object? category = null,
     Object? name = null,
     Object? description = null,
@@ -677,6 +696,10 @@ class __$LessonCopyWithImpl<$Res> implements _$LessonCopyWith<$Res> {
     Object? chapters = null,
   }) {
     return _then(_Lesson(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       category: null == category
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable

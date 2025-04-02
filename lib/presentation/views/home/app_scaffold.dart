@@ -20,7 +20,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         context.goNamed(AppRoutes.home);
         break;
       case 1:
-        context.goNamed(AppRoutes.lessons);
+        context.goNamed(AppRoutes.allLessons);
         break;
       case 2:
         context.goNamed(AppRoutes.profile);

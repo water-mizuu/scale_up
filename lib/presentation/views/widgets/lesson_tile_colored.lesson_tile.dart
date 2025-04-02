@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/views/authentication/widgets/lesson_tile.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/utils/color_luminance.dart";
 
 class LessonTileColored extends StatelessWidget {
   const LessonTileColored({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var LessonTileProps(:baseColor, :icon) = context.read();
+    var Lesson(:color) = context.read();
 
     return Container(
       padding: const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 4.0),
@@ -15,15 +16,19 @@ class LessonTileColored extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
         gradient: LinearGradient(
           colors: [
-            baseColor,
-            baseColor.withValues(alpha: 0.7),
+            color,
+            color.withValues(alpha: 0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
       child: Center(
-        child: Icon(icon, color: Colors.white, size: 18.0),
+        child: Icon(
+          Icons.check,
+          color: color.contrastingTextColor(),
+          size: 18.0,
+        ),
       ),
     );
   }

@@ -41,7 +41,9 @@ class LessonsPageCubit extends Cubit<LessonsPageState> {
             categoriesByTitle: [],
             keywords: {},
           ),
-        );
+        ) {
+    _updateAllPartitions();
+  }
 
   void _updateAllPartitions() {
     var allLessons = {...state.lessons};

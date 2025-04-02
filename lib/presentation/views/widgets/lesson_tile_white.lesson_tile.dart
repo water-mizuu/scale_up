@@ -1,26 +1,20 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/views/authentication/widgets/lesson_progression.lesson_tile.dart";
-import "package:scale_up/presentation/views/authentication/widgets/lesson_tile.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/presentation/views/widgets/lesson_progression.lesson_tile.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class LessonTileWhite extends StatelessWidget {
   const LessonTileWhite({super.key});
 
-  // Length
-  // Unit 1
-  //
-  // SI Units (m)
-
   @override
   Widget build(BuildContext context) {
-    var LessonTileProps(
-      :label,
-      :sublabel,
-      :questionsDone,
-      :questionsTotal,
-      :baseColor,
-    ) = context.read<LessonTileProps>();
+    var Lesson(:name, :units, :chapters, :color) = context.read();
+
+    /// TODO: Replace with actual data soon.
+    var questionsDone = 0;
+    var questionsTotal = chapters.map((c) => c.questionCount).fold(0, (a, b) => a + b);
     var progressBarValue = questionsTotal == 0 ? 0.0 : questionsDone / questionsTotal;
 
     return Expanded(
@@ -39,9 +33,9 @@ class LessonTileWhite extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label),
+                  Text(name),
                   Text(
-                    sublabel ?? "",
+                    units.join(", "),
                     style: Styles.caption,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -58,7 +52,7 @@ class LessonTileWhite extends StatelessWidget {
                   children: [
                     LessonProgression(
                       progressBarValue: progressBarValue,
-                      baseColor: baseColor,
+                      baseColor: color,
                     ),
                     Text("${(progressBarValue * 100).round()}%", style: mini)
                   ],

@@ -69,6 +69,7 @@
   ],
   "lessons": [
     {
+      "id": "length",
       "category": "Tangible Measurements",
       "name": "Length",
       "description": "These are commonly measured using tools such as measuring tapes.",
@@ -88,6 +89,7 @@
       ]
     },
     {
+      "id": "area",
       "category": "Tangible Measurements",
       "name": "Area",
       "description": "These are the two-dimensional space occupied by an object.",
@@ -112,6 +114,7 @@
       ]
     },
     {
+      "id": "mass",
       "category": "Amount of Substance",
       "name": "Mass",
       "description": "These are the amount of matter or molecules in an object.",
@@ -131,6 +134,7 @@
       ]
     },
     {
+      "id": "temperature",
       "category": "Heat or Temperature",
       "name": "Temperature",
       "description": "These are the measure of the average kinetic energy of particles in a substance. We perceive temperature as how hot or cold something is.",

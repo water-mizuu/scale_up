@@ -36,5 +36,7 @@ final class AuthenticationRepository {
     return credentials?.user;
   }
 
-  Future<void> signOut() async => await UserAuth().signOut();
+  Future<void> signOut() async {
+    await UserAuth().signOut();
+  }
 }

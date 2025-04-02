@@ -44,6 +44,7 @@ Map<String, dynamic> _$ConversionToJson(_Conversion instance) =>
     };
 
 _Lesson _$LessonFromJson(Map<String, dynamic> json) => _Lesson(
+      id: json['id'] as String,
       category: json['category'] as String,
       name: json['name'] as String,
       description: json['description'] as String,
@@ -55,6 +56,7 @@ _Lesson _$LessonFromJson(Map<String, dynamic> json) => _Lesson(
     );
 
 Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
+      'id': instance.id,
       'category': instance.category,
       'name': instance.name,
       'description': instance.description,

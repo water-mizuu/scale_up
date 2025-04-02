@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:scale_up/presentation/views/authentication/widgets/lesson_tile.dart";
 
 class ExploreLessonsContainer extends StatelessWidget {
   const ExploreLessonsContainer({
@@ -27,31 +26,7 @@ class ExploreLessonsContainer extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             spacing: 8,
-            children: [
-              LessonTile(
-                label: "Placeholder",
-                questionsDone: 7,
-                questionsTotal: 10,
-                icon: Icons.straighten,
-                baseColor: Colors.blueAccent,
-              ),
-              LessonTile(
-                label: "Placeholder 3",
-                sublabel: "Sublabel what if i have a long subtitle",
-                questionsDone: 7,
-                questionsTotal: 10,
-                icon: Icons.thermostat,
-                baseColor: Colors.blueAccent,
-              ),
-              LessonTile(
-                label: "Placeholder 2",
-                sublabel: "Sublabel what if i have a long subtitle",
-                questionsDone: 7,
-                questionsTotal: 10,
-                icon: Icons.thermostat,
-                baseColor: Colors.blueAccent,
-              ),
-            ],
+            children: [],
           ),
         ),
       ],
