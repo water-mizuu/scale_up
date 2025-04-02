@@ -36,5 +36,5 @@ final class AuthenticationRepository {
     return credentials?.user;
   }
 
-  Future<void> signOut() => FirebaseAuth.instance.signOut();
+  Future<void> signOut() async => await UserAuth().signOut();
 }

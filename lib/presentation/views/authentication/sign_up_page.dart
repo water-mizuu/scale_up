@@ -72,17 +72,19 @@ class SignUpPageView extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: context.read<SignupPageBloc>().formKey,
-          child: Column(
-            spacing: 16.0,
-            children: [
-              ImageContainer(),
-              SignUpFieldGroup(),
-              SignUpButton(),
-            ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: context.read<SignupPageBloc>().formKey,
+            child: Column(
+              spacing: 16.0,
+              children: [
+                ImageContainer(),
+                SignUpFieldGroup(),
+                SignUpButton(),
+              ],
+            ),
           ),
         ),
       ),

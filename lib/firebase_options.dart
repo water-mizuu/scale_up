@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '53516137480',
     projectId: 'scaleup-f0626',
     storageBucket: 'scaleup-f0626.firebasestorage.app',
+    androidClientId: '53516137480-h7ju2ju00rnclh6bipp2aafkq9nil5a9.apps.googleusercontent.com',
     iosClientId: '53516137480-j2pdr1bllut1b5d3n8sjdqjc01hcar8v.apps.googleusercontent.com',
     iosBundleId: 'com.example.scaleUp',
   );
@@ -74,6 +75,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '53516137480',
     projectId: 'scaleup-f0626',
     storageBucket: 'scaleup-f0626.firebasestorage.app',
+    androidClientId: '53516137480-h7ju2ju00rnclh6bipp2aafkq9nil5a9.apps.googleusercontent.com',
     iosClientId: '53516137480-j2pdr1bllut1b5d3n8sjdqjc01hcar8v.apps.googleusercontent.com',
     iosBundleId: 'com.example.scaleUp',
   );
@@ -87,4 +89,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'scaleup-f0626.firebasestorage.app',
     measurementId: 'G-ERKXT3KEHT',
   );
+
 }

@@ -10,8 +10,6 @@ import "firebase_options.dart";
 void main() async {
   // Set up window manager to resize screen to mobile
   WidgetsFlutterBinding.ensureInitialized();
-
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

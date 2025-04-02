@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/repositories/authentication/authentication_repository.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
