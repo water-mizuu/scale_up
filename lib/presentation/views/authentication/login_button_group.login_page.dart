@@ -12,7 +12,6 @@ class LoginButtonGroup extends StatelessWidget {
       spacing: 8,
       children: [
         LoginButton(),
-        Text("or"),
         LoginWithGoogleButton(),
         SignUpHyperlinkButton(),
       ],

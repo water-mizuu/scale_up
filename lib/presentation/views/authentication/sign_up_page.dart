@@ -18,10 +18,16 @@ class SignUpPage extends StatelessWidget {
       lazy: false,
       create: (_) => SignupPageBloc(),
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
+        listenWhen: (previous, current) => previous.status == AuthenticationStatus.signingUp,
         listener: (context, state) {
-          if (state.error case FirebaseAuthException(:var code)) {
+          if (state
+              case AuthenticationState(
+                error: FirebaseAuthException(:var code),
+                status: AuthenticationStatus.signUpFailure,
+              )) {
             var message = switch (code) {
               "weak-password" => //
+                // TODO: Add an indicator of a password strength to the form.
                 "The password is too weak. Please try a stronger one!",
               "email-already-in-use" =>
                 "The email is already connected with another account. Please try another email.",

@@ -47,12 +47,12 @@ class _AppState extends State<App> {
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         bloc: _authenticationBloc,
         listener: (context, state) {
-          if (state.status == AuthenticationStatus.authenticated) {
+          if (state.status == AuthenticationStatus.signedIn) {
             // Navigate to the home screen
-            router.go("/home");
-          } else if (state.status == AuthenticationStatus.unauthenticated) {
+            router.goNamed(AppRoutes.home);
+          } else if (state.status == AuthenticationStatus.signedOut) {
             // Navigate to the login screen
-            router.go("/login");
+            router.goNamed(AppRoutes.login);
           }
         },
         child: AppView(),

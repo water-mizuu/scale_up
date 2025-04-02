@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/router/app_router.dart";
 
 class AppScaffold extends StatefulWidget {
   final Widget? child;
@@ -18,13 +17,13 @@ class _AppScaffoldState extends State<AppScaffold> {
   void _changeTab(int index) {
     switch (index) {
       case 0:
-        context.goNamed("home");
+        context.goNamed(AppRoutes.home);
         break;
       case 1:
-        context.goNamed("lessons");
+        context.goNamed(AppRoutes.lessons);
         break;
       case 2:
-        context.goNamed("profile");
+        context.goNamed(AppRoutes.profile);
         break;
     }
     setState(() {

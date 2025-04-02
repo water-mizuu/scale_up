@@ -14,7 +14,7 @@ class LoginButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-            onPressed: (authenticationBloc.state.status != AuthenticationStatus.authenticating)
+            onPressed: (authenticationBloc.state.status != AuthenticationStatus.signingIn)
                 ? () {
                     if (context.read<GlobalKey<FormState>>().currentState?.validate() == true) {
                       var LoginPageState(:email, :password) = context.read<LoginPageBloc>().state;

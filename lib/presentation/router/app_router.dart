@@ -13,6 +13,13 @@ class AppRoutes {
   static const String homePath = "/home";
   static const String lessonsPath = "/lessons";
   static const String profilePath = "/profile";
+
+  static const String login = "login";
+  static const String signUp = "signup";
+  static const String home = "home";
+  static const String lessons = "lessons";
+  static const String profile = "profile";
+
   static const String _blank = "/blank";
 }
 
@@ -30,12 +37,12 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.loginPath,
-      name: "login",
+      name: AppRoutes.login,
       builder: (context, state) => const LoginPage(),
       routes: [
         GoRoute(
           path: AppRoutes.signUpPath,
-          name: "signup",
+          name: AppRoutes.signUp,
           builder: (context, state) => const SignUpPage(),
         ),
       ],
@@ -46,17 +53,17 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           path: AppRoutes.homePath,
-          name: "home",
+          name: AppRoutes.home,
           builder: (context, state) => const HomePage(),
         ),
         GoRoute(
           path: AppRoutes.lessonsPath,
-          name: "lessons",
+          name: AppRoutes.lessons,
           builder: (context, state) => const LessonsPage(),
         ),
         GoRoute(
           path: AppRoutes.profilePath,
-          name: "profile",
+          name: AppRoutes.profile,
           builder: (context, state) => const ProfilePage(),
         )
       ],

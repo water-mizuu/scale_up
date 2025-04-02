@@ -1,11 +1,20 @@
 import "package:firebase_auth/firebase_auth.dart";
 
 enum AuthenticationStatus {
-  authenticated,
-  authenticating,
-  unauthenticated,
   none,
   error,
+
+  signedOut,
+
+  /// Logging in states.
+  signedIn,
+  signingIn,
+  signInFailure,
+
+  /// Signing up states
+  signedUp,
+  signingUp,
+  signUpFailure,
 }
 
 const undefined = #undefined;

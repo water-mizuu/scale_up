@@ -19,7 +19,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<AuthenticationTokenChangedEvent>(_onAuthenticationChangeNotification);
 
     _repository.authStateChanges.forEach((user) async {
-      print("New authentication token: $user");
       add(AuthenticationTokenChangedEvent(user: user));
     });
   }
@@ -30,7 +29,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     EmailSignUpAuthenticationEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
+    emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null));
 
     try {
       await _repository.emailSignUp(
@@ -40,9 +39,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       );
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.signedUp, error: null));
     } catch (e) {
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
+      emit(state.copyWith(status: AuthenticationStatus.signUpFailure, error: e));
     }
   }
 
@@ -50,7 +49,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     EmailSignInAuthenticationEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
+    emit(state.copyWith(status: AuthenticationStatus.signingIn, error: null));
 
     try {
       var user = (await _repository.emailSignIn(email: event.email, password: event.password))!;
@@ -59,9 +58,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await Future.delayed(const Duration(seconds: 2));
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null, user: user));
+      emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
     } catch (e) {
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
+      emit(state.copyWith(status: AuthenticationStatus.signInFailure, error: e));
     }
   }
 
@@ -69,26 +68,29 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     GoogleSignInAuthenticationEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(state.copyWith(status: AuthenticationStatus.authenticating, error: null));
+    emit(state.copyWith(status: AuthenticationStatus.signingIn, error: null));
 
     try {
       var user = (await _repository.googleSignIn())!;
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.authenticated, error: null, user: user));
+      emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
     } catch (e) {
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
+      emit(state.copyWith(status: AuthenticationStatus.signInFailure, error: e));
     }
   }
 
-  void _onLogout(LogoutAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+  void _onLogout(
+    LogoutAuthenticationEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
     try {
       await _repository.signOut();
 
       // Simulate successful logout
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: null, user: null));
+      emit(state.copyWith(status: AuthenticationStatus.signedOut, error: null, user: null));
     } catch (e) {
-      emit(state.copyWith(status: AuthenticationStatus.unauthenticated, error: e));
+      emit(state.copyWith(status: AuthenticationStatus.signedOut, error: e));
     }
   }
 
@@ -99,9 +101,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(
       state.copyWith(
         user: event.user,
-        status: event.user != null
-            ? AuthenticationStatus.authenticated
-            : AuthenticationStatus.unauthenticated,
+        status: event.user != null //
+            ? AuthenticationStatus.signedIn
+            : AuthenticationStatus.signedOut,
       ),
     );
   }

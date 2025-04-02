@@ -13,45 +13,52 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (_) => GlobalKey<FormState>(),
-      child: BlocProvider(
-        create: (_) => LoginPageBloc(),
-        child: BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (_, state) {
-            if (state.error case FirebaseAuthException(:var code)) {
-              var message = switch (code) {
-                "account-exists-with-different-credential" => //
-                  "An account already exists with a different credential."
-                      "Please try another sign-in method.",
-                "invalid-credential" => //
-                  "Invalid password. Please try again.",
-                "operation-not-allowed" => //
-                  "The operation is not allowed. Please contact support.",
-                "user-disabled" => //
-                  "The corresponding user has been disabled.",
-                "user-not-found" => //
-                  "No user corresponding to the given email was found.",
-                "wrong-password" => //
-                  "The password is invalid for the given email.",
-                "invalid-verification-id" => //
-                  "The verification ID is invalid.",
-                "invalid-verification-code" => //
-                  "The verification code is invalid.",
-                _ => //
-                  "An unknown error occurred. Please contact support",
-              };
+    return MultiProvider(
+      providers: [
+        Provider(create: (_) => GlobalKey<FormState>()),
+        BlocProvider(create: (_) => LoginPageBloc()),
+      ],
+      child: BlocListener<AuthenticationBloc, AuthenticationState>(
+        /// We only want to react to the succeeding states
+        ///   if the previous state was signing in.
+        listenWhen: (previous, _) => previous.status == AuthenticationStatus.signingIn,
+        listener: (_, state) {
+          if (state
+              case AuthenticationState(
+                error: FirebaseAuthException(:var code),
+                status: AuthenticationStatus.signInFailure,
+              )) {
+            var message = switch (code) {
+              "account-exists-with-different-credential" => //
+                "An account already exists with a different credential."
+                    "Please try another sign-in method.",
+              "invalid-credential" => //
+                "Invalid password. Please try again.",
+              "operation-not-allowed" => //
+                "The operation is not allowed. Please contact support.",
+              "user-disabled" => //
+                "The corresponding user has been disabled.",
+              "user-not-found" => //
+                "No user corresponding to the given email was found.",
+              "wrong-password" => //
+                "The password is invalid for the given email.",
+              "invalid-verification-id" => //
+                "The verification ID is invalid.",
+              "invalid-verification-code" => //
+                "The verification code is invalid.",
+              _ => //
+                "An unknown error occurred. Please contact support.",
+            };
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            }
-          },
-          child: LoginPageView(),
-        ),
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+        child: LoginPageView(),
       ),
     );
   }

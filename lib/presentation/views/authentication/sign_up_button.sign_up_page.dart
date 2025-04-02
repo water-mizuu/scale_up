@@ -12,21 +12,24 @@ class SignUpButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-            onPressed: () {
-              /// Validate the form.
-              if (context.read<SignupPageBloc>().formKey.currentState?.validate() == true) {
-                var SignupPageState(:username, :email, :password) =
-                    context.read<SignupPageBloc>().state;
+            onPressed: context.watch<AuthenticationBloc>().state.status !=
+                    AuthenticationStatus.signingUp
+                ? () {
+                    /// Validate the form.
+                    if (context.read<SignupPageBloc>().formKey.currentState?.validate() == true) {
+                      var SignupPageState(:username, :email, :password) =
+                          context.read<SignupPageBloc>().state;
 
-                var event = EmailSignUpAuthenticationEvent(
-                  username: username,
-                  email: email,
-                  password: password,
-                );
+                      var event = EmailSignUpAuthenticationEvent(
+                        username: username,
+                        email: email,
+                        password: password,
+                      );
 
-                context.read<AuthenticationBloc>().add(event);
-              }
-            },
+                      context.read<AuthenticationBloc>().add(event);
+                    }
+                  }
+                : null,
             child: Padding(
               padding: EdgeInsets.all(12.0),
               child: Text(

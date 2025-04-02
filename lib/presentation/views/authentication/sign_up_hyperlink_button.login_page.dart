@@ -23,7 +23,7 @@ class SignUpHyperlinkButton extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    router.pushNamed("signup");
+                    router.goNamed(AppRoutes.signUp);
                   },
               ),
             ],
