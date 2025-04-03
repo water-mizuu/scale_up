@@ -91,6 +91,10 @@ class LessonPageView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: lesson.color,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16.0),
+                bottomRight: Radius.circular(16.0),
+              ),
             ),
             child: Column(
               spacing: 4.0,
@@ -104,11 +108,12 @@ class LessonPageView extends StatelessWidget {
                   lesson.description,
                   style: TextStyle(color: lesson.foregroundColor),
                 ),
+                const SizedBox(height: 4.0),
               ],
             ),
           ),
           Expanded(
-            child: Provider.value(
+            child: InheritedProvider.value(
               value: lesson,
               child: LessonInformation(),
             ),
@@ -126,32 +131,162 @@ class LessonInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
+    // I don't want to create a StatefulWidget just to use this controller.
+    //   Thankfully, providers automatically dispose of the values.
+    return InheritedProvider(
       create: (_) => AnimatedScrollController(animationFactory: const ChromiumEaseInOut()),
-      child: Builder(builder: (context) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            child: Column(
-              spacing: 8.0,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Styles.subtitle("Units Involved"),
-                Column(
-                  spacing: 4.0,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (var unit in context.read<Lesson>().units)
-                    UnitTile(unit: unit),
-                  ],
+      dispose: (_, v) => v.dispose(),
+      builder: (context, child) => SingleChildScrollView(
+        controller: context.read<AnimatedScrollController>(),
+        child: child,
+      ),
+      child: LessonInformationView(),
+    );
+  }
+}
+
+class LessonInformationView extends StatelessWidget {
+  const LessonInformationView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      child: Column(
+        spacing: 8.0,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LessonProgression(),
+          LessonUnits(),
+          LessonChapters(),
+        ],
+      ),
+    );
+  }
+}
+
+class LessonChapters extends StatelessWidget {
+  const LessonChapters({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Styles.subtitle("Lesson Content"),
+        Column(
+          spacing: 4.0,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var (index, chapter) in context.read<Lesson>().chapters.indexed)
+              Material(
+                elevation: 12.0,
+                borderRadius: BorderRadius.circular(25.0),
+                shadowColor: Colors.black.withValues(alpha: 0.3),
+                child: ListTile(
+                  leading: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(
+                            color: Colors.black.withValues(alpha: 0.1),
+                          ),
+                        ),
+                        child: Center(
+                          child: Styles.title(
+                            "${index + 1}",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  title: Styles.body(chapter.name, style: TextStyle(fontSize: 14)),
+                  tileColor: Colors.white,
                 ),
-              ],
+              ),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class LessonUnits extends StatelessWidget {
+  const LessonUnits({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Styles.subtitle("Units Involved"),
+        Column(
+          spacing: 4.0,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var unit in context.read<Lesson>().units) UnitTile(unit: unit),
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class LessonProgression extends StatelessWidget {
+  const LessonProgression({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var Lesson(:color, :chapterCount, :questionCount) = context.read();
+
+    var completedChapters = chapterCount ~/ 2;
+    var completedQuestions = questionCount ~/ 2;
+
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Styles.subtitle("Progression"),
+        LinearProgressIndicator(
+          value: completedQuestions / questionCount,
+          color: color,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Styles.body(
+              "$completedChapters / $chapterCount chapters",
+              style: TextStyle(color: color),
+              textAlign: TextAlign.right,
             ),
-          ),
-        );
-      }),
+            Styles.body(
+              "$completedQuestions / $questionCount questions",
+              style: TextStyle(color: color),
+              textAlign: TextAlign.right,
+            )
+          ],
+        ),
+      ],
     );
   }
 }

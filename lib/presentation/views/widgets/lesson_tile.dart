@@ -11,10 +11,20 @@ const TextStyle mini = TextStyle(fontSize: 12);
 class LessonTile extends StatelessWidget {
   const LessonTile({
     required this.lesson,
+    this.onTap = _blank,
     super.key,
   });
 
   final Lesson lesson;
+  final VoidCallback? onTap;
+
+  /// This is a blank function that does nothing.
+  ///   It is used as a default value for the onTap parameter.
+  ///   This is useful when you want to pass a function that does nothing
+  ///   as a default value for a parameter.
+  static Never _blank() {
+    throw StateError("onTap function is not defined");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +59,14 @@ class LessonTile extends StatelessWidget {
             ),
             child: InkWell(
               borderRadius: borderRadius,
-              onTap: () {
-                context.pushNamed(
-                  AppRoutes.lesson,
-                  pathParameters: {"id": lesson.id},
-                );
-              },
+              onTap: onTap == _blank
+                  ? () {
+                      context.pushNamed(
+                        AppRoutes.lesson,
+                        pathParameters: {"id": lesson.id},
+                      );
+                    }
+                  : onTap,
               child: IntrinsicWidth(
                 child: IntrinsicHeight(
                   child: Row(

@@ -100,6 +100,8 @@ abstract class Lesson with _$Lesson {
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
   Color get foregroundColor => color.contrastingTextColor();
+  int get questionCount => chapters.map((c) => c.questionCount).reduce((a, b) => a + b);
+  int get chapterCount => chapters.length;
 }
 
 @freezed

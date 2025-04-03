@@ -38,10 +38,8 @@ class UnitTile extends StatelessWidget {
           ),
           child: InkWell(
             borderRadius: borderRadius,
-            onTap: () {},
-            child: IntrinsicWidth(
-              child: UnitTileWhite(name: unit),
-            ),
+            // onTap: () {},
+            child: UnitTileWhite(name: unit),
           ),
         ),
       ),

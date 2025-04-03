@@ -7,6 +7,7 @@ import "package:scale_up/data/repositories/authentication/authentication_reposit
 import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
+import "package:scroll_animator/scroll_animator.dart";
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -68,6 +69,10 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      actions: {
+        ...WidgetsApp.defaultActions,
+        ScrollIntent: AnimatedScrollAction(),
+      },
       routerConfig: router,
     );
   }

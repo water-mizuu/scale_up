@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (_) => GlobalKey<FormState>()),
+        InheritedProvider(create: (_) => GlobalKey<FormState>()),
         BlocProvider(create: (_) => LoginPageBloc()),
       ],
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
