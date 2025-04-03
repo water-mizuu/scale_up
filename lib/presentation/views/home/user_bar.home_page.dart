@@ -24,9 +24,8 @@ class UserBar extends StatelessWidget {
                 builder: (context, snapshot) {
                   var user = firebase_auth.FirebaseAuth.instance.currentUser;
 
-                  return Text(
+                  return Styles.subtitle(
                     'Hello, ${(user?.displayName ?? "User").toLowerCase()}',
-                    style: Styles.subtitle,
                     textAlign: TextAlign.start,
                   );
                 },

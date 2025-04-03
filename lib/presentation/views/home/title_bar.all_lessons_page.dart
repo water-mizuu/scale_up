@@ -6,10 +6,9 @@ class TitleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return Styles.title(
       "All Lessons",
       textAlign: TextAlign.left,
-      style: Styles.title,
     );
   }
 }

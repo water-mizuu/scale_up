@@ -19,7 +19,7 @@ class LessonGroup extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(categoryName, style: Styles.subtitle),
+        Styles.subtitle(categoryName),
         for (Lesson lesson in lessons) LessonTile(lesson: lesson),
       ],
     );

@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/presentation/views/widgets/lesson_progression.lesson_tile.dart";
 import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
-import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class LessonTileWhite extends StatelessWidget {
   const LessonTileWhite({super.key});
@@ -34,9 +34,8 @@ class LessonTileWhite extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name),
-                  Text(
+                  Styles.caption(
                     units.join(", "),
-                    style: Styles.caption,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -46,7 +45,7 @@ class LessonTileWhite extends StatelessWidget {
               spacing: 8.0,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("$questionsDone/$questionsTotal", style: mini),
+                mini("$questionsDone/$questionsTotal"),
                 Row(
                   spacing: 4.0,
                   children: [
@@ -54,7 +53,7 @@ class LessonTileWhite extends StatelessWidget {
                       progressBarValue: progressBarValue,
                       baseColor: color,
                     ),
-                    Text("${(progressBarValue * 100).round()}%", style: mini)
+                    mini("${(progressBarValue * 100).round()}%")
                   ],
                 ),
               ],

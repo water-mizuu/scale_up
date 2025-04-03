@@ -50,7 +50,7 @@ class LessonTile extends StatelessWidget {
             child: InkWell(
               borderRadius: borderRadius,
               onTap: () {
-                context.goNamed(
+                context.pushNamed(
                   AppRoutes.lesson,
                   pathParameters: {"id": lesson.id},
                 );
