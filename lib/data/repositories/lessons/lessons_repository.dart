@@ -4,6 +4,9 @@ import "dart:convert";
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
+import "package:parser_combinator/parser_combinator.dart";
+import "package:scale_up/data/repositories/lessons/expression.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/expression_parser.dart";
 import "package:scale_up/utils/color_luminance.dart";
 
 part "lessons_repository.freezed.dart";
@@ -14,6 +17,8 @@ class LessonsRepository {
 
   final Completer<void> _init = Completer<void>();
   final List<Lesson> _lessons = [];
+
+  final List<UnitGroup> _unitGroups = [];
 
   Future<List<Lesson>> get lessons async {
     await _init.future;
@@ -30,34 +35,63 @@ class LessonsRepository {
       // print(data);
     }
 
-    if (data case {"lessons": var lessons as List<dynamic>}) {
-      // Convert the list of lessons to a list of Lesson objects
-      var lessonList = lessons //
-          .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
-          .toList();
+    var {
+      "lessons": lessons as List<dynamic>,
+      "units_present": unitsPresent as List<dynamic>,
+    } = data;
 
-      _lessons
-        ..clear()
-        ..addAll(lessonList);
+    var lessonList = lessons //
+        .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
+        .toList();
 
-      _init.complete();
-    }
+    _lessons
+      ..clear()
+      ..addAll(lessonList);
+
+    // Load the units
+    var unitGroups = unitsPresent //
+        .map((unitGroup) => UnitGroup.fromJson(unitGroup as Map<String, dynamic>))
+        .toList();
+
+    _unitGroups
+      ..clear()
+      ..addAll(unitGroups);
+
+    _init.complete();
   }
 
-  Future<Lesson?> operator [](String id) async {
+  Future<Lesson?> getLesson(String id) async {
     await _init.future;
 
     return _lessons.where((lesson) => lesson.id == id).firstOrNull;
+  }
+
+  Future<UnitGroup?> getUnitGroup(String type) async {
+    await _init.future;
+
+    return _unitGroups //
+        .where((group) => group.type == type)
+        .firstOrNull;
+  }
+
+  Future<Unit?> getUnit(String id) async {
+    await _init.future;
+
+    return _unitGroups //
+        .expand((g) => g.units)
+        .where((unit) => unit.id == id)
+        .firstOrNull;
   }
 }
 
 @freezed
 abstract class UnitGroup with _$UnitGroup {
   const factory UnitGroup({
-    required String name,
+    required String type,
     required List<Conversion> conversions,
-    required List<String> units,
+    required List<Unit> units,
   }) = _UnitGroup;
+  const UnitGroup._();
 
   factory UnitGroup.fromJson(Map<String, dynamic> json) => _$UnitGroupFromJson(json);
 }
@@ -67,21 +101,20 @@ abstract class Conversion with _$Conversion {
   const factory Conversion({
     required String from,
     required String to,
-    required Expression formula,
+    @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson) required Expression formula,
   }) = _Conversion;
 
   factory Conversion.fromJson(Map<String, dynamic> json) => _$ConversionFromJson(json);
 }
 
-@JsonSerializable()
-class Expression {
-  final String expression;
+@freezed
+abstract class Unit with _$Unit {
+  const factory Unit({
+    required String id,
+    required String shortcut,
+  }) = _Unit;
 
-  Expression(this.expression);
-
-  factory Expression.fromJson(Map<String, dynamic> json) => _$ExpressionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ExpressionToJson(this);
+  factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
 }
 
 @freezed
@@ -140,4 +173,20 @@ Color colorFromJson(String json) {
   var b = int.parse(hex.substring(4, 6), radix: 16);
 
   return Color.fromARGB(255, r, g, b);
+}
+
+typedef P = Parser<Expression>;
+
+Expression expressionFromJson(String json) {
+  var parser = ExpressionParser();
+
+  if (parser.parse(json) case Expression expression) {
+    return expression;
+  }
+
+  throw FormatException("Invalid expression format: '$json'");
+}
+
+String expressionToJson(Expression expression) {
+  throw Error();
 }

@@ -3,7 +3,7 @@
     {
       "type": "length",
       "conversions": [
-        { "from": "meter", "to": "kilometer", "formula": "from 1000 *" }
+        { "from": "meter", "to": "kilometer", "formula": "from * 1000" }
       ],
       "units": [
         { "id": "meter", "shortcut": "m" },
@@ -16,17 +16,17 @@
         {
           "from": "square meter",
           "to": "square kilometer",
-          "formula": "from 1000000 *"
+          "formula": "from * 1000000"
         },
         {
           "from": "square meter",
           "to": "square feet",
-          "formula": "from 10.764 *"
+          "formula": "from * 10.764"
         },
         {
           "from": "square feet",
           "to": "square inches",
-          "formula": "from 144 *"
+          "formula": "from * 144"
         }
       ],
       "units": [
@@ -39,9 +39,9 @@
     {
       "type": "mass",
       "conversions": [
-        { "from": "gram", "to": "kilogram", "formula": "from 1000 /" },
-        { "from": "gram", "to": "pound", "formula": "from 0.00220462 *" },
-        { "from": "pound", "to": "ounce", "formula": "from 16 *" }
+        { "from": "gram", "to": "kilogram", "formula": "from / 1000" },
+        { "from": "gram", "to": "pound", "formula": "from * 0.00220462" },
+        { "from": "pound", "to": "ounce", "formula": "from * 16" }
       ],
       "units": [
         { "id": "gram", "shortcut": "g" },
@@ -56,9 +56,9 @@
         {
           "from": "celsius",
           "to": "fahrenheit",
-          "formula": "(from 9 5 / *) 32 +"
+          "formula": "(from * 1.8) + 32"
         },
-        { "from": "celsius", "to": "kelvin", "formula": "from 273.15 +" }
+        { "from": "celsius", "to": "kelvin", "formula": "from + 273.15" }
       ],
       "units": [
         { "id": "celsius", "shortcut": "°C" },

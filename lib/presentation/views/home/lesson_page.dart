@@ -18,7 +18,7 @@ class LessonPage extends StatelessWidget {
     var lessonRepository = context.read<LessonsRepository>();
 
     return FutureBuilder(
-      future: lessonRepository[id],
+      future: lessonRepository.getLesson(id),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -84,40 +84,43 @@ class LessonPageView extends StatelessWidget {
         backgroundColor: lesson.color,
         foregroundColor: lesson.foregroundColor,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: InheritedProvider.value(
+        value: lesson,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LessonDescription(),
+            Expanded(child: LessonInformation()),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LessonDescription extends StatelessWidget {
+  const LessonDescription({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var lesson = context.read<Lesson>();
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: lesson.color,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16.0),
+          bottomRight: Radius.circular(16.0),
+        ),
+      ),
+      child: Column(
+        spacing: 4.0,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              color: lesson.color,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0),
-              ),
-            ),
-            child: Column(
-              spacing: 4.0,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Styles.title(
-                  lesson.name,
-                  style: TextStyle(color: lesson.foregroundColor),
-                ),
-                Styles.body(
-                  lesson.description,
-                  style: TextStyle(color: lesson.foregroundColor),
-                ),
-                const SizedBox(height: 4.0),
-              ],
-            ),
-          ),
-          Expanded(
-            child: InheritedProvider.value(
-              value: lesson,
-              child: LessonInformation(),
-            ),
-          ),
+          Styles.title.copyWith(color: lesson.foregroundColor)(lesson.name),
+          Styles.body.copyWith(color: lesson.foregroundColor)(lesson.description),
+          const SizedBox(height: 4.0),
         ],
       ),
     );

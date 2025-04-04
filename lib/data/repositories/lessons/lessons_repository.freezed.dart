@@ -15,9 +15,9 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$UnitGroup implements DiagnosticableTreeMixin {
-  String get name;
+  String get type;
   List<Conversion> get conversions;
-  List<String> get units;
+  List<Unit> get units;
 
   /// Create a copy of UnitGroup
   /// with the given fields replaced by the non-null parameter values.
@@ -33,7 +33,7 @@ mixin _$UnitGroup implements DiagnosticableTreeMixin {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'UnitGroup'))
-      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('type', type))
       ..add(DiagnosticsProperty('conversions', conversions))
       ..add(DiagnosticsProperty('units', units));
   }
@@ -43,7 +43,7 @@ mixin _$UnitGroup implements DiagnosticableTreeMixin {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is UnitGroup &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality()
                 .equals(other.conversions, conversions) &&
             const DeepCollectionEquality().equals(other.units, units));
@@ -53,13 +53,13 @@ mixin _$UnitGroup implements DiagnosticableTreeMixin {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      name,
+      type,
       const DeepCollectionEquality().hash(conversions),
       const DeepCollectionEquality().hash(units));
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'UnitGroup(name: $name, conversions: $conversions, units: $units)';
+    return 'UnitGroup(type: $type, conversions: $conversions, units: $units)';
   }
 }
 
@@ -68,7 +68,7 @@ abstract mixin class $UnitGroupCopyWith<$Res> {
   factory $UnitGroupCopyWith(UnitGroup value, $Res Function(UnitGroup) _then) =
       _$UnitGroupCopyWithImpl;
   @useResult
-  $Res call({String name, List<Conversion> conversions, List<String> units});
+  $Res call({String type, List<Conversion> conversions, List<Unit> units});
 }
 
 /// @nodoc
@@ -83,14 +83,14 @@ class _$UnitGroupCopyWithImpl<$Res> implements $UnitGroupCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = null,
+    Object? type = null,
     Object? conversions = null,
     Object? units = null,
   }) {
     return _then(_self.copyWith(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String,
       conversions: null == conversions
           ? _self.conversions
@@ -99,25 +99,26 @@ class _$UnitGroupCopyWithImpl<$Res> implements $UnitGroupCopyWith<$Res> {
       units: null == units
           ? _self.units
           : units // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Unit>,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _UnitGroup with DiagnosticableTreeMixin implements UnitGroup {
+class _UnitGroup extends UnitGroup with DiagnosticableTreeMixin {
   const _UnitGroup(
-      {required this.name,
+      {required this.type,
       required final List<Conversion> conversions,
-      required final List<String> units})
+      required final List<Unit> units})
       : _conversions = conversions,
-        _units = units;
+        _units = units,
+        super._();
   factory _UnitGroup.fromJson(Map<String, dynamic> json) =>
       _$UnitGroupFromJson(json);
 
   @override
-  final String name;
+  final String type;
   final List<Conversion> _conversions;
   @override
   List<Conversion> get conversions {
@@ -126,9 +127,9 @@ class _UnitGroup with DiagnosticableTreeMixin implements UnitGroup {
     return EqualUnmodifiableListView(_conversions);
   }
 
-  final List<String> _units;
+  final List<Unit> _units;
   @override
-  List<String> get units {
+  List<Unit> get units {
     if (_units is EqualUnmodifiableListView) return _units;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_units);
@@ -153,7 +154,7 @@ class _UnitGroup with DiagnosticableTreeMixin implements UnitGroup {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'UnitGroup'))
-      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('type', type))
       ..add(DiagnosticsProperty('conversions', conversions))
       ..add(DiagnosticsProperty('units', units));
   }
@@ -163,7 +164,7 @@ class _UnitGroup with DiagnosticableTreeMixin implements UnitGroup {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _UnitGroup &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality()
                 .equals(other._conversions, _conversions) &&
             const DeepCollectionEquality().equals(other._units, _units));
@@ -173,13 +174,13 @@ class _UnitGroup with DiagnosticableTreeMixin implements UnitGroup {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      name,
+      type,
       const DeepCollectionEquality().hash(_conversions),
       const DeepCollectionEquality().hash(_units));
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'UnitGroup(name: $name, conversions: $conversions, units: $units)';
+    return 'UnitGroup(type: $type, conversions: $conversions, units: $units)';
   }
 }
 
@@ -191,7 +192,7 @@ abstract mixin class _$UnitGroupCopyWith<$Res>
       __$UnitGroupCopyWithImpl;
   @override
   @useResult
-  $Res call({String name, List<Conversion> conversions, List<String> units});
+  $Res call({String type, List<Conversion> conversions, List<Unit> units});
 }
 
 /// @nodoc
@@ -206,14 +207,14 @@ class __$UnitGroupCopyWithImpl<$Res> implements _$UnitGroupCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? name = null,
+    Object? type = null,
     Object? conversions = null,
     Object? units = null,
   }) {
     return _then(_UnitGroup(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String,
       conversions: null == conversions
           ? _self._conversions
@@ -222,7 +223,7 @@ class __$UnitGroupCopyWithImpl<$Res> implements _$UnitGroupCopyWith<$Res> {
       units: null == units
           ? _self._units
           : units // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+              as List<Unit>,
     ));
   }
 }
@@ -231,6 +232,7 @@ class __$UnitGroupCopyWithImpl<$Res> implements _$UnitGroupCopyWith<$Res> {
 mixin _$Conversion implements DiagnosticableTreeMixin {
   String get from;
   String get to;
+  @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson)
   Expression get formula;
 
   /// Create a copy of Conversion
@@ -278,7 +280,11 @@ abstract mixin class $ConversionCopyWith<$Res> {
           Conversion value, $Res Function(Conversion) _then) =
       _$ConversionCopyWithImpl;
   @useResult
-  $Res call({String from, String to, Expression formula});
+  $Res call(
+      {String from,
+      String to,
+      @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson)
+      Expression formula});
 }
 
 /// @nodoc
@@ -318,7 +324,10 @@ class _$ConversionCopyWithImpl<$Res> implements $ConversionCopyWith<$Res> {
 @JsonSerializable()
 class _Conversion with DiagnosticableTreeMixin implements Conversion {
   const _Conversion(
-      {required this.from, required this.to, required this.formula});
+      {required this.from,
+      required this.to,
+      @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson)
+      required this.formula});
   factory _Conversion.fromJson(Map<String, dynamic> json) =>
       _$ConversionFromJson(json);
 
@@ -327,6 +336,7 @@ class _Conversion with DiagnosticableTreeMixin implements Conversion {
   @override
   final String to;
   @override
+  @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson)
   final Expression formula;
 
   /// Create a copy of Conversion
@@ -381,7 +391,11 @@ abstract mixin class _$ConversionCopyWith<$Res>
       __$ConversionCopyWithImpl;
   @override
   @useResult
-  $Res call({String from, String to, Expression formula});
+  $Res call(
+      {String from,
+      String to,
+      @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson)
+      Expression formula});
 }
 
 /// @nodoc
@@ -413,6 +427,176 @@ class __$ConversionCopyWithImpl<$Res> implements _$ConversionCopyWith<$Res> {
           ? _self.formula
           : formula // ignore: cast_nullable_to_non_nullable
               as Expression,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$Unit implements DiagnosticableTreeMixin {
+  String get id;
+  String get shortcut;
+
+  /// Create a copy of Unit
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UnitCopyWith<Unit> get copyWith =>
+      _$UnitCopyWithImpl<Unit>(this as Unit, _$identity);
+
+  /// Serializes this Unit to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'Unit'))
+      ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('shortcut', shortcut));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Unit &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.shortcut, shortcut) ||
+                other.shortcut == shortcut));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, shortcut);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'Unit(id: $id, shortcut: $shortcut)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UnitCopyWith<$Res> {
+  factory $UnitCopyWith(Unit value, $Res Function(Unit) _then) =
+      _$UnitCopyWithImpl;
+  @useResult
+  $Res call({String id, String shortcut});
+}
+
+/// @nodoc
+class _$UnitCopyWithImpl<$Res> implements $UnitCopyWith<$Res> {
+  _$UnitCopyWithImpl(this._self, this._then);
+
+  final Unit _self;
+  final $Res Function(Unit) _then;
+
+  /// Create a copy of Unit
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? shortcut = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      shortcut: null == shortcut
+          ? _self.shortcut
+          : shortcut // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _Unit with DiagnosticableTreeMixin implements Unit {
+  const _Unit({required this.id, required this.shortcut});
+  factory _Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String shortcut;
+
+  /// Create a copy of Unit
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UnitCopyWith<_Unit> get copyWith =>
+      __$UnitCopyWithImpl<_Unit>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$UnitToJson(
+      this,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'Unit'))
+      ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('shortcut', shortcut));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _Unit &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.shortcut, shortcut) ||
+                other.shortcut == shortcut));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, shortcut);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'Unit(id: $id, shortcut: $shortcut)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UnitCopyWith<$Res> implements $UnitCopyWith<$Res> {
+  factory _$UnitCopyWith(_Unit value, $Res Function(_Unit) _then) =
+      __$UnitCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String id, String shortcut});
+}
+
+/// @nodoc
+class __$UnitCopyWithImpl<$Res> implements _$UnitCopyWith<$Res> {
+  __$UnitCopyWithImpl(this._self, this._then);
+
+  final _Unit _self;
+  final $Res Function(_Unit) _then;
+
+  /// Create a copy of Unit
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? shortcut = null,
+  }) {
+    return _then(_Unit(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      shortcut: null == shortcut
+          ? _self.shortcut
+          : shortcut // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
