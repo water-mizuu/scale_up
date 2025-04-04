@@ -8,6 +8,6 @@
   "dart.lineLength": 100,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.dart": "*.${basename}.dart",
+    "*.dart": "$(capture).*.dart",
   },
 }

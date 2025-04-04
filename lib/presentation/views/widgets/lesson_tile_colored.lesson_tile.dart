@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
 import "package:scale_up/utils/color_luminance.dart";
 
 class LessonTileColored extends StatelessWidget {

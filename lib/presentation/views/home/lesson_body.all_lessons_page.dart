@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/LessonsPage/lessons_page_cubit.dart";
+import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
 import "package:scale_up/presentation/views/home/lesson_group.all_lessons_page.dart";
 
 class LessonBody extends StatelessWidget {
@@ -8,7 +8,7 @@ class LessonBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.watch<LessonsPageCubit>().state;
+    var state = context.watch<AllLessonsPageCubit>().state;
 
     return SingleChildScrollView(
       child: Column(

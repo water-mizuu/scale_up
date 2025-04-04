@@ -1,7 +1,7 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/presentation/bloc/LessonsPage/lessons_page_cubit.dart";
+import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
 import "package:scale_up/presentation/views/home/lesson_body.all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/search_bar.all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/title_bar.all_lessons_page.dart";
@@ -33,7 +33,7 @@ class LessonsPage extends StatelessWidget {
           );
         }
         return BlocProvider(
-          create: (context) => LessonsPageCubit(lessons),
+          create: (context) => AllLessonsPageCubit(lessons),
           child: LessonsPageView(),
         );
       },

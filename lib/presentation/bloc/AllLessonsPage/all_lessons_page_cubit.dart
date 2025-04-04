@@ -2,10 +2,10 @@ import "dart:collection";
 import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/presentation/bloc/LessonsPage/lessons_page_state.dart";
+import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
+import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_state.dart";
 
-export "lessons_page_state.dart";
+export "all_lessons_page_state.dart";
 
 int _editDistance(String a, String b) {
   return _leveshtein(a.toLowerCase(), b.toLowerCase());
@@ -33,10 +33,10 @@ int _leveshtein(String s, String t) {
   return v0[t.length];
 }
 
-class LessonsPageCubit extends Cubit<LessonsPageState> {
-  LessonsPageCubit(List<Lesson> lessons)
+class AllLessonsPageCubit extends Cubit<AllLessonsPageState> {
+  AllLessonsPageCubit(List<Lesson> lessons)
       : super(
-          LessonsPageState(
+          AllLessonsPageState(
             lessons: lessons,
             categoriesByTitle: [],
             keywords: {},
@@ -45,6 +45,7 @@ class LessonsPageCubit extends Cubit<LessonsPageState> {
     _updateAllPartitions();
   }
 
+  /// This function is used to populate the categoriesByTitle list.
   void _updateAllPartitions() {
     var allLessons = {...state.lessons};
 

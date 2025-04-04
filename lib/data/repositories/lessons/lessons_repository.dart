@@ -3,14 +3,11 @@ import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
-import "package:freezed_annotation/freezed_annotation.dart";
-import "package:parser_combinator/parser_combinator.dart";
 import "package:scale_up/data/repositories/lessons/expression.lessons_repository.dart";
 import "package:scale_up/data/repositories/lessons/expression_parser.dart";
-import "package:scale_up/utils/color_luminance.dart";
-
-part "lessons_repository.freezed.dart";
-part "lessons_repository.g.dart";
+import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/unit.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/unit_group.lessons_repository.dart";
 
 class LessonsRepository {
   LessonsRepository();
@@ -84,70 +81,6 @@ class LessonsRepository {
   }
 }
 
-@freezed
-abstract class UnitGroup with _$UnitGroup {
-  const factory UnitGroup({
-    required String type,
-    required List<Conversion> conversions,
-    required List<Unit> units,
-  }) = _UnitGroup;
-  const UnitGroup._();
-
-  factory UnitGroup.fromJson(Map<String, dynamic> json) => _$UnitGroupFromJson(json);
-}
-
-@freezed
-abstract class Conversion with _$Conversion {
-  const factory Conversion({
-    required String from,
-    required String to,
-    @JsonKey(toJson: expressionToJson, fromJson: expressionFromJson) required Expression formula,
-  }) = _Conversion;
-
-  factory Conversion.fromJson(Map<String, dynamic> json) => _$ConversionFromJson(json);
-}
-
-@freezed
-abstract class Unit with _$Unit {
-  const factory Unit({
-    required String id,
-    required String shortcut,
-  }) = _Unit;
-
-  factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
-}
-
-@freezed
-abstract class Lesson with _$Lesson {
-  const factory Lesson({
-    required String id,
-    required String category,
-    required String name,
-    required String description,
-    @JsonKey(fromJson: colorFromJson, toJson: colorToJson) required Color color,
-    required List<String> units,
-    required List<Chapter> chapters,
-  }) = _Lesson;
-
-  const Lesson._();
-  factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
-
-  Color get foregroundColor => color.contrastingTextColor();
-  int get questionCount => chapters.map((c) => c.questionCount).reduce((a, b) => a + b);
-  int get chapterCount => chapters.length;
-}
-
-@freezed
-abstract class Chapter with _$Chapter {
-  const factory Chapter({
-    required String name,
-    @JsonKey(name: "question_count") required int questionCount,
-    required List<String> units,
-  }) = _Chapter;
-
-  factory Chapter.fromJson(Map<String, dynamic> json) => _$ChapterFromJson(json);
-}
-
 String colorToJson(Color color) {
   var values = [
     (color.r * 255).floor(),
@@ -174,8 +107,6 @@ Color colorFromJson(String json) {
 
   return Color.fromARGB(255, r, g, b);
 }
-
-typedef P = Parser<Expression>;
 
 Expression expressionFromJson(String json) {
   var parser = ExpressionParser();

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/LessonsPage/lessons_page_cubit.dart";
+import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
 
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key});
@@ -8,7 +8,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      onChanged: (value) => context.read<LessonsPageCubit>().updateType(value),
+      onChanged: (value) => context.read<AllLessonsPageCubit>().updateType(value),
       decoration: InputDecoration(
         prefixIcon: Padding(
           padding: EdgeInsets.all(8),

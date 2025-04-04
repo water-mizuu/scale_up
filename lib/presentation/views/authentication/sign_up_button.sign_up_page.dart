@@ -12,11 +12,11 @@ class SignUpButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
-            onPressed: context.watch<AuthenticationBloc>().state.status !=
+            onPressed: context.watch<AuthenticationBloc>().state.status != //
                     AuthenticationStatus.signingUp
                 ? () {
                     /// Validate the form.
-                    if (context.read<SignupPageBloc>().formKey.currentState?.validate() == true) {
+                    if (context.read<GlobalKey<FormState>>().currentState?.validate() == true) {
                       var SignupPageState(:username, :email, :password) =
                           context.read<SignupPageBloc>().state;
 

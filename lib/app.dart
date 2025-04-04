@@ -42,7 +42,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider.value(value: _lessonRepository),
+        InheritedProvider.value(value: _lessonRepository),
         BlocProvider.value(value: _authenticationBloc),
       ],
       child: BlocListener<AuthenticationBloc, AuthenticationState>(

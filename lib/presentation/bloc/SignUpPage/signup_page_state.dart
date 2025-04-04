@@ -8,7 +8,6 @@ class SignupPageState {
   final String confirmPassword;
   final String email;
   final SignUpStatus status;
-  final GlobalKey<FormState> formKey;
   final String? errorMessage;
 
   const SignupPageState({
@@ -18,7 +17,6 @@ class SignupPageState {
     this.email = "",
     this.status = SignUpStatus.unknown,
     this.errorMessage,
-    required this.formKey,
   });
 
   SignupPageState copyWith({
@@ -36,7 +34,6 @@ class SignupPageState {
       email: email ?? this.email,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      formKey: formKey,
     );
   }
 }

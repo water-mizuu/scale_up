@@ -21,11 +21,11 @@ class UserAuth {
       password: password,
     );
 
-    User? user = userCredential.user;
-    if (user != null) {
-      await user.updateDisplayName(username);
-      await user.reload();
-    }
+    // User? user = userCredential.user;
+    // if (user != null) {
+    //   await user.updateDisplayName(username);
+    //   await user.reload();
+    // }
 
     return userCredential;
   }

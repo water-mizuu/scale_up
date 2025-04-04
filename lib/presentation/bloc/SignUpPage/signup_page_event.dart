@@ -21,5 +21,3 @@ class SignupPageEmailChanged extends SignupPageEvent {
   final String email;
   SignupPageEmailChanged(this.email);
 }
-
-class SignupButtonPressed extends SignupPageEvent {}

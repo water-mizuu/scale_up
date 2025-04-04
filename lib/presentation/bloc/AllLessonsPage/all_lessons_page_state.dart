@@ -1,7 +1,7 @@
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
 
-class LessonsPageState {
-  LessonsPageState({
+class AllLessonsPageState {
+  AllLessonsPageState({
     required this.categoriesByTitle,
     required this.lessons,
     required this.keywords,
@@ -12,8 +12,8 @@ class LessonsPageState {
   final Set<String> keywords;
 
   /// This is necessary as to avoid the equality check in emit.
-  LessonsPageState update() {
-    return LessonsPageState(
+  AllLessonsPageState update() {
+    return AllLessonsPageState(
       categoriesByTitle: categoriesByTitle,
       lessons: lessons,
       keywords: keywords,

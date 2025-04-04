@@ -47,8 +47,7 @@ dependencies:
   json_annotation: ^4.9.0
   default_map: ^0.1.0+1
   scroll_animator: ^0.3.0
-  parser_combinator:
-    git: https://github.com/water-mizuu/parser_combinator.git
+  cloud_firestore: ^5.6.6
 
 dev_dependencies:
   flutter_test:

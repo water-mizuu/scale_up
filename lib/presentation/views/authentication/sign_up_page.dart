@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
@@ -14,9 +15,11 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      lazy: false,
-      create: (_) => SignupPageBloc(),
+    return MultiProvider(
+      providers: [
+        InheritedProvider(create: (_) => GlobalKey<FormState>()),
+        BlocProvider(lazy: false, create: (_) => SignupPageBloc()),
+      ],
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         listenWhen: (previous, current) => previous.status == AuthenticationStatus.signingUp,
         listener: (context, state) {
@@ -27,7 +30,6 @@ class SignUpPage extends StatelessWidget {
               )) {
             var message = switch (code) {
               "weak-password" => //
-                // TODO: Add an indicator of a password strength to the form.
                 "The password is too weak. Please try a stronger one!",
               "email-already-in-use" =>
                 "The email is already connected with another account. Please try another email.",
@@ -76,7 +78,7 @@ class SignUpPageView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: context.read<SignupPageBloc>().formKey,
+            key: context.read<GlobalKey<FormState>>(),
             child: Column(
               spacing: 16.0,
               children: [

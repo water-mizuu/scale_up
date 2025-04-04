@@ -1,19 +1,15 @@
-import "package:flutter/cupertino.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 
 part "signup_page_event.dart";
 part "signup_page_state.dart";
 
 class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
-  SignupPageBloc() : super(SignupPageState(formKey: GlobalKey<FormState>())) {
+  SignupPageBloc() : super(SignupPageState()) {
     on<SignupPageUsernameChanged>(_onUsernameChanged);
     on<SignupPagePasswordChanged>(_onPasswordChanged);
     on<SignUpPageConfirmPasswordChanged>(_onConfirmPasswordChanged);
     on<SignupPageEmailChanged>(_onEmailChanged);
-    on<SignupButtonPressed>(_onButtonPressed);
   }
-
-  GlobalKey<FormState> get formKey => state.formKey;
 
   void _onUsernameChanged(SignupPageUsernameChanged event, Emitter emit) {
     final username = event.username;
@@ -33,14 +29,5 @@ class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
   void _onEmailChanged(SignupPageEmailChanged event, Emitter emit) {
     final email = event.email;
     emit(state.copyWith(email: email));
-  }
-
-  Future<void> _onButtonPressed(SignupButtonPressed event, Emitter emit) async {
-    emit(state.copyWith(status: SignUpStatus.validating));
-    if (state.formKey.currentState?.validate() case true) {
-      emit(state.copyWith(status: SignUpStatus.successful));
-    } else {
-      emit(state.copyWith(status: SignUpStatus.invalid));
-    }
   }
 }

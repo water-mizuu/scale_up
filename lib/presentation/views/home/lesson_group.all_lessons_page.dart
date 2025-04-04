@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
+import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
 
 class LessonGroup extends StatelessWidget {
   const LessonGroup({
