@@ -1,11 +1,14 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_event.dart";
+import "package:scale_up/presentation/bloc/LessonPage/lesson_page_state.dart";
+import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/presentation/views/widgets/unit_tile.dart";
 import "package:scroll_animator/scroll_animator.dart";
@@ -44,7 +47,20 @@ class LessonPage extends StatelessWidget {
               providers: [
                 BlocProvider(create: (_) => LessonPageBloc(lesson)),
               ],
-              child: LessonPageView(lesson: lesson),
+              builder: (context, _) {
+                return BlocListener<LessonPageBloc, LessonPageState>(
+                  listenWhen: (previous, current) => previous.chapterIndex != current.chapterIndex,
+                  listener: (context, state) {
+                    if (state.chapterIndex case int index) {
+                      context.goNamed(AppRoutes.chapter, pathParameters: {
+                        "id": lesson.id,
+                        "chapterIndex": index.toString(),
+                      });
+                    }
+                  },
+                  child: LessonPageView(lesson: lesson),
+                );
+              },
             );
           case null:
             return BlankLessonPage(id: id);

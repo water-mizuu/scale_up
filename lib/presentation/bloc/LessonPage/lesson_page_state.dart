@@ -9,5 +9,6 @@ abstract class LessonPageState with _$LessonPageState {
 
   const factory LessonPageState({
     required Lesson lesson,
+    required int? chapterIndex,
   }) = _LessonPageState;
 }

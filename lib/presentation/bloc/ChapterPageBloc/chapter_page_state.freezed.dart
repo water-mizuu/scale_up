@@ -1,0 +1,469 @@
+// dart format width=80
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'chapter_page_state.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+
+/// @nodoc
+mixin _$ChapterPageState {
+  ChapterPageStatus get status;
+  int get chapterIndex;
+  String? get answer;
+  String? get error;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ChapterPageStateCopyWith<ChapterPageState> get copyWith =>
+      _$ChapterPageStateCopyWithImpl<ChapterPageState>(
+          this as ChapterPageState, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ChapterPageState &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex) &&
+            (identical(other.answer, answer) || other.answer == answer) &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, status, chapterIndex, answer, error);
+
+  @override
+  String toString() {
+    return 'ChapterPageState(status: $status, chapterIndex: $chapterIndex, answer: $answer, error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ChapterPageStateCopyWith<$Res> {
+  factory $ChapterPageStateCopyWith(
+          ChapterPageState value, $Res Function(ChapterPageState) _then) =
+      _$ChapterPageStateCopyWithImpl;
+  @useResult
+  $Res call(
+      {ChapterPageStatus status,
+      int chapterIndex,
+      String? answer,
+      String? error});
+}
+
+/// @nodoc
+class _$ChapterPageStateCopyWithImpl<$Res>
+    implements $ChapterPageStateCopyWith<$Res> {
+  _$ChapterPageStateCopyWithImpl(this._self, this._then);
+
+  final ChapterPageState _self;
+  final $Res Function(ChapterPageState) _then;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? status = null,
+    Object? chapterIndex = null,
+    Object? answer = freezed,
+    Object? error = freezed,
+  }) {
+    return _then(_self.copyWith(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as ChapterPageStatus,
+      chapterIndex: null == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      answer: freezed == answer
+          ? _self.answer
+          : answer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class InitialChapterPageState implements ChapterPageState {
+  const InitialChapterPageState(
+      {required this.status,
+      required this.chapterIndex,
+      this.answer,
+      this.error});
+
+  @override
+  final ChapterPageStatus status;
+  @override
+  final int chapterIndex;
+  @override
+  final String? answer;
+  @override
+  final String? error;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $InitialChapterPageStateCopyWith<InitialChapterPageState> get copyWith =>
+      _$InitialChapterPageStateCopyWithImpl<InitialChapterPageState>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is InitialChapterPageState &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex) &&
+            (identical(other.answer, answer) || other.answer == answer) &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, status, chapterIndex, answer, error);
+
+  @override
+  String toString() {
+    return 'ChapterPageState.initial(status: $status, chapterIndex: $chapterIndex, answer: $answer, error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $InitialChapterPageStateCopyWith<$Res>
+    implements $ChapterPageStateCopyWith<$Res> {
+  factory $InitialChapterPageStateCopyWith(InitialChapterPageState value,
+          $Res Function(InitialChapterPageState) _then) =
+      _$InitialChapterPageStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {ChapterPageStatus status,
+      int chapterIndex,
+      String? answer,
+      String? error});
+}
+
+/// @nodoc
+class _$InitialChapterPageStateCopyWithImpl<$Res>
+    implements $InitialChapterPageStateCopyWith<$Res> {
+  _$InitialChapterPageStateCopyWithImpl(this._self, this._then);
+
+  final InitialChapterPageState _self;
+  final $Res Function(InitialChapterPageState) _then;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? status = null,
+    Object? chapterIndex = null,
+    Object? answer = freezed,
+    Object? error = freezed,
+  }) {
+    return _then(InitialChapterPageState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as ChapterPageStatus,
+      chapterIndex: null == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      answer: freezed == answer
+          ? _self.answer
+          : answer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class LoadedChapterPageState implements ChapterPageState {
+  const LoadedChapterPageState(
+      {required this.status,
+      required this.chapterIndex,
+      required this.lesson,
+      required final List<(Unit, Unit, num, List<Expression>)> questions,
+      required this.questionIndex,
+      this.answer,
+      this.error})
+      : _questions = questions;
+
+  @override
+  final ChapterPageStatus status;
+  @override
+  final int chapterIndex;
+  final Lesson lesson;
+  final List<(Unit, Unit, num, List<Expression>)> _questions;
+  List<(Unit, Unit, num, List<Expression>)> get questions {
+    if (_questions is EqualUnmodifiableListView) return _questions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_questions);
+  }
+
+  final int questionIndex;
+  @override
+  final String? answer;
+  @override
+  final String? error;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $LoadedChapterPageStateCopyWith<LoadedChapterPageState> get copyWith =>
+      _$LoadedChapterPageStateCopyWithImpl<LoadedChapterPageState>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is LoadedChapterPageState &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex) &&
+            (identical(other.lesson, lesson) || other.lesson == lesson) &&
+            const DeepCollectionEquality()
+                .equals(other._questions, _questions) &&
+            (identical(other.questionIndex, questionIndex) ||
+                other.questionIndex == questionIndex) &&
+            (identical(other.answer, answer) || other.answer == answer) &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      chapterIndex,
+      lesson,
+      const DeepCollectionEquality().hash(_questions),
+      questionIndex,
+      answer,
+      error);
+
+  @override
+  String toString() {
+    return 'ChapterPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, answer: $answer, error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $LoadedChapterPageStateCopyWith<$Res>
+    implements $ChapterPageStateCopyWith<$Res> {
+  factory $LoadedChapterPageStateCopyWith(LoadedChapterPageState value,
+          $Res Function(LoadedChapterPageState) _then) =
+      _$LoadedChapterPageStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {ChapterPageStatus status,
+      int chapterIndex,
+      Lesson lesson,
+      List<(Unit, Unit, num, List<Expression>)> questions,
+      int questionIndex,
+      String? answer,
+      String? error});
+
+  $LessonCopyWith<$Res> get lesson;
+}
+
+/// @nodoc
+class _$LoadedChapterPageStateCopyWithImpl<$Res>
+    implements $LoadedChapterPageStateCopyWith<$Res> {
+  _$LoadedChapterPageStateCopyWithImpl(this._self, this._then);
+
+  final LoadedChapterPageState _self;
+  final $Res Function(LoadedChapterPageState) _then;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? status = null,
+    Object? chapterIndex = null,
+    Object? lesson = null,
+    Object? questions = null,
+    Object? questionIndex = null,
+    Object? answer = freezed,
+    Object? error = freezed,
+  }) {
+    return _then(LoadedChapterPageState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as ChapterPageStatus,
+      chapterIndex: null == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      lesson: null == lesson
+          ? _self.lesson
+          : lesson // ignore: cast_nullable_to_non_nullable
+              as Lesson,
+      questions: null == questions
+          ? _self._questions
+          : questions // ignore: cast_nullable_to_non_nullable
+              as List<(Unit, Unit, num, List<Expression>)>,
+      questionIndex: null == questionIndex
+          ? _self.questionIndex
+          : questionIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      answer: freezed == answer
+          ? _self.answer
+          : answer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $LessonCopyWith<$Res> get lesson {
+    return $LessonCopyWith<$Res>(_self.lesson, (value) {
+      return _then(_self.copyWith(lesson: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class FailureChapterPageState implements ChapterPageState {
+  const FailureChapterPageState(
+      {required this.status,
+      required this.chapterIndex,
+      this.answer,
+      this.error});
+
+  @override
+  final ChapterPageStatus status;
+  @override
+  final int chapterIndex;
+  @override
+  final String? answer;
+  @override
+  final String? error;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $FailureChapterPageStateCopyWith<FailureChapterPageState> get copyWith =>
+      _$FailureChapterPageStateCopyWithImpl<FailureChapterPageState>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FailureChapterPageState &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex) &&
+            (identical(other.answer, answer) || other.answer == answer) &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, status, chapterIndex, answer, error);
+
+  @override
+  String toString() {
+    return 'ChapterPageState.failure(status: $status, chapterIndex: $chapterIndex, answer: $answer, error: $error)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $FailureChapterPageStateCopyWith<$Res>
+    implements $ChapterPageStateCopyWith<$Res> {
+  factory $FailureChapterPageStateCopyWith(FailureChapterPageState value,
+          $Res Function(FailureChapterPageState) _then) =
+      _$FailureChapterPageStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {ChapterPageStatus status,
+      int chapterIndex,
+      String? answer,
+      String? error});
+}
+
+/// @nodoc
+class _$FailureChapterPageStateCopyWithImpl<$Res>
+    implements $FailureChapterPageStateCopyWith<$Res> {
+  _$FailureChapterPageStateCopyWithImpl(this._self, this._then);
+
+  final FailureChapterPageState _self;
+  final $Res Function(FailureChapterPageState) _then;
+
+  /// Create a copy of ChapterPageState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? status = null,
+    Object? chapterIndex = null,
+    Object? answer = freezed,
+    Object? error = freezed,
+  }) {
+    return _then(FailureChapterPageState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as ChapterPageStatus,
+      chapterIndex: null == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      answer: freezed == answer
+          ? _self.answer
+          : answer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      error: freezed == error
+          ? _self.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+// dart format on

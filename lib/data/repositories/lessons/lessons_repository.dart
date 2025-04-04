@@ -1,9 +1,11 @@
 import "dart:async";
+import "dart:collection";
 import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:scale_up/data/repositories/lessons/expression_parser.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/conversion.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
@@ -78,6 +80,101 @@ class LessonsRepository {
         .expand((g) => g.units)
         .where((unit) => unit.id == id)
         .firstOrNull;
+  }
+
+  /// The canonical conversion graph is an incomplete graph
+  ///   which is derived from the defined conversions and their inverses.
+  (
+    Map<String, Unit>,
+    Map<Unit, Map<Unit, Expression>>,
+  ) _computeCanonicalConversionGraph(
+    UnitGroup group,
+  ) {
+    var unitMap = {for (var unit in group.units) unit.id: unit};
+    var conversionGraph = <Unit, Map<Unit, Expression>>{};
+    for (var conversion in group.conversions) {
+      var Conversion(:from, :to, :formula) = conversion;
+
+      var lhs = VariableExpression("from") as Expression;
+      var rhs = formula;
+
+      conversionGraph.putIfAbsent(unitMap[from]!, Map.new)[unitMap[to]!] = rhs;
+      (lhs, rhs) = Expression.inverse(lhs as VariableExpression, rhs);
+      conversionGraph.putIfAbsent(unitMap[to]!, Map.new)[unitMap[from]!] = lhs;
+    }
+
+    return (unitMap, conversionGraph);
+  }
+
+  Future<List<Expression>?> _computeConversionFor(UnitGroup group, Unit start, Unit end) async {
+    await _init.future;
+
+    var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
+    var parent = <Unit, Unit>{};
+    var visited = <Unit>{};
+    var queue = Queue<Unit>()..add(start);
+
+    /// BFS.
+    while (queue.isNotEmpty) {
+      var current = queue.removeFirst();
+      if (current == end) {
+        break;
+      }
+
+      visited.add(current);
+
+      if (conversionGraph[current] case var neighbors?) {
+        for (var neighbor in neighbors.keys) {
+          if (!visited.contains(neighbor)) {
+            parent[neighbor] = current;
+            queue.addLast(neighbor);
+          }
+        }
+      }
+    }
+
+    if (!parent.containsKey(end)) {
+      if (kDebugMode) {
+        throw UnsupportedError("No conversion path found from $start to $end");
+      }
+
+      return null;
+    }
+
+    var path = <Unit>[];
+    var current = end;
+    while (current != start) {
+      path.add(current);
+      current = parent[current]!;
+    }
+    path.add(start);
+    path = path.reversed.toList();
+
+    var conversions = <Expression>[];
+    for (var i = 0; i < path.length - 1; ++i) {
+      var from = path[i];
+      var to = path[i + 1];
+      var conversion = conversionGraph[from]![to]!;
+      conversions.add(conversion);
+    }
+
+    return conversions;
+  }
+
+  Future<List<Expression>?> getConversionPathFor(Unit from, Unit to) async {
+    await _init.future;
+
+    var unitGroup = _unitGroups //
+        .where((group) =>
+            group.units.any((unit) => unit.id == from.id) &&
+            group.units.any((unit) => unit.id == to.id))
+        .firstOrNull;
+
+    if (unitGroup == null) {
+      throw Exception("Unit group not found for units $from and $to");
+    }
+
+    return _computeConversionFor(unitGroup, from, to);
   }
 }
 

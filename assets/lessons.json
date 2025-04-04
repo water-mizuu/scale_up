@@ -3,11 +3,15 @@
     {
       "type": "length",
       "conversions": [
-        { "from": "meter", "to": "kilometer", "formula": "from * 1000" }
+        { "from": "meter", "to": "kilometer", "formula": "from / 1000" },
+        { "from": "meter", "to": "inch", "formula": "from * 39.3701" },
+        { "from": "feet", "to": "inch", "formula": "from * 12" }
       ],
       "units": [
         { "id": "meter", "shortcut": "m" },
-        { "id": "kilometer", "shortcut": "km" }
+        { "id": "kilometer", "shortcut": "km" },
+        { "id": "feet", "shortcut": "ft" },
+        { "id": "inch", "shortcut": "in" }
       ]
     },
     {
@@ -25,7 +29,7 @@
         },
         {
           "from": "square feet",
-          "to": "square inches",
+          "to": "square inch",
           "formula": "from * 144"
         }
       ],
@@ -33,7 +37,7 @@
         { "id": "square meter", "shortcut": "m²" },
         { "id": "square kilometer", "shortcut": "km²" },
         { "id": "square feet", "shortcut": "ft²" },
-        { "id": "square inches", "shortcut": "in²" }
+        { "id": "square inch", "shortcut": "in²" }
       ]
     },
     {
@@ -58,12 +62,14 @@
           "to": "fahrenheit",
           "formula": "(from * 1.8) + 32"
         },
-        { "from": "celsius", "to": "kelvin", "formula": "from + 273.15" }
+        { "from": "celsius", "to": "kelvin", "formula": "from + 273.15" },
+        { "from": "rankine", "to": "fahrenheit", "formula": "from - 459.67" }
       ],
       "units": [
         { "id": "celsius", "shortcut": "°C" },
         { "id": "fahrenheit", "shortcut": "°F" },
-        { "id": "kelvin", "shortcut": "K" }
+        { "id": "kelvin", "shortcut": "K" },
+        { "id": "rankine", "shortcut": "°R" }
       ]
     }
   ],
@@ -74,17 +80,12 @@
       "name": "Length",
       "description": "These are commonly measured using tools such as measuring tapes.",
       "color": "#FF5733",
-      "units": ["meter", "kilometer", "feet", "inches"],
+      "units": ["meter", "kilometer", "feet", "inch"],
       "chapters": [
         {
           "name": "Basic Conversion",
           "question_count": 8,
           "units": ["meter", "kilometer"]
-        },
-        {
-          "name": "Imperial Conversion",
-          "question_count": 8,
-          "units": ["meter", "feet"]
         }
       ]
     },
@@ -98,7 +99,7 @@
         "square meter",
         "square kilometer",
         "square feet",
-        "square inches"
+        "square inch"
       ],
       "chapters": [
         {
@@ -144,7 +145,7 @@
         {
           "name": "Basic Conversion",
           "question_count": 8,
-          "units": ["celsius", "fahrenheit"]
+          "units": ["celsius", "fahrenheit", "kelvin", "rankine"]
         },
         {
           "name": "Scientifec Conversion",

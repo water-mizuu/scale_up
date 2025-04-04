@@ -1,13 +1,13 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/firebase/firebase_firestore.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_event.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_state.dart";
 
 class LessonPageBloc extends Bloc<LessonPageEvent, LessonPageState> {
-  LessonPageBloc(Lesson lesson) : super(LessonPageState(lesson: lesson)) {
+  LessonPageBloc(Lesson lesson) : super(LessonPageState(lesson: lesson, chapterIndex: null)) {
     on<ChapterSelectedEvent>(_onChapterSelected);
   }
 
@@ -15,9 +15,10 @@ class LessonPageBloc extends Bloc<LessonPageEvent, LessonPageState> {
     ChapterSelectedEvent event,
     Emitter<LessonPageState> emit,
   ) async {
-    // Register the chapter as started in the database.
-    await UserDb.registerChapterAsCompleted(state.lesson.id, event.chapterIndex);
+    if (kDebugMode) {
+      print("Chapter selected: ${event.chapterIndex}");
+    }
 
-    print("Chapter selected: ${event.chapterIndex}");
+    emit(state.copyWith(chapterIndex: event.chapterIndex));
   }
 }

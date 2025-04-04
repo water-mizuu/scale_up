@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LessonPageState {
   Lesson get lesson;
+  int? get chapterIndex;
 
   /// Create a copy of LessonPageState
   /// with the given fields replaced by the non-null parameter values.
@@ -30,15 +31,17 @@ mixin _$LessonPageState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is LessonPageState &&
-            (identical(other.lesson, lesson) || other.lesson == lesson));
+            (identical(other.lesson, lesson) || other.lesson == lesson) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, lesson);
+  int get hashCode => Object.hash(runtimeType, lesson, chapterIndex);
 
   @override
   String toString() {
-    return 'LessonPageState(lesson: $lesson)';
+    return 'LessonPageState(lesson: $lesson, chapterIndex: $chapterIndex)';
   }
 }
 
@@ -48,7 +51,7 @@ abstract mixin class $LessonPageStateCopyWith<$Res> {
           LessonPageState value, $Res Function(LessonPageState) _then) =
       _$LessonPageStateCopyWithImpl;
   @useResult
-  $Res call({Lesson lesson});
+  $Res call({Lesson lesson, int? chapterIndex});
 
   $LessonCopyWith<$Res> get lesson;
 }
@@ -67,12 +70,17 @@ class _$LessonPageStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? lesson = null,
+    Object? chapterIndex = freezed,
   }) {
     return _then(_self.copyWith(
       lesson: null == lesson
           ? _self.lesson
           : lesson // ignore: cast_nullable_to_non_nullable
               as Lesson,
+      chapterIndex: freezed == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 
@@ -90,10 +98,13 @@ class _$LessonPageStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _LessonPageState extends LessonPageState {
-  const _LessonPageState({required this.lesson}) : super._();
+  const _LessonPageState({required this.lesson, required this.chapterIndex})
+      : super._();
 
   @override
   final Lesson lesson;
+  @override
+  final int? chapterIndex;
 
   /// Create a copy of LessonPageState
   /// with the given fields replaced by the non-null parameter values.
@@ -108,15 +119,17 @@ class _LessonPageState extends LessonPageState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _LessonPageState &&
-            (identical(other.lesson, lesson) || other.lesson == lesson));
+            (identical(other.lesson, lesson) || other.lesson == lesson) &&
+            (identical(other.chapterIndex, chapterIndex) ||
+                other.chapterIndex == chapterIndex));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, lesson);
+  int get hashCode => Object.hash(runtimeType, lesson, chapterIndex);
 
   @override
   String toString() {
-    return 'LessonPageState(lesson: $lesson)';
+    return 'LessonPageState(lesson: $lesson, chapterIndex: $chapterIndex)';
   }
 }
 
@@ -128,7 +141,7 @@ abstract mixin class _$LessonPageStateCopyWith<$Res>
       __$LessonPageStateCopyWithImpl;
   @override
   @useResult
-  $Res call({Lesson lesson});
+  $Res call({Lesson lesson, int? chapterIndex});
 
   @override
   $LessonCopyWith<$Res> get lesson;
@@ -148,12 +161,17 @@ class __$LessonPageStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? lesson = null,
+    Object? chapterIndex = freezed,
   }) {
     return _then(_LessonPageState(
       lesson: null == lesson
           ? _self.lesson
           : lesson // ignore: cast_nullable_to_non_nullable
               as Lesson,
+      chapterIndex: freezed == chapterIndex
+          ? _self.chapterIndex
+          : chapterIndex // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 
