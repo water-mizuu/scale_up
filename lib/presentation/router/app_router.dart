@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:scale_up/presentation/views/authentication/login_page.dart";
+import "package:scale_up/presentation/views/authentication/sign_in_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/app_scaffold.dart";
@@ -42,7 +42,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.loginPath,
       name: AppRoutes.login,
-      builder: (context, state) => const LoginPage(),
+      builder: (context, state) => const SignInPage(),
       routes: [
         GoRoute(
           path: AppRoutes.signUpPath,

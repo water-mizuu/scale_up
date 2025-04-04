@@ -3,11 +3,11 @@ import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
-import "package:scale_up/data/repositories/lessons/expression.lessons_repository.dart";
 import "package:scale_up/data/repositories/lessons/expression_parser.dart";
-import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/unit.lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/unit_group.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/unit_group.dart";
 
 class LessonsRepository {
   LessonsRepository();

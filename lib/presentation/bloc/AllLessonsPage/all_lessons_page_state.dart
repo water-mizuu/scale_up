@@ -1,4 +1,4 @@
-import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
 
 class AllLessonsPageState {
   AllLessonsPageState({

@@ -5,10 +5,10 @@ import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/authentication/image_container.sign_up_page.dart";
-import "package:scale_up/presentation/views/authentication/page_header.sign_up_page.dart";
-import "package:scale_up/presentation/views/authentication/sign_up_button.sign_up_page.dart";
-import "package:scale_up/presentation/views/authentication/sign_up_field_group.sign_up_page.dart";
+import "package:scale_up/presentation/views/authentication/sign_up_page/image_container.dart";
+import "package:scale_up/presentation/views/authentication/sign_up_page/page_header.dart";
+import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_button.dart";
+import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_field_group.dart";
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});

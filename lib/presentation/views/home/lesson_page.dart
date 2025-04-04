@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/repositories/lessons/chapter.lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lesson.lessons_repository.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
+import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_event.dart";
