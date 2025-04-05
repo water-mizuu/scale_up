@@ -3,17 +3,13 @@ import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile_colored.lesson_tile.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile_white.lesson_tile.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_colored.dart";
+import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_white.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 
 class LessonTile extends StatelessWidget {
-  const LessonTile({
-    required this.lesson,
-    this.onTap = _blank,
-    super.key,
-  });
+  const LessonTile({required this.lesson, this.onTap = _blank, super.key});
 
   final Lesson lesson;
   final VoidCallback? onTap;
@@ -53,28 +49,20 @@ class LessonTile extends StatelessWidget {
         child: Material(
           /// The first ink handles the background color.
           child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: borderRadius,
-              color: Colors.white,
-            ),
+            decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.white),
             child: InkWell(
               borderRadius: borderRadius,
-              onTap: onTap == _blank
-                  ? () {
-                      context.pushNamed(
-                        AppRoutes.lesson,
-                        pathParameters: {"id": lesson.id},
-                      );
-                    }
-                  : onTap,
+              onTap:
+                  onTap == _blank
+                      ? () {
+                        context.pushNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
+                      }
+                      : onTap,
               child: IntrinsicWidth(
                 child: IntrinsicHeight(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      LessonTileWhite(),
-                      LessonTileColored(),
-                    ],
+                    children: [LessonTileWhite(), LessonTileColored()],
                   ),
                 ),
               ),

@@ -34,23 +34,23 @@ class LessonsRepository {
       // print(data);
     }
 
-    var {
-      "lessons": lessons as List<dynamic>,
-      "units_present": unitsPresent as List<dynamic>,
-    } = data;
+    var {"lessons": lessons as List<dynamic>, "units_present": unitsPresent as List<dynamic>} =
+        data;
 
-    var lessonList = lessons //
-        .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
-        .toList();
+    var lessonList =
+        lessons //
+            .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
+            .toList();
 
     _lessons
       ..clear()
       ..addAll(lessonList);
 
     // Load the units
-    var unitGroups = unitsPresent //
-        .map((unitGroup) => UnitGroup.fromJson(unitGroup as Map<String, dynamic>))
-        .toList();
+    var unitGroups =
+        unitsPresent //
+            .map((unitGroup) => UnitGroup.fromJson(unitGroup as Map<String, dynamic>))
+            .toList();
 
     _unitGroups
       ..clear()
@@ -84,10 +84,7 @@ class LessonsRepository {
 
   /// The canonical conversion graph is an incomplete graph
   ///   which is derived from the defined conversions and their inverses.
-  (
-    Map<String, Unit>,
-    Map<Unit, Map<Unit, Expression>>,
-  ) _computeCanonicalConversionGraph(
+  (Map<String, Unit>, Map<Unit, Map<Unit, Expression>>) _computeCanonicalConversionGraph(
     UnitGroup group,
   ) {
     var unitMap = {for (var unit in group.units) unit.id: unit};
@@ -164,11 +161,14 @@ class LessonsRepository {
   Future<List<Expression>?> getConversionPathFor(Unit from, Unit to) async {
     await _init.future;
 
-    var unitGroup = _unitGroups //
-        .where((group) =>
-            group.units.any((unit) => unit.id == from.id) &&
-            group.units.any((unit) => unit.id == to.id))
-        .firstOrNull;
+    var unitGroup =
+        _unitGroups //
+            .where(
+              (group) =>
+                  group.units.any((unit) => unit.id == from.id) &&
+                  group.units.any((unit) => unit.id == to.id),
+            )
+            .firstOrNull;
 
     if (unitGroup == null) {
       throw Exception("Unit group not found for units $from and $to");
@@ -179,11 +179,7 @@ class LessonsRepository {
 }
 
 String colorToJson(Color color) {
-  var values = [
-    (color.r * 255).floor(),
-    (color.g * 255).floor(),
-    (color.b * 255).floor(),
-  ];
+  var values = [(color.r * 255).floor(), (color.g * 255).floor(), (color.b * 255).floor()];
   var joined = values.map((v) => v.toRadixString(16).padLeft(2, "0")).join();
 
   return "#$joined";

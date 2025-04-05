@@ -9,6 +9,7 @@ import "package:scale_up/presentation/views/authentication/sign_up_page/image_co
 import "package:scale_up/presentation/views/authentication/sign_up_page/page_header.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_button.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_field_group.dart";
+import "package:scale_up/utils/snackbar_util.dart";
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -42,12 +43,7 @@ class SignUpPage extends StatelessWidget {
               _ => "An unknown error occurred. Please try again. Code: $code",
             };
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(message),
-                duration: const Duration(seconds: 2),
-              ),
-            );
+            context.showBasicSnackbar(message);
           }
         },
         child: SignUpPageView(),

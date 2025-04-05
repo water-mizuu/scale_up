@@ -12,34 +12,26 @@ import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.da
 class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   ChapterPageBloc({
     required LessonsRepository lessonsRepository,
-    required Future<Lesson?> lessonFuture,
+    required Lesson lesson,
     required int chapterIndex,
-  })  : _lessonsRepository = lessonsRepository,
-        super(
-          ChapterPageState.initial(
-            chapterIndex: chapterIndex,
-            status: ChapterPageStatus.loading,
-          ),
-        ) {
+  }) : _lessonsRepository = lessonsRepository,
+       super(
+         ChapterPageState.initial(chapterIndex: chapterIndex, status: ChapterPageStatus.loading),
+       ) {
     on<ChapterPageLessonLoaded>(_onLessonLoaded);
     on<ChapterPageLessonLoadFailure>(_onLessonLoadFailure);
     on<ChapterPageInputChanged>(_onInputChanged);
     on<ChapterPageAnswerSubmitted>(_onAnswerSubmitted);
     on<ChapterPageNextQuestion>(_onNextQuestion);
 
-    lessonFuture.then(_initializeLesson);
+    _initializeLesson(lesson);
   }
 
   final LessonsRepository _lessonsRepository;
 
   /// Initializes the lesson by loading it from the repository
   ///   and generating random unit pairs.
-  Future<void> _initializeLesson(Lesson? lesson) async {
-    if (lesson == null) {
-      add(ChapterPageLessonLoadFailure(null));
-      return;
-    }
-
+  Future<void> _initializeLesson(Lesson lesson) async {
     var chapter = lesson.chapters[state.chapterIndex];
 
     /// We need te get units by random.
@@ -58,7 +50,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       var conversions = await _lessonsRepository //
           .getConversionPathFor(fromUnit, toUnit)
           .then((v) => v!);
-      var randomNumber = Random().nextInt(80) + 20;
+      var randomNumber = Random().nextInt(100) + 20;
 
       unitPairs.add((fromUnit, toUnit, randomNumber, conversions));
     }
@@ -72,17 +64,29 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   ) async {
     var ChapterPageLessonLoaded(:lesson, :questions) = event;
 
-    emit(
-      ChapterPageState.loaded(
-        status: ChapterPageStatus.loaded,
-        lesson: lesson,
-        chapterIndex: state.chapterIndex,
-        questions: questions,
-        questionIndex: 0,
-        answer: 0.toStringAsFixed(3),
-      ),
-    );
-    return;
+    if (questions.isEmpty) {
+      emit(
+        ChapterPageState.loaded(
+          status: ChapterPageStatus.completed,
+          lesson: lesson,
+          chapterIndex: state.chapterIndex,
+          questions: questions,
+          questionIndex: 0,
+          answer: 0.toStringAsFixed(3),
+        ),
+      );
+    } else {
+      emit(
+        ChapterPageState.loaded(
+          status: ChapterPageStatus.loaded,
+          lesson: lesson,
+          chapterIndex: state.chapterIndex,
+          questions: questions,
+          questionIndex: 0,
+          answer: 0.toStringAsFixed(3),
+        ),
+      );
+    }
   }
 
   Future<void> _onLessonLoadFailure(
@@ -99,7 +103,6 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     var input = event.input;
     var parsedInput = double.tryParse(input)?.toStringAsFixed(3);
     if (parsedInput == null) {
-      emit(state.copyWith(error: "Invalid input"));
       return;
     }
 
@@ -136,11 +139,13 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       if (questionIndex >= state.questions.length) {
         emit(state.copyWith(status: ChapterPageStatus.completed));
       } else {
-        emit(state.copyWith(
-          status: ChapterPageStatus.loaded,
-          questionIndex: questionIndex,
-          answer: 0.toStringAsFixed(3),
-        ));
+        emit(
+          state.copyWith(
+            status: ChapterPageStatus.loaded,
+            questionIndex: questionIndex,
+            answer: 0.toStringAsFixed(3),
+          ),
+        );
       }
     }
   }

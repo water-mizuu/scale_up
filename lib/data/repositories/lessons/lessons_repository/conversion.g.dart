@@ -7,10 +7,10 @@ part of 'conversion.dart';
 // **************************************************************************
 
 _Conversion _$ConversionFromJson(Map<String, dynamic> json) => _Conversion(
-      from: json['from'] as String,
-      to: json['to'] as String,
-      formula: expressionFromJson(json['formula'] as String),
-    );
+  from: json['from'] as String,
+  to: json['to'] as String,
+  formula: expressionFromJson(json['formula'] as String),
+);
 
 Map<String, dynamic> _$ConversionToJson(_Conversion instance) =>
     <String, dynamic>{

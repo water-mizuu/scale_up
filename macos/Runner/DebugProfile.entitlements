@@ -12,7 +12,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.calizo-cerenio-siggayo-zuniga-hci.scaleUp</string>
+		<string>$(AppIdentifierPrefix)com.calizo-cerenio-siggayo-zuniga-hci.scale_up</string>
 	</array>
 </dict>
 </plist>

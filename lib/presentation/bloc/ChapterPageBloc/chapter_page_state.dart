@@ -13,6 +13,7 @@ sealed class ChapterPageState with _$ChapterPageState {
     required ChapterPageStatus status,
     required int chapterIndex,
     String? answer,
+    String? correctAnswer,
     String? error,
   }) = InitialChapterPageState;
 
@@ -23,6 +24,7 @@ sealed class ChapterPageState with _$ChapterPageState {
     required List<(Unit, Unit, num, List<Expression>)> questions,
     required int questionIndex,
     String? answer,
+    String? correctAnswer,
     String? error,
   }) = LoadedChapterPageState;
 
@@ -30,6 +32,7 @@ sealed class ChapterPageState with _$ChapterPageState {
     required ChapterPageStatus status,
     required int chapterIndex,
     String? answer,
+    String? correctAnswer,
     String? error,
   }) = FailureChapterPageState;
 }

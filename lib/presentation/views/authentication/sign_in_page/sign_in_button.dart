@@ -8,7 +8,9 @@ class SignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var authenticationBloc = context.watch<AuthenticationBloc>();
+    late var authenticationBloc = context.watch<AuthenticationBloc>();
+    late var globalKey = context.read<GlobalKey<FormState>>();
+    late var signInPageBloc = context.read<SignInPageBloc>();
 
     return Row(
       children: [
@@ -16,8 +18,8 @@ class SignInButton extends StatelessWidget {
           child: FilledButton(
             onPressed: (authenticationBloc.state.status != AuthenticationStatus.signingIn)
                 ? () {
-                    if (context.read<GlobalKey<FormState>>().currentState?.validate() == true) {
-                      var SignInPageState(:email, :password) = context.read().state;
+                    if (globalKey.currentState?.validate() == true) {
+                      var SignInPageState(:email, :password) = signInPageBloc.state;
                       var event = EmailSignInAuthenticationEvent(email: email, password: password);
 
                       authenticationBloc.add(event);

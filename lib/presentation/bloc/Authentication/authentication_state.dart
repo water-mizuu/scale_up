@@ -4,6 +4,8 @@ enum AuthenticationStatus {
   none,
   error,
 
+  tokenChanging,
+
   signedOut,
 
   /// Logging in states.

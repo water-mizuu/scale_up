@@ -246,3 +246,9 @@ final class VariableExpression extends Expression {
   @override
   get str => variable;
 }
+
+extension ExpressionList on List<Expression> {
+  num evaluate(num from) {
+    return fold(from, (value, expr) => expr.evaluate({"from": value}));
+  }
+}

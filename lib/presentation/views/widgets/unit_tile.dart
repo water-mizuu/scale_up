@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:scale_up/presentation/views/widgets/unit_tile_white.unit_tile.dart";
+import "package:scale_up/presentation/views/widgets/unit_tile/unit_tile_white.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 

@@ -6,35 +6,38 @@ import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
-import "package:scale_up/presentation/bloc/LessonPage/lesson_page_event.dart";
-import "package:scale_up/presentation/bloc/LessonPage/lesson_page_state.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/presentation/views/widgets/unit_tile.dart";
+import "package:scale_up/utils/snackbar_util.dart";
 import "package:scroll_animator/scroll_animator.dart";
 
-class LessonPage extends StatelessWidget {
-  const LessonPage({
-    required this.id,
-    super.key,
-  });
+class LessonPage extends StatefulWidget {
+  const LessonPage({required this.id, super.key});
 
   final String id;
 
   @override
-  Widget build(BuildContext context) {
-    var lessonRepository = context.read<LessonsRepository>();
+  State<LessonPage> createState() => _LessonPageState();
+}
 
+class _LessonPageState extends State<LessonPage> {
+  late final Future<Lesson?> lessonFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    lessonFuture = context.read<LessonsRepository>().getLesson(widget.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
-      future: lessonRepository.getLesson(id),
+      future: lessonFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(snapshot.error.toString()),
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          context.showBasicSnackbar(snapshot.error.toString());
         }
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
@@ -44,26 +47,11 @@ class LessonPage extends StatelessWidget {
         switch (snapshot.data) {
           case Lesson lesson:
             return MultiProvider(
-              providers: [
-                BlocProvider(create: (_) => LessonPageBloc(lesson)),
-              ],
-              builder: (context, _) {
-                return BlocListener<LessonPageBloc, LessonPageState>(
-                  listenWhen: (previous, current) => previous.chapterIndex != current.chapterIndex,
-                  listener: (context, state) {
-                    if (state.chapterIndex case int index) {
-                      context.goNamed(AppRoutes.chapter, pathParameters: {
-                        "id": lesson.id,
-                        "chapterIndex": index.toString(),
-                      });
-                    }
-                  },
-                  child: LessonPageView(lesson: lesson),
-                );
-              },
+              providers: [BlocProvider(create: (_) => LessonPageBloc(lesson))],
+              child: LessonPageView(lesson: lesson),
             );
           case null:
-            return BlankLessonPage(id: id);
+            return BlankLessonPage(id: widget.id);
         }
       },
     );
@@ -71,33 +59,21 @@ class LessonPage extends StatelessWidget {
 }
 
 class BlankLessonPage extends StatelessWidget {
-  const BlankLessonPage({
-    required this.id,
-    super.key,
-  });
+  const BlankLessonPage({required this.id, super.key});
 
   final String id;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        scrolledUnderElevation: 0.0,
-        title: Text("Lesson page"),
-      ),
-      body: Center(
-        child: Text("Lesson not found '$id'"),
-      ),
+      appBar: AppBar(elevation: 0.0, scrolledUnderElevation: 0.0, title: Text("Lesson page")),
+      body: Center(child: Text("Lesson not found '$id'")),
     );
   }
 }
 
 class LessonPageView extends StatelessWidget {
-  const LessonPageView({
-    required this.lesson,
-    super.key,
-  });
+  const LessonPageView({required this.lesson, super.key});
 
   final Lesson lesson;
 
@@ -114,10 +90,7 @@ class LessonPageView extends StatelessWidget {
         value: lesson,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            LessonDescription(),
-            Expanded(child: LessonInformation()),
-          ],
+          children: [LessonDescription(), Expanded(child: LessonInformation())],
         ),
       ),
     );
@@ -154,9 +127,7 @@ class LessonDescription extends StatelessWidget {
 }
 
 class LessonInformation extends StatelessWidget {
-  const LessonInformation({
-    super.key,
-  });
+  const LessonInformation({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -165,19 +136,18 @@ class LessonInformation extends StatelessWidget {
     return InheritedProvider(
       create: (_) => AnimatedScrollController(animationFactory: const ChromiumEaseInOut()),
       dispose: (_, v) => v.dispose(),
-      builder: (context, child) => SingleChildScrollView(
-        controller: context.read<AnimatedScrollController>(),
-        child: child,
-      ),
+      builder:
+          (context, child) => SingleChildScrollView(
+            controller: context.read<AnimatedScrollController>(),
+            child: child,
+          ),
       child: LessonInformationView(),
     );
   }
 }
 
 class LessonInformationView extends StatelessWidget {
-  const LessonInformationView({
-    super.key,
-  });
+  const LessonInformationView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -187,20 +157,14 @@ class LessonInformationView extends StatelessWidget {
         spacing: 8.0,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          LessonProgression(),
-          LessonUnits(),
-          LessonChapters(),
-        ],
+        children: [LessonProgression(), LessonUnits(), LessonChapters()],
       ),
     );
   }
 }
 
 class LessonChapters extends StatelessWidget {
-  const LessonChapters({
-    super.key,
-  });
+  const LessonChapters({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -217,18 +181,14 @@ class LessonChapters extends StatelessWidget {
             for (var (index, chapter) in context.read<Lesson>().chapters.indexed)
               ChapterTile(index: index, chapter: chapter),
           ],
-        )
+        ),
       ],
     );
   }
 }
 
 class ChapterTile extends StatelessWidget {
-  const ChapterTile({
-    super.key,
-    required this.index,
-    required this.chapter,
-  });
+  const ChapterTile({super.key, required this.index, required this.chapter});
 
   final int index;
   final Chapter chapter;
@@ -244,11 +204,14 @@ class ChapterTile extends StatelessWidget {
         title: Styles.body(chapter.name, style: TextStyle(fontSize: 14)),
         subtitle: Styles.body(
           "${chapter.questionCount} questions",
-          style: TextStyle(
-            color: Colors.grey,
-          ),
+          style: TextStyle(color: Colors.grey),
         ),
-        onTap: () => context.read<LessonPageBloc>().add(ChapterSelectedEvent(index)),
+        onTap: () {
+          context.pushNamed(
+            AppRoutes.chapter,
+            pathParameters: {"id": context.read<Lesson>().id, "chapterIndex": index.toString()},
+          );
+        },
         tileColor: Colors.white,
       ),
     );
@@ -256,10 +219,7 @@ class ChapterTile extends StatelessWidget {
 }
 
 class ChapterIndex extends StatelessWidget {
-  const ChapterIndex({
-    super.key,
-    required this.index,
-  });
+  const ChapterIndex({super.key, required this.index});
 
   final int index;
 
@@ -272,17 +232,12 @@ class ChapterIndex extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            border: Border.all(
-              color: Colors.black.withValues(alpha: 0.1),
-            ),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
           ),
           child: Center(
             child: Styles.title(
               "${index + 1}",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w400,
-              ),
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
             ),
           ),
         ),
@@ -292,9 +247,7 @@ class ChapterIndex extends StatelessWidget {
 }
 
 class LessonUnits extends StatelessWidget {
-  const LessonUnits({
-    super.key,
-  });
+  const LessonUnits({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -307,19 +260,15 @@ class LessonUnits extends StatelessWidget {
           spacing: 4.0,
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var unit in context.read<Lesson>().units) UnitTile(unit: unit),
-          ],
-        )
+          children: [for (var unit in context.read<Lesson>().units) UnitTile(unit: unit)],
+        ),
       ],
     );
   }
 }
 
 class LessonProgression extends StatelessWidget {
-  const LessonProgression({
-    super.key,
-  });
+  const LessonProgression({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -333,10 +282,7 @@ class LessonProgression extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Styles.subtitle("Progression"),
-        LinearProgressIndicator(
-          value: completedQuestions / questionCount,
-          color: color,
-        ),
+        LinearProgressIndicator(value: completedQuestions / questionCount, color: color),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -349,7 +295,7 @@ class LessonProgression extends StatelessWidget {
               "$completedQuestions / $questionCount questions",
               style: TextStyle(color: color),
               textAlign: TextAlign.right,
-            )
+            ),
           ],
         ),
       ],

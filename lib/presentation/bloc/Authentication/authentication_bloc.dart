@@ -10,8 +10,8 @@ export "package:scale_up/presentation/bloc/Authentication/authentication_state.d
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({required AuthenticationRepository repository})
-      : _repository = repository,
-        super(const AuthenticationState()) {
+    : _repository = repository,
+      super(const AuthenticationState()) {
     on<EmailSignUpAuthenticationEvent>(_onEmailSignup);
     on<GoogleSignInAuthenticationEvent>(_onGoogleSignIn);
     on<EmailSignInAuthenticationEvent>(_onEmailSignIn);
@@ -54,8 +54,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       var user = (await _repository.emailSignIn(email: event.email, password: event.password))!;
 
-      // Simulate a network call
-      await Future.delayed(const Duration(seconds: 2));
 
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
@@ -80,10 +78,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
   }
 
-  void _onLogout(
-    LogoutAuthenticationEvent event,
-    Emitter<AuthenticationState> emit,
-  ) async {
+  void _onLogout(LogoutAuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       await _repository.signOut();
 
@@ -98,12 +93,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     AuthenticationTokenChangedEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
+    emit(state.copyWith(status: AuthenticationStatus.tokenChanging));
+    await Future.delayed(const Duration(seconds: 0));
     emit(
       state.copyWith(
         user: event.user,
-        status: event.user != null //
-            ? AuthenticationStatus.signedIn
-            : AuthenticationStatus.signedOut,
+        status:
+            event.user !=
+                    null //
+                ? AuthenticationStatus.signedIn
+                : AuthenticationStatus.signedOut,
       ),
     );
   }

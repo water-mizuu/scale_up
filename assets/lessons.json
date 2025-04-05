@@ -144,8 +144,8 @@
       "chapters": [
         {
           "name": "Basic Conversion",
-          "question_count": 8,
-          "units": ["celsius", "fahrenheit", "kelvin", "rankine"]
+          "question_count": 1,
+          "units": ["celsius", "kelvin"]
         },
         {
           "name": "Scientifec Conversion",

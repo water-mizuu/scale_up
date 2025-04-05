@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
@@ -47,7 +48,11 @@ class _AppState extends State<App> {
       ],
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         bloc: _authenticationBloc,
+        listenWhen: (previous, _) => previous.status == AuthenticationStatus.tokenChanging,
         listener: (context, state) {
+          if (kDebugMode) {
+            print("Hi ${state.status}");
+          }
           if (state.status == AuthenticationStatus.signedIn) {
             // Navigate to the home screen
             router.goNamed(AppRoutes.home);
@@ -69,10 +74,7 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      actions: {
-        ...WidgetsApp.defaultActions,
-        ScrollIntent: AnimatedScrollAction(),
-      },
+      actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,
     );
   }

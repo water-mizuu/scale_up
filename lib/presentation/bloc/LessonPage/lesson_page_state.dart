@@ -7,8 +7,5 @@ part "lesson_page_state.freezed.dart";
 abstract class LessonPageState with _$LessonPageState {
   const LessonPageState._();
 
-  const factory LessonPageState({
-    required Lesson lesson,
-    required int? chapterIndex,
-  }) = _LessonPageState;
+  const factory LessonPageState({required Lesson lesson}) = _LessonPageState;
 }
