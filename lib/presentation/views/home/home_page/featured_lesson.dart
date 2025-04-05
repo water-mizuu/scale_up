@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
@@ -19,12 +19,12 @@ class _FeaturedLessonState extends State<FeaturedLesson> {
   void initState() {
     super.initState();
 
-    lessonsFuture = context.read<LessonsRepository>().lessons;
+    lessonsFuture = context.read<LessonsHelper>().lessons;
   }
 
   @override
   Widget build(BuildContext context) {
-    (_) = context.watch<LessonsRepository>();
+    (_) = context.watch<LessonsHelper>();
 
     return FutureBuilder(
       future: lessonsFuture,

@@ -6,7 +6,7 @@
 import "dart:collection";
 import "dart:math" as math;
 // PREAMBLE
-import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 
 // base.dart
 abstract base class _PegParser<R extends Object> {

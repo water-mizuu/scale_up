@@ -4,15 +4,15 @@ import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
-import "package:scale_up/data/repositories/lessons/expression_parser.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/conversion.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/unit_group.dart";
+import "package:scale_up/data/sources/lessons/expression_parser.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/conversion.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit_group.dart";
 
-class LessonsRepository {
-  LessonsRepository();
+class LessonsHelper {
+  LessonsHelper();
 
   final Completer<void> _init = Completer<void>();
   final List<Lesson> _lessons = [];

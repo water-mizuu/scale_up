@@ -104,7 +104,7 @@
       "chapters": [
         {
           "name": "Basic Conversion",
-          "question_count": 8,
+          "question_count": 1,
           "units": ["square meter", "square kilometer"]
         },
         {
@@ -140,7 +140,7 @@
       "name": "Temperature",
       "description": "These are the measure of the average kinetic energy of particles in a substance. We perceive temperature as how hot or cold something is.",
       "color": "#3357FF",
-      "units": ["celsius", "fahrenheit", "kelvin"],
+      "units": ["celsius", "fahrenheit", "kelvin", "rankine"],
       "chapters": [
         {
           "name": "Basic Conversion",
@@ -150,7 +150,7 @@
         {
           "name": "Scientifec Conversion",
           "question_count": 8,
-          "units": ["celsius", "kelvin"]
+          "units": ["celsius", "fahrenheit", "kelvin"]
         }
       ]
     }

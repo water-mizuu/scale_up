@@ -1,7 +1,7 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/lesson_body.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/search_bar.dart";
@@ -22,7 +22,7 @@ class _LessonsPageState extends State<LessonsPage> {
   void initState() {
     super.initState();
 
-    lessonsFuture = context.read<LessonsRepository>().lessons;
+    lessonsFuture = context.read<LessonsHelper>().lessons;
   }
 
   @override
@@ -41,10 +41,7 @@ class _LessonsPageState extends State<LessonsPage> {
         if (lessons.isEmpty) {
           return const Center(child: Text("No lessons available"));
         }
-        return BlocProvider(
-          create: (context) => AllLessonsPageCubit(lessons),
-          child: LessonsPageView(),
-        );
+        return BlocProvider(create: (_) => AllLessonsPageCubit(lessons), child: LessonsPageView());
       },
     );
   }

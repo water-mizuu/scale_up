@@ -1,6 +1,6 @@
-import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 
 sealed class ChapterPageEvent {
   const ChapterPageEvent();
@@ -23,7 +23,7 @@ final class ChapterPageLessonLoadFailure extends ChapterPageEvent {
 }
 
 final class ChapterPageInputChanged extends ChapterPageEvent {
-  final String input;
+  final Expression input;
 
   const ChapterPageInputChanged(this.input);
 }

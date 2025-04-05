@@ -1,13 +1,13 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/firebase/firebase_firestore.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/chapter.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_bloc.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_event.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/chapter_page/chapter_body.dart";
 import "package:scale_up/presentation/views/home/chapter_page/chapter_description.dart";
 import "package:scale_up/utils/snackbar_util.dart";
@@ -31,7 +31,7 @@ class _ChapterPageState extends State<ChapterPage> {
   void initState() {
     super.initState();
 
-    lessonFuture = context.read<LessonsRepository>().getLesson(widget.lessonId);
+    lessonFuture = context.read<LessonsHelper>().getLesson(widget.lessonId);
     lessonFuture
         .then((lesson) {
           if (!context.mounted || lesson == null) return;
@@ -69,8 +69,6 @@ class _ChapterPageState extends State<ChapterPage> {
           bloc: chapterPageBloc,
           listener: (context, state) async {
             switch (state) {
-              case FailureChapterPageState():
-                await context.showBasicSnackbar(state.error ?? "Unknown error");
               case LoadedChapterPageState(:var error?):
                 await context.showBasicSnackbar(error);
 
@@ -78,25 +76,30 @@ class _ChapterPageState extends State<ChapterPage> {
               case LoadedChapterPageState(status: ChapterPageStatus.correct):
                 await context.showBasicSnackbar("Correct!");
 
-                chapterPageBloc.add(ChapterPageNextQuestion());
-              case LoadedChapterPageState(status: ChapterPageStatus.incorrect, :var correctAnswer?):
+                if (context.mounted) {
+                  chapterPageBloc.add(ChapterPageNextQuestion());
+                }
+              case LoadedChapterPageState(status: ChapterPageStatus.incorrect):
                 await context.showBasicSnackbar(
-                  "Incorrect! The correct answer was: $correctAnswer",
+                  "Incorrect! The correct answer was: ${state.correctAnswer}",
                 );
 
-                chapterPageBloc.add(ChapterPageNextQuestion());
+                if (context.mounted) {
+                  chapterPageBloc.add(ChapterPageNextQuestion());
+                }
               case LoadedChapterPageState(status: ChapterPageStatus.completed):
-                await UserDb.registerChapterAsCompleted(
-                  //
-                  chapterPageBloc.state.lesson.id,
-                  chapterPageBloc.state.chapterIndex,
+                context.read<UserDataBloc>().add(
+                  ChapterCompletedUserDataEvent(
+                    lessonId: chapterPageBloc.state.lesson.id,
+                    chapterIndex: chapterPageBloc.state.chapterIndex,
+                  ),
                 );
               case _:
                 return;
             }
           },
           child: switch (chapterPageBloc.state) {
-            FailureChapterPageState() || InitialChapterPageState() => Material(
+            InitialChapterPageState() => Material(
               child: const Center(child: CircularProgressIndicator()),
             ),
             LoadedChapterPageState state => BlocProvider.value(
@@ -118,9 +121,7 @@ class ChapterPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var $state = context.watch<ChapterPageBloc>().state;
-    assert($state is LoadedChapterPageState, "State should be LoadedChapterPageState");
-    var state = $state as LoadedChapterPageState;
+    var state = context.watch<ChapterPageBloc>().state as LoadedChapterPageState;
 
     return Scaffold(
       appBar: AppBar(

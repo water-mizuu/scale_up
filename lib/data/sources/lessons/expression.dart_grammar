@@ -6,7 +6,7 @@ import "package:scale_up/data/repositories/"
 rule: Expression = ^ :expr $ { expr };
 
 expr: Expression =
-  | :expr _ "+" _ :term { AdditionExpression(expr, term)     }
+  | :expr _ "+" _ :term { AdditionExpression(expr, term) }
   | :expr _ "-" _ :term { SubtractionExpression(expr, term) }
   | term;
 

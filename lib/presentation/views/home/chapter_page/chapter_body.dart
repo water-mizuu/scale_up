@@ -11,8 +11,9 @@ class ChapterBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var (chapterPageBloc && ChapterPageBloc(:state)) = context.read();
-    var LoadedChapterPageState(:questions, :questionIndex) = state as LoadedChapterPageState;
+    var chapterPageBloc = context.read<ChapterPageBloc>();
+    var state = chapterPageBloc.state as LoadedChapterPageState;
+    var LoadedChapterPageState(:questions, :questionIndex) = state;
     var (left, right, number, _) = questions[questionIndex];
 
     return Expanded(
@@ -31,19 +32,27 @@ class ChapterBody extends StatelessWidget {
                   Styles.subtitle(
                     "Convert the unit from ${left.name} to ${right.name}",
                     textAlign: TextAlign.left,
+                    fontWeight: FontWeight.w400,
                   ),
-                  Row(children: [Text("$number ${left.shortcut} to ___ ${right.shortcut}?")]),
+                  Expanded(
+                    child: Center(
+                      child: Styles.title(
+                        "$number ${left.shortcut} to ___ ${right.shortcut}?",
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             Expanded(
               flex: 5,
               child: BlocBuilder<ChapterPageBloc, ChapterPageState>(
-                buildWhen: (p, n) => p.status == ChapterPageStatus.nextQuestion,
-                builder: (context, state) {
+                buildWhen: (p, n) => p.status == ChapterPageStatus.movingToNextQuestion,
+                builder: (_, _) {
                   return CalculatorWidget(
-                    onEvaluate: (v) {
-                      chapterPageBloc.add(ChapterPageInputChanged(v.toStringAsFixed(3)));
+                    onEvaluate: (expression) {
+                      chapterPageBloc.add(ChapterPageInputChanged(expression));
                     },
                   );
                 },

@@ -1,17 +1,20 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/expression_parser.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
+import "package:scale_up/data/sources/lessons/expression_parser.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_bloc.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
+/// A simple non-scientific calculator.
 class CalculatorWidget extends StatefulWidget {
   const CalculatorWidget({required this.onEvaluate, super.key});
 
-  final FutureOr<void> Function(num) onEvaluate;
+  final FutureOr<void> Function(Expression) onEvaluate;
 
   @override
   State<CalculatorWidget> createState() => _CalculatorWidgetState();
@@ -32,16 +35,17 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocListener<ChapterPageBloc, ChapterPageState>(
-      listenWhen: (_, now) => now.status == ChapterPageStatus.nextQuestion,
+      listenWhen:
+          (_, now) =>
+              now.status == ChapterPageStatus.movingToNextQuestion ||
+              now.status == ChapterPageStatus.evaluating,
       listener: (context, state) {
-        if (state.status == ChapterPageStatus.nextQuestion) {
+        if (state.status == ChapterPageStatus.evaluating) {
+          _evaluate(submit: false);
+        }
+        if (state.status == ChapterPageStatus.movingToNextQuestion) {
           _clear();
         }
       },
@@ -52,7 +56,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              enabled: false,
+              readOnly: true,
               controller: TextEditingController(text: display),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -60,6 +64,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
               ),
             ),
             Column(
+              spacing: 4.0,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -123,7 +128,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                   spacing: 4.0,
                   children: [
                     _textButton(onTap: () => _append("0"), label: "0"),
-                    _textButton(onTap: () => _append("."), label: "."),
+                    _textButton(onTap: () => _append(".", replacesZero: false), label: "."),
                     _iconButton(onTap: _backspace, label: Icons.backspace),
                     _textButton(onTap: _evaluate, label: "=", color: Colors.blueAccent),
                   ],
@@ -136,10 +141,10 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     );
   }
 
-  void _append(String character) {
+  void _append(String character, {bool replacesZero = true, bool submit = true}) {
     HapticFeedback.selectionClick();
     setState(() {
-      if (appendOverrides || display == "0") {
+      if (appendOverrides || (display == "0" && replacesZero)) {
         display = character;
 
         appendOverrides = false;
@@ -149,8 +154,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     });
 
     /// Basically, we treat just typing a single number an evaluation.
-    if (expressionParser.parse(display) case ConstantExpression(:var value)) {
-      widget.onEvaluate(value);
+    ///
+    if (submit) {
+      if (expressionParser.parse(display) case var expression?) {
+        widget.onEvaluate(expression);
+      }
     }
   }
 
@@ -189,8 +197,8 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     HapticFeedback.heavyImpact();
   }
 
-  void _evaluate() {
-    var expression = expressionParser.parse(display);
+  void _evaluate({bool submit = true}) {
+    var expression = expressionParser.parse(display.trim());
     if (expression == null) {
       _error();
       return;
@@ -201,9 +209,15 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       if (!value.isFinite) throw UnsupportedError("Values must be finite!");
 
       appendOverrides = true;
-      _append(value.toStringAsFixedMax(3));
-      widget.onEvaluate(value);
-    } on UnsupportedError {
+      _append(value.toStringAsFixedMax(3), submit: false);
+
+      if (submit) {
+        widget.onEvaluate(expression);
+      }
+    } on UnsupportedError catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
       _error();
       return;
     }
@@ -233,21 +247,5 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
         label: Icon(label),
       ),
     );
-  }
-}
-
-extension on num {
-  String toStringAsFixedMax(int fractionDigits) {
-    var string = toStringAsFixed(fractionDigits).split("");
-    var r = string.length - 1;
-    while (string.length - r >= 0 && string[r] == "0") {
-      r--;
-    }
-
-    if (string[r] == ".") {
-      r--;
-    }
-
-    return string.sublist(0, r + 1).join("");
   }
 }

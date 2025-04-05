@@ -2,11 +2,11 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/firebase/firebase_firestore.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/chapter.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
+import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/presentation/views/widgets/unit_tile.dart";
@@ -29,7 +29,7 @@ class _LessonPageState extends State<LessonPage> {
   void initState() {
     super.initState();
 
-    lessonFuture = context.read<LessonsRepository>().getLesson(widget.id);
+    lessonFuture = context.read<LessonsHelper>().getLesson(widget.id);
   }
 
   @override
@@ -196,41 +196,31 @@ class ChapterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedProvider<Future<bool>>(
-      create: (_) => UserDb.isChapterCompleted(context.read<Lesson>().id, index),
-      builder: (context, _) => FutureBuilder(
-        future: context.read<Future<bool>>(),
-        builder: (context, snapshot) {
-          var isComplete = snapshot.hasData ? snapshot.data! : false;
+    var lessonId = context.read<Lesson>().id;
+    var key = "$lessonId:$index";
+    var isComplete = context.select<UserDataBloc, bool>(
+      (bloc) => bloc.state.finishedChapters.contains(key),
+    );
 
-          return Material(
-            elevation: 12.0,
-            borderRadius: BorderRadius.circular(25.0),
-            shadowColor: Colors.black.withValues(alpha: 0.3),
-            child: ListTile(
-              leading: ChapterIndex(index: index, isCompleted: isComplete),
-              title: Styles.body(chapter.name, style: TextStyle(fontSize: 14)),
-              subtitle: Styles.body(
-                "${chapter.questionCount} questions",
-                style: TextStyle(color: Colors.grey),
-              ),
-              onTap:
-                  isComplete
-                      ? null
-                      : () {
-                        context.pushNamed(
-                          AppRoutes.chapter,
-                          pathParameters: {
-                            "id": context.read<Lesson>().id,
-                            "chapterIndex": index.toString(),
-                          },
-                        );
-                      },
-              tileColor: Colors.white,
-            ),
-          );
-        },
-      )
+    return Material(
+      elevation: 12.0,
+      borderRadius: BorderRadius.circular(25.0),
+      shadowColor: Colors.black.withValues(alpha: 0.3),
+      child: ListTile(
+        leading: ChapterIndex(index: index, isCompleted: isComplete),
+        title: Styles.body(chapter.name, fontSize: 14),
+        subtitle: Styles.body("${chapter.questionCount} questions", color: Colors.grey),
+        onTap:
+            isComplete
+                ? null
+                : () {
+                  context.pushNamed(
+                    AppRoutes.chapter,
+                    pathParameters: {"id": lessonId, "chapterIndex": "$index"},
+                  );
+                },
+        tileColor: Colors.white,
+      ),
     );
   }
 }
@@ -258,7 +248,8 @@ class ChapterIndex extends StatelessWidget {
                     ? Icon(Icons.check, color: Colors.green)
                     : Styles.title(
                       "${index + 1}",
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
                     ),
           ),
         ),
@@ -277,11 +268,18 @@ class LessonUnits extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Styles.subtitle("Units Involved"),
-        Column(
-          spacing: 4.0,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [for (var unit in context.read<Lesson>().units) UnitTile(unit: unit)],
+        ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: GridView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+            ),
+            children: [for (var unit in context.read<Lesson>().units) UnitTile(unit: unit)],
+          ),
         ),
       ],
     );
@@ -293,28 +291,46 @@ class LessonProgression extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var Lesson(:color, :chapterCount, :questionCount) = context.read();
+    var Lesson(:id, :name, :units, :chapters, :color, :chapterCount, :questionCount) =
+        context.read();
 
-    var completedChapters = chapterCount ~/ 2;
-    var completedQuestions = questionCount ~/ 2;
+    var chaptersDone = context.select<UserDataBloc, int>(
+      (bloc) => bloc.state.finishedChapters.where((n) => n.startsWith(id)).length,
+    );
+    var questionsDone = context.select<UserDataBloc, int>(
+      (bloc) => bloc.state.finishedChapters
+          /// We only take the tags that start with this lesson
+          .where((n) => n.startsWith(id))
+          /// We take the string indices
+          .map((v) => v.substring(id.length + 1))
+          /// We parse the indices to integers
+          .map((s) => int.parse(s))
+          /// We get the chapter object from the lesson object, reading the questionCount.
+          .map((s) => chapters[s].questionCount)
+          /// And we sum them all up.
+          .fold(0, (a, b) => a + b),
+    );
+
+    var questionsTotal = chapters.map((c) => c.questionCount).fold(0, (a, b) => a + b);
+    var progressBarValue = questionsTotal == 0 ? 0.0 : questionsDone / questionsTotal;
 
     return Column(
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Styles.subtitle("Progression"),
-        LinearProgressIndicator(value: completedQuestions / questionCount, color: color),
+        LinearProgressIndicator(value: progressBarValue, color: color),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Styles.body(
-              "$completedChapters / $chapterCount chapters",
-              style: TextStyle(color: color),
+              "$chaptersDone / $chapterCount chapters",
+              color: color,
               textAlign: TextAlign.right,
             ),
             Styles.body(
-              "$completedQuestions / $questionCount questions",
-              style: TextStyle(color: color),
+              "$questionsDone / $questionCount questions",
+              color: color,
               textAlign: TextAlign.right,
             ),
           ],

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_colored.dart";
 import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_white.dart";

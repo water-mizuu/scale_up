@@ -5,7 +5,6 @@ enum AuthenticationStatus {
   error,
 
   tokenChanging,
-
   signedOut,
 
   /// Logging in states.
@@ -22,21 +21,14 @@ enum AuthenticationStatus {
 const undefined = #undefined;
 
 class AuthenticationState {
-  const AuthenticationState({
-    this.user,
-    this.status = AuthenticationStatus.none,
-    this.error,
-  });
+  const AuthenticationState({this.user, this.status = AuthenticationStatus.none, this.error});
 
   final User? user;
   final AuthenticationStatus status;
   final Object? error;
 
-  AuthenticationState Function({
-    User? user,
-    AuthenticationStatus? status,
-    Object? error,
-  }) get copyWith => _copyWith;
+  AuthenticationState Function({User? user, AuthenticationStatus? status, Object? error})
+  get copyWith => _copyWith;
 
   AuthenticationState _copyWith({
     Object? user = undefined,

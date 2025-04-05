@@ -1,6 +1,6 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/conversion.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/conversion.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 
 part "unit_group.freezed.dart";
 part "unit_group.g.dart";

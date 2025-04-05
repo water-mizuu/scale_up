@@ -1,17 +1,14 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:google_sign_in/google_sign_in.dart";
 
-class UserAuth {
-  // Singleton
-  UserAuth._internal();
-  factory UserAuth() => _instance;
-  static final UserAuth _instance = UserAuth._internal();
-
+class FirebaseAuthHelper {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
   /// throws [FirebaseAuthException]
-  Future<UserCredential> signUp({
+  Future<User?> emailSignUp({
     required String email,
     required String password,
     required String username,
@@ -21,13 +18,7 @@ class UserAuth {
       password: password,
     );
 
-    // User? user = userCredential.user;
-    // if (user != null) {
-    //   await user.updateDisplayName(username);
-    //   await user.reload();
-    // }
-
-    return userCredential;
+    return userCredential.user;
   }
 
   Future<void> signOut() async {
@@ -36,7 +27,7 @@ class UserAuth {
   }
 
   /// throws [PlatformException]
-  Future<UserCredential?> googleSignIn() async {
+  Future<User?> googleSignIn() async {
     var googleUser = await _googleSignIn.signIn();
 
     /// This can be null if the user cancels the sign-in.
@@ -47,19 +38,14 @@ class UserAuth {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+    var userCredentials = await _auth.signInWithCredential(credential);
 
-    return await _auth.signInWithCredential(credential);
+    return userCredentials.user;
   }
 
-  Future<UserCredential> emailSignIn({
-    required String email,
-    required String password,
-  }) async {
-    var userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<User?> emailSignIn({required String email, required String password}) async {
+    var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-    return userCredential;
+    return userCredential.user;
   }
 }

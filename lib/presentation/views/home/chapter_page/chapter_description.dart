@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/chapter.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class ChapterDescription extends StatelessWidget {
@@ -26,9 +26,9 @@ class ChapterDescription extends StatelessWidget {
         children: [
           Styles.title(
             "${lesson.name} - Chapter ${chapterIndex + 1}",
-            style: TextStyle(color: lesson.foregroundColor),
+            color: lesson.foregroundColor,
           ),
-          Styles.body(lesson.description, style: TextStyle(color: lesson.foregroundColor)),
+          Styles.body(lesson.description, color: lesson.foregroundColor),
           const SizedBox(height: 4.0),
         ],
       ),

@@ -19,7 +19,7 @@ class SignUpPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         InheritedProvider(create: (_) => GlobalKey<FormState>()),
-        BlocProvider(lazy: false, create: (_) => SignupPageBloc()),
+        BlocProvider(create: (_) => SignupPageBloc()),
       ],
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         listenWhen: (previous, current) => previous.status == AuthenticationStatus.signingUp,

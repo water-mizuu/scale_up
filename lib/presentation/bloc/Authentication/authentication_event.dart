@@ -17,10 +17,7 @@ class EmailSignUpAuthenticationEvent extends AuthenticationEvent {
 }
 
 class EmailSignInAuthenticationEvent extends AuthenticationEvent {
-  const EmailSignInAuthenticationEvent({
-    required this.email,
-    required this.password,
-  });
+  const EmailSignInAuthenticationEvent({required this.email, required this.password});
 
   final String email;
   final String password;
@@ -35,9 +32,15 @@ class LogoutAuthenticationEvent extends AuthenticationEvent {
 }
 
 class AuthenticationTokenChangedEvent extends AuthenticationEvent {
-  const AuthenticationTokenChangedEvent({
-    required this.user,
-  });
+  const AuthenticationTokenChangedEvent({required this.user});
 
   final User? user;
+}
+
+class SignInWaitingAuthenticationEvent extends AuthenticationEvent {
+  const SignInWaitingAuthenticationEvent();
+}
+
+class SignInCompleteAuthenticationEvent extends AuthenticationEvent {
+  const SignInCompleteAuthenticationEvent();
 }

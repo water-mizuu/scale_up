@@ -1,29 +1,27 @@
-import "dart:async";
-
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/authentication/authentication_repository.dart";
+import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_state.dart";
 
-export "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
-export "package:scale_up/presentation/bloc/Authentication/authentication_state.dart";
+export "authentication_event.dart";
+export "authentication_state.dart";
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  AuthenticationBloc({required AuthenticationRepository repository})
+  AuthenticationBloc({required FirebaseAuthHelper repository})
     : _repository = repository,
       super(const AuthenticationState()) {
     on<EmailSignUpAuthenticationEvent>(_onEmailSignup);
     on<GoogleSignInAuthenticationEvent>(_onGoogleSignIn);
     on<EmailSignInAuthenticationEvent>(_onEmailSignIn);
     on<LogoutAuthenticationEvent>(_onLogout);
-    on<AuthenticationTokenChangedEvent>(_onAuthenticationChangeNotification);
+    on<AuthenticationTokenChangedEvent>(_onAuthenticationTokenChanged);
 
     _repository.authStateChanges.forEach((user) async {
       add(AuthenticationTokenChangedEvent(user: user));
     });
   }
 
-  final AuthenticationRepository _repository;
+  final FirebaseAuthHelper _repository;
 
   void _onEmailSignup(
     EmailSignUpAuthenticationEvent event,
@@ -52,8 +50,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(state.copyWith(status: AuthenticationStatus.signingIn, error: null));
 
     try {
-      var user = (await _repository.emailSignIn(email: event.email, password: event.password))!;
-
+      var user = await _repository
+          .emailSignIn(email: event.email, password: event.password)
+          .then((u) => u!);
 
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
@@ -69,7 +68,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(state.copyWith(status: AuthenticationStatus.signingIn, error: null));
 
     try {
-      var user = (await _repository.googleSignIn())!;
+      var user = await _repository.googleSignIn().then((u) => u!);
 
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
@@ -82,25 +81,22 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       await _repository.signOut();
 
-      // Simulate successful logout
       emit(state.copyWith(status: AuthenticationStatus.signedOut, error: null, user: null));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.signedOut, error: e));
     }
   }
 
-  void _onAuthenticationChangeNotification(
+  void _onAuthenticationTokenChanged(
     AuthenticationTokenChangedEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
     emit(state.copyWith(status: AuthenticationStatus.tokenChanging));
-    await Future.delayed(const Duration(seconds: 0));
     emit(
       state.copyWith(
         user: event.user,
         status:
-            event.user !=
-                    null //
+            (event.user != null) //
                 ? AuthenticationStatus.signedIn
                 : AuthenticationStatus.signedOut,
       ),

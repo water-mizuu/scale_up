@@ -2,16 +2,17 @@ import "dart:async";
 import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/expression.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
-import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_event.dart";
 import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   ChapterPageBloc({
-    required LessonsRepository lessonsRepository,
+    required LessonsHelper lessonsRepository,
     required Lesson lesson,
     required int chapterIndex,
   }) : _lessonsRepository = lessonsRepository,
@@ -31,7 +32,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     _initializeLesson(lesson);
   }
 
-  final LessonsRepository _lessonsRepository;
+  final LessonsHelper _lessonsRepository;
 
   /// Initializes the lesson by loading it from the repository
   ///   and generating random unit pairs.
@@ -67,7 +68,6 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     Emitter<ChapterPageState> emit,
   ) async {
     var ChapterPageLessonLoaded(:lesson, :questions) = event;
-    print(("onLessonLoaded", "*" * 35, state.chapterIndex));
 
     emit(
       ChapterPageState.loaded(
@@ -95,23 +95,26 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     ChapterPageInputChanged event,
     Emitter<ChapterPageState> emit,
   ) async {
-    var input = event.input;
-    var parsedInput = double.tryParse(input)?.toStringAsFixed(3);
-    if (parsedInput == null) {
+    try {
+      var expression = event.input;
+      var parsedInput = expression.evaluate({});
+
+      emit(state.copyWith(answer: parsedInput.toStringAsFixedMax(3)));
+    } on UnsupportedError {
       return;
     }
-
-    emit(state.copyWith(answer: parsedInput));
   }
 
   Future<void> _onAnswerSubmitted(
     ChapterPageAnswerSubmitted event,
     Emitter<ChapterPageState> emit,
   ) async {
+    emit(state.copyWith(status: ChapterPageStatus.evaluating));
+
     assert(state is LoadedChapterPageState);
     if (state case LoadedChapterPageState state) {
       var (_, _, fromNum, expr) = state.questions[state.questionIndex];
-      var answer = expr.evaluate(fromNum).toStringAsFixed(3);
+      var answer = expr.evaluate(fromNum).toStringAsFixedMax(3);
 
       if (state.answer == answer) {
         emit(state.copyWith(status: ChapterPageStatus.correct));
@@ -126,7 +129,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     Emitter<ChapterPageState> emit,
   ) async {
     assert(state is LoadedChapterPageState);
-    emit(state.copyWith(status: ChapterPageStatus.nextQuestion));
+    emit(state.copyWith(status: ChapterPageStatus.movingToNextQuestion));
 
     if (state case LoadedChapterPageState state) {
       var questionIndex = state.questionIndex + 1;
