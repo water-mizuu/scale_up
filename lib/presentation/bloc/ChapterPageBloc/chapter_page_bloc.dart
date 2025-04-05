@@ -16,7 +16,11 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     required int chapterIndex,
   }) : _lessonsRepository = lessonsRepository,
        super(
-         ChapterPageState.initial(chapterIndex: chapterIndex, status: ChapterPageStatus.loading),
+         ChapterPageState.initial(
+           lesson: lesson,
+           chapterIndex: chapterIndex,
+           status: ChapterPageStatus.loading,
+         ),
        ) {
     on<ChapterPageLessonLoaded>(_onLessonLoaded);
     on<ChapterPageLessonLoadFailure>(_onLessonLoadFailure);
@@ -63,30 +67,21 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     Emitter<ChapterPageState> emit,
   ) async {
     var ChapterPageLessonLoaded(:lesson, :questions) = event;
+    print(("onLessonLoaded", "*" * 35, state.chapterIndex));
 
-    if (questions.isEmpty) {
-      emit(
-        ChapterPageState.loaded(
-          status: ChapterPageStatus.completed,
-          lesson: lesson,
-          chapterIndex: state.chapterIndex,
-          questions: questions,
-          questionIndex: 0,
-          answer: 0.toStringAsFixed(3),
-        ),
-      );
-    } else {
-      emit(
-        ChapterPageState.loaded(
-          status: ChapterPageStatus.loaded,
-          lesson: lesson,
-          chapterIndex: state.chapterIndex,
-          questions: questions,
-          questionIndex: 0,
-          answer: 0.toStringAsFixed(3),
-        ),
-      );
-    }
+    emit(
+      ChapterPageState.loaded(
+        status:
+            (questions.isEmpty) //
+                ? ChapterPageStatus.completed
+                : ChapterPageStatus.loaded,
+        lesson: lesson,
+        chapterIndex: state.chapterIndex,
+        questions: questions,
+        questionIndex: 0,
+        answer: 0.toStringAsFixed(3),
+      ),
+    );
   }
 
   Future<void> _onLessonLoadFailure(
@@ -114,7 +109,6 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     Emitter<ChapterPageState> emit,
   ) async {
     assert(state is LoadedChapterPageState);
-
     if (state case LoadedChapterPageState state) {
       var (_, _, fromNum, expr) = state.questions[state.questionIndex];
       var answer = expr.evaluate(fromNum).toStringAsFixed(3);
@@ -122,7 +116,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       if (state.answer == answer) {
         emit(state.copyWith(status: ChapterPageStatus.correct));
       } else {
-        emit(state.copyWith(status: ChapterPageStatus.incorrect));
+        emit(state.copyWith(status: ChapterPageStatus.incorrect, correctAnswer: answer));
       }
     }
   }
@@ -132,6 +126,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
     Emitter<ChapterPageState> emit,
   ) async {
     assert(state is LoadedChapterPageState);
+    emit(state.copyWith(status: ChapterPageStatus.nextQuestion));
 
     if (state case LoadedChapterPageState state) {
       var questionIndex = state.questionIndex + 1;

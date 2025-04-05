@@ -51,4 +51,20 @@ class UserDb {
       await userDoc.update({"completed_chapters": completedChapters});
     }
   }
+
+  static Future<bool> isChapterCompleted(String lessonId, int chapterIndex) async {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return false;
+    }
+
+    var userDoc = await _userCollection.doc(user.uid).get();
+    var completedChapters = await userDoc.data()?["completed_chapters"];
+    if (completedChapters case List()) {
+      var key = "$lessonId:$chapterIndex";
+
+      return completedChapters.contains(key);
+    }
+    return false;
+  }
 }

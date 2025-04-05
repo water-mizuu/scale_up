@@ -5,12 +5,13 @@ import "package:scale_up/data/repositories/lessons/lessons_repository/unit.dart"
 
 part "chapter_page_state.freezed.dart";
 
-enum ChapterPageStatus { loading, loaded, correct, incorrect, completed, error }
+enum ChapterPageStatus { loading, loaded, nextQuestion, correct, incorrect, completed, error }
 
 @freezed
 sealed class ChapterPageState with _$ChapterPageState {
   const factory ChapterPageState.initial({
     required ChapterPageStatus status,
+    required Lesson lesson,
     required int chapterIndex,
     String? answer,
     String? correctAnswer,
@@ -30,6 +31,7 @@ sealed class ChapterPageState with _$ChapterPageState {
 
   const factory ChapterPageState.failure({
     required ChapterPageStatus status,
+    required Lesson lesson,
     required int chapterIndex,
     String? answer,
     String? correctAnswer,

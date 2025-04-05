@@ -5,6 +5,7 @@ import "package:provider/provider.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/chapter.dart";
 import "package:scale_up/data/repositories/lessons/lessons_repository/lesson.dart";
+import "package:scale_up/firebase/firebase_firestore.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
@@ -195,33 +196,50 @@ class ChapterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 12.0,
-      borderRadius: BorderRadius.circular(25.0),
-      shadowColor: Colors.black.withValues(alpha: 0.3),
-      child: ListTile(
-        leading: ChapterIndex(index: index),
-        title: Styles.body(chapter.name, style: TextStyle(fontSize: 14)),
-        subtitle: Styles.body(
-          "${chapter.questionCount} questions",
-          style: TextStyle(color: Colors.grey),
-        ),
-        onTap: () {
-          context.pushNamed(
-            AppRoutes.chapter,
-            pathParameters: {"id": context.read<Lesson>().id, "chapterIndex": index.toString()},
+    return InheritedProvider<Future<bool>>(
+      create: (_) => UserDb.isChapterCompleted(context.read<Lesson>().id, index),
+      builder: (context, _) => FutureBuilder(
+        future: context.read<Future<bool>>(),
+        builder: (context, snapshot) {
+          var isComplete = snapshot.hasData ? snapshot.data! : false;
+
+          return Material(
+            elevation: 12.0,
+            borderRadius: BorderRadius.circular(25.0),
+            shadowColor: Colors.black.withValues(alpha: 0.3),
+            child: ListTile(
+              leading: ChapterIndex(index: index, isCompleted: isComplete),
+              title: Styles.body(chapter.name, style: TextStyle(fontSize: 14)),
+              subtitle: Styles.body(
+                "${chapter.questionCount} questions",
+                style: TextStyle(color: Colors.grey),
+              ),
+              onTap:
+                  isComplete
+                      ? null
+                      : () {
+                        context.pushNamed(
+                          AppRoutes.chapter,
+                          pathParameters: {
+                            "id": context.read<Lesson>().id,
+                            "chapterIndex": index.toString(),
+                          },
+                        );
+                      },
+              tileColor: Colors.white,
+            ),
           );
         },
-        tileColor: Colors.white,
-      ),
+      )
     );
   }
 }
 
 class ChapterIndex extends StatelessWidget {
-  const ChapterIndex({super.key, required this.index});
+  const ChapterIndex({super.key, required this.index, required this.isCompleted});
 
   final int index;
+  final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -235,10 +253,13 @@ class ChapterIndex extends StatelessWidget {
             border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
           ),
           child: Center(
-            child: Styles.title(
-              "${index + 1}",
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
-            ),
+            child:
+                isCompleted
+                    ? Icon(Icons.check, color: Colors.green)
+                    : Styles.title(
+                      "${index + 1}",
+                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
+                    ),
           ),
         ),
       ),
