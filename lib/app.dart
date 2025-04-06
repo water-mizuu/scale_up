@@ -64,9 +64,9 @@ class _AppState extends State<App> {
             listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
             listener: (context, state) {
               if (state.user case var user?) {
-                userDataBloc.add(LoggedInUserDataEvent(user: user));
+                userDataBloc.add(SignedInUserDataEvent(user: user));
               } else {
-                userDataBloc.add(LoggedOutUserDataEvent());
+                userDataBloc.add(SignedOutUserDataEvent());
               }
             },
             child: AppView(),

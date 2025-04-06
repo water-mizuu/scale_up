@@ -4,14 +4,14 @@ sealed class UserDataEvent {
   const UserDataEvent();
 }
 
-final class LoggedInUserDataEvent extends UserDataEvent {
+final class SignedInUserDataEvent extends UserDataEvent {
   final User user;
 
-  const LoggedInUserDataEvent({required this.user});
+  const SignedInUserDataEvent({required this.user});
 }
 
-final class LoggedOutUserDataEvent extends UserDataEvent {
-  const LoggedOutUserDataEvent();
+final class SignedOutUserDataEvent extends UserDataEvent {
+  const SignedOutUserDataEvent();
 }
 
 final class ChapterCompletedUserDataEvent extends UserDataEvent {

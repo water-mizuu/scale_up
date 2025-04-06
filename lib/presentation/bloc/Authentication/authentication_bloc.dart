@@ -92,6 +92,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     Emitter<AuthenticationState> emit,
   ) async {
     emit(state.copyWith(status: AuthenticationStatus.tokenChanging));
+    await Future.delayed(Duration.zero);
     emit(
       state.copyWith(
         user: event.user,

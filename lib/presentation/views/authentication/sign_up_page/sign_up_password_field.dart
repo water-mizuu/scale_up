@@ -21,9 +21,7 @@ class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPa
       onChanged: (v) => context.read<SignupPageBloc>().add(SignupPagePasswordChanged(v)),
       decoration: InputDecoration(
         suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility : Icons.visibility_off,
-          ),
+          icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
