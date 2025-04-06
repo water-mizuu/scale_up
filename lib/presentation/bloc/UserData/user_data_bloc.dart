@@ -47,7 +47,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       var ChapterCompletedUserDataEvent(:lessonId, :chapterIndex) = event;
       var key = "$lessonId:$chapterIndex";
 
-      var finishedChapters = state.finishedChapters..add(key);
+      var finishedChapters = {...state.finishedChapters, key};
       emit(state.copyWith(finishedChapters: finishedChapters));
 
       unawaited(_firestoreHelper.registerChapterAsCompletedAsync(user, lessonId, chapterIndex));

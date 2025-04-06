@@ -20,7 +20,7 @@
         {
           "from": "square meter",
           "to": "square kilometer",
-          "formula": "from * 1000000"
+          "formula": "from / 1000000"
         },
         {
           "from": "square meter",
