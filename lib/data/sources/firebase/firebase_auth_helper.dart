@@ -104,8 +104,12 @@ class FirebaseAuthHelperWindows implements FirebaseAuthHelper {
     } else if (Platform.isAndroid) {
       var jsonString = await rootBundle.loadString("secrets/android.json");
 
-      if (jsonDecode(jsonString) case {"web": {"client_id": String clientId, "client_secret": String clientSecret}}) {
-        _googleSignIn = win.GoogleSignIn(params: win.GoogleSignInParams(clientId: clientId, clientSecret: clientSecret));
+      if (jsonDecode(jsonString) case {
+        "web": {"client_id": String clientId, "client_secret": String clientSecret},
+      }) {
+        _googleSignIn = win.GoogleSignIn(
+          params: win.GoogleSignInParams(clientId: clientId, clientSecret: clientSecret),
+        );
 
         return _googleSignIn!;
       }
