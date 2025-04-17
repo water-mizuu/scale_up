@@ -10,5 +10,4 @@
   "explorer.fileNesting.patterns": {
     "*.dart": "$(capture).*.dart",
   },
-  "typewriterAutoScroll.enable": true,
 }

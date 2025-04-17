@@ -15,6 +15,7 @@ abstract class Lesson with _$Lesson {
     required String name,
     required String description,
     @JsonKey(fromJson: colorFromJson, toJson: colorToJson) required Color color,
+    @JsonKey(name: "units_type") required String unitsType,
     required List<String> units,
     required List<Chapter> chapters,
   }) = _Lesson;

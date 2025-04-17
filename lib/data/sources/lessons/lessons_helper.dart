@@ -34,8 +34,7 @@ class LessonsHelper {
       // print(data);
     }
 
-    var {"lessons": lessons as List<dynamic>, "units_present": unitsPresent as List<dynamic>} =
-        data;
+    var {"lessons": List<dynamic> lessons, "units_present": List<dynamic> unitsPresent} = data;
 
     var lessonList =
         lessons //
@@ -71,6 +70,22 @@ class LessonsHelper {
     return _unitGroups //
         .where((group) => group.type == type)
         .firstOrNull;
+  }
+
+  Future<UnitGroup?> getExtendedUnitGroup(String type) async {
+    var unitGroup = await getUnitGroup(type);
+    if (unitGroup == null) {
+      return null;
+    }
+
+    var (_, graph) = _computeCanonicalConversionGraph(unitGroup);
+    var conversions = [
+      for (var MapEntry(key: from, value: rest0) in graph.entries)
+        for (var MapEntry(key: to, value: formula) in rest0.entries)
+          Conversion(from: from.id, to: to.id, formula: formula),
+    ];
+
+    return unitGroup.copyWith(conversions: conversions);
   }
 
   Future<Unit?> getUnit(String id) async {

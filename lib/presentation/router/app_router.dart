@@ -3,9 +3,9 @@ import "package:go_router/go_router.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page.dart";
-import "package:scale_up/presentation/views/home/chapter_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
+import "package:scale_up/presentation/views/home/calculate_practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
 import "package:scale_up/presentation/views/home/widgets/app_scaffold.dart";
 
@@ -79,7 +79,10 @@ final GoRouter router = GoRouter(
                     assert(lessonId != null, "Lesson ID cannot be null");
                     assert(chapterId != null, "Chapter ID cannot be null");
 
-                    return ChapterPage(lessonId: lessonId!, chapterIndex: int.parse(chapterId!));
+                    return CalculatePracticePage(
+                      lessonId: lessonId!,
+                      chapterIndex: int.parse(chapterId!),
+                    );
                   },
                 ),
               ],

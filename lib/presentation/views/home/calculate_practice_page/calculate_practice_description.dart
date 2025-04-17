@@ -4,8 +4,8 @@ import "package:scale_up/data/sources/lessons/lessons_helper/chapter.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
-class ChapterDescription extends StatelessWidget {
-  const ChapterDescription({super.key});
+class CalculatePracticeDescription extends StatelessWidget {
+  const CalculatePracticeDescription({super.key});
 
   @override
   Widget build(BuildContext context) {

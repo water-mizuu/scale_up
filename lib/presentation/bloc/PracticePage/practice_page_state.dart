@@ -3,7 +3,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 
-part "chapter_page_state.freezed.dart";
+part "practice_page_state.freezed.dart";
 
 enum ChapterPageStatus {
   /// Page loading related status
@@ -20,8 +20,9 @@ enum ChapterPageStatus {
 }
 
 @freezed
-sealed class ChapterPageState with _$ChapterPageState {
-  const factory ChapterPageState.initial({
+sealed class PracticePageState with _$PracticePageState {
+  const PracticePageState._();
+  const factory PracticePageState.initial({
     required ChapterPageStatus status,
     required Lesson lesson,
     required int chapterIndex,
@@ -30,7 +31,7 @@ sealed class ChapterPageState with _$ChapterPageState {
     String? error,
   }) = InitialChapterPageState;
 
-  const factory ChapterPageState.loaded({
+  const factory PracticePageState.loaded({
     required ChapterPageStatus status,
     required int chapterIndex,
     required Lesson lesson,
@@ -40,4 +41,10 @@ sealed class ChapterPageState with _$ChapterPageState {
     String? correctAnswer,
     String? error,
   }) = LoadedChapterPageState;
+
+  double? get progress => switch (this) {
+    InitialChapterPageState() => null,
+    LoadedChapterPageState(:var questions, :var questionIndex) =>
+      (questionIndex + 1) / (questions.length + 1),
+  };
 }

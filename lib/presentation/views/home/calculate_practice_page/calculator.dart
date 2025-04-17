@@ -6,8 +6,8 @@ import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/expression_parser.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_bloc.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 /// A simple non-scientific calculator.
@@ -36,7 +36,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ChapterPageBloc, ChapterPageState>(
+    return BlocListener<PracticePageBloc, PracticePageState>(
       listenWhen:
           (_, now) =>
               now.status == ChapterPageStatus.movingToNextQuestion ||
@@ -93,8 +93,16 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                         ],
                       ),
                     ),
-                    _textButton(onTap: () => _append(" ^ "), label: "^", color: Colors.blueGrey),
-                    _textButton(onTap: () => _append(" / "), label: "÷", color: Colors.blueGrey),
+                    _textButton(
+                      onTap: () => _append(" ^ "),
+                      label: "^",
+                      color: Colors.blueGrey,
+                    ),
+                    _textButton(
+                      onTap: () => _append(" / "),
+                      label: "÷",
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 Row(
@@ -103,7 +111,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                     _textButton(onTap: () => _append("7"), label: "7"),
                     _textButton(onTap: () => _append("8"), label: "8"),
                     _textButton(onTap: () => _append("9"), label: "9"),
-                    _textButton(onTap: () => _append(" * "), label: "*", color: Colors.blueGrey),
+                    _textButton(
+                      onTap: () => _append(" * "),
+                      label: "*",
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 Row(
@@ -112,7 +124,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                     _textButton(onTap: () => _append("4"), label: "4"),
                     _textButton(onTap: () => _append("5"), label: "5"),
                     _textButton(onTap: () => _append("6"), label: "6"),
-                    _textButton(onTap: () => _append(" - "), label: "-", color: Colors.blueGrey),
+                    _textButton(
+                      onTap: () => _append(" - "),
+                      label: "-",
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 Row(
@@ -121,7 +137,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                     _textButton(onTap: () => _append("1"), label: "1"),
                     _textButton(onTap: () => _append("2"), label: "2"),
                     _textButton(onTap: () => _append("3"), label: "3"),
-                    _textButton(onTap: () => _append(" + "), label: "+", color: Colors.blueGrey),
+                    _textButton(
+                      onTap: () => _append(" + "),
+                      label: "+",
+                      color: Colors.blueGrey,
+                    ),
                   ],
                 ),
                 Row(

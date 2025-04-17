@@ -5,6 +5,7 @@ sealed class Expression {
   const Expression();
 
   num evaluate(Map<String, num> variables);
+  Expression substitute(String id, Expression expression);
   Iterable<VariableExpression> get variables;
   String get str;
 
@@ -137,7 +138,11 @@ final class AdditionExpression extends BinaryExpression {
       left.evaluate(variables) + right.evaluate(variables);
 
   @override
-  get str => "($left + $right)";
+  Expression substitute(String id, Expression expression) =>
+      AdditionExpression(left.substitute(id, expression), right.substitute(id, expression));
+
+  @override
+  get str => "${left.string} + ${right.string}";
 }
 
 final class SubtractionExpression extends BinaryExpression {
@@ -148,7 +153,11 @@ final class SubtractionExpression extends BinaryExpression {
       left.evaluate(variables) - right.evaluate(variables);
 
   @override
-  get str => "($left - $right)";
+  Expression substitute(String id, Expression expression) =>
+      SubtractionExpression(left.substitute(id, expression), right.substitute(id, expression));
+
+  @override
+  get str => "${left.string} - ${right.string}";
 }
 
 final class MultiplicationExpression extends BinaryExpression {
@@ -159,7 +168,13 @@ final class MultiplicationExpression extends BinaryExpression {
       left.evaluate(variables) * right.evaluate(variables);
 
   @override
-  get str => "($left * $right)";
+  Expression substitute(String id, Expression expression) => MultiplicationExpression(
+    left.substitute(id, expression),
+    right.substitute(id, expression),
+  );
+
+  @override
+  get str => "${left.string} * ${right.string}";
 }
 
 final class DivisionExpression extends BinaryExpression {
@@ -170,7 +185,11 @@ final class DivisionExpression extends BinaryExpression {
       left.evaluate(variables) / right.evaluate(variables);
 
   @override
-  get str => "($left / $right)";
+  Expression substitute(String id, Expression expression) =>
+      DivisionExpression(left.substitute(id, expression), right.substitute(id, expression));
+
+  @override
+  get str => "${left.string} / ${right.string}";
 }
 
 final class PowerExpression extends BinaryExpression {
@@ -181,7 +200,11 @@ final class PowerExpression extends BinaryExpression {
       pow(left.evaluate(variables), right.evaluate(variables));
 
   @override
-  get str => "($left ^ $right)";
+  Expression substitute(String id, Expression expression) =>
+      PowerExpression(left.substitute(id, expression), right.substitute(id, expression));
+
+  @override
+  get str => "${left.string} ^ ${right.string}";
 }
 
 final class LogarithmExpression extends BinaryExpression {
@@ -192,7 +215,11 @@ final class LogarithmExpression extends BinaryExpression {
       log(right.evaluate(variables)) / log(left.evaluate(variables));
 
   @override
-  get str => "log[$left]($right)";
+  Expression substitute(String id, Expression expression) =>
+      LogarithmExpression(left.substitute(id, expression), right.substitute(id, expression));
+
+  @override
+  get str => "log[${left.string}](${right.string})";
 }
 
 sealed class UnaryExpression extends Expression {
@@ -213,7 +240,11 @@ final class NegationExpression extends UnaryExpression {
   num evaluate(Map<String, num> variables) => -operand.evaluate(variables);
 
   @override
-  get str => "-$operand";
+  Expression substitute(String id, Expression expression) =>
+      NegationExpression(operand.substitute(id, expression));
+
+  @override
+  get str => "-${operand.string}";
 }
 
 final class ConstantExpression extends Expression {
@@ -223,6 +254,9 @@ final class ConstantExpression extends Expression {
 
   @override
   num evaluate(Map<String, num> variables) => value;
+
+  @override
+  Expression substitute(String id, Expression expression) => this;
 
   @override
   get variables sync* {}
@@ -240,6 +274,9 @@ final class VariableExpression extends Expression {
   num evaluate(Map<String, num> variables) => variables[variable] ?? 0;
 
   @override
+  Expression substitute(String id, Expression expression) => variable == id ? expression : this;
+
+  @override
   get variables sync* {
     yield this;
   }
@@ -251,5 +288,17 @@ final class VariableExpression extends Expression {
 extension ExpressionList on List<Expression> {
   num evaluate(num from) {
     return fold(from, (value, expr) => expr.evaluate({"from": value}));
+  }
+}
+
+extension on Expression {
+  String get string {
+    var string = toString();
+
+    if (string.contains(" ")) {
+      return "($string)";
+    } else {
+      return string;
+    }
   }
 }

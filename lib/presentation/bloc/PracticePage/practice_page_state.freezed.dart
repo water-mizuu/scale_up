@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'chapter_page_state.dart';
+part of 'practice_page_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,20 +13,20 @@ part of 'chapter_page_state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ChapterPageState {
+mixin _$PracticePageState {
 
  ChapterPageStatus get status; Lesson get lesson; int get chapterIndex; String? get answer; String? get correctAnswer; String? get error;
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ChapterPageStateCopyWith<ChapterPageState> get copyWith => _$ChapterPageStateCopyWithImpl<ChapterPageState>(this as ChapterPageState, _$identity);
+$PracticePageStateCopyWith<PracticePageState> get copyWith => _$PracticePageStateCopyWithImpl<PracticePageState>(this as PracticePageState, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChapterPageState&&(identical(other.status, status) || other.status == status)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.correctAnswer, correctAnswer) || other.correctAnswer == correctAnswer)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PracticePageState&&(identical(other.status, status) || other.status == status)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.correctAnswer, correctAnswer) || other.correctAnswer == correctAnswer)&&(identical(other.error, error) || other.error == error));
 }
 
 
@@ -35,15 +35,15 @@ int get hashCode => Object.hash(runtimeType,status,lesson,chapterIndex,answer,co
 
 @override
 String toString() {
-  return 'ChapterPageState(status: $status, lesson: $lesson, chapterIndex: $chapterIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'PracticePageState(status: $status, lesson: $lesson, chapterIndex: $chapterIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ChapterPageStateCopyWith<$Res>  {
-  factory $ChapterPageStateCopyWith(ChapterPageState value, $Res Function(ChapterPageState) _then) = _$ChapterPageStateCopyWithImpl;
+abstract mixin class $PracticePageStateCopyWith<$Res>  {
+  factory $PracticePageStateCopyWith(PracticePageState value, $Res Function(PracticePageState) _then) = _$PracticePageStateCopyWithImpl;
 @useResult
 $Res call({
  ChapterPageStatus status, Lesson lesson, int chapterIndex, String? answer, String? correctAnswer, String? error
@@ -54,14 +54,14 @@ $LessonCopyWith<$Res> get lesson;
 
 }
 /// @nodoc
-class _$ChapterPageStateCopyWithImpl<$Res>
-    implements $ChapterPageStateCopyWith<$Res> {
-  _$ChapterPageStateCopyWithImpl(this._self, this._then);
+class _$PracticePageStateCopyWithImpl<$Res>
+    implements $PracticePageStateCopyWith<$Res> {
+  _$PracticePageStateCopyWithImpl(this._self, this._then);
 
-  final ChapterPageState _self;
-  final $Res Function(ChapterPageState) _then;
+  final PracticePageState _self;
+  final $Res Function(PracticePageState) _then;
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? lesson = null,Object? chapterIndex = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(_self.copyWith(
@@ -74,7 +74,7 @@ as String?,error: freezed == error ? _self.error : error // ignore: cast_nullabl
 as String?,
   ));
 }
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -90,8 +90,8 @@ $LessonCopyWith<$Res> get lesson {
 /// @nodoc
 
 
-class InitialChapterPageState implements ChapterPageState {
-  const InitialChapterPageState({required this.status, required this.lesson, required this.chapterIndex, this.answer, this.correctAnswer, this.error});
+class InitialChapterPageState extends PracticePageState {
+  const InitialChapterPageState({required this.status, required this.lesson, required this.chapterIndex, this.answer, this.correctAnswer, this.error}): super._();
   
 
 @override final  ChapterPageStatus status;
@@ -101,7 +101,7 @@ class InitialChapterPageState implements ChapterPageState {
 @override final  String? correctAnswer;
 @override final  String? error;
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -120,14 +120,14 @@ int get hashCode => Object.hash(runtimeType,status,lesson,chapterIndex,answer,co
 
 @override
 String toString() {
-  return 'ChapterPageState.initial(status: $status, lesson: $lesson, chapterIndex: $chapterIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'PracticePageState.initial(status: $status, lesson: $lesson, chapterIndex: $chapterIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $InitialChapterPageStateCopyWith<$Res> implements $ChapterPageStateCopyWith<$Res> {
+abstract mixin class $InitialChapterPageStateCopyWith<$Res> implements $PracticePageStateCopyWith<$Res> {
   factory $InitialChapterPageStateCopyWith(InitialChapterPageState value, $Res Function(InitialChapterPageState) _then) = _$InitialChapterPageStateCopyWithImpl;
 @override @useResult
 $Res call({
@@ -146,7 +146,7 @@ class _$InitialChapterPageStateCopyWithImpl<$Res>
   final InitialChapterPageState _self;
   final $Res Function(InitialChapterPageState) _then;
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? lesson = null,Object? chapterIndex = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(InitialChapterPageState(
@@ -160,7 +160,7 @@ as String?,
   ));
 }
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -175,8 +175,8 @@ $LessonCopyWith<$Res> get lesson {
 /// @nodoc
 
 
-class LoadedChapterPageState implements ChapterPageState {
-  const LoadedChapterPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<Expression>)> questions, required this.questionIndex, this.answer, this.correctAnswer, this.error}): _questions = questions;
+class LoadedChapterPageState extends PracticePageState {
+  const LoadedChapterPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<Expression>)> questions, required this.questionIndex, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  ChapterPageStatus status;
@@ -194,7 +194,7 @@ class LoadedChapterPageState implements ChapterPageState {
 @override final  String? correctAnswer;
 @override final  String? error;
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -213,14 +213,14 @@ int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const Dee
 
 @override
 String toString() {
-  return 'ChapterPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'PracticePageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $LoadedChapterPageStateCopyWith<$Res> implements $ChapterPageStateCopyWith<$Res> {
+abstract mixin class $LoadedChapterPageStateCopyWith<$Res> implements $PracticePageStateCopyWith<$Res> {
   factory $LoadedChapterPageStateCopyWith(LoadedChapterPageState value, $Res Function(LoadedChapterPageState) _then) = _$LoadedChapterPageStateCopyWithImpl;
 @override @useResult
 $Res call({
@@ -239,7 +239,7 @@ class _$LoadedChapterPageStateCopyWithImpl<$Res>
   final LoadedChapterPageState _self;
   final $Res Function(LoadedChapterPageState) _then;
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(LoadedChapterPageState(
@@ -255,7 +255,7 @@ as String?,
   ));
 }
 
-/// Create a copy of ChapterPageState
+/// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

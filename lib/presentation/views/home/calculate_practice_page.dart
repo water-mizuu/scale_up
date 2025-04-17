@@ -4,28 +4,32 @@ import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/chapter.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_bloc.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_event.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
-import "package:scale_up/presentation/views/home/chapter_page/chapter_body.dart";
-import "package:scale_up/presentation/views/home/chapter_page/chapter_description.dart";
+import "package:scale_up/presentation/views/home/"
+    "calculate_practice_page/calculate_practice_body.dart";
+import "package:scale_up/presentation/views/home/"
+    "calculate_practice_page/calculate_practice_description.dart";
+import "package:scale_up/presentation/views/home/"
+    "calculate_practice_page/completed_calculate_practice_body.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 /// We assume that each instance of the ChapterPage is a new set of questions.
-class ChapterPage extends StatefulWidget {
-  const ChapterPage({required this.lessonId, required this.chapterIndex, super.key});
+class CalculatePracticePage extends StatefulWidget {
+  const CalculatePracticePage({required this.lessonId, required this.chapterIndex, super.key});
 
   final String lessonId;
   final int chapterIndex;
 
   @override
-  State<ChapterPage> createState() => _ChapterPageState();
+  State<CalculatePracticePage> createState() => _CalculatePracticePageState();
 }
 
-class _ChapterPageState extends State<ChapterPage> {
+class _CalculatePracticePageState extends State<CalculatePracticePage> {
   late final Future<Lesson?> lessonFuture;
-  ChapterPageBloc? chapterPageBloc;
+  PracticePageBloc? practicePageBloc;
 
   @override
   void initState() {
@@ -37,7 +41,7 @@ class _ChapterPageState extends State<ChapterPage> {
           if (!context.mounted || lesson == null) return;
 
           setState(() {
-            chapterPageBloc = ChapterPageBloc(
+            practicePageBloc = PracticePageBloc(
               lessonsRepository: context.read(),
               lesson: lesson,
               chapterIndex: widget.chapterIndex,
@@ -54,18 +58,18 @@ class _ChapterPageState extends State<ChapterPage> {
 
   @override
   void dispose() {
-    chapterPageBloc?.close();
+    practicePageBloc?.close();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (chapterPageBloc) {
+    switch (practicePageBloc) {
       case null:
         return const Material(child: Center(child: CircularProgressIndicator()));
       case var chapterPageBloc:
-        return BlocListener<ChapterPageBloc, ChapterPageState>(
+        return BlocListener<PracticePageBloc, PracticePageState>(
           bloc: chapterPageBloc,
           listener: (context, state) async {
             switch (state) {
@@ -77,7 +81,7 @@ class _ChapterPageState extends State<ChapterPage> {
                 await context.showBasicSnackbar("Correct!");
 
                 if (context.mounted) {
-                  chapterPageBloc.add(ChapterPageNextQuestion());
+                  chapterPageBloc.add(PracticePageNextQuestion());
                 }
               case LoadedChapterPageState(status: ChapterPageStatus.incorrect):
                 await context.showBasicSnackbar(
@@ -85,7 +89,7 @@ class _ChapterPageState extends State<ChapterPage> {
                 );
 
                 if (context.mounted) {
-                  chapterPageBloc.add(ChapterPageNextQuestion());
+                  chapterPageBloc.add(PracticePageNextQuestion());
                 }
               case LoadedChapterPageState(status: ChapterPageStatus.finished):
                 context.read<UserDataBloc>().add(
@@ -112,35 +116,42 @@ class _ChapterPageState extends State<ChapterPage> {
   }
 }
 
-class ChapterPageView extends StatelessWidget {
+class ChapterPageView extends StatefulWidget {
   const ChapterPageView({required this.lesson, required this.chapterIndex, super.key});
 
   final Lesson lesson;
   final int chapterIndex;
-  Chapter get chapter => lesson.chapters[chapterIndex];
+
+  @override
+  State<ChapterPageView> createState() => _ChapterPageViewState();
+}
+
+class _ChapterPageViewState extends State<ChapterPageView> {
+  late final GlobalKey progressBarKey = GlobalKey();
+  Chapter get chapter => widget.lesson.chapters[widget.chapterIndex];
 
   @override
   Widget build(BuildContext context) {
-    var state = context.watch<ChapterPageBloc>().state as LoadedChapterPageState;
+    var state = context.select((PracticePageBloc bloc) => bloc.state as LoadedChapterPageState);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
-        backgroundColor: lesson.color,
-        foregroundColor: lesson.foregroundColor,
+        backgroundColor: widget.lesson.color,
+        foregroundColor: widget.lesson.foregroundColor,
       ),
       body: InheritedProvider.value(
-        value: (lesson, chapter, state.chapterIndex),
+        value: (widget.lesson, chapter, state.chapterIndex),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ChapterDescription(),
+              CalculatePracticeDescription(),
               if (state.status == ChapterPageStatus.finished)
-                Text("Congrats! You done bro")
+                Expanded(child: CompletedCalculatePracticeBody(progressBarKey: progressBarKey))
               else
-                ChapterBody(),
+                Expanded(child: CalculatePracticeBody(progressBarKey: progressBarKey)),
             ],
           ),
         ),

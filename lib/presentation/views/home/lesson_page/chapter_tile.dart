@@ -31,14 +31,15 @@ class ChapterTile extends StatelessWidget {
         title: Styles.body(chapter.name, fontSize: 14),
         subtitle: Styles.body("${chapter.questionCount} questions", color: Colors.grey),
         onTap:
-            isComplete
-                ? null
-                : () {
-                  context.pushNamed(
-                    AppRoutes.chapter,
-                    pathParameters: {"id": lessonId, "chapterIndex": "$index"},
-                  );
-                },
+        // isComplete
+        //     ? null
+        //     :
+        () {
+          context.pushNamed(
+            AppRoutes.chapter,
+            pathParameters: {"id": lessonId, "chapterIndex": "$index"},
+          );
+        },
         tileColor: Colors.white,
       ),
     );

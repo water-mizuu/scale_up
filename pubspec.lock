@@ -318,6 +318,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animation_progress_bar:
+    dependency: "direct main"
+    description:
+      name: flutter_animation_progress_bar
+      sha256: "85f05404faeef7141b1c5b53571293fc19359c120c4aea4430b2b7d808461d09"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.1"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -584,6 +592,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  local_hero:
+    dependency: "direct main"
+    description:
+      name: local_hero
+      sha256: "5c85451dd51ecd0e8d3656775fac9a6db82f296f200d9931217186d34fed6089"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   logging:
     dependency: transitive
     description:
@@ -909,6 +925,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  super_tooltip:
+    dependency: "direct main"
+    description:
+      name: super_tooltip
+      sha256: "55c0764554c961846d489503b76a1fc33ec2120bd7407266b77a34abbf3ed471"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.9"
   term_glyph:
     dependency: transitive
     description:

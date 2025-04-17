@@ -41,7 +41,10 @@ class _LessonsPageState extends State<LessonsPage> {
         if (lessons.isEmpty) {
           return const Center(child: Text("No lessons available"));
         }
-        return BlocProvider(create: (_) => AllLessonsPageCubit(lessons), child: LessonsPageView());
+        return BlocProvider(
+          create: (_) => AllLessonsPageCubit(lessons),
+          child: LessonsPageView(),
+        );
       },
     );
   }

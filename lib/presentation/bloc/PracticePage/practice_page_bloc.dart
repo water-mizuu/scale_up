@@ -6,28 +6,28 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_event.dart";
-import "package:scale_up/presentation/bloc/ChapterPageBloc/chapter_page_state.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
+import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
-class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
-  ChapterPageBloc({
+class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
+  PracticePageBloc({
     required LessonsHelper lessonsRepository,
     required Lesson lesson,
     required int chapterIndex,
   }) : _lessonsRepository = lessonsRepository,
        super(
-         ChapterPageState.initial(
+         PracticePageState.initial(
            lesson: lesson,
            chapterIndex: chapterIndex,
            status: ChapterPageStatus.loading,
          ),
        ) {
-    on<ChapterPageLessonLoaded>(_onLessonLoaded);
-    on<ChapterPageLessonLoadFailure>(_onLessonLoadFailure);
-    on<ChapterPageInputChanged>(_onInputChanged);
-    on<ChapterPageAnswerSubmitted>(_onAnswerSubmitted);
-    on<ChapterPageNextQuestion>(_onNextQuestion);
+    on<PracticePageLessonLoaded>(_onLessonLoaded);
+    on<PracticePageLessonLoadFailure>(_onLessonLoadFailure);
+    on<PracticePageInputChanged>(_onInputChanged);
+    on<PracticePageAnswerSubmitted>(_onAnswerSubmitted);
+    on<PracticePageNextQuestion>(_onNextQuestion);
 
     _initializeLesson(lesson);
   }
@@ -60,17 +60,17 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       unitPairs.add((fromUnit, toUnit, randomNumber, conversions));
     }
 
-    add(ChapterPageLessonLoaded(lesson: lesson, questions: unitPairs));
+    add(PracticePageLessonLoaded(lesson: lesson, questions: unitPairs));
   }
 
   Future<void> _onLessonLoaded(
-    ChapterPageLessonLoaded event,
-    Emitter<ChapterPageState> emit,
+    PracticePageLessonLoaded event,
+    Emitter<PracticePageState> emit,
   ) async {
-    var ChapterPageLessonLoaded(:lesson, :questions) = event;
+    var PracticePageLessonLoaded(:lesson, :questions) = event;
 
     emit(
-      ChapterPageState.loaded(
+      PracticePageState.loaded(
         status:
             (questions.isEmpty) //
                 ? ChapterPageStatus.finished
@@ -85,15 +85,15 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   }
 
   Future<void> _onLessonLoadFailure(
-    ChapterPageLessonLoadFailure event,
-    Emitter<ChapterPageState> emit,
+    PracticePageLessonLoadFailure event,
+    Emitter<PracticePageState> emit,
   ) async {
     emit(state.copyWith(status: ChapterPageStatus.error));
   }
 
   Future<void> _onInputChanged(
-    ChapterPageInputChanged event,
-    Emitter<ChapterPageState> emit,
+    PracticePageInputChanged event,
+    Emitter<PracticePageState> emit,
   ) async {
     try {
       var expression = event.input;
@@ -106,8 +106,8 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   }
 
   Future<void> _onAnswerSubmitted(
-    ChapterPageAnswerSubmitted event,
-    Emitter<ChapterPageState> emit,
+    PracticePageAnswerSubmitted event,
+    Emitter<PracticePageState> emit,
   ) async {
     emit(state.copyWith(status: ChapterPageStatus.evaluating));
 
@@ -125,23 +125,43 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
   }
 
   Future<void> _onNextQuestion(
-    ChapterPageNextQuestion event,
-    Emitter<ChapterPageState> emit,
+    PracticePageNextQuestion event,
+    Emitter<PracticePageState> emit,
   ) async {
     assert(state is LoadedChapterPageState);
+
+    var previousStatus = state.status;
     emit(state.copyWith(status: ChapterPageStatus.movingToNextQuestion));
 
     if (state case LoadedChapterPageState state) {
-      var questionIndex = state.questionIndex + 1;
+      if (previousStatus == ChapterPageStatus.correct) {
+        var questionIndex = state.questionIndex + 1;
 
-      if (questionIndex >= state.questions.length) {
-        emit(state.copyWith(status: ChapterPageStatus.finished));
-      } else {
+        if (questionIndex >= state.questions.length) {
+          emit(
+            state.copyWith(status: ChapterPageStatus.finished, questionIndex: questionIndex),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: ChapterPageStatus.loaded,
+              questionIndex: questionIndex,
+              answer: "0",
+            ),
+          );
+        }
+      } else if (previousStatus == ChapterPageStatus.incorrect) {
+        var questions = state.questions.toList();
+        var mistaken = questions.removeAt(state.questionIndex);
+        questions.add(mistaken);
+
         emit(
           state.copyWith(
+            //
             status: ChapterPageStatus.loaded,
-            questionIndex: questionIndex,
-            answer: 0.toStringAsFixed(3),
+            questions: questions,
+            questionIndex: state.questionIndex,
+            answer: "0",
           ),
         );
       }
