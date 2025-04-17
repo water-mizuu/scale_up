@@ -11,18 +11,18 @@ sealed class Expression {
   @override
   String toString() => str;
 
-  static (Expression, VariableExpression) inverse(
-    VariableExpression left,
-    Expression right,
-  ) {
+  static (Expression, VariableExpression) inverse(VariableExpression left, Expression right) {
     var lhs = left as Expression;
     var rhs = right;
 
-    assert(rhs.variables.length == 1, "There should only be single variables!");
+    assert(
+      rhs.variables.where((v) => v.str == "from").length == 1,
+      "There should only be single 'from' variables!",
+    );
 
     while (rhs is BinaryExpression) {
       var BinaryExpression(:left, :right) = rhs;
-      var isLeftHoldingVariable = left.variables.isNotEmpty;
+      var isLeftHoldingVariable = left.variables.where((v) => v.str == "from").isNotEmpty;
 
       switch (rhs) {
         /// This case occurs when the variable is on the left.
@@ -95,10 +95,7 @@ sealed class Expression {
         case LogarithmExpression() when isLeftHoldingVariable:
           lhs = PowerExpression(
             ConstantExpression(e),
-            DivisionExpression(
-              LogarithmExpression(ConstantExpression(e), right),
-              lhs,
-            ),
+            DivisionExpression(LogarithmExpression(ConstantExpression(e), right), lhs),
           );
           rhs = left;
 
@@ -136,7 +133,8 @@ final class AdditionExpression extends BinaryExpression {
   const AdditionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) => left.evaluate(variables) + right.evaluate(variables);
+  num evaluate(Map<String, num> variables) =>
+      left.evaluate(variables) + right.evaluate(variables);
 
   @override
   get str => "($left + $right)";
@@ -146,7 +144,8 @@ final class SubtractionExpression extends BinaryExpression {
   const SubtractionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) => left.evaluate(variables) - right.evaluate(variables);
+  num evaluate(Map<String, num> variables) =>
+      left.evaluate(variables) - right.evaluate(variables);
 
   @override
   get str => "($left - $right)";
@@ -156,7 +155,8 @@ final class MultiplicationExpression extends BinaryExpression {
   const MultiplicationExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) => left.evaluate(variables) * right.evaluate(variables);
+  num evaluate(Map<String, num> variables) =>
+      left.evaluate(variables) * right.evaluate(variables);
 
   @override
   get str => "($left * $right)";
@@ -166,7 +166,8 @@ final class DivisionExpression extends BinaryExpression {
   const DivisionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) => left.evaluate(variables) / right.evaluate(variables);
+  num evaluate(Map<String, num> variables) =>
+      left.evaluate(variables) / right.evaluate(variables);
 
   @override
   get str => "($left / $right)";

@@ -22,7 +22,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   Future<void> _onSignedIn(SignedInUserDataEvent event, Emitter<UserDataState> emit) async {
     emit(state.copyWith(status: UserDataStatus.loading));
 
-    var finishedChapters = await _firestoreHelper.getCompletedChapters(user: event.user);
+    var finishedChapters = await _firestoreHelper.getFinishedChapters(user: event.user);
 
     emit(
       state.copyWith(

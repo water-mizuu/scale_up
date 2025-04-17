@@ -73,7 +73,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       ChapterPageState.loaded(
         status:
             (questions.isEmpty) //
-                ? ChapterPageStatus.completed
+                ? ChapterPageStatus.finished
                 : ChapterPageStatus.loaded,
         lesson: lesson,
         chapterIndex: state.chapterIndex,
@@ -135,7 +135,7 @@ class ChapterPageBloc extends Bloc<ChapterPageEvent, ChapterPageState> {
       var questionIndex = state.questionIndex + 1;
 
       if (questionIndex >= state.questions.length) {
-        emit(state.copyWith(status: ChapterPageStatus.completed));
+        emit(state.copyWith(status: ChapterPageStatus.finished));
       } else {
         emit(
           state.copyWith(

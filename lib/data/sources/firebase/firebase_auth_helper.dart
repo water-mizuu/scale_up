@@ -2,13 +2,14 @@ import "dart:convert";
 import "dart:io";
 
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:google_sign_in/google_sign_in.dart" as other;
 import "package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart" as win;
 
 abstract class FirebaseAuthHelper {
   factory FirebaseAuthHelper() {
-    if (Platform.isWindows || Platform.isAndroid) {
+    if (!kIsWeb && Platform.isWindows) {
       return FirebaseAuthHelperWindows();
     } else {
       return FirebaseAuthHelperNotWindows();
@@ -79,7 +80,10 @@ class FirebaseAuthHelperWindows implements FirebaseAuthHelper {
 
   @override
   Future<User?> emailSignIn({required String email, required String password}) async {
-    var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    var userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
     return userCredential.user;
   }
@@ -169,7 +173,10 @@ class FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
 
   @override
   Future<User?> emailSignIn({required String email, required String password}) async {
-    var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    var userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
     return userCredential.user;
   }

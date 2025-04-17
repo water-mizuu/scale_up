@@ -87,7 +87,7 @@ class _ChapterPageState extends State<ChapterPage> {
                 if (context.mounted) {
                   chapterPageBloc.add(ChapterPageNextQuestion());
                 }
-              case LoadedChapterPageState(status: ChapterPageStatus.completed):
+              case LoadedChapterPageState(status: ChapterPageStatus.finished):
                 context.read<UserDataBloc>().add(
                   ChapterCompletedUserDataEvent(
                     lessonId: chapterPageBloc.state.lesson.id,
@@ -137,7 +137,7 @@ class ChapterPageView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ChapterDescription(),
-              if (state.status == ChapterPageStatus.completed)
+              if (state.status == ChapterPageStatus.finished)
                 Text("Congrats! You done bro")
               else
                 ChapterBody(),

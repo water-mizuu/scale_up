@@ -4,8 +4,8 @@ import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/home/lesson_page/chapter_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
-class LessonChapters extends StatelessWidget {
-  const LessonChapters({super.key});
+class LessonPracticeChapters extends StatelessWidget {
+  const LessonPracticeChapters({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class LessonChapters extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.subtitle("Lesson Content"),
+        Styles.subtitle("Lesson Practice"),
         Column(
           spacing: 4.0,
           mainAxisSize: MainAxisSize.min,

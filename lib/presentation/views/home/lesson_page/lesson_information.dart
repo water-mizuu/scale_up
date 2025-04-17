@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_information_view.dart";
-import "package:scroll_animator/scroll_animator.dart";
+import "package:scale_up/utils/animated_scroll_controller.dart";
 
 class LessonInformation extends StatelessWidget {
   const LessonInformation({super.key});
@@ -11,7 +11,7 @@ class LessonInformation extends StatelessWidget {
     // I don't want to create a StatefulWidget just to use this controller.
     //   Thankfully, providers automatically dispose of the values.
     return InheritedProvider(
-      create: (_) => AnimatedScrollController(animationFactory: const ChromiumEaseInOut()),
+      create: (_) => AnimatedScrollController(),
       dispose: (_, v) => v.dispose(),
       builder:
           (context, child) => SingleChildScrollView(

@@ -1,7 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart" as firebase_auth;
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/title_case.dart";
 
 class UserBar extends StatelessWidget {
   const UserBar({super.key});
@@ -15,17 +15,18 @@ class UserBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 2.0,
             children: [
-              Text("Welcome back", style: TextStyle(fontSize: 12.0), textAlign: TextAlign.start),
+              Text(
+                "Welcome back",
+                style: TextStyle(fontSize: 12.0),
+                textAlign: TextAlign.start,
+              ),
               StreamBuilder(
                 stream: firebase_auth.FirebaseAuth.instance.userChanges(),
                 builder: (context, snapshot) {
                   var user = firebase_auth.FirebaseAuth.instance.currentUser;
-                  if (kDebugMode) {
-                    print(user);
-                  }
 
                   return Styles.subtitle(
-                    'Hello, ${(user?.displayName ?? "User").toLowerCase()}',
+                    'Hello, ${(user?.displayName ?? "User").toTitleCase()}',
                     textAlign: TextAlign.start,
                   );
                 },

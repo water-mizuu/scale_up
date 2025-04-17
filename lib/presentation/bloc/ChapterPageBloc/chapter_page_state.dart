@@ -15,7 +15,7 @@ enum ChapterPageStatus {
   correct,
   incorrect,
   movingToNextQuestion,
-  completed,
+  finished,
   error,
 }
 

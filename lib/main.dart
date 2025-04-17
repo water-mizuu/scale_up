@@ -1,6 +1,7 @@
 import "dart:io" show Platform;
 
 import "package:firebase_core/firebase_core.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:scale_up/app.dart";
 import "package:window_manager/window_manager.dart";
@@ -12,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  if (Platform.isMacOS || Platform.isWindows) {
+  if (!kIsWeb && (Platform.isMacOS || Platform.isWindows)) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
       size: Size(372, 817),

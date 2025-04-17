@@ -77,7 +77,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } on PlatformException catch (e) {
       if (e case PlatformException(code: "sign_in_failed", :var message)) {
         if (kDebugMode) {
-
         print("*" * 100);
         print((message));
         print("*" * 100);

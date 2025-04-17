@@ -21,23 +21,23 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final FirestoreHelper _firestoreHelper;
   late final FirebaseAuthHelper _firebaseAuthHelper;
-  late final LessonsHelper _lessonRepository;
+  late final LessonsHelper _lessonHelper;
 
   @override
   void initState() {
     super.initState();
 
+    _lessonHelper = LessonsHelper();
     _firestoreHelper = const FirestoreHelper();
     _firebaseAuthHelper = FirebaseAuthHelper();
-    _lessonRepository = LessonsHelper();
-    unawaited(_lessonRepository.initialize());
+    unawaited(_lessonHelper.initialize());
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        InheritedProvider.value(value: _lessonRepository),
+        InheritedProvider.value(value: _lessonHelper),
         BlocProvider(create: (_) => AuthenticationBloc(repository: _firebaseAuthHelper)),
         BlocProvider(create: (_) => UserDataBloc(firestoreHelper: _firestoreHelper)),
       ],
@@ -48,8 +48,8 @@ class _AppState extends State<App> {
         /// We only want to listen if firebase itself initiated a token change.
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           bloc: authenticationBloc,
-          listenWhen: (previous, _) => previous.status == AuthenticationStatus.tokenChanging,
-          listener: (context, state) {
+          listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
+          listener: (_, state) {
             if (state.status == AuthenticationStatus.signedIn) {
               router.goNamed(AppRoutes.home);
             } else if (state.status == AuthenticationStatus.signedOut) {
