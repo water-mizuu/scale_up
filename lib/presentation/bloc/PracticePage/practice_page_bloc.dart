@@ -46,7 +46,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         if (unit != null) unit.id: unit,
     };
 
-    var unitPairs = <(Unit, Unit, num, List<Expression>)>[];
+    var unitPairs = <(Unit, Unit, num, List<((Unit, Unit), Expression)>)>[];
     for (var i = 0; i < chapter.questionCount; ++i) {
       var from = chapter.units.selectRandom();
       var to = chapter.units.where((v) => v != from).selectRandom();
@@ -73,7 +73,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
       PracticePageState.loaded(
         status:
             (questions.isEmpty) //
-                ? ChapterPageStatus.finished
+                ? ChapterPageStatus.finishedWithAllQuestions
                 : ChapterPageStatus.loaded,
         lesson: lesson,
         chapterIndex: state.chapterIndex,
@@ -113,8 +113,8 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
 
     assert(state is LoadedChapterPageState);
     if (state case LoadedChapterPageState state) {
-      var (_, _, fromNum, expr) = state.questions[state.questionIndex];
-      var answer = expr.evaluate(fromNum).toStringAsFixedMax(3);
+      var (_, _, fromNum, exprs) = state.questions[state.questionIndex];
+      var answer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsFixedMax(3);
 
       if (state.answer == answer) {
         emit(state.copyWith(status: ChapterPageStatus.correct));
@@ -139,12 +139,15 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
 
         if (questionIndex >= state.questions.length) {
           emit(
-            state.copyWith(status: ChapterPageStatus.finished, questionIndex: questionIndex),
+            state.copyWith(
+              status: ChapterPageStatus.finishedWithAllQuestions,
+              questionIndex: questionIndex,
+            ),
           );
         } else {
           emit(
             state.copyWith(
-              status: ChapterPageStatus.loaded,
+              status: ChapterPageStatus.movedToNextQuestion,
               questionIndex: questionIndex,
               answer: "0",
             ),
@@ -158,7 +161,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         emit(
           state.copyWith(
             //
-            status: ChapterPageStatus.loaded,
+            status: ChapterPageStatus.movedToNextQuestion,
             questions: questions,
             questionIndex: state.questionIndex,
             answer: "0",

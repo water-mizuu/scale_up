@@ -26,7 +26,7 @@ Expression primary =
 
 
 Expression number =
-  | \d+ "." \d+ { ConstantExpression(double.parse(span)) }
+  | json.atom.number { ConstantExpression(double.parse(span)) }
   | \d+ { ConstantExpression(int.parse(span)) }
   | [A-Za-z_] [A-Za-z0-9_]* { VariableExpression(span) }
   ;

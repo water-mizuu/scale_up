@@ -118,7 +118,13 @@ class LessonsHelper {
     return (unitMap, conversionGraph);
   }
 
-  Future<List<Expression>?> _computeConversionFor(UnitGroup group, Unit start, Unit end) async {
+  /// This gives a conversion path from [start] to [end] in the form of a list of expressions.
+  /// The conversion path is computed using a breadth-first search (BFS) algorithm.
+  Future<List<((Unit, Unit), Expression)>?> _computeConversionFor(
+    UnitGroup group,
+    Unit start,
+    Unit end,
+  ) async {
     await _init.future;
 
     var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
@@ -162,31 +168,30 @@ class LessonsHelper {
     path.add(start);
     path = path.reversed.toList();
 
-    var conversions = <Expression>[];
+    var conversions = <((Unit, Unit), Expression)>[];
     for (var i = 0; i < path.length - 1; ++i) {
       var from = path[i];
       var to = path[i + 1];
       var conversion = conversionGraph[from]![to]!;
-      conversions.add(conversion);
+      conversions.add(((from, to), conversion));
     }
 
     return conversions;
   }
 
-  Future<List<Expression>?> getConversionPathFor(Unit from, Unit to) async {
+  Future<List<((Unit, Unit), Expression)>?> getConversionPathFor(Unit from, Unit to) async {
     await _init.future;
 
     var unitGroup =
         _unitGroups //
-            .where(
-              (group) =>
-                  group.units.any((unit) => unit.id == from.id) &&
-                  group.units.any((unit) => unit.id == to.id),
-            )
+            .where((group) => group.units.contains(from) && group.units.contains(to))
             .firstOrNull;
 
     if (unitGroup == null) {
-      throw Exception("Unit group not found for units $from and $to");
+      if (kDebugMode) {
+        throw UnsupportedError("No unit group found for units $from and $to");
+      }
+      return null;
     }
 
     return _computeConversionFor(unitGroup, from, to);

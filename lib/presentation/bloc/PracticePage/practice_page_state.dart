@@ -14,8 +14,15 @@ enum ChapterPageStatus {
   evaluating,
   correct,
   incorrect,
+
+  /// Transition related status.
   movingToNextQuestion,
-  finished,
+  movedToNextQuestion,
+
+  /// Problem set related status.
+  finishedWithAllQuestions,
+
+  /// Runtime error related status.
   error,
 }
 
@@ -35,7 +42,7 @@ sealed class PracticePageState with _$PracticePageState {
     required ChapterPageStatus status,
     required int chapterIndex,
     required Lesson lesson,
-    required List<(Unit, Unit, num, List<Expression>)> questions,
+    required List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions,
     required int questionIndex,
     String? answer,
     String? correctAnswer,

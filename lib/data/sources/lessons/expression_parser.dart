@@ -566,38 +566,10 @@ final class ExpressionParser extends _PegParser<Expression > {
   Expression ? r5() {
     if (this._mark() case var _mark) {
       if (this.pos case var from) {
-        if (this.matchPattern(_regexp.$1) case var _2?) {
-          if ([_2] case var _l3) {
-            for (;;) {
-              if (this._mark() case var _mark) {
-                if (this.matchPattern(_regexp.$1) case var _2?) {
-                  _l3.add(_2);
-                  continue;
-                }
-                this._recover(_mark);
-                break;
-              }
-            }
-            if (this.matchPattern(_string.$12) case _?) {
-              if (this.matchPattern(_regexp.$1) case var _0?) {
-                if ([_0] case var _l1) {
-                  for (;;) {
-                    if (this._mark() case var _mark) {
-                      if (this.matchPattern(_regexp.$1) case var _0?) {
-                        _l1.add(_0);
-                        continue;
-                      }
-                      this._recover(_mark);
-                      break;
-                    }
-                  }
-                  if (this.pos case var to) {
-                    if (this.buffer.substring(from, to) case var span) {
-                      return ConstantExpression(double.parse(span));
-                    }
-                  }
-                }
-              }
+        if (this.matchPattern(_regexp.$1) case var $?) {
+          if (this.pos case var to) {
+            if (this.buffer.substring(from, to) case var span) {
+              return ConstantExpression(double.parse(span));
             }
           }
         }
@@ -605,12 +577,12 @@ final class ExpressionParser extends _PegParser<Expression > {
 
       this._recover(_mark);
       if (this.pos case var from) {
-        if (this.matchPattern(_regexp.$1) case var _4?) {
-          if ([_4] case var _l5) {
+        if (this.matchPattern(_regexp.$2) case var _0?) {
+          if ([_0] case var _l1) {
             for (;;) {
               if (this._mark() case var _mark) {
-                if (this.matchPattern(_regexp.$1) case var _4?) {
-                  _l5.add(_4);
+                if (this.matchPattern(_regexp.$2) case var _0?) {
+                  _l1.add(_0);
                   continue;
                 }
                 this._recover(_mark);
@@ -630,13 +602,13 @@ final class ExpressionParser extends _PegParser<Expression > {
       if (this.pos case var from) {
         if (this.matchRange(_range.$2) case _?) {
           if (this._mark() case var _mark) {
-            if (this.matchRange(_range.$1) case var _6) {
-              if ([if (_6 case var _6?) _6] case var _l7) {
-                if (_l7.isNotEmpty) {
+            if (this.matchRange(_range.$1) case var _2) {
+              if ([if (_2 case var _2?) _2] case var _l3) {
+                if (_l3.isNotEmpty) {
                   for (;;) {
                     if (this._mark() case var _mark) {
-                      if (this.matchRange(_range.$1) case var _6?) {
-                        _l7.add(_6);
+                      if (this.matchRange(_range.$1) case var _2?) {
+                        _l3.add(_2);
                         continue;
                       }
                       this._recover(_mark);
@@ -662,12 +634,12 @@ final class ExpressionParser extends _PegParser<Expression > {
   /// `global::_`
   late final r6 = () {
     if (this._mark() case var _mark) {
-      if (this.matchPattern(_regexp.$2) case var _0) {
+      if (this.matchPattern(_regexp.$3) case var _0) {
         if ([if (_0 case var _0?) _0] case var _l1) {
           if (_l1.isNotEmpty) {
             for (;;) {
               if (this._mark() case var _mark) {
-                if (this.matchPattern(_regexp.$2) case var _0?) {
+                if (this.matchPattern(_regexp.$3) case var _0?) {
                   _l1.add(_0);
                   continue;
                 }
@@ -686,10 +658,12 @@ final class ExpressionParser extends _PegParser<Expression > {
 
 }
 class _regexp {
+  /// `/-?\d+(\.\d+)?([eE][+-]?\d+)?/`
+  static final $1 = RegExp("-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?");
   /// `/\d/`
-  static final $1 = RegExp("\\d");
+  static final $2 = RegExp("\\d");
   /// `/\s/`
-  static final $2 = RegExp("\\s");
+  static final $3 = RegExp("\\s");
 }
 class _string {
   /// `"0"`

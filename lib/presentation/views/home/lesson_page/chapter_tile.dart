@@ -24,23 +24,23 @@ class ChapterTile extends StatelessWidget {
 
     return Material(
       elevation: 12.0,
-      borderRadius: BorderRadius.circular(25.0),
+      borderRadius: BorderRadius.circular(8.0),
       shadowColor: Colors.black.withValues(alpha: 0.3),
       child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         leading: ChapterIndex(index: index, isCompleted: isComplete),
         title: Styles.body(chapter.name, fontSize: 14),
         subtitle: Styles.body("${chapter.questionCount} questions", color: Colors.grey),
         onTap:
         // isComplete
-        //     ? null
-        //     :
+            // ? null
+            // :
         () {
           context.pushNamed(
             AppRoutes.chapter,
             pathParameters: {"id": lessonId, "chapterIndex": "$index"},
           );
         },
-        tileColor: Colors.white,
       ),
     );
   }

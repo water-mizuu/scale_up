@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
-import "package:scale_up/presentation/views/home/"
-    "calculate_practice_page/calculate_practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_progress_bar.dart";
 
-class CompletedCalculatePracticeBody extends StatelessWidget {
-  const CompletedCalculatePracticeBody({required this.progressBarKey, super.key});
+class CompletedPracticeBody extends StatelessWidget {
+  const CompletedPracticeBody({required this.progressBarKey, super.key});
 
   final GlobalKey progressBarKey;
 
@@ -15,7 +14,7 @@ class CompletedCalculatePracticeBody extends StatelessWidget {
         spacing: 8.0,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CalculatePracticeProgressBar(progressBarKey: progressBarKey),
+          PracticeProgressBar(progressBarKey: progressBarKey),
           Expanded(child: Center(child: Text("Congrats! You done bro"))),
         ],
       ),

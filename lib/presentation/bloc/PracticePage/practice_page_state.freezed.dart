@@ -176,14 +176,14 @@ $LessonCopyWith<$Res> get lesson {
 
 
 class LoadedChapterPageState extends PracticePageState {
-  const LoadedChapterPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<Expression>)> questions, required this.questionIndex, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
+  const LoadedChapterPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, required this.questionIndex, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  ChapterPageStatus status;
 @override final  int chapterIndex;
 @override final  Lesson lesson;
- final  List<(Unit, Unit, num, List<Expression>)> _questions;
- List<(Unit, Unit, num, List<Expression>)> get questions {
+ final  List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> _questions;
+ List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> get questions {
   if (_questions is EqualUnmodifiableListView) return _questions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_questions);
@@ -224,7 +224,7 @@ abstract mixin class $LoadedChapterPageStateCopyWith<$Res> implements $PracticeP
   factory $LoadedChapterPageStateCopyWith(LoadedChapterPageState value, $Res Function(LoadedChapterPageState) _then) = _$LoadedChapterPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- ChapterPageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<Expression>)> questions, int questionIndex, String? answer, String? correctAnswer, String? error
+ ChapterPageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, int questionIndex, String? answer, String? correctAnswer, String? error
 });
 
 
@@ -247,7 +247,7 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as ChapterPageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
 as int,lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
 as Lesson,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<(Unit, Unit, num, List<Expression>)>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
+as List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
 as int,answer: freezed == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
 as String?,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer // ignore: cast_nullable_to_non_nullable
 as String?,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable

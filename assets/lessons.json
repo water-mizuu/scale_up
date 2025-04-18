@@ -15,36 +15,10 @@
       ]
     },
     {
-      "type": "area",
-      "conversions": [
-        {
-          "from": "square meter",
-          "to": "square kilometer",
-          "formula": "from / 1000000"
-        },
-        {
-          "from": "square meter",
-          "to": "square feet",
-          "formula": "from * 10.764"
-        },
-        {
-          "from": "square feet",
-          "to": "square inch",
-          "formula": "from * 144"
-        }
-      ],
-      "units": [
-        { "id": "square meter", "shortcut": "m²" },
-        { "id": "square kilometer", "shortcut": "km²" },
-        { "id": "square feet", "shortcut": "ft²" },
-        { "id": "square inch", "shortcut": "in²" }
-      ]
-    },
-    {
       "type": "mass",
       "conversions": [
         { "from": "gram", "to": "kilogram", "formula": "from / 1000" },
-        { "from": "gram", "to": "pound", "formula": "from * 0.00220462" },
+        { "from": "gram", "to": "pound", "formula": "from / 453.6" },
         { "from": "pound", "to": "ounce", "formula": "from * 16" }
       ],
       "units": [
@@ -75,12 +49,13 @@
     {
       "type": "molecules",
       "conversions": [
-        { "to": "gram", "from": "mole", "formula": "from / amu" },
+        { "from": "mole", "to": "gram", "formula": "from / amu" },
         { "from": "mole", "to": "particle", "formula": "from * 6.02223" }
       ],
       "units": [
         { "id": "mole", "shortcut": "mol" },
-        { "id": "particle", "shortcut": "particle" }
+        { "id": "particle", "shortcut": "particle" },
+        { "id": "gram", "shortcut": "g" }
       ]
     }
   ],
@@ -97,37 +72,6 @@
           "name": "Basic Conversion",
           "question_count": 8,
           "units": ["meter", "kilometer"]
-        }
-      ]
-    },
-    {
-      "id": "area",
-      "category": "Tangible Measurements",
-      "name": "Area",
-      "description": "These are the two-dimensional space occupied by an object.",
-      "color": "#FF33A1",
-      "units_type": "area",
-      "units": [
-        "square meter",
-        "square kilometer",
-        "square feet",
-        "square inch"
-      ],
-      "chapters": [
-        {
-          "name": "Basic Conversion",
-          "question_count": 1,
-          "units": ["square meter", "square kilometer"]
-        },
-        {
-          "name": "Basic Conversion",
-          "question_count": 1,
-          "units": ["square meter", "square kilometer"]
-        },
-        {
-          "name": "Imperial Conversion",
-          "question_count": 8,
-          "units": ["square meter", "square feet"]
         }
       ]
     },
@@ -152,7 +96,7 @@
         {
           "name": "Imperial Conversion",
           "question_count": 8,
-          "units": ["gram", "pound"]
+          "units": ["gram", "pound", "ounce", "kilogram"]
         }
       ]
     },

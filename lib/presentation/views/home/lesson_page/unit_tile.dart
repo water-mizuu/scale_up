@@ -77,7 +77,7 @@ class _UnitTileState extends State<UnitTile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (snapshot.data case Unit(:var shortcut))
-                      Styles.title(shortcut)
+                      FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut))
                     else
                       SizedBox(),
                     //

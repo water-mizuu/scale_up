@@ -8,6 +8,7 @@ class SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: context.read<FocusNode>(),
       onChanged: (value) => context.read<AllLessonsPageCubit>().updateType(value),
       decoration: InputDecoration(
         prefixIcon: Padding(

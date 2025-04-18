@@ -7,24 +7,22 @@ import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart"
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
-import "package:scale_up/presentation/views/home/"
-    "calculate_practice_page/calculate_practice_body.dart";
-import "package:scale_up/presentation/views/home/"
-    "calculate_practice_page/completed_calculate_practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 /// We assume that each instance of the ChapterPage is a new set of questions.
-class CalculatePracticePage extends StatefulWidget {
-  const CalculatePracticePage({required this.lessonId, required this.chapterIndex, super.key});
+class PracticePage extends StatefulWidget {
+  const PracticePage({required this.lessonId, required this.chapterIndex, super.key});
 
   final String lessonId;
   final int chapterIndex;
 
   @override
-  State<CalculatePracticePage> createState() => _CalculatePracticePageState();
+  State<PracticePage> createState() => _PracticePageState();
 }
 
-class _CalculatePracticePageState extends State<CalculatePracticePage> {
+class _PracticePageState extends State<PracticePage> {
   late final Future<Lesson?> lessonFuture;
 
   /// We create a bloc asynchronously, after loading the lesson.
@@ -98,7 +96,7 @@ class _CalculatePracticePageState extends State<CalculatePracticePage> {
             ///   that the user has completed the chapter.
             /// This will trigger the UserDataBloc to update the stored local data.
             ///   This will also asynchronously update the server data.
-            case LoadedChapterPageState(status: ChapterPageStatus.finished):
+            case LoadedChapterPageState(status: ChapterPageStatus.finishedWithAllQuestions):
               context.read<UserDataBloc>().add(
                 ChapterCompletedUserDataEvent(
                   lessonId: practicePageBloc.state.lesson.id,
@@ -126,7 +124,7 @@ class _CalculatePracticePageState extends State<CalculatePracticePage> {
                 create: (_) => HSLColor.fromColor(practicePageBloc.state.lesson.color),
               ),
             ],
-            child: ChapterPageView(),
+            child: PracticePageView(),
           ),
         },
       ),
@@ -134,23 +132,23 @@ class _CalculatePracticePageState extends State<CalculatePracticePage> {
   }
 }
 
-class ChapterPageView extends StatefulWidget {
-  const ChapterPageView({super.key});
+class PracticePageView extends StatefulWidget {
+  const PracticePageView({super.key});
 
   @override
-  State<ChapterPageView> createState() => _ChapterPageViewState();
+  State<PracticePageView> createState() => _PracticePageViewState();
 }
 
-class _ChapterPageViewState extends State<ChapterPageView> {
+class _PracticePageViewState extends State<PracticePageView> {
   late final GlobalKey progressBarKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     var state = context.select((PracticePageBloc bloc) => bloc.state as LoadedChapterPageState);
 
-    if (state.status == ChapterPageStatus.finished) {
-      return CompletedCalculatePracticeBody(progressBarKey: progressBarKey);
+    if (state.status == ChapterPageStatus.finishedWithAllQuestions) {
+      return CompletedPracticeBody(progressBarKey: progressBarKey);
     }
-    return CalculatePracticeBody(progressBarKey: progressBarKey);
+    return PracticeBody(progressBarKey: progressBarKey);
   }
 }

@@ -8,7 +8,7 @@ sealed class PracticePageEvent {
 
 final class PracticePageLessonLoaded extends PracticePageEvent {
   final Lesson lesson;
-  final List<(Unit, Unit, num, List<Expression>)> questions;
+  final List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions;
 
   const PracticePageLessonLoaded({required this.lesson, required this.questions});
 }

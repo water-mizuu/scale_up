@@ -3,10 +3,10 @@ import "package:go_router/go_router.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page.dart";
-import "package:scale_up/presentation/views/home/calculate_practice_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";
+import "package:scale_up/presentation/views/home/practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
 import "package:scale_up/presentation/views/home/widgets/app_scaffold.dart";
 
@@ -14,9 +14,10 @@ class AppRoutes {
   static const String login = "login";
   static const String signUp = "signup";
   static const String home = "home";
-  static const String allLessons = "lessons";
   static const String profile = "profile";
   static const String lesson = "lesson";
+  static const String allLessons = "all_lessons";
+  static const String allLessonsSearch = "all_lessons_search";
   static const String chapter = "chapter";
 
   static const String _blank = "/blank";
@@ -58,9 +59,16 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: "/all_lessons",
           name: AppRoutes.allLessons,
-          builder: (context, state) => const AllLessonsPage(),
+          builder: (context, state) => const AllLessonsPage(isFromSearch: false),
           routes: [
+            GoRoute(
+              path: "from_search",
+              name: AppRoutes.allLessonsSearch,
+              builder: (context, state) => AllLessonsPage(isFromSearch: true),
+            ),
+
             ShellRoute(
+              parentNavigatorKey: _rootNavigatorKey,
               navigatorKey: _lessonShellNavigatorKey,
               builder: (context, state, child) {
                 var lessonId = state.pathParameters["id"];
@@ -85,7 +93,7 @@ final GoRouter router = GoRouter(
                         assert(lessonId != null, "Lesson ID cannot be null");
                         assert(chapterIndex != null, "Chapter index cannot be null");
 
-                        return CalculatePracticePage(
+                        return PracticePage(
                           lessonId: lessonId!,
                           chapterIndex: int.parse(chapterIndex!),
                         );
