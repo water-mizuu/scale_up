@@ -196,17 +196,17 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       } else {
         var isLastCharacterDigit =
             display.isNotEmpty && int.tryParse(display.trimRight().split("").last) != null;
-        var isCharacterDigit = int.tryParse(character) != null;
+        var isCharacterDigitOrDot = int.tryParse(character) != null || character == ".";
 
         /// If the last character is a digit, and the current character is a digit,
         ///   then we should just append it plainly.
-        if (isLastCharacterDigit && isCharacterDigit) {
+        if (isLastCharacterDigit && isCharacterDigitOrDot) {
           display = display.trimRight();
           display += character;
         }
         /// If the last character is NOT a digit (i.e. an operator),
         ///   Then we should append space.
-        else if (!isLastCharacterDigit || !isCharacterDigit) {
+        else if (!isLastCharacterDigit || !isCharacterDigitOrDot) {
           display = display.trimRight();
           display += " ";
           display += character;
