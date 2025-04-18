@@ -21,6 +21,7 @@ class CalculatorWidget extends StatefulWidget {
 }
 
 class _CalculatorWidgetState extends State<CalculatorWidget> {
+  late final HSLColor hslColor;
   late final ExpressionParser expressionParser;
   late String display;
   late bool appendOverrides;
@@ -29,6 +30,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   void initState() {
     super.initState();
 
+    hslColor = context.read<HSLColor>();
     expressionParser = ExpressionParser();
     display = "0";
     appendOverrides = false;
@@ -36,6 +38,16 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var neutralColor =
+        hslColor
+            .withSaturation((hslColor.saturation * 0.12).clamp(0, 1))
+            .withLightness(0.3)
+            .toColor();
+
+    final accent = hslColor.withSaturation(hslColor.saturation * 0.5);
+    final acKey = accent.withLightness((hslColor.lightness + 0.05).clamp(0, 1)).toColor();
+    final equalsKey = accent.withLightness((hslColor.lightness - 0.1).clamp(0, 1)).toColor();
+
     return BlocListener<PracticePageBloc, PracticePageState>(
       listenWhen:
           (_, now) =>
@@ -71,11 +83,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                 Row(
                   spacing: 4.0,
                   children: [
-                    _textButton(
-                      onTap: _clear,
-                      label: "AC",
-                      color: const Color.fromARGB(255, 151, 91, 91),
-                    ),
+                    _textButton(onTap: _clear, label: "AC", color: acKey),
                     Expanded(
                       child: Row(
                         spacing: 4.0,
@@ -83,74 +91,58 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                           _textButton(
                             onTap: () => _append(" ("),
                             label: "(",
-                            color: Colors.blueGrey,
+                            color: neutralColor,
                           ),
                           _textButton(
                             onTap: () => _append(") "),
                             label: ")",
-                            color: Colors.blueGrey,
+                            color: neutralColor,
                           ),
                         ],
                       ),
                     ),
-                    _textButton(
-                      onTap: () => _append(" ^ "),
-                      label: "^",
-                      color: Colors.blueGrey,
-                    ),
-                    _textButton(
-                      onTap: () => _append(" / "),
-                      label: "÷",
-                      color: Colors.blueGrey,
-                    ),
+                    _textButton(onTap: () => _append(" ^ "), label: "^", color: neutralColor),
+                    _textButton(onTap: () => _append(" / "), label: "÷", color: neutralColor),
                   ],
                 ),
                 Row(
                   spacing: 4.0,
                   children: [
-                    _textButton(onTap: () => _append("7"), label: "7"),
-                    _textButton(onTap: () => _append("8"), label: "8"),
-                    _textButton(onTap: () => _append("9"), label: "9"),
-                    _textButton(
-                      onTap: () => _append(" * "),
-                      label: "*",
-                      color: Colors.blueGrey,
-                    ),
+                    _textButton(onTap: () => _append("7"), label: "7", color: neutralColor),
+                    _textButton(onTap: () => _append("8"), label: "8", color: neutralColor),
+                    _textButton(onTap: () => _append("9"), label: "9", color: neutralColor),
+                    _textButton(onTap: () => _append(" * "), label: "*", color: neutralColor),
                   ],
                 ),
                 Row(
                   spacing: 4.0,
                   children: [
-                    _textButton(onTap: () => _append("4"), label: "4"),
-                    _textButton(onTap: () => _append("5"), label: "5"),
-                    _textButton(onTap: () => _append("6"), label: "6"),
-                    _textButton(
-                      onTap: () => _append(" - "),
-                      label: "-",
-                      color: Colors.blueGrey,
-                    ),
+                    _textButton(onTap: () => _append("4"), label: "4", color: neutralColor),
+                    _textButton(onTap: () => _append("5"), label: "5", color: neutralColor),
+                    _textButton(onTap: () => _append("6"), label: "6", color: neutralColor),
+                    _textButton(onTap: () => _append(" - "), label: "-", color: neutralColor),
                   ],
                 ),
                 Row(
                   spacing: 4.0,
                   children: [
-                    _textButton(onTap: () => _append("1"), label: "1"),
-                    _textButton(onTap: () => _append("2"), label: "2"),
-                    _textButton(onTap: () => _append("3"), label: "3"),
-                    _textButton(
-                      onTap: () => _append(" + "),
-                      label: "+",
-                      color: Colors.blueGrey,
-                    ),
+                    _textButton(onTap: () => _append("1"), label: "1", color: neutralColor),
+                    _textButton(onTap: () => _append("2"), label: "2", color: neutralColor),
+                    _textButton(onTap: () => _append("3"), label: "3", color: neutralColor),
+                    _textButton(onTap: () => _append(" + "), label: "+", color: neutralColor),
                   ],
                 ),
                 Row(
                   spacing: 4.0,
                   children: [
-                    _textButton(onTap: () => _append("0"), label: "0"),
-                    _textButton(onTap: () => _append(".", replacesZero: false), label: "."),
-                    _iconButton(onTap: _backspace, label: Icons.backspace),
-                    _textButton(onTap: _evaluate, label: "=", color: Colors.blueAccent),
+                    _textButton(onTap: () => _append("0"), label: "0", color: neutralColor),
+                    _textButton(
+                      onTap: () => _append(".", replacesZero: false),
+                      label: ".",
+                      color: neutralColor,
+                    ),
+                    _iconButton(onTap: _backspace, label: Icons.backspace, color: neutralColor),
+                    _textButton(onTap: _evaluate, label: "=", color: equalsKey),
                   ],
                 ),
               ],
@@ -243,26 +235,28 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     }
   }
 
-  Widget _textButton({required void Function() onTap, required String label, Color? color}) {
+  Widget _textButton({
+    required void Function() onTap,
+    required String label,
+    required Color color,
+  }) {
     return Expanded(
       child: FilledButton.icon(
-        style: FilledButton.styleFrom(
-          padding: EdgeInsets.all(0),
-          backgroundColor: color ?? Color(0xff444444),
-        ),
+        style: FilledButton.styleFrom(padding: EdgeInsets.all(0), backgroundColor: color),
         onPressed: onTap,
         label: Text(label),
       ),
     );
   }
 
-  Widget _iconButton({required void Function() onTap, required IconData label, Color? color}) {
+  Widget _iconButton({
+    required void Function() onTap,
+    required IconData label,
+    required Color color,
+  }) {
     return Expanded(
       child: FilledButton.icon(
-        style: FilledButton.styleFrom(
-          padding: EdgeInsets.all(0),
-          backgroundColor: color ?? Color(0xff444444),
-        ),
+        style: FilledButton.styleFrom(padding: EdgeInsets.all(0), backgroundColor: color),
         onPressed: onTap,
         label: Icon(label),
       ),

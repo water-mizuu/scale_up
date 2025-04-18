@@ -13,11 +13,12 @@ class LessonProgression extends StatelessWidget {
     var Lesson(:id, :name, :units, :chapters, :color, :chapterCount, :questionCount) =
         context.read();
 
-    var chaptersDone = context.select<UserDataBloc, int>(
-      (bloc) => bloc.state.finishedChapters.where((n) => n.startsWith(id)).length,
+    var chaptersDone = context.select(
+      (UserDataBloc bloc) => bloc.state.finishedChapters.where((n) => n.startsWith(id)).length,
     );
     var chaptersTotal = chapters.length;
     var progressBarValue = chaptersTotal == 0 ? 0.0 : chaptersDone / chaptersTotal;
+    var hslColor = HSLColor.fromColor(color);
 
     return Column(
       spacing: 8.0,
@@ -26,8 +27,13 @@ class LessonProgression extends StatelessWidget {
         Styles.subtitle("Progression"),
         FAProgressBar(
           currentValue: progressBarValue * 100,
-          displayText: "%",
           progressColor: color,
+          backgroundColor:
+              hslColor
+                  .withLightness((hslColor.lightness + 0.25).clamp(0, 1))
+                  .withSaturation((hslColor.saturation) / 4)
+                  .toColor(),
+          borderRadius: BorderRadius.circular(24.0),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

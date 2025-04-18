@@ -3,19 +3,19 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
-import "package:scale_up/presentation/views/home/all_lessons_page/lesson_body.dart";
+import "package:scale_up/presentation/views/home/all_lessons_page/all_lessons_body.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/search_bar.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/title_bar.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
-class LessonsPage extends StatefulWidget {
-  const LessonsPage({super.key});
+class AllLessonsPage extends StatefulWidget {
+  const AllLessonsPage({super.key});
 
   @override
-  State<LessonsPage> createState() => _LessonsPageState();
+  State<AllLessonsPage> createState() => _AllLessonsPageState();
 }
 
-class _LessonsPageState extends State<LessonsPage> {
+class _AllLessonsPageState extends State<AllLessonsPage> {
   late final Future<List<Lesson>> lessonsFuture;
 
   @override
@@ -68,7 +68,7 @@ class LessonsPageView extends StatelessWidget {
               child: Column(
                 spacing: 16.0,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [SearchBar(), Expanded(child: LessonBody())],
+                children: [SearchBar(), Expanded(child: AllLessonsBody())],
               ),
             ),
           ],

@@ -11,7 +11,6 @@ _Lesson _$LessonFromJson(Map<String, dynamic> json) => _Lesson(
   category: json['category'] as String,
   name: json['name'] as String,
   description: json['description'] as String,
-  color: colorFromJson(json['color'] as String),
   unitsType: json['units_type'] as String,
   units: (json['units'] as List<dynamic>).map((e) => e as String).toList(),
   chapters:
@@ -25,7 +24,6 @@ Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
   'category': instance.category,
   'name': instance.name,
   'description': instance.description,
-  'color': colorToJson(instance.color),
   'units_type': instance.unitsType,
   'units': instance.units,
   'chapters': instance.chapters,

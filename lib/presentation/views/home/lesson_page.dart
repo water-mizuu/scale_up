@@ -1,18 +1,19 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/blank_lesson_page.dart";
-import "package:scale_up/presentation/views/home/lesson_page/lesson_description.dart";
-import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";
+import "package:scale_up/presentation/views/home/lesson_page/lesson_header.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 class LessonPage extends StatefulWidget {
-  const LessonPage({required this.id, super.key});
+  const LessonPage({required this.id, required this.child, super.key});
 
   final String id;
+  final Widget child;
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -36,16 +37,16 @@ class _LessonPageState extends State<LessonPage> {
         if (snapshot.hasError) {
           context.showBasicSnackbar(snapshot.error.toString());
         }
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
 
         assert(snapshot.hasData);
         switch (snapshot.data) {
           case Lesson lesson:
-            return MultiProvider(
-              providers: [BlocProvider(create: (_) => LessonPageCubit(context.read(), lesson))],
-              child: LessonPageView(lesson: lesson),
+            return BlocProvider(
+              create: (_) => LessonPageCubit(context.read(), lesson),
+              child: LessonPageView(lesson: lesson, child: widget.child),
             );
           case null:
             return BlankLessonPage(id: widget.id);
@@ -56,14 +57,26 @@ class _LessonPageState extends State<LessonPage> {
 }
 
 class LessonPageView extends StatelessWidget {
-  const LessonPageView({required this.lesson, super.key});
+  const LessonPageView({required this.lesson, required this.child, super.key});
 
   final Lesson lesson;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) {
+            if (!context.canPop()) {
+              return const SizedBox();
+            }
+            return IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new),
+              onPressed: () => context.pop(),
+            );
+          },
+        ),
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
         backgroundColor: lesson.color,
@@ -72,9 +85,10 @@ class LessonPageView extends StatelessWidget {
       body: InheritedProvider.value(
         value: lesson,
         child: Column(
-          spacing: 8.0,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [LessonDescription(), Expanded(child: LessonInformation())],
+
+          /// Description
+          children: [LessonHeader(), Expanded(child: child)],
         ),
       ),
     );

@@ -4,11 +4,7 @@ import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
 
 class LessonGroup extends StatelessWidget {
-  const LessonGroup({
-    super.key,
-    required this.categoryName,
-    required this.lessons,
-  });
+  const LessonGroup({super.key, required this.categoryName, required this.lessons});
 
   final String categoryName;
   final List<Lesson> lessons;
@@ -20,7 +16,7 @@ class LessonGroup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Styles.subtitle(categoryName),
-        for (Lesson lesson in lessons) LessonTile(lesson: lesson),
+        for (var lesson in lessons) LessonTile(lesson: lesson),
       ],
     );
   }

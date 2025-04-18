@@ -193,29 +193,6 @@ class LessonsHelper {
   }
 }
 
-String colorToJson(Color color) {
-  var values = [(color.r * 255).floor(), (color.g * 255).floor(), (color.b * 255).floor()];
-  var joined = values.map((v) => v.toRadixString(16).padLeft(2, "0")).join();
-
-  return "#$joined";
-}
-
-Color colorFromJson(String json) {
-  var regex = RegExp(r"^#([0-9a-fA-F]{6})$");
-  var match = regex.firstMatch(json);
-
-  if (match == null) {
-    throw FormatException("Invalid color format");
-  }
-
-  var hex = match.group(1)!;
-  var r = int.parse(hex.substring(0, 2), radix: 16);
-  var g = int.parse(hex.substring(2, 4), radix: 16);
-  var b = int.parse(hex.substring(4, 6), radix: 16);
-
-  return Color.fromARGB(255, r, g, b);
-}
-
 Expression expressionFromJson(String json) {
   var parser = ExpressionParser();
 

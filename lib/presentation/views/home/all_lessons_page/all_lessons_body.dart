@@ -3,8 +3,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/lesson_group.dart";
 
-class LessonBody extends StatelessWidget {
-  const LessonBody({super.key});
+class AllLessonsBody extends StatelessWidget {
+  const AllLessonsBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +16,7 @@ class LessonBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var (key, value) in state.categoriesByTitle) //
-            LessonGroup(
-              categoryName: key,
-              lessons: value,
-            ),
+            LessonGroup(categoryName: key, lessons: value),
         ],
       ),
     );

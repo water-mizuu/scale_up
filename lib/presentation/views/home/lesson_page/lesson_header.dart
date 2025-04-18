@@ -3,15 +3,15 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
-class LessonDescription extends StatelessWidget {
-  const LessonDescription({super.key});
+class LessonHeader extends StatelessWidget {
+  const LessonHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
     var lesson = context.read<Lesson>();
 
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0) - const EdgeInsets.only(bottom: 8.0),
       decoration: BoxDecoration(
         color: lesson.color,
         borderRadius: BorderRadius.only(
@@ -23,8 +23,8 @@ class LessonDescription extends StatelessWidget {
         spacing: 4.0,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Styles.title.copyWith(color: lesson.foregroundColor)(lesson.name),
-          Styles.body.copyWith(color: lesson.foregroundColor)(lesson.description),
+          Styles.title(lesson.name, color: lesson.foregroundColor),
+          Styles.body(lesson.description, color: lesson.foregroundColor),
           const SizedBox(height: 4.0),
         ],
       ),

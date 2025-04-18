@@ -71,6 +71,17 @@
         { "id": "kelvin", "shortcut": "K" },
         { "id": "rankine", "shortcut": "°R" }
       ]
+    },
+    {
+      "type": "molecules",
+      "conversions": [
+        { "to": "gram", "from": "mole", "formula": "from / amu" },
+        { "from": "mole", "to": "particle", "formula": "from * 6.02223" }
+      ],
+      "units": [
+        { "id": "mole", "shortcut": "mol" },
+        { "id": "particle", "shortcut": "particle" }
+      ]
     }
   ],
   "lessons": [
@@ -79,7 +90,6 @@
       "category": "Tangible Measurements",
       "name": "Length",
       "description": "These are commonly measured using tools such as measuring tapes.",
-      "color": "#FF5733",
       "units_type": "length",
       "units": ["meter", "kilometer", "feet", "inch"],
       "chapters": [
@@ -126,7 +136,6 @@
       "category": "Amount of Substance",
       "name": "Mass",
       "description": "These are the amount of matter or molecules in an object.",
-      "color": "#33FF57",
       "units_type": "mass",
       "units": ["gram", "kilogram", "pound", "ounce"],
       "chapters": [
@@ -152,7 +161,6 @@
       "category": "Heat or Temperature",
       "name": "Temperature",
       "description": "These are the measure of the average kinetic energy of particles in a substance. We perceive temperature as how hot or cold something is.",
-      "color": "#3357FF",
 
       "units_type": "temperature",
       "units": ["celsius", "fahrenheit", "kelvin", "rankine"],
@@ -166,6 +174,21 @@
           "name": "Scientifec Conversion",
           "question_count": 8,
           "units": ["celsius", "fahrenheit", "kelvin"]
+        }
+      ]
+    },
+    {
+      "id": "molecules",
+      "category": "Amount of Substance",
+      "name": "Molecules",
+      "description": "These are the measure of the number of molecules in a substance.",
+      "units_type": "molecules",
+      "units": ["mole", "particle"],
+      "chapters": [
+        {
+          "name": "Basic Conversion",
+          "question_count": 8,
+          "units": ["mole", "particle"]
         }
       ]
     }

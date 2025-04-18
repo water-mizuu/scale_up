@@ -8,7 +8,10 @@ class OngoingLessonsContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lessons = context.watch<HomePageCubit>().state.ongoingLessons;
+    var lessons = context.select((HomePageCubit cubit) => cubit.state.ongoingLessons);
+    if (lessons.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       spacing: 8.0,

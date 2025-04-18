@@ -55,7 +55,7 @@ class _UnitTileState extends State<UnitTile> {
               unitFuture: unitFuture,
               lesson: lesson,
             ),
-            child: Ink(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
                 color: Colors.white,
@@ -70,23 +70,19 @@ class _UnitTileState extends State<UnitTile> {
 
               /// This material widget makes sure that the ink doesn't overflow
               ///   through clipping like in scroll views.
-              child: InkWell(
-                borderRadius: borderRadius,
-                // onTap: () {},
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (snapshot.data case Unit(:var shortcut))
-                        Styles.title(shortcut)
-                      else
-                        SizedBox(),
-                      //
-                      FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
-                    ],
-                  ),
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (snapshot.data case Unit(:var shortcut))
+                      Styles.title(shortcut)
+                    else
+                      SizedBox(),
+                    //
+                    FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
+                  ],
                 ),
               ),
             ),
