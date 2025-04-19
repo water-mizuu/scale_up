@@ -36,7 +36,7 @@ sealed class PracticePageState with _$PracticePageState {
     String? answer,
     String? correctAnswer,
     String? error,
-  }) = InitialChapterPageState;
+  }) = InitialPracticePageState;
 
   const factory PracticePageState.loaded({
     required ChapterPageStatus status,
@@ -47,11 +47,11 @@ sealed class PracticePageState with _$PracticePageState {
     String? answer,
     String? correctAnswer,
     String? error,
-  }) = LoadedChapterPageState;
+  }) = LoadedPracticePageState;
 
   double? get progress => switch (this) {
-    InitialChapterPageState() => null,
-    LoadedChapterPageState(:var questions, :var questionIndex) =>
+    InitialPracticePageState() => null,
+    LoadedPracticePageState(:var questions, :var questionIndex) =>
       (questionIndex + 1) / (questions.length + 1),
   };
 }

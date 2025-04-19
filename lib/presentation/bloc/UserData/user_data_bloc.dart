@@ -14,7 +14,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       super(UserDataState(user: null, status: UserDataStatus.none, finishedChapters: {})) {
     on<SignedInUserDataEvent>(_onSignedIn);
     on<SignedOutUserDataEvent>(_onSignedOut);
-    on<ChapterCompletedUserDataEvent>(_onChapterCompleted);
+    on<PracticeChapterCompletedUserDataEvent>(_onPracticeChapterCompleted);
   }
 
   final FirestoreHelper _firestoreHelper;
@@ -39,18 +39,20 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     emit(state.copyWith(status: UserDataStatus.loaded, user: null, finishedChapters: {}));
   }
 
-  Future<void> _onChapterCompleted(
-    ChapterCompletedUserDataEvent event,
+  Future<void> _onPracticeChapterCompleted(
+    PracticeChapterCompletedUserDataEvent event,
     Emitter<UserDataState> emit,
   ) async {
     if (state case UserDataState(:var user?)) {
-      var ChapterCompletedUserDataEvent(:lessonId, :chapterIndex) = event;
-      var key = "$lessonId:$chapterIndex";
+      var PracticeChapterCompletedUserDataEvent(:lessonId, :chapterIndex) = event;
+      var key = "$lessonId:p:$chapterIndex";
 
       var finishedChapters = {...state.finishedChapters, key};
       emit(state.copyWith(finishedChapters: finishedChapters));
 
-      unawaited(_firestoreHelper.registerChapterAsCompletedAsync(user, lessonId, chapterIndex));
+      unawaited(
+        _firestoreHelper.registerPracticeChapterAsCompleted(user, lessonId, chapterIndex),
+      );
     }
   }
 }

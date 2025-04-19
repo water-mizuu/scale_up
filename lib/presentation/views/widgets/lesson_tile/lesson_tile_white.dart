@@ -11,21 +11,25 @@ class LessonTileWhite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var Lesson(:id, :name, :units, :chapters, :color) = context.read();
-    var questionsDone = context.select<UserDataBloc, int>(
-      (bloc) => bloc.state.finishedChapters
-          /// We only take the tags that start with this lesson
-          .where((n) => n.startsWith(id))
+    var Lesson(:id, :name, :units, :practiceChapters, :color) = context.read();
+    var regex = RegExp("^$id:p:(\\d+)\$");
+
+    var questionsDone = context.select(
+      (UserDataBloc bloc) => bloc.state.finishedChapters
+          /// We match the pattern with the regex.
+          .map(regex.firstMatch)
+          .whereType<RegExpMatch>()
           /// We take the string indices
-          .map((v) => v.substring(id.length + 1))
+          .map((v) => v.group(1))
+          .whereType<String>()
           /// We parse the indices to integers
           .map((s) => int.parse(s))
           /// We get the chapter object from the lesson object, reading the questionCount.
-          .map((s) => chapters[s].questionCount)
+          .map((s) => practiceChapters[s].questionCount)
           /// And we sum them all up.
           .fold(0, (a, b) => a + b),
     );
-    var questionsTotal = chapters.map((c) => c.questionCount).fold(0, (a, b) => a + b);
+    var questionsTotal = practiceChapters.map((c) => c.questionCount).fold(0, (a, b) => a + b);
     var progressBarValue = questionsTotal == 0 ? 0.0 : questionsDone / questionsTotal;
 
     return Expanded(

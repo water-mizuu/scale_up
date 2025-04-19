@@ -11,11 +11,11 @@ class PracticeProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var PracticePageState(:progress) = context.read<PracticePageBloc>().state;
+    var PracticePageState(:progress, :lesson) = context.read<PracticePageBloc>().state;
     if (progress == null) {
       return const SizedBox.shrink();
     }
-    var hslColor = context.read<HSLColor>();
+    var hslColor = lesson.hslColor;
 
     return Ink(
       decoration: BoxDecoration(

@@ -45,18 +45,6 @@
         { "id": "kelvin", "shortcut": "K" },
         { "id": "rankine", "shortcut": "°R" }
       ]
-    },
-    {
-      "type": "molecules",
-      "conversions": [
-        { "from": "mole", "to": "gram", "formula": "from / amu" },
-        { "from": "mole", "to": "particle", "formula": "from * 6.02223" }
-      ],
-      "units": [
-        { "id": "mole", "shortcut": "mol" },
-        { "id": "particle", "shortcut": "particle" },
-        { "id": "gram", "shortcut": "g" }
-      ]
     }
   ],
   "lessons": [
@@ -67,11 +55,48 @@
       "description": "These are commonly measured using tools such as measuring tapes.",
       "units_type": "length",
       "units": ["meter", "kilometer", "feet", "inch"],
-      "chapters": [
+      "learn": [
         {
-          "name": "Basic Conversion",
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["meter", "kilometer"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["meter", "inch"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 3",
+          "units": ["feet", "inch"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": ["meter", "kilometer", "feet", "inch"]
+        }
+      ],
+      "practice": [
+        {
+          "name": "Basic Conversion -- 1",
           "question_count": 8,
           "units": ["meter", "kilometer"]
+        },
+        {
+          "name": "Basic Conversion -- 3",
+          "question_count": 8,
+          "units": ["feet", "inch"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 8,
+          "units": ["meter", "inch"]
+        },
+        {
+          "name": "Full Conversion",
+          "question_count": 8,
+          "units": ["meter", "kilometer", "feet", "inch"]
         }
       ]
     },
@@ -82,7 +107,29 @@
       "description": "These are the amount of matter or molecules in an object.",
       "units_type": "mass",
       "units": ["gram", "kilogram", "pound", "ounce"],
-      "chapters": [
+      "learn": [
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["gram", "kilogram"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["gram", "pound"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 3",
+          "units": ["pound", "ounce"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": ["gram", "pound", "ounce", "pound"]
+        }
+      ],
+      "practice": [
         {
           "name": "Basic Conversion",
           "question_count": 8,
@@ -108,7 +155,29 @@
 
       "units_type": "temperature",
       "units": ["celsius", "fahrenheit", "kelvin", "rankine"],
-      "chapters": [
+      "learn": [
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["celsius", "fahrenheit"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["celsius", "kelvin"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 3",
+          "units": ["rankine", "fahrenheit"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": ["celsius", "fahrenheit", "kelvin", "fahrenheit"]
+        }
+      ],
+      "practice": [
         {
           "name": "Basic Conversion",
           "question_count": 1,
@@ -118,21 +187,6 @@
           "name": "Scientifec Conversion",
           "question_count": 8,
           "units": ["celsius", "fahrenheit", "kelvin"]
-        }
-      ]
-    },
-    {
-      "id": "molecules",
-      "category": "Amount of Substance",
-      "name": "Molecules",
-      "description": "These are the measure of the number of molecules in a substance.",
-      "units_type": "molecules",
-      "units": ["mole", "particle"],
-      "chapters": [
-        {
-          "name": "Basic Conversion",
-          "question_count": 8,
-          "units": ["mole", "particle"]
         }
       ]
     }

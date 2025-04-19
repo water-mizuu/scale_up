@@ -31,10 +31,12 @@ class HomePageCubit extends Cubit<HomePageState> {
     var ongoingLessons = [
       for (var lesson in allLessons)
         if (count[lesson.id] case var chapterCount?
-            when 0 < chapterCount && chapterCount < lesson.chapterCount)
+            when 0 < chapterCount && chapterCount < lesson.practiceChapters.length)
           lesson,
     ]..sort(
-      (a, b) => (count[b.id]! / b.chapterCount).compareTo((count[a.id]! / a.chapterCount)),
+      (a, b) => (count[b.id]! / b.practiceChapters.length).compareTo(
+        (count[a.id]! / a.practiceChapters.length),
+      ),
     );
 
     var newLessons = [
@@ -44,7 +46,8 @@ class HomePageCubit extends Cubit<HomePageState> {
 
     var finishedLessons = [
       for (var lesson in allLessons)
-        if (count[lesson.id] case var chapterCount? when chapterCount >= lesson.chapterCount)
+        if (count[lesson.id] case var chapterCount?
+            when chapterCount >= lesson.practiceChapters.length)
           lesson,
     ];
 

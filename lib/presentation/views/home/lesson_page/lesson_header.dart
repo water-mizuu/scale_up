@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class LessonHeader extends StatelessWidget {
@@ -8,7 +8,7 @@ class LessonHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lesson = context.read<Lesson>();
+    var lesson = context.read<LessonPageCubit>().state.lesson;
 
     return Container(
       padding: const EdgeInsets.all(8.0) - const EdgeInsets.only(bottom: 8.0),
@@ -25,7 +25,7 @@ class LessonHeader extends StatelessWidget {
         children: [
           Styles.title(lesson.name, color: lesson.foregroundColor),
           Styles.body(lesson.description, color: lesson.foregroundColor),
-          const SizedBox(height: 4.0),
+          const SizedBox(height: 18.0),
         ],
       ),
     );

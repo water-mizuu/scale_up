@@ -7,13 +7,13 @@ import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/blank_lesson_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_header.dart";
+import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 class LessonPage extends StatefulWidget {
-  const LessonPage({required this.id, required this.child, super.key});
+  const LessonPage({required this.id, super.key});
 
   final String id;
-  final Widget child;
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -44,9 +44,11 @@ class _LessonPageState extends State<LessonPage> {
         assert(snapshot.hasData);
         switch (snapshot.data) {
           case Lesson lesson:
-            return BlocProvider(
-              create: (_) => LessonPageCubit(context.read(), lesson),
-              child: LessonPageView(lesson: lesson, child: widget.child),
+            return MultiProvider(
+              providers: [
+                BlocProvider(create: (context) => LessonPageCubit(context.read(), lesson)),
+              ],
+              child: LessonPageView(lesson: lesson),
             );
           case null:
             return BlankLessonPage(id: widget.id);
@@ -57,10 +59,9 @@ class _LessonPageState extends State<LessonPage> {
 }
 
 class LessonPageView extends StatelessWidget {
-  const LessonPageView({required this.lesson, required this.child, super.key});
+  const LessonPageView({required this.lesson, super.key});
 
   final Lesson lesson;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +83,11 @@ class LessonPageView extends StatelessWidget {
         backgroundColor: lesson.color,
         foregroundColor: lesson.foregroundColor,
       ),
-      body: InheritedProvider.value(
-        value: lesson,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
 
-          /// Description
-          children: [LessonHeader(), Expanded(child: child)],
-        ),
+        /// Description
+        children: [LessonHeader(), Expanded(child: LessonInformation())],
       ),
     );
   }

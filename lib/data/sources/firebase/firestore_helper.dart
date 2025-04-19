@@ -26,7 +26,7 @@ class FirestoreHelper {
 
   static Timer? _registerDebounce;
   static final _registerQueue = Queue<(String, int)>();
-  Future<void> registerChapterAsCompletedAsync(
+  Future<void> registerPracticeChapterAsCompleted(
     User user,
     String lessonId,
     int chapterIndex,
@@ -42,7 +42,7 @@ class FirestoreHelper {
       var finishedChapters = await userDoc.get().then((d) => d.data()!["finished_chapters"]!);
       if (finishedChapters case List finishedChapters) {
         for (var (lessonId, chapterIndex) in _registerQueue) {
-          var key = "$lessonId:$chapterIndex";
+          var key = "$lessonId:p:$chapterIndex";
           if (finishedChapters.contains(key)) continue;
 
           finishedChapters.add(key);

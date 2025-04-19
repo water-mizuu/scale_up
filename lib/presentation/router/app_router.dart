@@ -4,6 +4,7 @@ import "package:scale_up/presentation/views/authentication/sign_in_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
+import "package:scale_up/presentation/views/home/learn_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";
 import "package:scale_up/presentation/views/home/practice_page.dart";
@@ -18,7 +19,8 @@ class AppRoutes {
   static const String lesson = "lesson";
   static const String allLessons = "all_lessons";
   static const String allLessonsSearch = "all_lessons_search";
-  static const String chapter = "chapter";
+  static const String learn = "learn";
+  static const String practice = "practice";
 
   static const String _blank = "/blank";
 }
@@ -26,7 +28,6 @@ class AppRoutes {
 // ignore: unused_element
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
-final _lessonShellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   debugLogDiagnostics: true,
@@ -64,42 +65,52 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: "from_search",
               name: AppRoutes.allLessonsSearch,
-              builder: (context, state) => AllLessonsPage(isFromSearch: true),
+              builder: (context, state) => const AllLessonsPage(isFromSearch: true),
             ),
 
-            ShellRoute(
-              parentNavigatorKey: _rootNavigatorKey,
-              navigatorKey: _lessonShellNavigatorKey,
-              builder: (context, state, child) {
+            GoRoute(
+              path: ":id",
+              name: AppRoutes.lesson,
+              builder: (context, state) {
                 var lessonId = state.pathParameters["id"];
                 assert(lessonId != null, "Lesson ID cannot be null");
 
-                return LessonPage(id: lessonId!, child: child);
+                return LessonPage(
+                  id: lessonId!,
+                );
               },
               routes: [
                 GoRoute(
-                  parentNavigatorKey: _lessonShellNavigatorKey,
-                  path: ":id",
-                  name: AppRoutes.lesson,
-                  builder: (context, state) => LessonInformation(),
-                  routes: [
-                    GoRoute(
-                      parentNavigatorKey: _lessonShellNavigatorKey,
-                      path: "chapter/:chapterIndex",
-                      name: AppRoutes.chapter,
-                      builder: (context, state) {
-                        var lessonId = state.pathParameters["id"];
-                        var chapterIndex = state.pathParameters["chapterIndex"];
-                        assert(lessonId != null, "Lesson ID cannot be null");
-                        assert(chapterIndex != null, "Chapter index cannot be null");
+                  parentNavigatorKey: _rootNavigatorKey,
+                  path: "learn/:chapterIndex",
+                  name: AppRoutes.learn,
+                  builder: (context, state) {
+                    var lessonId = state.pathParameters["id"];
+                    var chapterIndex = state.pathParameters["chapterIndex"];
+                    assert(lessonId != null, "Lesson ID cannot be null");
+                    assert(chapterIndex != null, "Chapter index cannot be null");
 
-                        return PracticePage(
-                          lessonId: lessonId!,
-                          chapterIndex: int.parse(chapterIndex!),
-                        );
-                      },
-                    ),
-                  ],
+                    return LearnPage(
+                      lessonId: lessonId!,
+                      chapterIndex: int.parse(chapterIndex!),
+                    );
+                  },
+                ),
+                GoRoute(
+                  parentNavigatorKey: _rootNavigatorKey,
+                  path: "practice/:chapterIndex",
+                  name: AppRoutes.practice,
+                  builder: (context, state) {
+                    var lessonId = state.pathParameters["id"];
+                    var chapterIndex = state.pathParameters["chapterIndex"];
+                    assert(lessonId != null, "Lesson ID cannot be null");
+                    assert(chapterIndex != null, "Chapter index cannot be null");
+
+                    return PracticePage(
+                      lessonId: lessonId!,
+                      chapterIndex: int.parse(chapterIndex!),
+                    );
+                  },
                 ),
               ],
             ),

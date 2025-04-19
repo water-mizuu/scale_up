@@ -10,7 +10,7 @@ class CheckButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var chapterPageBloc = context.read<PracticePageBloc>();
-    var hslColor = context.read<HSLColor>();
+    var hslColor = chapterPageBloc.state.lesson.hslColor;
     var buttonColor =
         hslColor //
             .withHue((hslColor.hue + 180) % 360)

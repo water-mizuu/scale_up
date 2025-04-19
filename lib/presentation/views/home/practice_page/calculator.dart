@@ -30,7 +30,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   void initState() {
     super.initState();
 
-    hslColor = context.read<HSLColor>();
+    hslColor = context.read<PracticePageBloc>().state.lesson.hslColor;
     expressionParser = ExpressionParser();
     display = "0";
     appendOverrides = false;
@@ -194,9 +194,9 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
           appendOverrides = false;
         }
       } else {
-        var isLastCharacterDigit =
-            display.isNotEmpty && int.tryParse(display.trimRight().split("").last) != null;
-        var isCharacterDigitOrDot = int.tryParse(character) != null || character == ".";
+        late var lastCharacter = display.trimRight().split("").last;
+        var isLastCharacterDigit = display.isNotEmpty && lastCharacter.isDigitOrDot;
+        var isCharacterDigitOrDot = character.isDigitOrDot;
 
         /// If the last character is a digit, and the current character is a digit,
         ///   then we should just append it plainly.
@@ -294,7 +294,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   }) {
     return Expanded(
       child: FilledButton.icon(
-        style: FilledButton.styleFrom(padding: EdgeInsets.all(0), backgroundColor: color),
+        style: FilledButton.styleFrom(
+          padding: EdgeInsets.all(0),
+          backgroundColor: color,
+          shadowColor: Colors.black,
+        ),
         onPressed: onTap,
         label: Text(label),
       ),
@@ -313,5 +317,11 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
         label: Icon(label),
       ),
     );
+  }
+}
+
+extension on String {
+  bool get isDigitOrDot {
+    return int.tryParse(this) != null || this == ".";
   }
 }

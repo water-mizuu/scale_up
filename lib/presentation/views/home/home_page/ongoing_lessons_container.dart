@@ -21,7 +21,7 @@ class OngoingLessonsContainer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Ongoing Lessons", style: TextStyle(fontWeight: FontWeight.bold)),
-            TextButton(onPressed: () {}, child: Text("See All")),
+            const SizedBox(),
           ],
         ),
         SingleChildScrollView(

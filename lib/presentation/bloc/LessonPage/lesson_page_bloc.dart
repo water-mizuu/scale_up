@@ -4,29 +4,20 @@ import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_state.dart";
 
 class LessonPageCubit extends Cubit<LessonPageState> {
-  LessonPageCubit(LessonsHelper lessonsHelper, Lesson lesson)
-    : super(LessonPageState(lesson: lesson)) {
-    var unitGroup = lesson.unitsType;
+  LessonPageCubit(this._lessonsHelper, Lesson lesson) : super(LessonPageState(lesson: lesson)) {
+    _loadLocalUnitGroup();
+  }
 
-    lessonsHelper.getExtendedUnitGroup(unitGroup).then((unitGroup) {
-      if (unitGroup != null) {
-        /// The localized unit group is the unit group without the non-included units.
+  final LessonsHelper _lessonsHelper;
 
-        var unitGroupCopy = unitGroup.copyWith(
-          units: [
-            for (var unit in lesson.units)
-              unitGroup.units.firstWhere((unitGroupUnit) => unitGroupUnit.id == unit),
-          ],
-          conversions: [
-            for (var conversion in unitGroup.conversions)
-              if (lesson.units.contains(conversion.from) &&
-                  lesson.units.contains(conversion.to))
-                conversion,
-          ],
-        );
+  void _loadLocalUnitGroup() async {
+    var localUnitGroup = await _lessonsHelper.getLocalExtendedUnitGroup(
+      state.lesson.unitsType,
+      state.lesson.units,
+    );
 
-        emit(state.copyWith(localUnitGroup: unitGroupCopy));
-      }
-    });
+    if (localUnitGroup != null) {
+      emit(state.copyWith(localUnitGroup: localUnitGroup));
+    }
   }
 }

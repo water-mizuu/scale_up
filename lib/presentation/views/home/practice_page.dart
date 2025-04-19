@@ -73,17 +73,17 @@ class _PracticePageState extends State<PracticePage> {
         listener: (context, state) async {
           switch (state) {
             /// If there is an error, we show a snackbar.
-            case LoadedChapterPageState(:var error?):
+            case LoadedPracticePageState(:var error?):
               await context.showBasicSnackbar(error);
 
             /// These are the cases in which the user has answered.
-            case LoadedChapterPageState(status: ChapterPageStatus.correct):
+            case LoadedPracticePageState(status: ChapterPageStatus.correct):
               await context.showBasicSnackbar("Correct!");
 
               if (context.mounted) {
                 practicePageBloc.add(PracticePageNextQuestion());
               }
-            case LoadedChapterPageState(status: ChapterPageStatus.incorrect):
+            case LoadedPracticePageState(status: ChapterPageStatus.incorrect):
               await context.showBasicSnackbar(
                 "Incorrect! The correct answer was: ${state.correctAnswer}",
               );
@@ -96,9 +96,9 @@ class _PracticePageState extends State<PracticePage> {
             ///   that the user has completed the chapter.
             /// This will trigger the UserDataBloc to update the stored local data.
             ///   This will also asynchronously update the server data.
-            case LoadedChapterPageState(status: ChapterPageStatus.finishedWithAllQuestions):
+            case LoadedPracticePageState(status: ChapterPageStatus.finishedWithAllQuestions):
               context.read<UserDataBloc>().add(
-                ChapterCompletedUserDataEvent(
+                PracticeChapterCompletedUserDataEvent(
                   lessonId: practicePageBloc.state.lesson.id,
                   chapterIndex: practicePageBloc.state.chapterIndex,
                 ),
@@ -107,26 +107,25 @@ class _PracticePageState extends State<PracticePage> {
               return;
           }
         },
-        child: switch (practicePageBloc.state) {
-          /// If we are loading the chapter, we show a progress indicator.
-          InitialChapterPageState() => Material(
-            child: const Center(child: CircularProgressIndicator()),
-          ),
+        child: Builder(
+          builder: (context) {
+            if (practicePageBloc.state is! LoadedPracticePageState) {
+              return const Material(child: Center(child: CircularProgressIndicator()));
+            }
 
-          /// If the chapter is loaded, we show the chapter page.
-          LoadedChapterPageState() => MultiProvider(
-            providers: [
-              BlocProvider.value(value: practicePageBloc),
+            return MultiProvider(
+              providers: [
+                BlocProvider.value(value: practicePageBloc),
 
-              /// We expose a single HSLColor which will be used
-              ///   by the different widgets in the tree.
-              InheritedProvider(
-                create: (_) => HSLColor.fromColor(practicePageBloc.state.lesson.color),
-              ),
-            ],
-            child: PracticePageView(),
-          ),
-        },
+                ///   by the different widgets in the tree.
+                InheritedProvider(
+                  create: (_) => HSLColor.fromColor(practicePageBloc.state.lesson.color),
+                ),
+              ],
+              child: PracticePageView(),
+            );
+          },
+        ),
       ),
     );
   }
@@ -144,7 +143,9 @@ class _PracticePageViewState extends State<PracticePageView> {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.select((PracticePageBloc bloc) => bloc.state as LoadedChapterPageState);
+    var state = context.select(
+      (PracticePageBloc bloc) => bloc.state as LoadedPracticePageState,
+    );
 
     if (state.status == ChapterPageStatus.finishedWithAllQuestions) {
       return CompletedPracticeBody(progressBarKey: progressBarKey);

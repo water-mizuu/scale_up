@@ -25,15 +25,10 @@ class LessonsHelper {
   }
 
   Future<void> initialize() async {
-    // Initialize the repository, if needed
     var jsonString = await rootBundle.loadString("assets/lessons.json");
     // Parse the JSON string into a Dart object
     var data = await compute(jsonDecode, jsonString) as Map<String, dynamic>;
     // Use the parsed data
-    if (kDebugMode) {
-      // print(data);
-    }
-
     var {"lessons": List<dynamic> lessons, "units_present": List<dynamic> unitsPresent} = data;
 
     var lessonList =
@@ -86,6 +81,25 @@ class LessonsHelper {
     ];
 
     return unitGroup.copyWith(conversions: conversions);
+  }
+
+  Future<UnitGroup?> getLocalExtendedUnitGroup(String type, List<String> units) async {
+    var unitGroup = await getExtendedUnitGroup(type);
+    if (unitGroup == null) {
+      return null;
+    }
+
+    return unitGroup.copyWith(
+      units: [
+        for (var unit in units)
+          unitGroup.units.firstWhere((unitGroupUnit) => unitGroupUnit.id == unit),
+      ],
+      conversions: [
+        for (var conversion in unitGroup.conversions)
+          if (units.contains(conversion.from) && units.contains(conversion.to))
+            conversion,
+      ],
+    );
   }
 
   Future<Unit?> getUnit(String id) async {
@@ -208,6 +222,4 @@ Expression expressionFromJson(String json) {
   throw FormatException("Invalid expression format: '$json'");
 }
 
-String expressionToJson(Expression expression) {
-  throw Error();
-}
+String expressionToJson(Expression expression) => expression.toString();

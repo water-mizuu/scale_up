@@ -37,7 +37,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   /// Initializes the lesson by loading it from the repository
   ///   and generating random unit pairs.
   Future<void> _initializeLesson(Lesson lesson) async {
-    var chapter = lesson.chapters[state.chapterIndex];
+    var chapter = lesson.practiceChapters[state.chapterIndex];
 
     /// We need te get units by random.
     var allUnits = await Future.wait(chapter.units.map((id) => _lessonsRepository.getUnit(id)));
@@ -48,15 +48,21 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
 
     var unitPairs = <(Unit, Unit, num, List<((Unit, Unit), Expression)>)>[];
     for (var i = 0; i < chapter.questionCount; ++i) {
-      var from = chapter.units.selectRandom();
-      var to = chapter.units.where((v) => v != from).selectRandom();
+      Unit fromUnit, toUnit;
+      int randomNumber;
+      List<((Unit, Unit), Expression)> conversions;
 
-      var (fromUnit, toUnit) = (unitMap[from]!, unitMap[to]!);
-      var conversions = await _lessonsRepository //
-          .getConversionPathFor(fromUnit, toUnit)
-          .then((v) => v!);
-      var randomNumber = Random().nextInt(100) + 20;
+      do {
+        var from = chapter.units.selectRandom();
+        var to = chapter.units.where((v) => v != from).selectRandom();
 
+        (fromUnit, toUnit) = (unitMap[from]!, unitMap[to]!);
+        conversions = await _lessonsRepository //
+            .getConversionPathFor(fromUnit, toUnit)
+            .then((v) => v!);
+      } while (conversions.length > 3);
+
+      randomNumber = Random().nextInt(100) + 20;
       unitPairs.add((fromUnit, toUnit, randomNumber, conversions));
     }
 
@@ -111,8 +117,8 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   ) async {
     emit(state.copyWith(status: ChapterPageStatus.evaluating));
 
-    assert(state is LoadedChapterPageState);
-    if (state case LoadedChapterPageState state) {
+    assert(state is LoadedPracticePageState);
+    if (state case LoadedPracticePageState state) {
       var (_, _, fromNum, exprs) = state.questions[state.questionIndex];
       var answer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsFixedMax(3);
 
@@ -128,12 +134,12 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     PracticePageNextQuestion event,
     Emitter<PracticePageState> emit,
   ) async {
-    assert(state is LoadedChapterPageState);
+    assert(state is LoadedPracticePageState);
 
     var previousStatus = state.status;
     emit(state.copyWith(status: ChapterPageStatus.movingToNextQuestion));
 
-    if (state case LoadedChapterPageState state) {
+    if (state case LoadedPracticePageState state) {
       if (previousStatus == ChapterPageStatus.correct) {
         var questionIndex = state.questionIndex + 1;
 

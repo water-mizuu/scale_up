@@ -12,6 +12,8 @@ sealed class Expression {
   @override
   String toString() => str;
 
+  O captureGeneric<O>(O Function<E>() f);
+
   static (Expression, VariableExpression) inverse(VariableExpression left, Expression right) {
     var lhs = left as Expression;
     var rhs = right;
@@ -128,6 +130,17 @@ sealed class BinaryExpression extends Expression {
     yield* left.variables;
     yield* right.variables;
   }
+
+  BinaryExpression makeCopy(Expression left, Expression right) {
+    return switch (this) {
+      AdditionExpression() => AdditionExpression(left, right),
+      SubtractionExpression() => SubtractionExpression(left, right),
+      MultiplicationExpression() => MultiplicationExpression(left, right),
+      DivisionExpression() => DivisionExpression(left, right),
+      PowerExpression() => PowerExpression(left, right),
+      LogarithmExpression() => LogarithmExpression(left, right),
+    };
+  }
 }
 
 final class AdditionExpression extends BinaryExpression {
@@ -143,6 +156,9 @@ final class AdditionExpression extends BinaryExpression {
 
   @override
   get str => "${left.string} + ${right.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<AdditionExpression>();
 }
 
 final class SubtractionExpression extends BinaryExpression {
@@ -158,6 +174,9 @@ final class SubtractionExpression extends BinaryExpression {
 
   @override
   get str => "${left.string} - ${right.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<SubtractionExpression>();
 }
 
 final class MultiplicationExpression extends BinaryExpression {
@@ -175,6 +194,9 @@ final class MultiplicationExpression extends BinaryExpression {
 
   @override
   get str => "${left.string} * ${right.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<MultiplicationExpression>();
 }
 
 final class DivisionExpression extends BinaryExpression {
@@ -190,6 +212,9 @@ final class DivisionExpression extends BinaryExpression {
 
   @override
   get str => "${left.string} / ${right.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<DivisionExpression>();
 }
 
 final class PowerExpression extends BinaryExpression {
@@ -205,6 +230,9 @@ final class PowerExpression extends BinaryExpression {
 
   @override
   get str => "${left.string} ^ ${right.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<PowerExpression>();
 }
 
 final class LogarithmExpression extends BinaryExpression {
@@ -220,6 +248,9 @@ final class LogarithmExpression extends BinaryExpression {
 
   @override
   get str => "log[${left.string}](${right.string})";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<LogarithmExpression>();
 }
 
 sealed class UnaryExpression extends Expression {
@@ -230,6 +261,12 @@ sealed class UnaryExpression extends Expression {
   @override
   get variables sync* {
     yield* operand.variables;
+  }
+
+  UnaryExpression makeCopy(Expression operand) {
+    return switch (this) {
+      NegationExpression() => NegationExpression(operand),
+    };
   }
 }
 
@@ -245,6 +282,9 @@ final class NegationExpression extends UnaryExpression {
 
   @override
   get str => "-${operand.string}";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<NegationExpression>();
 }
 
 final class ConstantExpression extends Expression {
@@ -263,6 +303,9 @@ final class ConstantExpression extends Expression {
 
   @override
   get str => "$value";
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<ConstantExpression>();
 }
 
 final class VariableExpression extends Expression {
@@ -283,11 +326,52 @@ final class VariableExpression extends Expression {
 
   @override
   get str => variable;
+
+  @override
+  O captureGeneric<O>(O Function<E>() f) => f<VariableExpression>();
 }
 
 extension ExpressionList on List<Expression> {
   num evaluate(num from) {
     return fold(from, (value, expr) => expr.evaluate({"from": value}));
+  }
+}
+
+extension MutationExtension on Expression {
+  static final Random _random = Random();
+
+  Expression mutate([double probability = 0.5]) {
+    var atari = _random.nextDouble();
+
+    var shouldMutate = atari < probability;
+    if (this case BinaryExpression(:var left, :var right) && var self) {
+      var thing = {
+        AdditionExpression.new,
+        SubtractionExpression.new,
+        MultiplicationExpression.new,
+        DivisionExpression.new,
+        PowerExpression.new,
+      };
+
+      if (shouldMutate) {
+        BinaryExpression mutated;
+
+        do {
+          var chosen = thing.elementAt(_random.nextInt(thing.length));
+          mutated = chosen(left.mutate(sqrt(probability)), right.mutate(sqrt(probability)));
+        } while (mutated.captureGeneric(<T>() => this is T));
+
+        return mutated;
+      } else {
+        return self.makeCopy(left.mutate(), right.mutate());
+      }
+    } else if (this case UnaryExpression(:var operand) && var self) {
+      return self.makeCopy(operand.mutate(sqrt(probability)));
+    } else if (this case ConstantExpression(:var value) when shouldMutate) {
+      return ConstantExpression((value * Random().nextDouble() + 0.01).roundToDouble());
+    }
+
+    return this;
   }
 }
 

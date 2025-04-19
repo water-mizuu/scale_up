@@ -14,9 +14,12 @@ final class SignedOutUserDataEvent extends UserDataEvent {
   const SignedOutUserDataEvent();
 }
 
-final class ChapterCompletedUserDataEvent extends UserDataEvent {
+final class PracticeChapterCompletedUserDataEvent extends UserDataEvent {
   final String lessonId;
   final int chapterIndex;
 
-  const ChapterCompletedUserDataEvent({required this.lessonId, required this.chapterIndex});
+  const PracticeChapterCompletedUserDataEvent({
+    required this.lessonId,
+    required this.chapterIndex,
+  });
 }

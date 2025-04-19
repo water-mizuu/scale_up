@@ -16,8 +16,8 @@ class Instructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var chapterPageBloc = context.read<PracticePageBloc>();
-    var state = chapterPageBloc.state as LoadedChapterPageState;
-    var LoadedChapterPageState(:questions, :questionIndex) = state;
+    var state = chapterPageBloc.state as LoadedPracticePageState;
+    var LoadedPracticePageState(:questions, :questionIndex) = state;
     var (left, right, number, steps) = questions[questionIndex];
 
     return Column(
