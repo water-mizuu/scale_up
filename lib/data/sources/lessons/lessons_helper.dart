@@ -12,15 +12,20 @@ import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/unit_group.dart";
 
 class LessonsHelper {
-  LessonsHelper();
+  LessonsHelper._();
 
-  final Completer<void> _init = Completer<void>();
+  static Future<LessonsHelper> createAsync() async {
+    var lessonsHelper = LessonsHelper._();
+    await lessonsHelper.initialize();
+
+    return lessonsHelper;
+  }
+
   final List<Lesson> _lessons = [];
 
   final List<UnitGroup> _unitGroups = [];
 
-  Future<List<Lesson>> get lessons async {
-    await _init.future;
+  List<Lesson> get lessons {
     return _lessons;
   }
 
@@ -49,26 +54,20 @@ class LessonsHelper {
     _unitGroups
       ..clear()
       ..addAll(unitGroups);
-
-    _init.complete();
   }
 
-  Future<Lesson?> getLesson(String id) async {
-    await _init.future;
-
+  Lesson? getLesson(String id) {
     return _lessons.where((lesson) => lesson.id == id).firstOrNull;
   }
 
-  Future<UnitGroup?> getUnitGroup(String type) async {
-    await _init.future;
-
+  UnitGroup? getUnitGroup(String type) {
     return _unitGroups //
         .where((group) => group.type == type)
         .firstOrNull;
   }
 
-  Future<UnitGroup?> getExtendedUnitGroup(String type) async {
-    var unitGroup = await getUnitGroup(type);
+  UnitGroup? getExtendedUnitGroup(String type) {
+    var unitGroup = getUnitGroup(type);
     if (unitGroup == null) {
       return null;
     }
@@ -83,8 +82,8 @@ class LessonsHelper {
     return unitGroup.copyWith(conversions: conversions);
   }
 
-  Future<UnitGroup?> getLocalExtendedUnitGroup(String type, List<String> units) async {
-    var unitGroup = await getExtendedUnitGroup(type);
+  UnitGroup? getLocalExtendedUnitGroup(String type, List<String> units) {
+    var unitGroup = getExtendedUnitGroup(type);
     if (unitGroup == null) {
       return null;
     }
@@ -96,15 +95,12 @@ class LessonsHelper {
       ],
       conversions: [
         for (var conversion in unitGroup.conversions)
-          if (units.contains(conversion.from) && units.contains(conversion.to))
-            conversion,
+          if (units.contains(conversion.from) && units.contains(conversion.to)) conversion,
       ],
     );
   }
 
-  Future<Unit?> getUnit(String id) async {
-    await _init.future;
-
+  Unit? getUnit(String id) {
     return _unitGroups //
         .expand((g) => g.units)
         .where((unit) => unit.id == id)
@@ -134,13 +130,7 @@ class LessonsHelper {
 
   /// This gives a conversion path from [start] to [end] in the form of a list of expressions.
   /// The conversion path is computed using a breadth-first search (BFS) algorithm.
-  Future<List<((Unit, Unit), Expression)>?> _computeConversionFor(
-    UnitGroup group,
-    Unit start,
-    Unit end,
-  ) async {
-    await _init.future;
-
+  List<((Unit, Unit), Expression)>? _computeConversionFor(UnitGroup group, Unit start, Unit end) {
     var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
     var parent = <Unit, Unit>{};
     var visited = <Unit>{};
@@ -193,9 +183,7 @@ class LessonsHelper {
     return conversions;
   }
 
-  Future<List<((Unit, Unit), Expression)>?> getConversionPathFor(Unit from, Unit to) async {
-    await _init.future;
-
+  List<((Unit, Unit), Expression)>? getConversionPathFor(Unit from, Unit to) {
     var unitGroup =
         _unitGroups //
             .where((group) => group.units.contains(from) && group.units.contains(to))

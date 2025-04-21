@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_state.dart";
@@ -14,7 +15,7 @@ class HomePageCubit extends Cubit<HomePageState> {
   final LessonsHelper _lessonsHelper;
 
   void updateFinishedChaptersString(Set<String> finishedChaptersString) async {
-    var allLessons = await _lessonsHelper.lessons;
+    var allLessons = _lessonsHelper.lessons;
     var finishedChaptersLessonIds =
         finishedChaptersString
             // The format is "$lessonId:$index"
@@ -22,6 +23,10 @@ class HomePageCubit extends Cubit<HomePageState> {
             // We take only the lesson id.
             .map((s) => s[0]) //
             .toList();
+
+    if (kDebugMode) {
+      print(finishedChaptersString);
+    }
 
     var count = {for (var lessonId in finishedChaptersLessonIds) lessonId: 0};
     for (var key in finishedChaptersLessonIds) {
@@ -59,25 +64,4 @@ class HomePageCubit extends Cubit<HomePageState> {
       ),
     );
   }
-
-  // Future<List<Lesson>> get ongoingLessons async {
-  //   var allLessons = await _lessonsHelper.lessons;
-  //   var finishedChapters = await Future.wait([]);
-
-  //   return [];
-
-  //   // var questionsDone = context.select<UserDataBloc, int>(
-  //   //   (bloc) => bloc.state.finishedChapters
-  //   //       /// We only take the tags that start with this lesson
-  //   //       .where((n) => n.startsWith(id))
-  //   //       /// We take the string indices
-  //   //       .map((v) => v.substring(id.length + 1))
-  //   //       /// We parse the indices to integers
-  //   //       .map((s) => int.parse(s))
-  //   //       /// We get the chapter object from the lesson object, reading the questionCount.
-  //   //       .map((s) => chapters[s].questionCount)
-  //   //       /// And we sum them all up.
-  //   //       .fold(0, (a, b) => a + b),
-  //   // );
-  // }
 }

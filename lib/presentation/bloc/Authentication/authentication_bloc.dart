@@ -32,14 +32,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null));
 
     try {
-      await _repository.emailSignUp(
+      var user = await _repository.emailSignUp(
         username: event.username,
         email: event.email,
         password: event.password,
       );
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.signedUp, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.signedUp, error: null, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.signUpFailure, error: e));
     }

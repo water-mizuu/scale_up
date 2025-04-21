@@ -1,14 +1,18 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/learn_page/check_button.dart";
+import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/choices.dart";
 import "package:scale_up/presentation/views/home/learn_page/instructions.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_progress_bar.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/snackbar_util.dart";
 
 class LearnPage extends StatefulWidget {
   const LearnPage({required this.lessonId, required this.chapterIndex, super.key});
@@ -20,40 +24,23 @@ class LearnPage extends StatefulWidget {
   State<LearnPage> createState() => _LearnPageState();
 }
 
-class MessageAnimationController {
-  const MessageAnimationController(this.controller);
-  final AnimationController controller;
-}
-
-class TransitionInAnimationController {
-  const TransitionInAnimationController(this.controller);
-  final AnimationController controller;
-}
-
-class TransitionOutAnimationController {
-  const TransitionOutAnimationController(this.controller);
-  final AnimationController controller;
-}
-
 class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
   late final AnimationController messageAnimation;
   late final AnimationController transitionInAnimation;
   late final AnimationController transitionOutAnimation;
-  late final GlobalKey progressBarKey;
   late final LearnPageBloc bloc;
 
   @override
   void initState() {
     super.initState();
 
-    messageAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
+    messageAnimation = AnimationController(vsync: this, duration: 2.seconds);
     transitionInAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
     transitionOutAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
 
-    progressBarKey = GlobalKey();
     bloc = LearnPageBloc(
       lessonsHelper: context.read<LessonsHelper>(),
-      lessonFuture: context.read<LessonsHelper>().getLesson(widget.lessonId),
+      lesson: context.read<LessonsHelper>().getLesson(widget.lessonId),
       chapterIndex: widget.chapterIndex,
     );
   }
@@ -63,7 +50,7 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
     if (oldWidget.lessonId != widget.lessonId || oldWidget.chapterIndex != widget.chapterIndex) {
       bloc.add(
         LearnPageWidgetChangedEvent(
-          lessonFuture: context.read<LessonsHelper>().getLesson(widget.lessonId),
+          lesson: context.read<LessonsHelper>().getLesson(widget.lessonId)!,
           chapterIndex: widget.chapterIndex,
         ),
       );
@@ -94,15 +81,37 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
         ],
         child: BlocListener<LearnPageBloc, LearnPageState>(
           bloc: bloc,
-          listenWhen: (previous, current) {
-            return previous.status == LearnPageStatus.evaluating ||
-                current.status == LearnPageStatus.movingAway;
-          },
           listener: (context, state) {
-            if (state.status case LearnPageStatus.correct || LearnPageStatus.incorrect) {
-              messageAnimation.forward(from: 0.0);
-            } else if (state.status case LearnPageStatus.movingAway) {
-              messageAnimation.reverse(from: 1.0);
+            switch (state) {
+              /// If there is an error, we show a snackbar.
+              case LoadedLearnPageState(:var error?):
+                context.showBasicSnackbar(error.toString());
+
+              /// This is the state when the user has answered a question.
+              case LoadedLearnPageState(status: LearnPageStatus.correct):
+              case LoadedLearnPageState(status: LearnPageStatus.incorrect):
+                messageAnimation.forward(from: 0.0);
+
+              /// When we are [LearnPageStatus.movingAway], then we
+              ///   reverse the animation.
+              case LoadedLearnPageState(status: LearnPageStatus.movingAway):
+                messageAnimation.reverse(from: 1.0);
+
+              /// If the chapter is finished, then we let the bloc know
+              ///   that the user has completed the chapter.
+              /// This will trigger the UserDataBloc to update the stored local data.
+              ///   This will also asynchronously update the server data.
+              case LoadedLearnPageState(status: LearnPageStatus.finishedWithAllQuestions):
+                context.read<UserDataBloc>().add(
+                  LearnChapterCompletedUserDataEvent(
+                    lessonId: bloc.loadedState.lesson.id,
+                    chapterIndex: bloc.loadedState.chapterIndex,
+                  ),
+                );
+
+              /// Ignore the other statuses.
+              case _:
+                return;
             }
           },
           child: BlocListener<LearnPageBloc, LearnPageState>(
@@ -117,6 +126,8 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
 
                 bloc.add(LearnPageToTransitionCompleteEvent());
               } else if (state.status == LearnPageStatus.movingAway) {
+                /// Just instantly hide the message.
+                messageAnimation.reset();
                 await transitionOutAnimation.forward(from: 0.0);
 
                 if (bloc.isClosed) return;
@@ -126,66 +137,115 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
             child: BlocBuilder<LearnPageBloc, LearnPageState>(
               builder: (context, state) {
                 if (state is! LoadedLearnPageState) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Material(child: Center(child: CircularProgressIndicator()));
                 }
 
-                return Stack(
-                  children: [
-                    if (state.status == LearnPageStatus.finishedWithAllQuestions)
-                      Positioned.fill(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              LearnProgressBar(progressBarKey: progressBarKey),
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    "Congratulations! You have completed all questions.",
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else ...[
-                      Positioned.fill(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Column(
-                                spacing: 18.0,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  LearnProgressBar(progressBarKey: progressBarKey),
-                                  Instructions(),
-                                ],
-                              ),
-                              const Column(
-                                spacing: 18.0,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [Choices(), CheckButton()],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
-                      Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
-                    ],
-                  ],
-                );
+                return LearnPageView();
               },
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class LearnPageView extends StatefulWidget {
+  const LearnPageView({super.key});
+
+  @override
+  State<LearnPageView> createState() => _LearnPageViewState();
+}
+
+class _LearnPageViewState extends State<LearnPageView> {
+  late final GlobalKey progressBarKey;
+
+  @override
+  void initState() {
+    super.initState();
+
+    progressBarKey = GlobalKey();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var state = context.select((LearnPageBloc b) => b.state);
+
+    return Stack(
+      children: [
+        if (state.status == LearnPageStatus.finishedWithAllQuestions)
+          Positioned.fill(child: FinishedLearnPage(progressBarKey: progressBarKey))
+        else ...[
+          Positioned.fill(child: NotFinishedLearnPage(progressBarKey: progressBarKey)),
+
+          Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
+          Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+        ],
+      ],
+    );
+  }
+}
+
+class NotFinishedLearnPage extends StatelessWidget {
+  const NotFinishedLearnPage({super.key, required this.progressBarKey});
+
+  final GlobalKey<State<StatefulWidget>> progressBarKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TopRow(progressBarKey: progressBarKey),
+          Instructions(),
+          const Column(
+            spacing: 18.0,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [Choices(), LearnPageCheckButton()],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TopRow extends StatelessWidget {
+  const TopRow({super.key, required this.progressBarKey});
+
+  final GlobalKey<State<StatefulWidget>> progressBarKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(icon: const Icon(Icons.arrow_back_ios_new), onPressed: () => context.pop()),
+        Expanded(child: LearnProgressBar(progressBarKey: progressBarKey)),
+      ],
+    );
+  }
+}
+
+class FinishedLearnPage extends StatelessWidget {
+  const FinishedLearnPage({super.key, required this.progressBarKey});
+
+  final GlobalKey<State<StatefulWidget>> progressBarKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TopRow(progressBarKey: progressBarKey),
+          Expanded(
+            child: Center(child: Text("Congratulations! You have completed all questions.")),
+          ),
+        ],
       ),
     );
   }
@@ -205,7 +265,7 @@ class ContinueMessage extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: CheckButton(),
+                child: LearnPageCheckButton(),
               ),
             ],
           );
@@ -225,78 +285,80 @@ class CongratulatoryMessage extends StatelessWidget {
     var state = context.read<LearnPageBloc>().state;
     var controller = context.read<MessageAnimationController>().controller;
 
-    return DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(4.0),
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.shadow,
-                blurRadius: 8.0,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    var widget = DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(4.0),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow,
+            blurRadius: 8.0,
+            offset: const Offset(0, 4),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (state.status == LearnPageStatus.correct) ...[
-                      Styles.title("Correct!", color: Colors.green),
-                      Styles.subtitle(
-                        "You got it right!",
-                        color: Colors.green,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ] else if (state.status == LearnPageStatus.incorrect) ...[
-                      Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
-                      Text.rich(
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (state.status == LearnPageStatus.correct) ...[
+                  Styles.title("Correct!", color: Colors.green),
+                  Styles.subtitle(
+                    "You got it right!",
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ] else if (state.status == LearnPageStatus.incorrect) ...[
+                  Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
+                  Text.rich(
+                    TextSpan(
+                      children: [
                         TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "The answer was ",
-                              style: Styles.subtitle.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: "${(state as LoadedLearnPageState).correctAnswer}",
-                              style: Styles.subtitle.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                            ),
-                          ],
+                          text: "The answer was ",
+                          style: Styles.subtitle.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: TickerMode(
-                  enabled: false,
-                  child: FilledButton(
-                    onPressed: null,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.0),
-                      child: Text(
-                        "Check",
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                      ),
+                        TextSpan(
+                          text: "${(state as LoadedLearnPageState).correctAnswer}",
+                          style: Styles.subtitle.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
+            child: TickerMode(
+              enabled: false,
+              child: FilledButton(
+                onPressed: null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    "Check",
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        )
+        ],
+      ),
+    );
+
+    return widget
         .animate(controller: controller, autoPlay: false)
-        .slideY(begin: 2.0, end: 0.0, curve: Curves.easeIn);
+        .slideY(begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
   }
 }

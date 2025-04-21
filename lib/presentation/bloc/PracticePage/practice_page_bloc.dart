@@ -1,6 +1,7 @@
 import "dart:async";
 import "dart:math";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
@@ -12,35 +13,56 @@ import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   PracticePageBloc({
-    required LessonsHelper lessonsRepository,
-    required Lesson lesson,
+    required LessonsHelper lessonsHelper,
+    required Lesson? lesson,
     required int chapterIndex,
-  }) : _lessonsRepository = lessonsRepository,
+  }) : _lessonsHelper = lessonsHelper,
        super(
-         PracticePageState.initial(
+         PracticePageState.loading(
+           status: PracticePageStatus.loading,
            lesson: lesson,
            chapterIndex: chapterIndex,
-           status: ChapterPageStatus.loading,
          ),
        ) {
     on<PracticePageLessonLoaded>(_onLessonLoaded);
     on<PracticePageLessonLoadFailure>(_onLessonLoadFailure);
     on<PracticePageInputChanged>(_onInputChanged);
     on<PracticePageAnswerSubmitted>(_onAnswerSubmitted);
-    on<PracticePageNextQuestion>(_onNextQuestion);
+    on<PracticePageNextQuestionClicked>(_onNextQuestionClicked);
 
-    _initializeLesson(lesson);
+    on<PracticePageToTransitionCompleteEvent>(_onToTransitionComplete);
+    on<PracticePageFromTransitionCompleteEvent>(_onFromTransitionComplete);
+
+    _initializeLesson();
   }
 
-  final LessonsHelper _lessonsRepository;
+  @override
+  void onEvent(PracticePageEvent event) {
+    super.onEvent(event);
+
+    if (kDebugMode) {
+      print(event);
+    }
+  }
+
+  final LessonsHelper _lessonsHelper;
+
+  @pragma("vm:prefer-inline")
+  LoadedPracticePageState get loadedState => state as LoadedPracticePageState;
 
   /// Initializes the lesson by loading it from the repository
   ///   and generating random unit pairs.
-  Future<void> _initializeLesson(Lesson lesson) async {
+  Future<void> _initializeLesson() async {
+    var lesson = state.lesson;
+    if (lesson == null) {
+      add(PracticePageLessonLoadFailure("Lesson not found"));
+      return;
+    }
+
     var chapter = lesson.practiceChapters[state.chapterIndex];
 
     /// We need te get units by random.
-    var allUnits = await Future.wait(chapter.units.map((id) => _lessonsRepository.getUnit(id)));
+    var allUnits = chapter.units.map(_lessonsHelper.getUnit).toList();
     var unitMap = <String, Unit>{
       for (var unit in allUnits)
         if (unit != null) unit.id: unit,
@@ -57,9 +79,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         var to = chapter.units.where((v) => v != from).selectRandom();
 
         (fromUnit, toUnit) = (unitMap[from]!, unitMap[to]!);
-        conversions = await _lessonsRepository //
-            .getConversionPathFor(fromUnit, toUnit)
-            .then((v) => v!);
+        conversions = _lessonsHelper.getConversionPathFor(fromUnit, toUnit)!;
       } while (conversions.length > 3);
 
       randomNumber = Random().nextInt(100) + 20;
@@ -79,13 +99,14 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
       PracticePageState.loaded(
         status:
             (questions.isEmpty) //
-                ? ChapterPageStatus.finishedWithAllQuestions
-                : ChapterPageStatus.loaded,
+                ? PracticePageStatus.finishedWithAllQuestions
+                : PracticePageStatus.movingIn,
         lesson: lesson,
         chapterIndex: state.chapterIndex,
         questions: questions,
         questionIndex: 0,
         answer: 0.toStringAsFixed(3),
+        progress: 0.0,
       ),
     );
   }
@@ -94,7 +115,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     PracticePageLessonLoadFailure event,
     Emitter<PracticePageState> emit,
   ) async {
-    emit(state.copyWith(status: ChapterPageStatus.error));
+    emit(state.copyWith(status: PracticePageStatus.error, error: event.error));
   }
 
   Future<void> _onInputChanged(
@@ -105,7 +126,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
       var expression = event.input;
       var parsedInput = expression.evaluate({});
 
-      emit(state.copyWith(answer: parsedInput.toStringAsFixedMax(3)));
+      emit(loadedState.copyWith(answer: parsedInput.toStringAsFixedMax(3)));
     } on UnsupportedError {
       return;
     }
@@ -115,65 +136,57 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     PracticePageAnswerSubmitted event,
     Emitter<PracticePageState> emit,
   ) async {
-    emit(state.copyWith(status: ChapterPageStatus.evaluating));
+    emit(loadedState.copyWith(status: PracticePageStatus.evaluating));
+    await Future.delayed(Duration.zero);
 
-    assert(state is LoadedPracticePageState);
-    if (state case LoadedPracticePageState state) {
-      var (_, _, fromNum, exprs) = state.questions[state.questionIndex];
-      var answer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsFixedMax(3);
+    var (_, _, fromNum, exprs) = loadedState.questions[loadedState.questionIndex];
+    var answer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsFixedMax(3);
 
-      if (state.answer == answer) {
-        emit(state.copyWith(status: ChapterPageStatus.correct));
-      } else {
-        emit(state.copyWith(status: ChapterPageStatus.incorrect, correctAnswer: answer));
-      }
+    if (loadedState.answer == answer) {
+      emit(loadedState.copyWith(status: PracticePageStatus.correct));
+    } else {
+      emit(loadedState.copyWith(status: PracticePageStatus.incorrect, correctAnswer: answer));
     }
   }
 
-  Future<void> _onNextQuestion(
-    PracticePageNextQuestion event,
+  Future<void> _onNextQuestionClicked(
+    PracticePageNextQuestionClicked event,
     Emitter<PracticePageState> emit,
   ) async {
-    assert(state is LoadedPracticePageState);
+    emit(state.copyWith(status: PracticePageStatus.movingAway));
+  }
 
-    var previousStatus = state.status;
-    emit(state.copyWith(status: ChapterPageStatus.movingToNextQuestion));
+  void _onToTransitionComplete(
+    PracticePageToTransitionCompleteEvent event,
+    Emitter<PracticePageState> emit,
+  ) async {
+    /// Since there is a calculator, the default answer is 0.
+    emit(
+      loadedState.copyWith(
+        status: PracticePageStatus.waitingForSubmission,
+        answer: 0.toStringAsFixed(3),
+      ),
+    );
+  }
 
-    if (state case LoadedPracticePageState state) {
-      if (previousStatus == ChapterPageStatus.correct) {
-        var questionIndex = state.questionIndex + 1;
+  void _onFromTransitionComplete(
+    PracticePageFromTransitionCompleteEvent event,
+    Emitter<PracticePageState> emit,
+  ) async {
+    var newQuestionIndex = loadedState.questionIndex + 1;
 
-        if (questionIndex >= state.questions.length) {
-          emit(
-            state.copyWith(
-              status: ChapterPageStatus.finishedWithAllQuestions,
-              questionIndex: questionIndex,
-            ),
-          );
-        } else {
-          emit(
-            state.copyWith(
-              status: ChapterPageStatus.movedToNextQuestion,
-              questionIndex: questionIndex,
-              answer: "0",
-            ),
-          );
-        }
-      } else if (previousStatus == ChapterPageStatus.incorrect) {
-        var questions = state.questions.toList();
-        var mistaken = questions.removeAt(state.questionIndex);
-        questions.add(mistaken);
-
-        emit(
-          state.copyWith(
-            //
-            status: ChapterPageStatus.movedToNextQuestion,
-            questions: questions,
-            questionIndex: state.questionIndex,
-            answer: "0",
-          ),
-        );
-      }
+    if (newQuestionIndex >= loadedState.questions.length) {
+      emit(
+        loadedState.copyWith(status: PracticePageStatus.finishedWithAllQuestions, progress: 1.0),
+      );
+    } else {
+      emit(
+        loadedState.copyWith(
+          status: PracticePageStatus.movingIn,
+          questionIndex: newQuestionIndex,
+          progress: newQuestionIndex / loadedState.questions.length,
+        ),
+      );
     }
   }
 }

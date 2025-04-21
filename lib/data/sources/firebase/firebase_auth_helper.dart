@@ -10,9 +10,9 @@ import "package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart" 
 abstract class FirebaseAuthHelper {
   factory FirebaseAuthHelper() {
     if (!kIsWeb && Platform.isWindows) {
-      return FirebaseAuthHelperWindows();
+      return _FirebaseAuthHelperWindows();
     } else {
-      return FirebaseAuthHelperNotWindows();
+      return _FirebaseAuthHelperNotWindows();
     }
   }
 
@@ -29,7 +29,7 @@ abstract class FirebaseAuthHelper {
   Future<User?> emailSignIn({required String email, required String password});
 }
 
-class FirebaseAuthHelperWindows implements FirebaseAuthHelper {
+class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
   win.GoogleSignIn? _googleSignIn;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -80,10 +80,7 @@ class FirebaseAuthHelperWindows implements FirebaseAuthHelper {
 
   @override
   Future<User?> emailSignIn({required String email, required String password}) async {
-    var userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
     return userCredential.user;
   }
@@ -123,7 +120,7 @@ class FirebaseAuthHelperWindows implements FirebaseAuthHelper {
   }
 }
 
-class FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
+class _FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
   final other.GoogleSignIn _googleSignIn = other.GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -173,10 +170,7 @@ class FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
 
   @override
   Future<User?> emailSignIn({required String email, required String password}) async {
-    var userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
     return userCredential.user;
   }

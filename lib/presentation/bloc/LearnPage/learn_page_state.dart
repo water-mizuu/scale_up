@@ -8,7 +8,6 @@ part "learn_page_state.freezed.dart";
 enum LearnPageStatus {
   /// Page loading related status
   loading,
-  loaded,
   waitingForSubmission,
 
   /// Answer related status.
@@ -33,7 +32,7 @@ sealed class LearnPageState with _$LearnPageState {
 
   const factory LearnPageState.loading({
     required LearnPageStatus status,
-    required Future<Lesson?> lesson,
+    required Lesson? lesson,
     required int chapterIndex,
   }) = LoadingLearnPageState;
 
@@ -67,8 +66,8 @@ sealed class LearnQuestion with _$LearnQuestion {
   const factory LearnQuestion.importantNumbers({
     required Unit from,
     required Unit to,
-    required List<Expression> choices,
-    required List<num> answer,
+    required Set<Set<num>> choices,
+    required Set<num> answer,
   }) = ImportantNumbersLearnQuestion;
 
   const factory LearnQuestion.indirectSteps({

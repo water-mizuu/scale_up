@@ -6,7 +6,6 @@ import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/learn_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
-import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";
 import "package:scale_up/presentation/views/home/practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
 import "package:scale_up/presentation/views/home/widgets/app_scaffold.dart";
@@ -35,14 +34,14 @@ final GoRouter router = GoRouter(
   initialLocation: AppRoutes._blank,
   routes: [
     /// We add a blank route to have the application load this screen first.
-    GoRoute(path: "/blank", builder: (context, state) => const Material()),
+    GoRoute(path: AppRoutes._blank, builder: (context, state) => const Material()),
     GoRoute(
       path: "/login",
       name: AppRoutes.login,
       builder: (context, state) => const SignInPage(),
       routes: [
         GoRoute(
-          path: "/register",
+          path: "register",
           name: AppRoutes.signUp,
           builder: (context, state) => const SignUpPage(),
         ),
@@ -75,9 +74,7 @@ final GoRouter router = GoRouter(
                 var lessonId = state.pathParameters["id"];
                 assert(lessonId != null, "Lesson ID cannot be null");
 
-                return LessonPage(
-                  id: lessonId!,
-                );
+                return LessonPage(id: lessonId!);
               },
               routes: [
                 GoRoute(
@@ -90,10 +87,7 @@ final GoRouter router = GoRouter(
                     assert(lessonId != null, "Lesson ID cannot be null");
                     assert(chapterIndex != null, "Chapter index cannot be null");
 
-                    return LearnPage(
-                      lessonId: lessonId!,
-                      chapterIndex: int.parse(chapterIndex!),
-                    );
+                    return LearnPage(lessonId: lessonId!, chapterIndex: int.parse(chapterIndex!));
                   },
                 ),
                 GoRoute(

@@ -1,14 +1,17 @@
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
+import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 /// We assume that each instance of the ChapterPage is a new set of questions.
@@ -22,109 +25,108 @@ class PracticePage extends StatefulWidget {
   State<PracticePage> createState() => _PracticePageState();
 }
 
-class _PracticePageState extends State<PracticePage> {
-  late final Future<Lesson?> lessonFuture;
-
-  /// We create a bloc asynchronously, after loading the lesson.
-  PracticePageBloc? practicePageBloc;
+class _PracticePageState extends State<PracticePage> with TickerProviderStateMixin {
+  late final PracticePageBloc bloc;
+  late final AnimationController messageAnimation;
+  late final AnimationController transitionInAnimation;
+  late final AnimationController transitionOutAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    lessonFuture = context.read<LessonsHelper>().getLesson(widget.lessonId);
-    lessonFuture
-        .then((lesson) {
-          if (!context.mounted || lesson == null) return;
+    var lessonsHelper = context.read<LessonsHelper>();
+    super.initState();
 
-          setState(() {
-            practicePageBloc = PracticePageBloc(
-              lessonsRepository: context.read(),
-              lesson: lesson,
-              chapterIndex: widget.chapterIndex,
-            );
-          });
-        })
-        .catchError((error) {
-          var context = this.context;
-          if (context.mounted) {
-            context.showBasicSnackbar(error);
-          }
-        });
-  }
-
-  @override
-  void dispose() {
-    practicePageBloc?.close();
-
-    super.dispose();
+    messageAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
+    transitionInAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
+    transitionOutAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
+    bloc = PracticePageBloc(
+      chapterIndex: widget.chapterIndex,
+      lessonsHelper: lessonsHelper,
+      lesson: lessonsHelper.getLesson(widget.lessonId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var practicePageBloc = this.practicePageBloc;
-    if (practicePageBloc == null) {
-      return const Material(child: Center(child: CircularProgressIndicator()));
-    }
-
     return Material(
-      child: BlocListener<PracticePageBloc, PracticePageState>(
-        bloc: practicePageBloc,
-        listener: (context, state) async {
-          switch (state) {
-            /// If there is an error, we show a snackbar.
-            case LoadedPracticePageState(:var error?):
-              await context.showBasicSnackbar(error);
+      child: MultiProvider(
+        providers: [
+          BlocProvider.value(value: bloc),
+          InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
+          InheritedProvider.value(value: TransitionInAnimationController(transitionInAnimation)),
+          InheritedProvider.value(
+            value: TransitionOutAnimationController(transitionOutAnimation),
+          ),
+        ],
+        child: BlocListener<PracticePageBloc, PracticePageState>(
+          bloc: bloc,
+          listener: (context, state) async {
+            switch (state) {
+              /// If there is an error, we show a snackbar.
+              case LoadedPracticePageState(:var error?):
+                await context.showBasicSnackbar(error.toString());
 
-            /// These are the cases in which the user has answered.
-            case LoadedPracticePageState(status: ChapterPageStatus.correct):
-              await context.showBasicSnackbar("Correct!");
+              /// This is the state when the user has answered a question.
+              case LoadedPracticePageState(status: PracticePageStatus.correct):
+              case LoadedPracticePageState(status: PracticePageStatus.incorrect):
+                messageAnimation.forward(from: 0.0);
 
-              if (context.mounted) {
-                practicePageBloc.add(PracticePageNextQuestion());
-              }
-            case LoadedPracticePageState(status: ChapterPageStatus.incorrect):
-              await context.showBasicSnackbar(
-                "Incorrect! The correct answer was: ${state.correctAnswer}",
-              );
+              /// When we are [PracticePageStatus.movingAway], then we
+              ///   reverse the animation.
+              case LoadedPracticePageState(status: PracticePageStatus.movingAway):
+                messageAnimation.reverse(from: 1.0);
 
-              if (context.mounted) {
-                practicePageBloc.add(PracticePageNextQuestion());
-              }
+              /// If the chapter is finished, then we let the bloc know
+              ///   that the user has completed the chapter.
+              /// This will trigger the UserDataBloc to update the stored local data.
+              ///   This will also asynchronously update the server data.
+              case LoadedPracticePageState(status: PracticePageStatus.finishedWithAllQuestions):
+                context.read<UserDataBloc>().add(
+                  PracticeChapterCompletedUserDataEvent(
+                    lessonId: bloc.loadedState.lesson.id,
+                    chapterIndex: bloc.state.chapterIndex,
+                  ),
+                );
 
-            /// If the chapter is finished, then we let the bloc know
-            ///   that the user has completed the chapter.
-            /// This will trigger the UserDataBloc to update the stored local data.
-            ///   This will also asynchronously update the server data.
-            case LoadedPracticePageState(status: ChapterPageStatus.finishedWithAllQuestions):
-              context.read<UserDataBloc>().add(
-                PracticeChapterCompletedUserDataEvent(
-                  lessonId: practicePageBloc.state.lesson.id,
-                  chapterIndex: practicePageBloc.state.chapterIndex,
-                ),
-              );
-            case _:
-              return;
-          }
-        },
-        child: Builder(
-          builder: (context) {
-            if (practicePageBloc.state is! LoadedPracticePageState) {
-              return const Material(child: Center(child: CircularProgressIndicator()));
+              /// Ignore the other statuses.
+              case _:
+                return;
             }
-
-            return MultiProvider(
-              providers: [
-                BlocProvider.value(value: practicePageBloc),
-
-                ///   by the different widgets in the tree.
-                InheritedProvider(
-                  create: (_) => HSLColor.fromColor(practicePageBloc.state.lesson.color),
-                ),
-              ],
-              child: PracticePageView(),
-            );
           },
+          child: BlocListener<PracticePageBloc, PracticePageState>(
+            bloc: bloc,
+            listenWhen: (p, c) => p.status != c.status,
+            listener: (context, state) async {
+              /// Animation engine.
+              ///   Is there a way to do this in the BLoC itself?
+              if (state.status == PracticePageStatus.movingIn) {
+                transitionOutAnimation.reset();
+                await transitionInAnimation.forward(from: 0.0);
+                if (bloc.isClosed) return;
+
+                bloc.add(PracticePageToTransitionCompleteEvent());
+              } else if (state.status == PracticePageStatus.movingAway) {
+                /// Just instantly hide the message.
+                messageAnimation.reset();
+                await transitionOutAnimation.forward(from: 0.0);
+
+                if (bloc.isClosed) return;
+                bloc.add(PracticePageFromTransitionCompleteEvent());
+              }
+            },
+            child: BlocBuilder(
+              bloc: bloc,
+              builder: (context, state) {
+                if (state is! LoadedPracticePageState) {
+                  return const Material(child: Center(child: CircularProgressIndicator()));
+                }
+
+                return PracticePageView();
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -143,13 +145,132 @@ class _PracticePageViewState extends State<PracticePageView> {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.select(
-      (PracticePageBloc bloc) => bloc.state as LoadedPracticePageState,
+    var state = context.select((PracticePageBloc bloc) => bloc.state);
+
+    return Stack(
+      children: [
+        if (state.status == PracticePageStatus.finishedWithAllQuestions)
+          Positioned.fill(child: CompletedPracticeBody(progressBarKey: progressBarKey))
+        else ...[
+          Positioned.fill(child: PracticeBody(progressBarKey: progressBarKey)),
+
+          Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
+          Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+        ],
+      ],
+    );
+  }
+}
+
+class ContinueMessage extends StatelessWidget {
+  const ContinueMessage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PracticePageBloc, PracticePageState>(
+      buildWhen: (p, c) => (p as LoadedPracticePageState).status == PracticePageStatus.evaluating,
+      builder: (context, state) {
+        if (state.status case PracticePageStatus.correct || PracticePageStatus.incorrect) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
+                child: PracticePageCheckButton(),
+              ),
+            ],
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
+}
+
+class CongratulatoryMessage extends StatelessWidget {
+  const CongratulatoryMessage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var state = context.read<PracticePageBloc>().state;
+    var controller = context.read<MessageAnimationController>().controller;
+
+    var widget = DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(4.0),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow,
+            blurRadius: 8.0,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (state.status == PracticePageStatus.correct) ...[
+                  Styles.title("Correct!", color: Colors.green),
+                  Styles.subtitle(
+                    "You got it right!",
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ] else if (state.status == PracticePageStatus.incorrect) ...[
+                  Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "The answer was ",
+                          style: Styles.subtitle.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "${(state as LoadedPracticePageState).correctAnswer}",
+                          style: Styles.subtitle.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else
+                  Text("You should not see this."),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
+            child: TickerMode(
+              enabled: false,
+              child: FilledButton(
+                onPressed: null,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.0),
+                  child: Text(
+                    "Check",
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
 
-    if (state.status == ChapterPageStatus.finishedWithAllQuestions) {
-      return CompletedPracticeBody(progressBarKey: progressBarKey);
-    }
-    return PracticeBody(progressBarKey: progressBarKey);
+    return widget
+        .animate(controller: controller, autoPlay: false)
+        .slideY(begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
   }
 }

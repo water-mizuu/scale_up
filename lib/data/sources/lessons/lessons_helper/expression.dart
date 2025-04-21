@@ -187,10 +187,8 @@ final class MultiplicationExpression extends BinaryExpression {
       left.evaluate(variables) * right.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) => MultiplicationExpression(
-    left.substitute(id, expression),
-    right.substitute(id, expression),
-  );
+  Expression substitute(String id, Expression expression) =>
+      MultiplicationExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
   get str => "${left.string} * ${right.string}";
@@ -337,7 +335,7 @@ extension ExpressionList on List<Expression> {
   }
 }
 
-extension MutationExtension on Expression {
+extension CustomExpressionExtension on Expression {
   static final Random _random = Random();
 
   Expression mutate([double probability = 0.5]) {
@@ -372,6 +370,18 @@ extension MutationExtension on Expression {
     }
 
     return this;
+  }
+
+  Iterable<ConstantExpression> get constants sync* {
+    var self = this;
+    if (self case BinaryExpression(:var left, :var right)) {
+      yield* left.constants;
+      yield* right.constants;
+    } else if (self case UnaryExpression(:var operand)) {
+      yield* operand.constants;
+    } else if (self case ConstantExpression()) {
+      yield self;
+    }
   }
 }
 

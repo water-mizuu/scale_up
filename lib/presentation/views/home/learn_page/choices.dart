@@ -4,7 +4,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/learn_page.dart";
+import "package:scale_up/utils/animation_controller_distinction.dart";
 
 class Choices extends StatelessWidget {
   const Choices({super.key});
@@ -15,15 +15,19 @@ class Choices extends StatelessWidget {
     // var LoadedLearnPageState(:questions, :questionIndex) = learnPageBloc.loadedState;
     // var currentQuestion = questions[questionIndex];
     var currentQuestion = context.select(
-      (LearnPageBloc bloc) =>  bloc.loadedState.questions[bloc.loadedState.questionIndex],
+      (LearnPageBloc bloc) => bloc.loadedState.questions[bloc.loadedState.questionIndex],
     );
 
     switch (currentQuestion) {
       case DirectFormulaLearnQuestion():
         return DirectFormulaChoices(currentQuestion: currentQuestion);
       case ImportantNumbersLearnQuestion():
+
+        /// TODO: Implement this
         throw UnimplementedError();
       case IndirectStepsLearnQuestion():
+
+        /// TODO: Implement this
         throw UnimplementedError();
     }
   }

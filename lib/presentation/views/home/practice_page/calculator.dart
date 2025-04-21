@@ -3,11 +3,13 @@ import "dart:async";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/expression_parser.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
+import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 /// A simple non-scientific calculator.
@@ -30,7 +32,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
   void initState() {
     super.initState();
 
-    hslColor = context.read<PracticePageBloc>().state.lesson.hslColor;
+    hslColor = context.read<PracticePageBloc>().loadedState.lesson.hslColor;
     expressionParser = ExpressionParser();
     display = "0";
     appendOverrides = false;
@@ -50,16 +52,12 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     var acKey = accent.withLightness((hslColor.lightness + 0.05).clamp(0, 1)).toColor();
     var equalsKey = accent.withLightness((hslColor.lightness + 0.1).clamp(0, 1)).toColor();
 
-    return BlocListener<PracticePageBloc, PracticePageState>(
-      listenWhen:
-          (_, now) =>
-              now.status == ChapterPageStatus.movingToNextQuestion ||
-              now.status == ChapterPageStatus.evaluating,
+    var widget = BlocListener<PracticePageBloc, PracticePageState>(
       listener: (context, state) {
-        if (state.status == ChapterPageStatus.evaluating) {
+        if (state.status == PracticePageStatus.evaluating) {
           _evaluate(submit: false);
         }
-        if (state.status == ChapterPageStatus.movingToNextQuestion) {
+        if (state.status == PracticePageStatus.movingIn) {
           _clear();
         }
       },
@@ -72,7 +70,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4.0,
                 offset: Offset(0, 2),
               ),
@@ -182,6 +180,20 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
         ),
       ),
     );
+
+    return widget
+        .animate(
+          controller: context.read<TransitionOutAnimationController>().controller,
+          autoPlay: false,
+        )
+        .slideX(begin: 0.0, end: -0.5, curve: Curves.easeOutQuad)
+        .fadeOut()
+        .animate(
+          controller: context.read<TransitionInAnimationController>().controller,
+          autoPlay: false,
+        )
+        .slideX(begin: 0.5, end: 0.0, curve: Curves.easeOutQuad)
+        .fadeIn();
   }
 
   void _append(String character, {bool replacesZero = true, bool submit = true}) {
@@ -293,14 +305,26 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     required Color color,
   }) {
     return Expanded(
-      child: FilledButton.icon(
-        style: FilledButton.styleFrom(
-          padding: EdgeInsets.all(0),
-          backgroundColor: color,
-          shadowColor: Colors.black,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(64.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 4.0,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        onPressed: onTap,
-        label: Text(label),
+        child: FilledButton.icon(
+          style: FilledButton.styleFrom(
+            padding: EdgeInsets.all(0),
+            backgroundColor: color,
+            shadowColor: Colors.black,
+          ),
+          onPressed: onTap,
+          label: Text(label),
+        ),
       ),
     );
   }

@@ -15,18 +15,17 @@ export "learn_page_state.dart";
 class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   LearnPageBloc({
     required LessonsHelper lessonsHelper,
-    required Future<Lesson?> lessonFuture,
+    required Lesson? lesson,
     required int chapterIndex,
   }) : _lessonsHelper = lessonsHelper,
        super(
          LearnPageState.loading(
            status: LearnPageStatus.loading,
+           lesson: lesson,
            chapterIndex: chapterIndex,
-           lesson: lessonFuture,
          ),
        ) {
     on<LearnPageWidgetChangedEvent>(_onLearnPageWidgetChanged);
-    on<FutureLoadedEvent>(_onFutureLoaded);
 
     on<LearnPageAnswerUpdatedEvent>(_onAnswerUpdated);
     on<LearnPageAnswerSubmittedEvent>(_onAnswerSubmitted);
@@ -35,7 +34,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     on<LearnPageFromTransitionCompleteEvent>(_onFromTransitionComplete);
     on<LearnPageToTransitionCompleteEvent>(_onToTransitionComplete);
 
-    _handleLessonFuture();
+    add(LearnPageWidgetChangedEvent(lesson: lesson, chapterIndex: chapterIndex));
   }
 
   final LessonsHelper _lessonsHelper;
@@ -43,19 +42,97 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   @pragma("vm:prefer-inline")
   LoadedLearnPageState get loadedState => state as LoadedLearnPageState;
 
-  /// This function handles the lesson future and emits the loaded state.
-  ///   It does nothing if the state is already loaded or error.
-  /// The future should be in the state object as well.
-  Future<void> _handleLessonFuture() async {
-    var state = this.state;
-    if (this.state case ErrorLearnPageState() || LoadedLearnPageState()) return;
-    assert(state is LoadingLearnPageState);
+  /// This generates questions for the given learn chapter.
+  List<LearnQuestion> _generateQuestions(Lesson lesson, LearnChapter learnChapter) {
+    if (learnChapter.type == "direct") {
+      var questions = <LearnQuestion>[];
 
-    var lesson = await (state as LoadingLearnPageState).lesson;
-    var chapterIndex = state.chapterIndex;
+      var unitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
+        lesson.unitsType,
+        learnChapter.units,
+      );
+      if (unitGroup == null) {
+        throw Exception("Unit group not found");
+      }
 
-    if (!isClosed) {
-      add(FutureLoadedEvent(resolvedLessonFuture: lesson, chapterIndex: chapterIndex));
+      var units = unitGroup.units;
+      for (var conversion in unitGroup.conversions) {
+        assert(units.isNotEmpty);
+        assert(units.length == units.whereType<Object>().length);
+
+        var Conversion(:from, :to) = conversion;
+        var (fromUnit, toUnit) = (_lessonsHelper.getUnit(from)!, _lessonsHelper.getUnit(to)!);
+        var path = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
+        assert(path != null && path.length == 1);
+
+        var (_, answer) = path!.single;
+        var choices = [answer];
+
+        /// This block is responsible for generating
+        ///   "What is the formula for converting from X to Y?"
+        ///   questions.
+        {
+          for (var i = 0; i < 3; ++i) {
+            Expression mutated;
+
+            /// There is a probability that the mutated expression is unchanged.
+            ///   So, we just keep mutating until we get a different one.
+            do {
+              mutated = answer.mutate();
+            } while (mutated.toString() == answer.toString());
+
+            choices.add(mutated);
+          }
+          choices.shuffle();
+          assert(choices.contains(answer));
+
+          /// To make choices, we have to "mutate" the answer.
+          questions.add(
+            LearnQuestion.directFormula(
+              from: fromUnit,
+              to: toUnit,
+              choices: choices,
+              answer: answer,
+            ),
+          );
+        }
+
+        /// This block is responsible for generating
+        ///    "What are the constants for converting from X to Y?"
+        {
+          var constants = answer.constants.toSet();
+          var correctAnswer = constants.map((c) => c.value).toSet();
+          var choices = {correctAnswer};
+
+          for (var i = 0; i < 3; ++i) {
+            Set<num> mutatedAnswer;
+
+            do {
+              mutatedAnswer =
+                  constants
+                      .map((c) => c.mutate())
+                      .whereType<ConstantExpression>()
+                      .map((c) => c.value)
+                      .toSet();
+            } while (choices.any((c) => c.difference(mutatedAnswer).isEmpty));
+
+            choices.add(mutatedAnswer);
+          }
+
+          questions.add(
+            LearnQuestion.importantNumbers(
+              from: fromUnit,
+              to: toUnit,
+              choices: choices,
+              answer: correctAnswer,
+            ),
+          );
+        }
+      }
+
+      return questions;
+    } else {
+      return [];
     }
   }
 
@@ -63,31 +140,19 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     LearnPageWidgetChangedEvent event,
     Emitter<LearnPageState> emit,
   ) async {
-    emit(
-      LearnPageState.loading(
-        status: LearnPageStatus.loading,
-        chapterIndex: event.chapterIndex,
-        lesson: event.lessonFuture,
-      ),
-    );
-
-    _handleLessonFuture();
-  }
-
-  void _onFutureLoaded(FutureLoadedEvent event, Emitter<LearnPageState> emit) async {
-    var lesson = event.resolvedLessonFuture;
-    if (lesson == null) {
-      emit(LearnPageState.error(status: LearnPageStatus.error, error: "Lesson not found"));
-      return;
-    }
-
     try {
+      var lesson = event.lesson;
+
+      if (lesson == null) {
+        throw Exception("Lesson not found");
+      }
+
       emit(
         LearnPageState.loaded(
           status: LearnPageStatus.movingIn,
-          lesson: event.resolvedLessonFuture!,
+          lesson: lesson,
           chapterIndex: event.chapterIndex,
-          questions: await _generateQuestions(lesson, lesson.learnChapters[event.chapterIndex]),
+          questions: _generateQuestions(lesson, lesson.learnChapters[event.chapterIndex]),
           questionIndex: 0,
           progress: 0.0,
         ),
@@ -126,7 +191,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     Emitter<LearnPageState> emit,
   ) async {
     emit(loadedState.copyWith(status: LearnPageStatus.movingAway));
-    await Future.delayed(Duration.zero);
   }
 
   void _onFromTransitionComplete(
@@ -153,60 +217,5 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     Emitter<LearnPageState> emit,
   ) async {
     emit(loadedState.copyWith(status: LearnPageStatus.waitingForSubmission, answer: null));
-  }
-
-  /// This generates questions for the given learn chapter.
-  Future<List<LearnQuestion>> _generateQuestions(Lesson lesson, LearnChapter learnChapter) async {
-    if (learnChapter.type == "direct") {
-      var questions = <LearnQuestion>[];
-
-      var unitGroup = await _lessonsHelper.getLocalExtendedUnitGroup(
-        lesson.unitsType,
-        learnChapter.units,
-      );
-      if (unitGroup == null) {
-        throw Exception("Unit group not found");
-      }
-      var units = unitGroup.units;
-      for (var conversion in unitGroup.conversions) {
-        assert(units.isNotEmpty);
-        assert(units.length == units.whereType<Object>().length);
-        var Conversion(:from, :to) = conversion;
-        var (fromUnit, toUnit) =
-            await (_lessonsHelper.getUnit(from), _lessonsHelper.getUnit(to)).wait;
-
-        assert(fromUnit != null && toUnit != null);
-
-        var path = await _lessonsHelper.getConversionPathFor(fromUnit!, toUnit!);
-        assert(path != null && path.length == 1);
-
-        var answer = path!.single.$2;
-        var choices = [answer];
-        for (var i = 0; i < 3; ++i) {
-          Expression mutated;
-          do {
-            mutated = answer.mutate();
-          } while (mutated.toString() == answer.toString());
-
-          choices.add(mutated);
-        }
-        choices.shuffle();
-        assert(choices.contains(answer));
-
-        /// To make choices, we have to "mutate" the answer.
-        questions.add(
-          LearnQuestion.directFormula(
-            from: fromUnit,
-            to: toUnit,
-            choices: choices,
-            answer: answer,
-          ),
-        );
-      }
-
-      return questions;
-    } else {
-      return [];
-    }
   }
 }

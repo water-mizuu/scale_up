@@ -5,17 +5,10 @@ sealed class LearnPageEvent {
   const LearnPageEvent();
 }
 
-final class FutureLoadedEvent extends LearnPageEvent {
-  const FutureLoadedEvent({required this.chapterIndex, required this.resolvedLessonFuture});
-
-  final Lesson? resolvedLessonFuture;
-  final int chapterIndex;
-}
-
 final class LearnPageWidgetChangedEvent extends LearnPageEvent {
-  const LearnPageWidgetChangedEvent({required this.lessonFuture, required this.chapterIndex});
+  const LearnPageWidgetChangedEvent({required this.lesson, required this.chapterIndex});
 
-  final Future<Lesson?> lessonFuture;
+  final Lesson? lesson;
   final int chapterIndex;
 }
 

@@ -5,10 +5,10 @@ import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 
 part "practice_page_state.freezed.dart";
 
-enum ChapterPageStatus {
+enum PracticePageStatus {
   /// Page loading related status
   loading,
-  loaded,
+  waitingForSubmission,
 
   /// Answer related status.
   evaluating,
@@ -16,8 +16,8 @@ enum ChapterPageStatus {
   incorrect,
 
   /// Transition related status.
-  movingToNextQuestion,
-  movedToNextQuestion,
+  movingAway,
+  movingIn,
 
   /// Problem set related status.
   finishedWithAllQuestions,
@@ -29,29 +29,22 @@ enum ChapterPageStatus {
 @freezed
 sealed class PracticePageState with _$PracticePageState {
   const PracticePageState._();
-  const factory PracticePageState.initial({
-    required ChapterPageStatus status,
-    required Lesson lesson,
+  const factory PracticePageState.loading({
+    required PracticePageStatus status,
+    required Lesson? lesson,
     required int chapterIndex,
-    String? answer,
-    String? correctAnswer,
-    String? error,
+    Object? error,
   }) = InitialPracticePageState;
 
   const factory PracticePageState.loaded({
-    required ChapterPageStatus status,
+    required PracticePageStatus status,
     required int chapterIndex,
     required Lesson lesson,
     required List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions,
     required int questionIndex,
+    required double progress,
     String? answer,
     String? correctAnswer,
-    String? error,
+    Object? error,
   }) = LoadedPracticePageState;
-
-  double? get progress => switch (this) {
-    InitialPracticePageState() => null,
-    LoadedPracticePageState(:var questions, :var questionIndex) =>
-      (questionIndex + 1) / (questions.length + 1),
-  };
 }

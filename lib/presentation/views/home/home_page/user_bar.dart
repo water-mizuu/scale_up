@@ -1,5 +1,6 @@
-import "package:firebase_auth/firebase_auth.dart" as firebase_auth;
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/title_case.dart";
 
@@ -8,35 +9,19 @@ class UserBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 2.0,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 2.0,
-            children: [
-              Text(
-                "Welcome back",
-                style: TextStyle(fontSize: 12.0),
-                textAlign: TextAlign.start,
-              ),
-              StreamBuilder(
-                stream: firebase_auth.FirebaseAuth.instance.userChanges(),
-                builder: (context, snapshot) {
-                  var user = firebase_auth.FirebaseAuth.instance.currentUser;
-
-                  return Styles.subtitle(
-                    'Hello, ${(user?.displayName ?? "User").toTitleCase()}',
-                    textAlign: TextAlign.start,
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        Ink(
-          decoration: ShapeDecoration(color: Colors.blue, shape: CircleBorder()),
-          child: CircleAvatar(child: Icon(Icons.person)),
+        Text("Welcome back", style: TextStyle(fontSize: 12.0), textAlign: TextAlign.start),
+        BlocBuilder<UserDataBloc, UserDataState>(
+          buildWhen: (p, c) => p.user != c.user,
+          builder: (context, state) {
+            return Styles.subtitle(
+              'Hello, ${(state.user?.displayName ?? "User").toTitleCase()}',
+              textAlign: TextAlign.start,
+            );
+          },
         ),
       ],
     );

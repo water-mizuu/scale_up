@@ -23,3 +23,13 @@ final class PracticeChapterCompletedUserDataEvent extends UserDataEvent {
     required this.chapterIndex,
   });
 }
+
+final class LearnChapterCompletedUserDataEvent extends UserDataEvent {
+  final String lessonId;
+  final int chapterIndex;
+
+  const LearnChapterCompletedUserDataEvent({
+    required this.lessonId,
+    required this.chapterIndex,
+  });
+}

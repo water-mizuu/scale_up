@@ -29,6 +29,14 @@ final class PracticePageAnswerSubmitted extends PracticePageEvent {
   const PracticePageAnswerSubmitted();
 }
 
-final class PracticePageNextQuestion extends PracticePageEvent {
-  const PracticePageNextQuestion();
+final class PracticePageNextQuestionClicked extends PracticePageEvent {
+  const PracticePageNextQuestionClicked();
+}
+
+final class PracticePageToTransitionCompleteEvent extends PracticePageEvent {
+  const PracticePageToTransitionCompleteEvent();
+}
+
+final class PracticePageFromTransitionCompleteEvent extends PracticePageEvent {
+  const PracticePageFromTransitionCompleteEvent();
 }

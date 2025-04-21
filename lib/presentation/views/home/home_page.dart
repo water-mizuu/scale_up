@@ -1,6 +1,7 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_cubit.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/home_page/explore_lesson_container.dart";
@@ -18,11 +19,10 @@ class HomePage extends StatelessWidget {
     return MultiProvider(
       providers: [
         BlocProvider(
-          create:
-              (_) => HomePageCubit(
-                finishedChaptersString: userDataBloc.state.finishedChapters,
-                lessonsHelper: context.read(),
-              ),
+          create: (_) => HomePageCubit(
+            finishedChaptersString: userDataBloc.state.finishedChapters,
+            lessonsHelper: context.read<LessonsHelper>(),
+          ),
         ),
       ],
       builder: (context, _) {

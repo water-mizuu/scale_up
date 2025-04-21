@@ -20,7 +20,6 @@ class UnitTile extends StatefulWidget {
 }
 
 class _UnitTileState extends State<UnitTile> {
-  late final Future<Unit?> unitFuture = context.read<LessonsHelper>().getUnit(widget.unit);
   late final SuperTooltipController tooltipController = SuperTooltipController();
   bool isShown = false;
 
@@ -33,62 +32,56 @@ class _UnitTileState extends State<UnitTile> {
 
   @override
   Widget build(BuildContext context) {
+    var unit = context.read<LessonsHelper>().getUnit(widget.unit);
     var lesson = context.read<LessonPageCubit>().state.lesson;
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
-    return FutureBuilder(
-      future: unitFuture,
-      builder: (context, snapshot) {
-        return GestureDetector(
-          onTap: () {
-            if (isShown) {
-              tooltipController.hideTooltip();
-            } else {
-              tooltipController.showTooltip();
-            }
-            isShown = !isShown;
-          },
-          child: SuperTooltip(
-            controller: tooltipController,
-            content: UnitToolTip(
-              lessonPageCubit: context.read<LessonPageCubit>(),
-              unitFuture: unitFuture,
-              lesson: lesson,
-            ),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: borderRadius,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 8.0,
-                    spreadRadius: 2.0,
-                  ),
-                ],
+    return GestureDetector(
+      onTap: () {
+        if (isShown) {
+          tooltipController.hideTooltip();
+        } else {
+          tooltipController.showTooltip();
+        }
+        isShown = !isShown;
+      },
+      child: SuperTooltip(
+        controller: tooltipController,
+        content: UnitToolTip(
+          lessonPageCubit: context.read<LessonPageCubit>(),
+          unit: unit,
+          lesson: lesson,
+        ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 8.0,
+                spreadRadius: 2.0,
               ),
+            ],
+          ),
 
-              /// This material widget makes sure that the ink doesn't overflow
-              ///   through clipping like in scroll views.
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (snapshot.data case Unit(:var shortcut))
-                      FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut))
-                    else
-                      SizedBox(),
-                    //
-                    FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
-                  ],
-                ),
-              ),
+          /// This material widget makes sure that the ink doesn't overflow
+          ///   through clipping like in scroll views.
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (unit case Unit(:var shortcut))
+                  FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut)),
+
+                FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -97,86 +90,64 @@ class UnitToolTip extends StatelessWidget {
   const UnitToolTip({
     super.key,
     required this.lessonPageCubit,
-    required this.unitFuture,
+    required this.unit,
     required this.lesson,
   });
 
   final LessonPageCubit lessonPageCubit;
-  final Future<Unit?> unitFuture;
+  final Unit? unit;
   final Lesson lesson;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: unitFuture,
-      builder: (context, snapshot) {
-        return IntrinsicWidth(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Styles.subtitle("Direct Conversions"),
-              if (snapshot.data case var unit?)
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (lessonPageCubit.state.localUnitGroup case var unitGroup?)
-                      Row(
-                        spacing: 8.0,
+    return IntrinsicWidth(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Styles.subtitle("Direct Conversions"),
+          if (unit case var unit?)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (lessonPageCubit.state.localUnitGroup case var unitGroup?)
+                  Row(
+                    spacing: 8.0,
+                    children: [
+                      Column(
                         children: [
-                          Column(
-                            children: [
-                              for (var conversion in unitGroup.conversions)
-                                if (conversion.from == unit.id)
-                                  InheritedProvider<Future<Unit?>>(
-                                    create:
-                                        (_) => context.read<LessonsHelper>().getUnit(
-                                          conversion.to,
-                                        ),
-                                    builder: (context, _) {
-                                      return FutureBuilder(
-                                        future: context.read<Future<Unit?>>(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.data case Unit(:var shortcut)) {
-                                            return Text(shortcut);
-                                          } else {
-                                            return const SizedBox.shrink();
-                                          }
-                                        },
-                                      );
-                                    },
-                                  ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              for (var conversion in unitGroup.conversions)
-                                if (conversion.from == unit.id) Text("="),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              for (var conversion in unitGroup.conversions)
-                                if (conversion.from == unit.id)
-                                  Text(
-                                    conversion.formula
-                                        .substitute("from", VariableExpression(unit.shortcut))
-                                        .toString(),
-                                  ),
-                            ],
-                          ),
+                          for (var conversion in unitGroup.conversions)
+                            if (conversion.from == unit.id)
+                              if (context.read<LessonsHelper>().getUnit(conversion.to)
+                                  case var unit?)
+                                Text(unit.shortcut),
                         ],
                       ),
-                  ],
-                )
-              else
-                const SizedBox.shrink(),
-            ],
-          ),
-        );
-      },
+                      Column(
+                        children: [
+                          for (var conversion in unitGroup.conversions)
+                            if (conversion.from == unit.id) Text("="),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (var conversion in unitGroup.conversions)
+                            if (conversion.from == unit.id)
+                              Text(
+                                conversion.formula
+                                    .substitute("from", VariableExpression(unit.shortcut))
+                                    .toString(),
+                              ),
+                        ],
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+        ],
+      ),
     );
   }
 }

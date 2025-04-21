@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 
-class CheckButton extends StatelessWidget {
-  const CheckButton({super.key});
+class LearnPageCheckButton extends StatelessWidget {
+  const LearnPageCheckButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,22 +19,21 @@ class CheckButton extends StatelessWidget {
     return BlocBuilder<LearnPageBloc, LearnPageState>(
       builder: (context, state) {
         var hasAnswered =
-            state.status == LearnPageStatus.correct ||
+            state.status == LearnPageStatus.correct || //
             state.status == LearnPageStatus.incorrect;
 
         return FilledButton(
           style: FilledButton.styleFrom(backgroundColor: buttonColor),
-          onPressed:
-              // Disable the button if the status is correct, or if there is no answer.
-              learnPageBloc.loadedState.answer == null
-                  ? null
-                  : hasAnswered
-                  ? () {
-                    learnPageBloc.add(LearnPageNextQuestionClickedEvent());
-                  }
-                  : () {
-                    learnPageBloc.add(LearnPageAnswerSubmittedEvent());
-                  },
+          onPressed: () {
+            if (hasAnswered) {
+              return () => learnPageBloc.add(LearnPageNextQuestionClickedEvent());
+            }
+
+            if (learnPageBloc.loadedState.status == LearnPageStatus.waitingForSubmission &&
+                learnPageBloc.loadedState.answer != null) {
+              return () => learnPageBloc.add(LearnPageAnswerSubmittedEvent());
+            }
+          }(),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 12.0),
             child: Text(

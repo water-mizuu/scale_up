@@ -18,6 +18,14 @@ class LessonHeader extends StatelessWidget {
           bottomLeft: Radius.circular(16.0),
           bottomRight: Radius.circular(16.0),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8.0,
+            spreadRadius: 2.0,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         spacing: 4.0,

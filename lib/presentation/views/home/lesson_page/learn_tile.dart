@@ -23,7 +23,7 @@ class LearnTile extends StatelessWidget {
     return Material(
       elevation: 12.0,
       borderRadius: BorderRadius.circular(8.0),
-      shadowColor: Colors.black.withValues(alpha: 0.3),
+      shadowColor: Colors.black.withValues(alpha: 0.05),
       child: ListTile(
         tileColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),

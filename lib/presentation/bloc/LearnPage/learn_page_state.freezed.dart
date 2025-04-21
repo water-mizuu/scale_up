@@ -81,7 +81,7 @@ class LoadingLearnPageState extends LearnPageState {
   
 
 @override final  LearnPageStatus status;
- final  Future<Lesson?> lesson;
+ final  Lesson? lesson;
  final  int chapterIndex;
 
 /// Create a copy of LearnPageState
@@ -114,11 +114,11 @@ abstract mixin class $LoadingLearnPageStateCopyWith<$Res> implements $LearnPageS
   factory $LoadingLearnPageStateCopyWith(LoadingLearnPageState value, $Res Function(LoadingLearnPageState) _then) = _$LoadingLearnPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- LearnPageStatus status, Future<Lesson?> lesson, int chapterIndex
+ LearnPageStatus status, Lesson? lesson, int chapterIndex
 });
 
 
-
+$LessonCopyWith<$Res>? get lesson;
 
 }
 /// @nodoc
@@ -131,16 +131,28 @@ class _$LoadingLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? lesson = null,Object? chapterIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? lesson = freezed,Object? chapterIndex = null,}) {
   return _then(LoadingLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as LearnPageStatus,lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
-as Future<Lesson?>,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
+as LearnPageStatus,lesson: freezed == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
+as Lesson?,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
 
+/// Create a copy of LearnPageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$LessonCopyWith<$Res>? get lesson {
+    if (_self.lesson == null) {
+    return null;
+  }
 
+  return $LessonCopyWith<$Res>(_self.lesson!, (value) {
+    return _then(_self.copyWith(lesson: value));
+  });
+}
 }
 
 /// @nodoc
@@ -309,7 +321,7 @@ $LessonCopyWith<$Res> get lesson {
 /// @nodoc
 mixin _$LearnQuestion {
 
- Unit get from; Unit get to; List<Object> get choices; Object get answer;
+ Unit get from; Unit get to; Object get choices; Object get answer;
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -486,23 +498,23 @@ $UnitCopyWith<$Res> get to {
 
 
 class ImportantNumbersLearnQuestion extends LearnQuestion {
-  const ImportantNumbersLearnQuestion({required this.from, required this.to, required final  List<Expression> choices, required final  List<num> answer}): _choices = choices,_answer = answer,super._();
+  const ImportantNumbersLearnQuestion({required this.from, required this.to, required final  Set<Set<num>> choices, required final  Set<num> answer}): _choices = choices,_answer = answer,super._();
   
 
 @override final  Unit from;
 @override final  Unit to;
- final  List<Expression> _choices;
-@override List<Expression> get choices {
-  if (_choices is EqualUnmodifiableListView) return _choices;
+ final  Set<Set<num>> _choices;
+@override Set<Set<num>> get choices {
+  if (_choices is EqualUnmodifiableSetView) return _choices;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_choices);
+  return EqualUnmodifiableSetView(_choices);
 }
 
- final  List<num> _answer;
-@override List<num> get answer {
-  if (_answer is EqualUnmodifiableListView) return _answer;
+ final  Set<num> _answer;
+@override Set<num> get answer {
+  if (_answer is EqualUnmodifiableSetView) return _answer;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_answer);
+  return EqualUnmodifiableSetView(_answer);
 }
 
 
@@ -536,7 +548,7 @@ abstract mixin class $ImportantNumbersLearnQuestionCopyWith<$Res> implements $Le
   factory $ImportantNumbersLearnQuestionCopyWith(ImportantNumbersLearnQuestion value, $Res Function(ImportantNumbersLearnQuestion) _then) = _$ImportantNumbersLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<Expression> choices, List<num> answer
+ Unit from, Unit to, Set<Set<num>> choices, Set<num> answer
 });
 
 
@@ -558,8 +570,8 @@ class _$ImportantNumbersLearnQuestionCopyWithImpl<$Res>
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
-as List<Expression>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
-as List<num>,
+as Set<Set<num>>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
+as Set<num>,
   ));
 }
 

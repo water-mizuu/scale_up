@@ -10,8 +10,8 @@ class LessonPageCubit extends Cubit<LessonPageState> {
 
   final LessonsHelper _lessonsHelper;
 
-  void _loadLocalUnitGroup() async {
-    var localUnitGroup = await _lessonsHelper.getLocalExtendedUnitGroup(
+  void _loadLocalUnitGroup() {
+    var localUnitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
       state.lesson.unitsType,
       state.lesson.units,
     );

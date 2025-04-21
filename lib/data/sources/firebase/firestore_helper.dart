@@ -9,8 +9,7 @@ import "package:firebase_auth/firebase_auth.dart";
 ///   Firestore should go through this class.
 class FirestoreHelper {
   FirebaseFirestore get _firestore => FirebaseFirestore.instance;
-  CollectionReference<Map<String, dynamic>> get _userCollection =>
-      _firestore.collection("users");
+  CollectionReference<Map<String, dynamic>> get _userCollection => _firestore.collection("users");
 
   const FirestoreHelper();
 
@@ -26,11 +25,12 @@ class FirestoreHelper {
 
   static Timer? _registerDebounce;
   static final _registerQueue = Queue<(String, int)>();
-  Future<void> registerPracticeChapterAsCompleted(
-    User user,
-    String lessonId,
-    int chapterIndex,
-  ) async {
+  Future<void> registerChapterAsCompleted({
+    required User user,
+    required String lessonId,
+    required int chapterIndex,
+    required ChapterType chapterType,
+  }) async {
     _registerQueue.add((lessonId, chapterIndex));
 
     if (_registerDebounce?.isActive ?? false) {
@@ -42,7 +42,10 @@ class FirestoreHelper {
       var finishedChapters = await userDoc.get().then((d) => d.data()!["finished_chapters"]!);
       if (finishedChapters case List finishedChapters) {
         for (var (lessonId, chapterIndex) in _registerQueue) {
-          var key = "$lessonId:p:$chapterIndex";
+          var key = switch (chapterType) {
+            ChapterType.practice => "$lessonId:p:$chapterIndex",
+            ChapterType.learn => "$lessonId:l:$chapterIndex",
+          };
           if (finishedChapters.contains(key)) continue;
 
           finishedChapters.add(key);
@@ -68,4 +71,17 @@ class FirestoreHelper {
 
     return _userCollection.doc(user.uid);
   }
+}
+
+enum ChapterType {
+  practice(_practiceStringify),
+  learn(_learnStringify);
+
+  static String _practiceStringify(String lessonId, int chapterIndex) =>
+      "$lessonId:p:$chapterIndex";
+  static String _learnStringify(String lessonId, int chapterIndex) => "$lessonId:l:$chapterIndex";
+
+  final String Function(String lessonId, int chapterIndex) stringify;
+
+  const ChapterType(this.stringify);
 }

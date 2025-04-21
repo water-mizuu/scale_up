@@ -15,6 +15,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     on<SignedInUserDataEvent>(_onSignedIn);
     on<SignedOutUserDataEvent>(_onSignedOut);
     on<PracticeChapterCompletedUserDataEvent>(_onPracticeChapterCompleted);
+    on<LearnChapterCompletedUserDataEvent>(_onLearnChapterCompleted);
   }
 
   final FirestoreHelper _firestoreHelper;
@@ -39,20 +40,36 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     emit(state.copyWith(status: UserDataStatus.loaded, user: null, finishedChapters: {}));
   }
 
-  Future<void> _onPracticeChapterCompleted(
-    PracticeChapterCompletedUserDataEvent event,
+  Future<void> _saveChapterAsCompleted(
+    String lessonId,
+    int chapterIndex,
+    ChapterType chapterType,
     Emitter<UserDataState> emit,
   ) async {
     if (state case UserDataState(:var user?)) {
-      var PracticeChapterCompletedUserDataEvent(:lessonId, :chapterIndex) = event;
-      var key = "$lessonId:p:$chapterIndex";
+      var key = chapterType.stringify(lessonId, chapterIndex);
 
       var finishedChapters = {...state.finishedChapters, key};
       emit(state.copyWith(finishedChapters: finishedChapters));
 
       unawaited(
-        _firestoreHelper.registerPracticeChapterAsCompleted(user, lessonId, chapterIndex),
+        _firestoreHelper.registerChapterAsCompleted(
+          user: user,
+          lessonId: lessonId,
+          chapterIndex: chapterIndex,
+          chapterType: chapterType,
+        ),
       );
     }
   }
+
+  Future<void> _onPracticeChapterCompleted(
+    PracticeChapterCompletedUserDataEvent event,
+    Emitter<UserDataState> emit,
+  ) => _saveChapterAsCompleted(event.lessonId, event.chapterIndex, ChapterType.practice, emit);
+
+  Future<void> _onLearnChapterCompleted(
+    LearnChapterCompletedUserDataEvent event,
+    Emitter<UserDataState> emit,
+  ) => _saveChapterAsCompleted(event.lessonId, event.chapterIndex, ChapterType.learn, emit);
 }
