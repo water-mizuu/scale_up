@@ -61,8 +61,13 @@ class LessonPageView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
 
-        /// Description
-        children: [LessonHeader(), Expanded(child: LessonInformation())],
+        /// A mini hack to allow shadows to be drawn above each other.
+        verticalDirection: VerticalDirection.up,
+        children:
+            [
+              LessonHeader(), //
+              Expanded(child: LessonInformation()),
+            ].reversed.toList(),
       ),
     );
   }

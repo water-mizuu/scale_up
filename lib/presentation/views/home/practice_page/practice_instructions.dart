@@ -1,16 +1,17 @@
-import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
+import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
+import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
+import "package:scale_up/presentation/views/home/widgets/dotted_underline.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:super_tooltip/super_tooltip.dart";
 
-class Instructions extends StatelessWidget {
-  const Instructions({super.key});
+class PracticeInstructions extends StatelessWidget {
+  const PracticeInstructions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,31 +25,37 @@ class Instructions extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8.0,
-            spreadRadius: 2.0,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: defaultBoxShadow,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Styles.subtitle(
-            "Convert the unit from ${left.name} to ${right.name}",
-            textAlign: TextAlign.center,
-            fontWeight: FontWeight.w400,
+          Styles.hint("Do the computation:"),
+          Wrap(
+            runAlignment: WrapAlignment.center,
+            children: [
+              Styles.subtitle("Convert the unit from "),
+              Styles.subtitle("${left.name} ", fontWeight: FontWeight.bold),
+              Styles.subtitle(
+                "(${left.shortcut})",
+                fontWeight: FontWeight.w600,
+                fontFamily: GoogleFonts.notoSansMath().fontFamily,
+              ),
+              Styles.subtitle(" to "),
+              Styles.subtitle("${right.name} ", fontWeight: FontWeight.bold),
+              Styles.subtitle(
+                "(${right.shortcut})",
+                fontWeight: FontWeight.w600,
+                fontFamily: GoogleFonts.notoSansMath().fontFamily,
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 18.0),
             child: Center(
               child: SuperTooltip(
                 barrierColor: Colors.transparent,
-                /// IntrinsicWidth tells the Row to take the width of the widest child,
-                ///   and impose that as a Constraint on the entire widget.
                 content: IntrinsicWidth(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -80,27 +87,19 @@ class Instructions extends StatelessWidget {
 
                         Styles.body(
                           "      "
-                          "${to.shortcut} = ${expr.substitute("from", VariableExpression(from.shortcut))}",
+                          "${to.shortcut} = ${expr.substituteString("from", from.shortcut)}",
                           textAlign: TextAlign.right,
                         ),
                       ],
                     ],
                   ),
                 ),
-                child: DottedBorder(
+                child: DottedUnderline(
                   dashPattern: [4, 4],
-                  customPath: (size) {
-                    return Path()
-                      ..moveTo(0, size.height)
-                      ..lineTo(size.width, size.height);
-                  },
                   child: Container(
                     /// There should be an underline under the text.
                     padding: EdgeInsets.only(bottom: 4.0),
-                    child: Styles.title(
-                      "$number ${left.shortcut} to ___ ${right.shortcut}?",
-                      fontWeight: FontWeight.w400,
-                    ),
+                    child: Styles.title("$number ${left.shortcut} to ___ ${right.shortcut}?"),
                   ),
                 ),
               ),

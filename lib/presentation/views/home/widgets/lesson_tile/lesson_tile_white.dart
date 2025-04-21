@@ -2,35 +2,22 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_progression.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_progression.dart";
 
 class LessonTileWhite extends StatelessWidget {
   const LessonTileWhite({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var Lesson(:id, :name, :units, :practiceChapters, :color) = context.read();
-    var regex = RegExp("^$id:p:(\\d+)\$");
+    var Lesson(:id, :name, :units, :learnChapters, :practiceChapters, :color) = context.read();
 
-    var questionsDone = context.select(
-      (UserDataBloc bloc) => bloc.state.finishedChapters
-          /// We match the pattern with the regex.
-          .map(regex.firstMatch)
-          .whereType<RegExpMatch>()
-          /// We take the string indices
-          .map((v) => v.group(1))
-          .whereType<String>()
-          /// We parse the indices to integers
-          .map((s) => int.parse(s))
-          /// We get the chapter object from the lesson object, reading the questionCount.
-          .map((s) => practiceChapters[s].questionCount)
-          /// And we sum them all up.
-          .fold(0, (a, b) => a + b),
+    var chaptersDone = context.select(
+      (UserDataBloc b) => b.state.finishedChapters.where((c) => c.startsWith(id)).length,
     );
-    var questionsTotal = practiceChapters.map((c) => c.questionCount).fold(0, (a, b) => a + b);
-    var progressBarValue = questionsTotal == 0 ? 0.0 : questionsDone / questionsTotal;
+    var chaptersTotal = learnChapters.length + practiceChapters.length;
+    var progressBarValue = chaptersTotal == 0 ? 0.0 : chaptersDone / chaptersTotal;
 
     return Expanded(
       child: Padding(
@@ -54,7 +41,7 @@ class LessonTileWhite extends StatelessWidget {
               spacing: 8.0,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                mini("$questionsDone/$questionsTotal"),
+                mini("$chaptersDone/$chaptersTotal"),
                 Row(
                   spacing: 4.0,
                   children: [

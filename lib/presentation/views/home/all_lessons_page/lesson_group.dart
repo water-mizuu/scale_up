@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile.dart";
 
 class LessonGroup extends StatelessWidget {
   const LessonGroup({super.key, required this.categoryName, required this.lessons});

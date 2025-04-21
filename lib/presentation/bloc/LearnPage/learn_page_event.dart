@@ -5,32 +5,33 @@ sealed class LearnPageEvent {
   const LearnPageEvent();
 }
 
-final class LearnPageWidgetChangedEvent extends LearnPageEvent {
-  const LearnPageWidgetChangedEvent({required this.lesson, required this.chapterIndex});
+final class LearnPageWidgetChanged extends LearnPageEvent {
+  const LearnPageWidgetChanged({required this.lesson, required this.chapterIndex});
 
   final Lesson? lesson;
   final int chapterIndex;
 }
 
-final class LearnPageAnswerUpdatedEvent extends LearnPageEvent {
-  const LearnPageAnswerUpdatedEvent({required this.answer});
-  const LearnPageAnswerUpdatedEvent.directFormula({required Expression this.answer});
+final class LearnPageAnswerUpdated extends LearnPageEvent {
+  const LearnPageAnswerUpdated({required this.answer});
+  const LearnPageAnswerUpdated.directFormula({required Expression this.answer});
+  const LearnPageAnswerUpdated.importantNumbers({required Set<num> this.answer});
 
   final Object? answer;
 }
 
-final class LearnPageAnswerSubmittedEvent extends LearnPageEvent {
-  const LearnPageAnswerSubmittedEvent();
+final class LearnPageAnswerSubmitted extends LearnPageEvent {
+  const LearnPageAnswerSubmitted();
 }
 
-final class LearnPageNextQuestionClickedEvent extends LearnPageEvent {
-  const LearnPageNextQuestionClickedEvent();
+final class LearnPageNextQuestionClicked extends LearnPageEvent {
+  const LearnPageNextQuestionClicked();
 }
 
-final class LearnPageFromTransitionCompleteEvent extends LearnPageEvent {
-  const LearnPageFromTransitionCompleteEvent();
+final class LearnPageMovingAwayComplete extends LearnPageEvent {
+  const LearnPageMovingAwayComplete();
 }
 
-final class LearnPageToTransitionCompleteEvent extends LearnPageEvent {
-  const LearnPageToTransitionCompleteEvent();
+final class LearnPageMovingInComplete extends LearnPageEvent {
+  const LearnPageMovingInComplete();
 }

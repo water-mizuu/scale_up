@@ -227,7 +227,7 @@ as String,
 
 
 class LoadedLearnPageState extends LearnPageState {
-  const LoadedLearnPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<LearnQuestion> questions, required this.questionIndex, required this.progress, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
+  const LoadedLearnPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<LearnQuestion> questions, required this.questionIndex, required this.progress, required this.comparison, required this.mistakes, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  LearnPageStatus status;
@@ -242,6 +242,8 @@ class LoadedLearnPageState extends LearnPageState {
 
  final  int questionIndex;
  final  double progress;
+ final  bool Function(Object?, Object?) comparison;
+ final  int mistakes;
  final  Object? answer;
  final  Object? correctAnswer;
  final  String? error;
@@ -256,16 +258,16 @@ $LoadedLearnPageStateCopyWith<LoadedLearnPageState> get copyWith => _$LoadedLear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedLearnPageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&const DeepCollectionEquality().equals(other.answer, answer)&&const DeepCollectionEquality().equals(other.correctAnswer, correctAnswer)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedLearnPageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.comparison, comparison) || other.comparison == comparison)&&(identical(other.mistakes, mistakes) || other.mistakes == mistakes)&&const DeepCollectionEquality().equals(other.answer, answer)&&const DeepCollectionEquality().equals(other.correctAnswer, correctAnswer)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,const DeepCollectionEquality().hash(answer),const DeepCollectionEquality().hash(correctAnswer),error);
+int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,comparison,mistakes,const DeepCollectionEquality().hash(answer),const DeepCollectionEquality().hash(correctAnswer),error);
 
 @override
 String toString() {
-  return 'LearnPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'LearnPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, comparison: $comparison, mistakes: $mistakes, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
@@ -276,7 +278,7 @@ abstract mixin class $LoadedLearnPageStateCopyWith<$Res> implements $LearnPageSt
   factory $LoadedLearnPageStateCopyWith(LoadedLearnPageState value, $Res Function(LoadedLearnPageState) _then) = _$LoadedLearnPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- LearnPageStatus status, int chapterIndex, Lesson lesson, List<LearnQuestion> questions, int questionIndex, double progress, Object? answer, Object? correctAnswer, String? error
+ LearnPageStatus status, int chapterIndex, Lesson lesson, List<LearnQuestion> questions, int questionIndex, double progress, bool Function(Object?, Object?) comparison, int mistakes, Object? answer, Object? correctAnswer, String? error
 });
 
 
@@ -293,7 +295,7 @@ class _$LoadedLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? comparison = null,Object? mistakes = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(LoadedLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LearnPageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
@@ -301,7 +303,9 @@ as int,lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_t
 as Lesson,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
 as List<LearnQuestion>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
 as int,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as double,answer: freezed == answer ? _self.answer : answer ,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer ,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as double,comparison: null == comparison ? _self.comparison : comparison // ignore: cast_nullable_to_non_nullable
+as bool Function(Object?, Object?),mistakes: null == mistakes ? _self.mistakes : mistakes // ignore: cast_nullable_to_non_nullable
+as int,answer: freezed == answer ? _self.answer : answer ,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer ,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -600,7 +604,7 @@ $UnitCopyWith<$Res> get to {
 
 
 class IndirectStepsLearnQuestion extends LearnQuestion {
-  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), Expression)> steps, required final  List<Unit> choices, required final  List<Object> answer}): _steps = steps,_choices = choices,_answer = answer,super._();
+  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), Expression)> steps, required final  List<Unit> choices, required final  List<Unit> answer}): _steps = steps,_choices = choices,_answer = answer,super._();
   
 
 @override final  Unit from;
@@ -619,8 +623,8 @@ class IndirectStepsLearnQuestion extends LearnQuestion {
   return EqualUnmodifiableListView(_choices);
 }
 
- final  List<Object> _answer;
-@override List<Object> get answer {
+ final  List<Unit> _answer;
+@override List<Unit> get answer {
   if (_answer is EqualUnmodifiableListView) return _answer;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_answer);
@@ -657,7 +661,7 @@ abstract mixin class $IndirectStepsLearnQuestionCopyWith<$Res> implements $Learn
   factory $IndirectStepsLearnQuestionCopyWith(IndirectStepsLearnQuestion value, $Res Function(IndirectStepsLearnQuestion) _then) = _$IndirectStepsLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<((Unit, Unit), Expression)> steps, List<Unit> choices, List<Object> answer
+ Unit from, Unit to, List<((Unit, Unit), Expression)> steps, List<Unit> choices, List<Unit> answer
 });
 
 
@@ -681,7 +685,7 @@ as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
 as List<((Unit, Unit), Expression)>,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Unit>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
-as List<Object>,
+as List<Unit>,
   ));
 }
 

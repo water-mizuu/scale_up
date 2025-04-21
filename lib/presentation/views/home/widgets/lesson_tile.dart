@@ -3,8 +3,9 @@ import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_colored.dart";
-import "package:scale_up/presentation/views/widgets/lesson_tile/lesson_tile_white.dart";
+import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile_colored.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile_white.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 
@@ -33,21 +34,13 @@ class LessonTile extends StatelessWidget {
 
       /// Ink is used here to basically make the shadow persistent.
       child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8.0,
-              spreadRadius: 2.0,
-            ),
-          ],
-        ),
+        decoration: BoxDecoration(borderRadius: borderRadius, boxShadow: defaultBoxShadow),
 
         /// This material widget makes sure that the ink doesn't overflow
         ///   through clipping like in scroll views.
         child: Material(
           /// The first ink handles the background color.
+          borderRadius: borderRadius,
           child: Ink(
             decoration: BoxDecoration(borderRadius: borderRadius, color: Colors.white),
             child: InkWell(

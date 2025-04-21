@@ -25,16 +25,16 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
            chapterIndex: chapterIndex,
          ),
        ) {
-    on<LearnPageWidgetChangedEvent>(_onLearnPageWidgetChanged);
+    on<LearnPageWidgetChanged>(_onLearnPageWidgetChanged);
 
-    on<LearnPageAnswerUpdatedEvent>(_onAnswerUpdated);
-    on<LearnPageAnswerSubmittedEvent>(_onAnswerSubmitted);
-    on<LearnPageNextQuestionClickedEvent>(_onNextQuestionClicked);
+    on<LearnPageAnswerUpdated>(_onAnswerUpdated);
+    on<LearnPageAnswerSubmitted>(_onAnswerSubmitted);
+    on<LearnPageNextQuestionClicked>(_onNextQuestionClicked);
 
-    on<LearnPageFromTransitionCompleteEvent>(_onFromTransitionComplete);
-    on<LearnPageToTransitionCompleteEvent>(_onToTransitionComplete);
+    on<LearnPageMovingAwayComplete>(_onMovingAwayComplete);
+    on<LearnPageMovingInComplete>(_onMovingInComplete);
 
-    add(LearnPageWidgetChangedEvent(lesson: lesson, chapterIndex: chapterIndex));
+    add(LearnPageWidgetChanged(lesson: lesson, chapterIndex: chapterIndex));
   }
 
   final LessonsHelper _lessonsHelper;
@@ -47,88 +47,88 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     if (learnChapter.type == "direct") {
       var questions = <LearnQuestion>[];
 
-      var unitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
+      var unitGroup = _lessonsHelper.getLocalUnitGroup(lesson.unitsType, learnChapter.units);
+      var extendedUnitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
         lesson.unitsType,
         learnChapter.units,
       );
-      if (unitGroup == null) {
+      if (unitGroup == null || extendedUnitGroup == null) {
         throw Exception("Unit group not found");
       }
 
-      var units = unitGroup.units;
+      /// This block is responsible for generating
+      ///    "What are the important numbers for converting from X to Y?"
       for (var conversion in unitGroup.conversions) {
+        var Conversion(:from, :to, formula: expression) = conversion;
+        var (fromUnit, toUnit) = (_lessonsHelper.getUnit(from)!, _lessonsHelper.getUnit(to)!);
+        var constants = expression.constants.toSet();
+        var correctAnswer = constants.map((c) => c.value).toSet();
+        var choices = {correctAnswer};
+
+        for (var i = 0; i < 3; ++i) {
+          Set<num> mutatedAnswer;
+
+          do {
+            mutatedAnswer =
+                constants
+                    .map((c) => c.mutate())
+                    .whereType<ConstantExpression>()
+                    .map((c) => c.value)
+                    .toSet();
+          } while (choices.any((c) => c.difference(mutatedAnswer).isEmpty));
+
+          choices.add(mutatedAnswer);
+        }
+
+        questions.add(
+          LearnQuestion.importantNumbers(
+            from: fromUnit,
+            to: toUnit,
+            choices: choices,
+            answer: correctAnswer,
+          ),
+        );
+      }
+
+      questions.shuffle();
+
+      /// This block is responsible for generating
+      ///   "What is the formula for converting from X to Y?"
+      ///   questions.
+      var units = extendedUnitGroup.units;
+      for (var conversion in extendedUnitGroup.conversions) {
         assert(units.isNotEmpty);
         assert(units.length == units.whereType<Object>().length);
 
-        var Conversion(:from, :to) = conversion;
+        var Conversion(:from, :to, formula: answer) = conversion;
         var (fromUnit, toUnit) = (_lessonsHelper.getUnit(from)!, _lessonsHelper.getUnit(to)!);
-        var path = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
-        assert(path != null && path.length == 1);
-
-        var (_, answer) = path!.single;
         var choices = [answer];
 
-        /// This block is responsible for generating
-        ///   "What is the formula for converting from X to Y?"
-        ///   questions.
-        {
-          for (var i = 0; i < 3; ++i) {
-            Expression mutated;
+        for (var i = 0; i < 3; ++i) {
+          Expression mutated;
 
-            /// There is a probability that the mutated expression is unchanged.
-            ///   So, we just keep mutating until we get a different one.
-            do {
-              mutated = answer.mutate();
-            } while (mutated.toString() == answer.toString());
+          /// There is a probability that the mutated expression is unchanged.
+          ///   So, we just keep mutating until we get a different one.
+          do {
+            mutated = answer.mutate();
+          } while (mutated.toString() == answer.toString());
 
-            choices.add(mutated);
-          }
-          choices.shuffle();
-          assert(choices.contains(answer));
-
-          /// To make choices, we have to "mutate" the answer.
-          questions.add(
-            LearnQuestion.directFormula(
-              from: fromUnit,
-              to: toUnit,
-              choices: choices,
-              answer: answer,
-            ),
-          );
+          choices.add(mutated);
         }
+        choices.shuffle();
+        assert(choices.contains(answer));
 
-        /// This block is responsible for generating
-        ///    "What are the constants for converting from X to Y?"
-        {
-          var constants = answer.constants.toSet();
-          var correctAnswer = constants.map((c) => c.value).toSet();
-          var choices = {correctAnswer};
-
-          for (var i = 0; i < 3; ++i) {
-            Set<num> mutatedAnswer;
-
-            do {
-              mutatedAnswer =
-                  constants
-                      .map((c) => c.mutate())
-                      .whereType<ConstantExpression>()
-                      .map((c) => c.value)
-                      .toSet();
-            } while (choices.any((c) => c.difference(mutatedAnswer).isEmpty));
-
-            choices.add(mutatedAnswer);
-          }
-
-          questions.add(
-            LearnQuestion.importantNumbers(
-              from: fromUnit,
-              to: toUnit,
-              choices: choices,
-              answer: correctAnswer,
-            ),
-          );
-        }
+        /// To make choices, we have to "mutate" the answer.
+        questions.add(
+          LearnQuestion.directFormula(
+            from: fromUnit,
+            to: toUnit,
+            choices: choices,
+            answer: answer,
+          ),
+        );
       }
+      questions.shuffle();
 
       return questions;
     } else {
@@ -137,7 +137,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   }
 
   void _onLearnPageWidgetChanged(
-    LearnPageWidgetChangedEvent event,
+    LearnPageWidgetChanged event,
     Emitter<LearnPageState> emit,
   ) async {
     try {
@@ -147,14 +147,18 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         throw Exception("Lesson not found");
       }
 
+      var questions = _generateQuestions(lesson, lesson.learnChapters[event.chapterIndex]);
+
       emit(
         LearnPageState.loaded(
           status: LearnPageStatus.movingIn,
           lesson: lesson,
           chapterIndex: event.chapterIndex,
-          questions: _generateQuestions(lesson, lesson.learnChapters[event.chapterIndex]),
+          questions: questions,
+          comparison: questions.first.comparison,
           questionIndex: 0,
           progress: 0.0,
+          mistakes: 0,
         ),
       );
     } on Exception catch (e) {
@@ -162,39 +166,51 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     }
   }
 
-  void _onAnswerSubmitted(
-    LearnPageAnswerSubmittedEvent event,
-    Emitter<LearnPageState> emit,
-  ) async {
+  void _onAnswerSubmitted(LearnPageAnswerSubmitted event, Emitter<LearnPageState> emit) async {
     assert(state is LoadedLearnPageState, "State should be loaded.");
     emit(loadedState.copyWith(status: LearnPageStatus.evaluating));
     await Future.delayed(Duration.zero);
 
-    var correctAnswer = loadedState.questions[loadedState.questionIndex].answer;
+    var question = loadedState.questions[loadedState.questionIndex];
+    var correctAnswer = question.answer;
     var answer = loadedState.answer;
 
-    if (correctAnswer == answer) {
+    if (question.comparison(answer, correctAnswer)) {
       emit(loadedState.copyWith(status: LearnPageStatus.correct, correctAnswer: correctAnswer));
     } else {
-      emit(loadedState.copyWith(status: LearnPageStatus.incorrect, correctAnswer: correctAnswer));
+      var questions = loadedState.questions;
+      var removed = questions.elementAt(loadedState.questionIndex);
+      var newQuestions = questions.followedBy([removed]).toList();
+
+      /// PROBLEM:
+      ///   When the user answers incorrectly, since we update the [questions],
+      ///   The [questionIndex] is not updated.
+      emit(
+        loadedState.copyWith(
+          status: LearnPageStatus.incorrect,
+          correctAnswer: correctAnswer,
+          questions: newQuestions,
+          mistakes: loadedState.mistakes + 1,
+        ),
+      );
     }
   }
 
-  void _onAnswerUpdated(LearnPageAnswerUpdatedEvent event, Emitter<LearnPageState> emit) async {
+  void _onAnswerUpdated(LearnPageAnswerUpdated event, Emitter<LearnPageState> emit) async {
     assert(state is LoadedLearnPageState);
 
     emit(loadedState.copyWith(answer: event.answer));
   }
 
   void _onNextQuestionClicked(
-    LearnPageNextQuestionClickedEvent event,
+    LearnPageNextQuestionClicked event,
     Emitter<LearnPageState> emit,
   ) async {
     emit(loadedState.copyWith(status: LearnPageStatus.movingAway));
   }
 
-  void _onFromTransitionComplete(
-    LearnPageFromTransitionCompleteEvent event,
+  void _onMovingAwayComplete(
+    LearnPageMovingAwayComplete event,
     Emitter<LearnPageState> emit,
   ) async {
     var newQuestionIndex = loadedState.questionIndex + 1;
@@ -203,19 +219,20 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       emit(loadedState.copyWith(status: LearnPageStatus.finishedWithAllQuestions, progress: 1.0));
       return;
     }
+
     emit(
       loadedState.copyWith(
         status: LearnPageStatus.movingIn,
         questionIndex: newQuestionIndex,
-        progress: newQuestionIndex / loadedState.questions.length,
+        progress:
+            (newQuestionIndex - loadedState.mistakes) /
+            (loadedState.questions.length - loadedState.mistakes),
+        answer: null,
       ),
     );
   }
 
-  void _onToTransitionComplete(
-    LearnPageToTransitionCompleteEvent event,
-    Emitter<LearnPageState> emit,
-  ) async {
-    emit(loadedState.copyWith(status: LearnPageStatus.waitingForSubmission, answer: null));
+  void _onMovingInComplete(LearnPageMovingInComplete event, Emitter<LearnPageState> emit) async {
+    emit(loadedState.copyWith(status: LearnPageStatus.waitingForSubmission));
   }
 }

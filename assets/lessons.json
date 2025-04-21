@@ -111,17 +111,12 @@
         {
           "type": "direct",
           "name": "Direct Conversion -- 1",
-          "units": ["gram", "kilogram"]
+          "units": ["gram", "kilogram", "pound"]
         },
         {
           "type": "direct",
           "name": "Direct Conversion -- 2",
-          "units": ["gram", "pound"]
-        },
-        {
-          "type": "direct",
-          "name": "Direct Conversion -- 3",
-          "units": ["pound", "ounce"]
+          "units": ["pound", "ounce", "gram"]
         },
         {
           "type": "indirect",

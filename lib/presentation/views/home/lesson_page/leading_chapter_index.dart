@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
-class ChapterIndex extends StatelessWidget {
-  const ChapterIndex({super.key, required this.index, required this.isCompleted});
+class LeadingChapterIndex extends StatelessWidget {
+  const LeadingChapterIndex({super.key, required this.index, required this.isCompleted});
 
   final int index;
   final bool isCompleted;

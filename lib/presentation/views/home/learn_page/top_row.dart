@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_progress_bar.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_progress_bar.dart";
 
-class PracticeTopRow extends StatelessWidget {
-  const PracticeTopRow({super.key, required this.progressBarKey});
+class TopRow extends StatelessWidget {
+  const TopRow({super.key, required this.progressBarKey});
 
   final GlobalKey<State<StatefulWidget>> progressBarKey;
 
@@ -13,7 +13,7 @@ class PracticeTopRow extends StatelessWidget {
       spacing: 12.0,
       children: [
         IconButton(icon: const Icon(Icons.arrow_back_ios_new), onPressed: () => context.pop()),
-        Expanded(child: PracticeProgressBar(progressBarKey: progressBarKey)),
+        Expanded(child: LearnProgressBar(progressBarKey: progressBarKey)),
       ],
     );
   }

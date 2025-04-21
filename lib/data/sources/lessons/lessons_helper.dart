@@ -66,6 +66,24 @@ class LessonsHelper {
         .firstOrNull;
   }
 
+  UnitGroup? getLocalUnitGroup(String type, List<String> units) {
+    var unitGroup = getUnitGroup(type);
+    if (unitGroup == null) {
+      return null;
+    }
+
+    return unitGroup.copyWith(
+      units: [
+        for (var unit in units)
+          unitGroup.units.firstWhere((unitGroupUnit) => unitGroupUnit.id == unit),
+      ],
+      conversions: [
+        for (var conversion in unitGroup.conversions)
+          if (units.contains(conversion.from) && units.contains(conversion.to)) conversion,
+      ],
+    );
+  }
+
   UnitGroup? getExtendedUnitGroup(String type) {
     var unitGroup = getUnitGroup(type);
     if (unitGroup == null) {
@@ -100,11 +118,17 @@ class LessonsHelper {
     );
   }
 
+  final Map<String, Unit?> _unitMap = {};
   Unit? getUnit(String id) {
-    return _unitGroups //
-        .expand((g) => g.units)
-        .where((unit) => unit.id == id)
-        .firstOrNull;
+    if (_unitMap.containsKey(id)) {
+      return _unitMap[id];
+    }
+
+    return _unitMap[id] =
+        _unitGroups //
+            .expand((g) => g.units)
+            .where((unit) => unit.id == id)
+            .firstOrNull;
   }
 
   /// The canonical conversion graph is an incomplete graph

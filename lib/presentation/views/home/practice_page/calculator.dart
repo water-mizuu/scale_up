@@ -9,6 +9,8 @@ import "package:scale_up/data/sources/lessons/expression_parser.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
+import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
+import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
@@ -68,13 +70,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 4.0,
-                offset: Offset(0, 2),
-              ),
-            ],
+            boxShadow: defaultBoxShadow,
           ),
           child: Padding(
             padding: EdgeInsets.all(4.0),
@@ -168,11 +164,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    "Compute your answer here!",
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Styles.hint("Compute your answer here!", textAlign: TextAlign.center),
                 ),
               ],
             ),
@@ -308,13 +300,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(64.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 4.0,
-              offset: Offset(0, 4),
-            ),
-          ],
+          boxShadow:defaultBoxShadow,
         ),
         child: FilledButton.icon(
           style: FilledButton.styleFrom(

@@ -46,6 +46,8 @@ sealed class LearnPageState with _$LearnPageState {
     required List<LearnQuestion> questions,
     required int questionIndex,
     required double progress,
+    required bool Function(Object?, Object?) comparison,
+    required int mistakes,
     Object? answer,
     Object? correctAnswer,
     String? error,
@@ -75,6 +77,29 @@ sealed class LearnQuestion with _$LearnQuestion {
     required Unit to,
     required List<((Unit, Unit), Expression)> steps,
     required List<Unit> choices,
-    required List<Object> answer,
+    required List<Unit> answer,
   }) = IndirectStepsLearnQuestion;
+
+  bool Function(Object?, Object?) get comparison {
+    return switch (this) {
+      DirectFormulaLearnQuestion() => //
+      (from, to) => from is Expression && to is Expression && from.str == to.str,
+      ImportantNumbersLearnQuestion() => //
+        (a, b) =>
+            a is Set<num> && b is Set<num> && a.difference(b).isEmpty && b.difference(a).isEmpty,
+      IndirectStepsLearnQuestion() => (a, b) {
+        if (a is! List<Unit> || b is! List<Unit> || a.length != b.length) {
+          return false;
+        }
+
+        for (var i = 0; i < a.length; i++) {
+          if (a[i].id != b[i].id) {
+            return false;
+          }
+        }
+
+        return true;
+      },
+    };
+  }
 }

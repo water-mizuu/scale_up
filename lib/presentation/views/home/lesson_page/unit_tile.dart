@@ -5,6 +5,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
+import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:super_tooltip/super_tooltip.dart";
 
@@ -56,13 +57,7 @@ class _UnitTileState extends State<UnitTile> {
           decoration: BoxDecoration(
             borderRadius: borderRadius,
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8.0,
-                spreadRadius: 2.0,
-              ),
-            ],
+            boxShadow: defaultBoxShadow,
           ),
 
           /// This material widget makes sure that the ink doesn't overflow
@@ -105,7 +100,7 @@ class UnitToolTip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Styles.subtitle("Direct Conversions"),
+          Styles.subtitle("Direct Conversions", fontWeight: FontWeight.w600),
           if (unit case var unit?)
             Column(
               mainAxisSize: MainAxisSize.min,

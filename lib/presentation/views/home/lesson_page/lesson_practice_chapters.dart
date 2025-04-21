@@ -16,13 +16,13 @@ class LessonPracticeChapters extends StatelessWidget {
       children: [
         Styles.subtitle("Practice"),
         Column(
-          spacing: 4.0,
+          spacing: 8.0,
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (var (index, chapter)
                 in context.read<LessonPageCubit>().state.lesson.practiceChapters.indexed)
-              PracticeTile(index: index, chapter: chapter)
+              PracticeTile(chapterIndex: index, chapter: chapter)
                   .animate() //
                   .then(delay: (index * 100).milliseconds)
                   .slideY(duration: 250.ms, begin: 0.1, end: 0.0)

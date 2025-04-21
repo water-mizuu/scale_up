@@ -1,16 +1,17 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
-import "package:scale_up/presentation/views/home/learn_page/choices.dart";
-import "package:scale_up/presentation/views/home/learn_page/instructions.dart";
+import "package:scale_up/presentation/views/home/learn_page/congratulatory_message.dart";
+import "package:scale_up/presentation/views/home/learn_page/continue_message.dart";
+import "package:scale_up/presentation/views/home/learn_page/finished_learn_page.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_instructions.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_progress_bar.dart";
-import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/presentation/views/home/learn_page/top_row.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
@@ -49,7 +50,7 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
   void didUpdateWidget(covariant LearnPage oldWidget) {
     if (oldWidget.lessonId != widget.lessonId || oldWidget.chapterIndex != widget.chapterIndex) {
       bloc.add(
-        LearnPageWidgetChangedEvent(
+        LearnPageWidgetChanged(
           lesson: context.read<LessonsHelper>().getLesson(widget.lessonId)!,
           chapterIndex: widget.chapterIndex,
         ),
@@ -124,14 +125,14 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
                 await transitionInAnimation.forward(from: 0.0);
                 if (bloc.isClosed) return;
 
-                bloc.add(LearnPageToTransitionCompleteEvent());
+                bloc.add(LearnPageMovingInComplete());
               } else if (state.status == LearnPageStatus.movingAway) {
                 /// Just instantly hide the message.
                 messageAnimation.reset();
                 await transitionOutAnimation.forward(from: 0.0);
 
                 if (bloc.isClosed) return;
-                bloc.add(LearnPageFromTransitionCompleteEvent());
+                bloc.add(LearnPageMovingAwayComplete());
               }
             },
             child: BlocBuilder<LearnPageBloc, LearnPageState>(
@@ -200,165 +201,14 @@ class NotFinishedLearnPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TopRow(progressBarKey: progressBarKey),
-          Instructions(),
+          LearnInstructions(),
           const Column(
             spacing: 18.0,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [Choices(), LearnPageCheckButton()],
+            children: [LearnChoices(), LearnPageCheckButton()],
           ),
         ],
       ),
     );
-  }
-}
-
-class TopRow extends StatelessWidget {
-  const TopRow({super.key, required this.progressBarKey});
-
-  final GlobalKey<State<StatefulWidget>> progressBarKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(icon: const Icon(Icons.arrow_back_ios_new), onPressed: () => context.pop()),
-        Expanded(child: LearnProgressBar(progressBarKey: progressBarKey)),
-      ],
-    );
-  }
-}
-
-class FinishedLearnPage extends StatelessWidget {
-  const FinishedLearnPage({super.key, required this.progressBarKey});
-
-  final GlobalKey<State<StatefulWidget>> progressBarKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TopRow(progressBarKey: progressBarKey),
-          Expanded(
-            child: Center(child: Text("Congratulations! You have completed all questions.")),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ContinueMessage extends StatelessWidget {
-  const ContinueMessage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<LearnPageBloc, LearnPageState>(
-      buildWhen: (p, c) => (p as LoadedLearnPageState).status == LearnPageStatus.evaluating,
-      builder: (context, state) {
-        if (state.status case LearnPageStatus.correct || LearnPageStatus.incorrect) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: LearnPageCheckButton(),
-              ),
-            ],
-          );
-        }
-
-        return const SizedBox.shrink();
-      },
-    );
-  }
-}
-
-class CongratulatoryMessage extends StatelessWidget {
-  const CongratulatoryMessage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var state = context.read<LearnPageBloc>().state;
-    var controller = context.read<MessageAnimationController>().controller;
-
-    var widget = DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(4.0),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow,
-            blurRadius: 8.0,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (state.status == LearnPageStatus.correct) ...[
-                  Styles.title("Correct!", color: Colors.green),
-                  Styles.subtitle(
-                    "You got it right!",
-                    color: Colors.green,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ] else if (state.status == LearnPageStatus.incorrect) ...[
-                  Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "The answer was ",
-                          style: Styles.subtitle.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "${(state as LoadedLearnPageState).correctAnswer}",
-                          style: Styles.subtitle.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-            child: TickerMode(
-              enabled: false,
-              child: FilledButton(
-                onPressed: null,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    "Check",
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return widget
-        .animate(controller: controller, autoPlay: false)
-        .slideY(begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
   }
 }

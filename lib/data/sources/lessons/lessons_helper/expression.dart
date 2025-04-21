@@ -6,6 +6,9 @@ sealed class Expression {
 
   num evaluate(Map<String, num> variables);
   Expression substitute(String id, Expression expression);
+  Expression substituteString(String id, String expression) =>
+      substitute(id, VariableExpression(expression));
+
   Iterable<VariableExpression> get variables;
   String get str;
 
@@ -90,16 +93,15 @@ sealed class Expression {
           rhs = right;
 
         /// This occurs when the variable is on the left (it is the base.)
-        /// lhs = log[x](a)
-        /// lhs = ln(a)/ln(x)
-        /// 1 / lhs = ln(x) / ln(a)
-        /// ln(a) / lhs = ln(x)
-        /// e^(ln(a) / lhs) = x
+        /// lhs                  = log[x](a)
+        /// lhs                  = ln(a)/ln(x)
+        /// 1 / lhs              = ln(x) / ln(a)
+        /// ln(a) / lhs          = ln(x)
+        /// e^(ln(a) / lhs)      = x
+        /// (e^(ln a))^(1 / lhs) = x
+        /// a^(1 / lhs)          = x
         case LogarithmExpression() when isLeftHoldingVariable:
-          lhs = PowerExpression(
-            ConstantExpression(e),
-            DivisionExpression(LogarithmExpression(ConstantExpression(e), right), lhs),
-          );
+          lhs = PowerExpression(right, DivisionExpression(ConstantExpression(1), left));
           rhs = left;
 
         /// This occurs when the variable is on the right (it is the power.)
