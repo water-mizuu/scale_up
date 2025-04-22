@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
@@ -60,7 +61,11 @@ class _AppState extends State<App> {
               listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
               listener: (_, state) {
                 if (state.status == AuthenticationStatus.signedIn) {
-                  router.goNamed(AppRoutes.home);
+                  if (kDebugMode) {
+                    print("User is signed in");
+                  }
+
+                  router.go("/blank");
                 } else if (state.status == AuthenticationStatus.signedOut) {
                   // Navigate to the login screen
                   router.goNamed(AppRoutes.login);

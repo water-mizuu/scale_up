@@ -6,8 +6,10 @@ import "package:scale_up/data/sources/lessons/lessons_helper/conversion.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/learn_chapter.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_event.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_state.dart";
+import "package:scale_up/utils/choose_random.dart";
 
 export "learn_page_event.dart";
 export "learn_page_state.dart";
@@ -26,10 +28,10 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
          ),
        ) {
     on<LearnPageWidgetChanged>(_onLearnPageWidgetChanged);
-
     on<LearnPageAnswerUpdated>(_onAnswerUpdated);
     on<LearnPageAnswerSubmitted>(_onAnswerSubmitted);
     on<LearnPageNextQuestionClicked>(_onNextQuestionClicked);
+    on<LearnPageReturnToLessonClicked>(_onReturnToLessonClicked);
 
     on<LearnPageMovingAwayComplete>(_onMovingAwayComplete);
     on<LearnPageMovingInComplete>(_onMovingInComplete);
@@ -111,7 +113,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           ///   So, we just keep mutating until we get a different one.
           do {
             mutated = answer.mutate();
-          } while (mutated.toString() == answer.toString());
+          } while (choices.any((c) => c.str == mutated.str));
 
           choices.add(mutated);
         }
@@ -131,9 +133,63 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       questions.shuffle();
 
       return questions;
-    } else {
-      return [];
+    } else if (learnChapter.type == "indirect") {
+      var questions = <LearnQuestion>[];
+      var allUnits = learnChapter.units.map(_lessonsHelper.getUnit).whereType<Unit>().toList();
+      var unitGroup = _lessonsHelper.getUnitGroupForUnits(allUnits);
+
+
+      if (unitGroup == null) {
+        throw Exception("There wasn't a unit group for $allUnits");
+      }
+      print(unitGroup.units);
+
+      for (var from in learnChapter.units) {
+        for (var to in learnChapter.units) {
+          if (from == to) continue;
+
+          var fromUnit = _lessonsHelper.getUnit(from);
+          var toUnit = _lessonsHelper.getUnit(to);
+
+          if (fromUnit == null || toUnit == null) {
+            throw Exception("Unit not found");
+          }
+
+          var steps = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
+          if (steps == null) {
+            throw Exception("Path not found");
+          }
+
+          if (steps.length > 1) {
+            var answer = [
+              for (var ((from, to), _) in steps) ...[from, to],
+            ];
+            answer = answer.sublist(1, answer.length - 1);
+
+            var choices = [
+              ...answer,
+              for (var i = 0; i < answer.length ; ++i) unitGroup.units.chooseRandom(),
+            ];
+
+            choices.shuffle();
+
+            questions.add(
+              LearnQuestion.indirectSteps(
+                from: fromUnit,
+                to: toUnit,
+                steps: steps,
+                choices: choices,
+                answer: answer,
+              ),
+            );
+          }
+        }
+      }
+
+      return questions;
     }
+
+    return [];
   }
 
   void _onLearnPageWidgetChanged(
@@ -216,7 +272,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     var newQuestionIndex = loadedState.questionIndex + 1;
 
     if (newQuestionIndex >= loadedState.questions.length) {
-      emit(loadedState.copyWith(status: LearnPageStatus.finishedWithAllQuestions, progress: 1.0));
+      emit(loadedState.copyWith(status: LearnPageStatus.finished, progress: 1.0));
       return;
     }
 
@@ -234,5 +290,12 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
   void _onMovingInComplete(LearnPageMovingInComplete event, Emitter<LearnPageState> emit) async {
     emit(loadedState.copyWith(status: LearnPageStatus.waitingForSubmission));
+  }
+
+  void _onReturnToLessonClicked(
+    LearnPageReturnToLessonClicked event,
+    Emitter<LearnPageState> emit,
+  ) async {
+    emit(loadedState.copyWith(status: LearnPageStatus.leaving));
   }
 }

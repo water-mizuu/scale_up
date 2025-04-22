@@ -1,28 +1,28 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_top_row.dart";
+import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
+import "package:scale_up/presentation/views/home/learn_page/top_row.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
-class CompletedPracticeBody extends StatelessWidget {
-  const CompletedPracticeBody({required this.progressBarKey, super.key});
+class CompletedLearnBody extends StatelessWidget {
+  const CompletedLearnBody({super.key, required this.progressBarKey});
 
-  final GlobalKey progressBarKey;
+  final GlobalKey<State<StatefulWidget>> progressBarKey;
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<PracticePageBloc>().loadedState;
-    var chapters = state.lesson.practiceChapters;
+    var state = context.read<LearnPageBloc>().loadedState;
+    var chapters = state.lesson.learnChapters;
     var currentChapter = chapters[state.chapterIndex];
 
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
-        spacing: 8.0,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          PracticeTopRow(progressBarKey: progressBarKey),
+          TopRow(progressBarKey: progressBarKey),
           Expanded(
             child: Center(
               child: Column(
@@ -36,7 +36,7 @@ class CompletedPracticeBody extends StatelessWidget {
               ),
             ),
           ),
-          PracticePageCheckButton(),
+          LearnPageCheckButton(),
         ],
       ),
     );

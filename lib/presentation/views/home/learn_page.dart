@@ -1,17 +1,20 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
+import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/router/app_router.dart";
+import "package:scale_up/presentation/views/home/learn_page/completed_learn_body.dart";
 import "package:scale_up/presentation/views/home/learn_page/congratulatory_message.dart";
 import "package:scale_up/presentation/views/home/learn_page/continue_message.dart";
-import "package:scale_up/presentation/views/home/learn_page/finished_learn_page.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_body.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_instructions.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
-import "package:scale_up/presentation/views/home/learn_page/top_row.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
@@ -102,13 +105,24 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
               ///   that the user has completed the chapter.
               /// This will trigger the UserDataBloc to update the stored local data.
               ///   This will also asynchronously update the server data.
-              case LoadedLearnPageState(status: LearnPageStatus.finishedWithAllQuestions):
+              case LoadedLearnPageState(status: LearnPageStatus.finished):
                 context.read<UserDataBloc>().add(
                   LearnChapterCompletedUserDataEvent(
                     lessonId: bloc.loadedState.lesson.id,
                     chapterIndex: bloc.loadedState.chapterIndex,
                   ),
                 );
+
+              case LoadedLearnPageState(status: LearnPageStatus.leaving):
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.goNamed(
+                    AppRoutes.lesson,
+                    pathParameters: {"lessonId": bloc.loadedState.lesson.id},
+                  );
+                }
+                return;
 
               /// Ignore the other statuses.
               case _:
@@ -136,17 +150,109 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
               }
             },
             child: BlocBuilder<LearnPageBloc, LearnPageState>(
+              bloc: bloc,
+              buildWhen: (previous, current) {
+                assert(!(previous is LoadedLearnPageState && current is LoadingLearnPageState));
+                if (previous.runtimeType != current.runtimeType) {
+                  return true;
+                }
+
+                try {
+                  var p = previous as LoadedLearnPageState;
+                  var c = current as LoadedLearnPageState;
+
+                  if (p.questions[p.questionIndex] != c.questions[c.questionIndex]) {
+                    return true;
+                  }
+
+                  return false;
+                } on Object {
+                  return false;
+                }
+              },
               builder: (context, state) {
                 if (state is! LoadedLearnPageState) {
                   return const Material(child: Center(child: CircularProgressIndicator()));
                 }
 
-                return LearnPageView();
+                var child = LearnPageView();
+                var question = state.questions[state.questionIndex];
+                if (question is IndirectStepsLearnQuestion) {
+                  return MultiProvider(
+                    providers: [
+                      BlocProvider(
+                        key: ValueKey(question),
+                        create: (_) => IndirectStepsCubit(this, question),
+                      ),
+                    ],
+                    builder: (context, _) {
+                      var key = context.read<IndirectStepsCubit>().state.parentKey;
+                      var animation = context.select((IndirectStepsCubit c) => c.state.animation);
+
+                      return BlocListener<IndirectStepsCubit, IndirectStepsState>(
+                        listenWhen:
+                            (p, c) =>
+                                p.answers.whereType<Object>().length !=
+                                c.answers.whereType<Object>().length,
+                        listener: (context, state) {
+                          var allUnits =
+                              state
+                                  .answers //
+                                  .map((u) => u?.$2)
+                                  .whereType<Unit>()
+                                  .toList();
+
+                          if (allUnits.length == question.answer.length) {
+                            bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: allUnits));
+                          } else {
+                            bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: null));
+                          }
+                        },
+                        child: Stack(
+                          key: key,
+                          children: [
+                            Positioned.fill(child: child),
+
+                            /// This is so cursed.
+                            if (animation case var animation?) FlyingUnit(animation: animation),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                return child;
               },
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class FlyingUnit extends StatelessWidget {
+  const FlyingUnit({super.key, required this.animation});
+
+  final (Unit, Offset, Offset) animation;
+
+  @override
+  Widget build(BuildContext context) {
+    var controller = context.read<IndirectStepsCubit>().state.animationController;
+    var (unit, from, to) = animation;
+
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        var offset =
+            Tween(begin: from, end: to)
+                .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut)) //
+                .value;
+
+        return Positioned(left: offset.dx, top: offset.dy, child: child!);
+      },
+      child: ChoiceUnitTile(unit: unit),
     );
   }
 }
@@ -170,45 +276,19 @@ class _LearnPageViewState extends State<LearnPageView> {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.select((LearnPageBloc b) => b.state);
+    var status = context.select((LearnPageBloc b) => b.state.status);
 
     return Stack(
       children: [
-        if (state.status == LearnPageStatus.finishedWithAllQuestions)
-          Positioned.fill(child: FinishedLearnPage(progressBarKey: progressBarKey))
+        if (status == LearnPageStatus.finished)
+          Positioned.fill(child: CompletedLearnBody(progressBarKey: progressBarKey))
         else ...[
-          Positioned.fill(child: NotFinishedLearnPage(progressBarKey: progressBarKey)),
+          Positioned.fill(child: LearnBody(progressBarKey: progressBarKey)),
 
           Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
           Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
         ],
       ],
-    );
-  }
-}
-
-class NotFinishedLearnPage extends StatelessWidget {
-  const NotFinishedLearnPage({super.key, required this.progressBarKey});
-
-  final GlobalKey<State<StatefulWidget>> progressBarKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TopRow(progressBarKey: progressBarKey),
-          LearnInstructions(),
-          const Column(
-            spacing: 18.0,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [LearnChoices(), LearnPageCheckButton()],
-          ),
-        ],
-      ),
     );
   }
 }

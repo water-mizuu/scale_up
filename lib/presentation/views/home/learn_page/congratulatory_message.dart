@@ -11,7 +11,7 @@ class CongratulatoryMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<LearnPageBloc>().state;
+    var state = context.read<LearnPageBloc>().loadedState;
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
@@ -36,19 +36,19 @@ class CongratulatoryMessage extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ] else if (state.status == LearnPageStatus.incorrect) ...[
-                  Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
+                  Styles.title("Oops!", color: Colors.red),
                   Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text: "The answer was ",
                           style: Styles.subtitle.copyWith(
-                            color: Theme.of(context).colorScheme.error,
+                            color: Colors.red,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         TextSpan(
-                          text: "${(state as LoadedLearnPageState).correctAnswer}",
+                          text: state.questions[state.questionIndex].correctAnswerString,
                           style: Styles.subtitle.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),

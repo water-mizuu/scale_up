@@ -18,7 +18,7 @@
       "type": "mass",
       "conversions": [
         { "from": "gram", "to": "kilogram", "formula": "from / 1000" },
-        { "from": "gram", "to": "pound", "formula": "from / 453.6" },
+        { "from": "kilogram", "to": "pound", "formula": "from * 2.20462" },
         { "from": "pound", "to": "ounce", "formula": "from * 16" }
       ],
       "units": [
@@ -44,6 +44,22 @@
         { "id": "fahrenheit", "shortcut": "°F" },
         { "id": "kelvin", "shortcut": "K" },
         { "id": "rankine", "shortcut": "°R" }
+      ]
+    },
+    {
+      "type": "time",
+      "conversions": [
+        { "from": "second", "to": "minute", "formula": "from / 60" },
+        { "from": "minute", "to": "hour", "formula": "from / 60" },
+        { "from": "hour", "to": "day", "formula": "from / 24" },
+        { "from": "day", "to": "year", "formula": "from / 365" }
+      ],
+      "units": [
+        { "id": "second", "shortcut": "s" },
+        { "id": "minute", "shortcut": "min" },
+        { "id": "hour", "shortcut": "h" },
+        { "id": "day", "shortcut": "d" },
+        { "id": "year", "shortcut": "y" }
       ]
     }
   ],
@@ -121,7 +137,7 @@
         {
           "type": "indirect",
           "name": "Indirect Conversions",
-          "units": ["gram", "pound", "ounce", "pound"]
+          "units": ["gram", "kilogram", "ounce", "pound"]
         }
       ],
       "practice": [
@@ -182,6 +198,53 @@
           "name": "Scientifec Conversion",
           "question_count": 8,
           "units": ["celsius", "fahrenheit", "kelvin"]
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "category": "Time",
+      "name": "Time",
+      "description": "These are the measure of the duration of an event or the interval between two events.",
+      "units_type": "time",
+      "units": ["second", "minute", "hour", "day"],
+      "learn": [
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["second", "minute"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["minute", "hour"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 3",
+          "units": ["hour", "day"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": ["second", "minute", "hour", "day"]
+        }
+      ],
+      "practice": [
+        {
+          "name": "Short Durations",
+          "question_count": 8,
+          "units": ["second", "minute", "hour"]
+        },
+        {
+          "name": "Longer Durations",
+          "question_count": 8,
+          "units": ["hour", "day", "year"]
+        },
+        {
+          "name": "Full Conversion",
+          "question_count": 8,
+          "units": ["second", "minute", "hour", "day"]
         }
       ]
     }

@@ -14,4 +14,7 @@ abstract class Unit with _$Unit {
       .split("_")
       .map((e) => e[0].toUpperCase() + e.split("").sublist(1).join(""))
       .join(" ");
+
+  @override
+  String toString() => "$shortcut";
 }

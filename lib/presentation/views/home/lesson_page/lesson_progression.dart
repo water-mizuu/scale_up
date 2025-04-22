@@ -12,12 +12,12 @@ class LessonProgression extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var lesson = context.read<LessonPageCubit>().state.lesson;
-    var Lesson(:id, :units, :practiceChapters, :color, :hslColor) = lesson;
+    var Lesson(:id, :units, :practiceChapters, :learnChapters, :color, :hslColor) = lesson;
 
     var chaptersDone = context.select(
       (UserDataBloc bloc) => bloc.state.finishedChapters.where((n) => n.startsWith(id)).length,
     );
-    var chapterCount = practiceChapters.length;
+    var chapterCount = practiceChapters.length + learnChapters.length;
     var progressBarValue = chapterCount == 0 ? 0.0 : chaptersDone / chapterCount;
     var progressionBackgroundColor =
         hslColor

@@ -4,6 +4,8 @@ import "dart:math";
 sealed class Expression {
   const Expression();
 
+  static const int significantDigits = 5;
+
   num evaluate(Map<String, num> variables);
   Expression substitute(String id, Expression expression);
   Expression substituteString(String id, String expression) =>
@@ -332,7 +334,7 @@ final class VariableExpression extends Expression {
 }
 
 extension ExpressionList on List<Expression> {
-  num evaluate(num from) {
+  num evaluate(num from, {int significantDigits = Expression.significantDigits}) {
     return fold(from, (value, expr) => expr.evaluate({"from": value}));
   }
 }
@@ -340,7 +342,7 @@ extension ExpressionList on List<Expression> {
 extension CustomExpressionExtension on Expression {
   static final Random _random = Random();
 
-  Expression mutate([double probability = 0.5]) {
+  Expression mutate({double probability = 0.5}) {
     var atari = _random.nextDouble();
 
     var shouldMutate = atari < probability;
@@ -358,7 +360,10 @@ extension CustomExpressionExtension on Expression {
 
         do {
           var chosen = thing.elementAt(_random.nextInt(thing.length));
-          mutated = chosen(left.mutate(sqrt(probability)), right.mutate(sqrt(probability)));
+          mutated = chosen(
+            left.mutate(probability: sqrt(probability)),
+            right.mutate(probability: sqrt(probability)),
+          );
         } while (mutated.captureGeneric(<T>() => this is T));
 
         return mutated;
@@ -366,9 +371,15 @@ extension CustomExpressionExtension on Expression {
         return self.makeCopy(left.mutate(), right.mutate());
       }
     } else if (this case UnaryExpression(:var operand) && var self) {
-      return self.makeCopy(operand.mutate(sqrt(probability)));
+      return self.makeCopy(operand.mutate(probability: sqrt(probability)));
     } else if (this case ConstantExpression(:var value) when shouldMutate) {
-      return ConstantExpression((value * Random().nextDouble() + 0.01).roundToDouble());
+      /// WARNING: This does not work for exponential values.
+      var significantDigits = value.computeDecimalPlaces();
+      var mutated = value * (Random().nextDouble() + 0.01);
+      var truncated = mutated.toStringAsPrecision(significantDigits);
+      var parsed = double.parse(truncated);
+
+      return ConstantExpression(parsed);
     }
 
     return this;
@@ -396,5 +407,16 @@ extension on Expression {
     } else {
       return string;
     }
+  }
+}
+
+extension on num {
+  int computeDecimalPlaces() {
+    if (this is int) {
+      return 0;
+    }
+
+    var str = toString();
+    return str.split(".").last.length + 1;
   }
 }

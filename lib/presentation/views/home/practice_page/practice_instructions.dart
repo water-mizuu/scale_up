@@ -4,11 +4,11 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/dotted_underline.dart";
+import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:super_tooltip/super_tooltip.dart";
+import "package:scale_up/utils/tool_tip.dart";
 
 class PracticeInstructions extends StatelessWidget {
   const PracticeInstructions({super.key});
@@ -20,18 +20,12 @@ class PracticeInstructions extends StatelessWidget {
     var LoadedPracticePageState(:questions, :questionIndex) = state;
     var (left, right, number, steps) = questions[questionIndex];
 
-    var widget = Container(
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: defaultBoxShadow,
-      ),
+    var widget = FloatingCardWithHint(
+      hint: "Do the computation:",
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Styles.hint("Do the computation:"),
           Wrap(
             runAlignment: WrapAlignment.center,
             children: [
@@ -54,8 +48,7 @@ class PracticeInstructions extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 18.0),
             child: Center(
-              child: SuperTooltip(
-                barrierColor: Colors.transparent,
+              child: ToolTip(
                 content: IntrinsicWidth(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

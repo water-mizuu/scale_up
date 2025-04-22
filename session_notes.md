@@ -24,3 +24,16 @@ I have decided to split the quiz materials into two: "Learn" and "Practice".
 - Learn should focus on the conversion themselves.
   - All direct units involved should be asked directly.
   - All indirect units should be quizzed to the users.
+
+# April 22, 2025 || 7:19PM.
+Before going to dinner, I have some ideas.
+Instead of doing drag and drop, just click. LocalHeros should do the trick in animating.
+
+# April 23, 2025 || 1:10AM.
+LocalHeros didn't do anything right. That's stupid.
+
+# April 23, 2025 || 2:20AM.
+I have finished the main functionality of the application. All of the thought of quiz are
+working as needed. Now, I have to focus on lesson content & other windows. I am thinking of
+adding the global prompt based on the "Congrats" / "Oops" messages. This will be useful for
+user confirmation and whatnot.

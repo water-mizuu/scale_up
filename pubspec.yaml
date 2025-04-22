@@ -55,6 +55,7 @@ dependencies:
   dotted_border: ^2.1.0
   flutter_animate: ^4.5.2
   google_fonts: ^6.2.1
+  flutter_inset_shadow: ^2.0.3
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
   assets:
     - assets/
     - assets/logos/google.png
+    - assets/illustrations/
     - assets/illustrations/topic.png
     - assets/illustrations/lessons.png
     - assets/illustrations/quizzes.png

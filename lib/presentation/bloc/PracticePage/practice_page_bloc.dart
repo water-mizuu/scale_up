@@ -1,7 +1,6 @@
 import "dart:async";
 import "dart:math";
 
-import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
@@ -29,20 +28,12 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     on<PracticePageInputChanged>(_onInputChanged);
     on<PracticePageAnswerSubmitted>(_onAnswerSubmitted);
     on<PracticePageNextQuestionClicked>(_onNextQuestionClicked);
+    on<PracticePageReturnToLessonClicked>(_onReturnToLessonClicked);
 
-    on<PracticePageToTransitionCompleteEvent>(_onToTransitionComplete);
-    on<PracticePageFromTransitionCompleteEvent>(_onFromTransitionComplete);
+    on<PracticePageToTransitionComplete>(_onToTransitionComplete);
+    on<PracticePageFromTransitionComplete>(_onFromTransitionComplete);
 
     _initializeLesson();
-  }
-
-  @override
-  void onEvent(PracticePageEvent event) {
-    super.onEvent(event);
-
-    if (kDebugMode) {
-      print(event);
-    }
   }
 
   final LessonsHelper _lessonsHelper;
@@ -99,7 +90,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
       PracticePageState.loaded(
         status:
             (questions.isEmpty) //
-                ? PracticePageStatus.finishedWithAllQuestions
+                ? PracticePageStatus.finished
                 : PracticePageStatus.movingIn,
         lesson: lesson,
         chapterIndex: state.chapterIndex,
@@ -157,7 +148,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   }
 
   void _onToTransitionComplete(
-    PracticePageToTransitionCompleteEvent event,
+    PracticePageToTransitionComplete event,
     Emitter<PracticePageState> emit,
   ) async {
     /// Since there is a calculator, the default answer is 0.
@@ -170,15 +161,13 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   }
 
   void _onFromTransitionComplete(
-    PracticePageFromTransitionCompleteEvent event,
+    PracticePageFromTransitionComplete event,
     Emitter<PracticePageState> emit,
   ) async {
     var newQuestionIndex = loadedState.questionIndex + 1;
 
     if (newQuestionIndex >= loadedState.questions.length) {
-      emit(
-        loadedState.copyWith(status: PracticePageStatus.finishedWithAllQuestions, progress: 1.0),
-      );
+      emit(loadedState.copyWith(status: PracticePageStatus.finished, progress: 1.0));
     } else {
       emit(
         loadedState.copyWith(
@@ -188,6 +177,13 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         ),
       );
     }
+  }
+
+  void _onReturnToLessonClicked(
+    PracticePageReturnToLessonClicked event,
+    Emitter<PracticePageState> emit,
+  ) async {
+    emit(loadedState.copyWith(status: PracticePageStatus.leaving));
   }
 }
 

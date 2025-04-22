@@ -1,5 +1,6 @@
 import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 
 sealed class LearnPageEvent {
   const LearnPageEvent();
@@ -16,6 +17,7 @@ final class LearnPageAnswerUpdated extends LearnPageEvent {
   const LearnPageAnswerUpdated({required this.answer});
   const LearnPageAnswerUpdated.directFormula({required Expression this.answer});
   const LearnPageAnswerUpdated.importantNumbers({required Set<num> this.answer});
+  const LearnPageAnswerUpdated.indirectSteps({required List<Unit>? this.answer});
 
   final Object? answer;
 }
@@ -34,4 +36,8 @@ final class LearnPageMovingAwayComplete extends LearnPageEvent {
 
 final class LearnPageMovingInComplete extends LearnPageEvent {
   const LearnPageMovingInComplete();
+}
+
+final class LearnPageReturnToLessonClicked extends LearnPageEvent {
+  const LearnPageReturnToLessonClicked();
 }

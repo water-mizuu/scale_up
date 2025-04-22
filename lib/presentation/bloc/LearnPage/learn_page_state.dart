@@ -20,7 +20,8 @@ enum LearnPageStatus {
   movingIn,
 
   /// Problem set related status.
-  finishedWithAllQuestions,
+  finished,
+  leaving,
 
   /// Runtime error related status.
   error,
@@ -52,6 +53,9 @@ sealed class LearnPageState with _$LearnPageState {
     Object? correctAnswer,
     String? error,
   }) = LoadedLearnPageState;
+
+  LearnQuestion get currentQuestion =>
+      (this as LoadedLearnPageState).questions[(this as LoadedLearnPageState).questionIndex];
 }
 
 @freezed
@@ -80,10 +84,25 @@ sealed class LearnQuestion with _$LearnQuestion {
     required List<Unit> answer,
   }) = IndirectStepsLearnQuestion;
 
+  String get correctAnswerString {
+    return switch (this) {
+      DirectFormulaLearnQuestion(:var from, :var to, answer: var o) => //
+      "${to.shortcut} = ${o.substituteString("from", from.shortcut)}",
+
+      ImportantNumbersLearnQuestion(answer: var o) => //
+      (o.toList()..sort((a, b) => (a - b).toInt())).join(", "),
+
+      IndirectStepsLearnQuestion(:var steps) => steps
+          .map((p) => p.$1)
+          .map((p) => "${p.$1.shortcut} to ${p.$2.shortcut}")
+          .join(", "),
+    };
+  }
+
   bool Function(Object?, Object?) get comparison {
     return switch (this) {
-      DirectFormulaLearnQuestion() => //
-      (from, to) => from is Expression && to is Expression && from.str == to.str,
+      DirectFormulaLearnQuestion() =>
+        (a, b) => a is Expression && b is Expression && a.str == b.str,
       ImportantNumbersLearnQuestion() => //
         (a, b) =>
             a is Set<num> && b is Set<num> && a.difference(b).isEmpty && b.difference(a).isEmpty,

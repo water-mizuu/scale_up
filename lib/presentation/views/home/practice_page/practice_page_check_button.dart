@@ -24,6 +24,8 @@ class PracticePageCheckButton extends StatelessWidget {
             state.status == PracticePageStatus.correct || //
             state.status == PracticePageStatus.incorrect;
 
+        var isFinished = chapterPageBloc.loadedState.status == PracticePageStatus.finished;
+
         return FilledButton(
           style: FilledButton.styleFrom(backgroundColor: buttonColor),
           onPressed: () {
@@ -35,13 +37,19 @@ class PracticePageCheckButton extends StatelessWidget {
                 chapterPageBloc.loadedState.answer != null) {
               return () => chapterPageBloc.add(PracticePageAnswerSubmitted());
             }
+
+            if (isFinished) {
+              return () => chapterPageBloc.add(PracticePageReturnToLessonClicked());
+            }
           }(),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 12.0),
-            child: Text(
-              hasAnswered ? "Continue" : "Check",
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-            ),
+            child: Text(() {
+              if (hasAnswered || isFinished) {
+                return "Continue";
+              }
+              return "Check";
+            }(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
           ),
         );
       },

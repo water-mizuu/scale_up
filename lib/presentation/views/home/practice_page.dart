@@ -1,12 +1,14 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
@@ -83,13 +85,24 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
               ///   that the user has completed the chapter.
               /// This will trigger the UserDataBloc to update the stored local data.
               ///   This will also asynchronously update the server data.
-              case LoadedPracticePageState(status: PracticePageStatus.finishedWithAllQuestions):
+              case LoadedPracticePageState(status: PracticePageStatus.finished):
                 context.read<UserDataBloc>().add(
                   PracticeChapterCompletedUserDataEvent(
                     lessonId: bloc.loadedState.lesson.id,
                     chapterIndex: bloc.state.chapterIndex,
                   ),
                 );
+
+              case LoadedPracticePageState(status: PracticePageStatus.leaving):
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.goNamed(
+                    AppRoutes.lesson,
+                    pathParameters: {"lessonId": bloc.loadedState.lesson.id},
+                  );
+                }
+                return;
 
               /// Ignore the other statuses.
               case _:
@@ -107,14 +120,14 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                 await transitionInAnimation.forward(from: 0.0);
                 if (bloc.isClosed) return;
 
-                bloc.add(PracticePageToTransitionCompleteEvent());
+                bloc.add(PracticePageToTransitionComplete());
               } else if (state.status == PracticePageStatus.movingAway) {
                 /// Just instantly hide the message.
                 messageAnimation.reset();
                 await transitionOutAnimation.forward(from: 0.0);
 
                 if (bloc.isClosed) return;
-                bloc.add(PracticePageFromTransitionCompleteEvent());
+                bloc.add(PracticePageFromTransitionComplete());
               }
             },
             child: BlocBuilder(
@@ -150,7 +163,7 @@ class _PracticePageViewState extends State<PracticePageView> {
 
     return Stack(
       children: [
-        if (state.status == PracticePageStatus.finishedWithAllQuestions)
+        if (state.status == PracticePageStatus.finished)
           Positioned.fill(child: CompletedPracticeBody(progressBarKey: progressBarKey))
         else ...[
           Positioned.fill(child: PracticeBody(progressBarKey: progressBarKey)),
@@ -163,6 +176,7 @@ class _PracticePageViewState extends State<PracticePageView> {
   }
 }
 
+/// This widget is used to show the continue button.
 class ContinueMessage extends StatelessWidget {
   const ContinueMessage({super.key});
 
@@ -189,19 +203,20 @@ class ContinueMessage extends StatelessWidget {
   }
 }
 
+/// This widget is used to show the backdrop of the continue button.
 class CongratulatoryMessage extends StatelessWidget {
   const CongratulatoryMessage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<PracticePageBloc>().state;
+    var state = context.read<PracticePageBloc>().loadedState;
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(4.0),
-        boxShadow: defaultBoxShadow,
+        boxShadow: [defaultBoxShadow.first.copyWith(offset: Offset(0, -2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -219,19 +234,19 @@ class CongratulatoryMessage extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ] else if (state.status == PracticePageStatus.incorrect) ...[
-                  Styles.subtitle("Oops!", color: Theme.of(context).colorScheme.error),
+                  Styles.title("Oops!", color: Colors.red),
                   Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
                           text: "The answer was ",
                           style: Styles.subtitle.copyWith(
-                            color: Theme.of(context).colorScheme.error,
+                            color: Colors.red,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         TextSpan(
-                          text: "${(state as LoadedPracticePageState).correctAnswer}",
+                          text: "${state.correctAnswer}",
                           style: Styles.subtitle.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -239,8 +254,7 @@ class CongratulatoryMessage extends StatelessWidget {
                       ],
                     ),
                   ),
-                ] else
-                  Text("You should not see this."),
+                ],
               ],
             ),
           ),

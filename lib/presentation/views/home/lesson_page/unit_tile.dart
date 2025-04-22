@@ -7,7 +7,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:super_tooltip/super_tooltip.dart";
+import "package:scale_up/utils/tool_tip.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 
@@ -21,13 +21,10 @@ class UnitTile extends StatefulWidget {
 }
 
 class _UnitTileState extends State<UnitTile> {
-  late final SuperTooltipController tooltipController = SuperTooltipController();
   bool isShown = false;
 
   @override
   void dispose() {
-    tooltipController.dispose();
-
     super.dispose();
   }
 
@@ -37,43 +34,32 @@ class _UnitTileState extends State<UnitTile> {
     var lesson = context.read<LessonPageCubit>().state.lesson;
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
-    return GestureDetector(
-      onTap: () {
-        if (isShown) {
-          tooltipController.hideTooltip();
-        } else {
-          tooltipController.showTooltip();
-        }
-        isShown = !isShown;
-      },
-      child: SuperTooltip(
-        controller: tooltipController,
-        content: UnitToolTip(
-          lessonPageCubit: context.read<LessonPageCubit>(),
-          unit: unit,
-          lesson: lesson,
+    return ToolTip(
+      content: UnitToolTip(
+        lessonPageCubit: context.read<LessonPageCubit>(),
+        unit: unit,
+        lesson: lesson,
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          color: Colors.white,
+          boxShadow: defaultBoxShadow,
         ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            color: Colors.white,
-            boxShadow: defaultBoxShadow,
-          ),
 
-          /// This material widget makes sure that the ink doesn't overflow
-          ///   through clipping like in scroll views.
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (unit case Unit(:var shortcut))
-                  FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut)),
+        /// This material widget makes sure that the ink doesn't overflow
+        ///   through clipping like in scroll views.
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (unit case Unit(:var shortcut))
+                FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut)),
 
-                FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
-              ],
-            ),
+              FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
+            ],
           ),
         ),
       ),

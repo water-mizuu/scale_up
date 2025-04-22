@@ -222,6 +222,16 @@ class LessonsHelper {
 
     return _computeConversionFor(unitGroup, from, to);
   }
+
+  UnitGroup? getUnitGroupForUnits(List<Unit> allUnits) {
+    Set<UnitGroup> candidates = _unitGroups.toSet();
+
+    for (var unit in allUnits) {
+      candidates.removeWhere((g) => !g.units.contains(unit));
+    }
+
+    return candidates.first;
+  }
 }
 
 Expression expressionFromJson(String json) {

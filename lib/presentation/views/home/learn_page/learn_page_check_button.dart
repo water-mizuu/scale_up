@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 
 class LearnPageCheckButton extends StatelessWidget {
   const LearnPageCheckButton({super.key});
@@ -22,32 +21,33 @@ class LearnPageCheckButton extends StatelessWidget {
         var hasAnswered =
             state.status == LearnPageStatus.correct || //
             state.status == LearnPageStatus.incorrect;
+        var isFinished = learnPageBloc.loadedState.status == LearnPageStatus.finished;
 
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            color: buttonColor,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: defaultBoxShadow,
-          ),
-          child: FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: buttonColor),
-            onPressed: () {
-              if (hasAnswered) {
-                return () => learnPageBloc.add(LearnPageNextQuestionClicked());
+        return FilledButton(
+          style: FilledButton.styleFrom(backgroundColor: buttonColor),
+          onPressed: () {
+            if (hasAnswered) {
+              return () => learnPageBloc.add(LearnPageNextQuestionClicked());
+            }
+
+            if (learnPageBloc.loadedState.status == LearnPageStatus.waitingForSubmission &&
+                learnPageBloc.loadedState.answer != null) {
+              return () => learnPageBloc.add(LearnPageAnswerSubmitted());
+            }
+
+            if (isFinished) {
+              return () => learnPageBloc.add(LearnPageReturnToLessonClicked());
+            }
+          }(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.0),
+            child: Text(() {
+              if (hasAnswered || isFinished) {
+                return "Continue";
               }
 
-              if (learnPageBloc.loadedState.status == LearnPageStatus.waitingForSubmission &&
-                  learnPageBloc.loadedState.answer != null) {
-                return () => learnPageBloc.add(LearnPageAnswerSubmitted());
-              }
-            }(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(
-                hasAnswered ? "Continue" : "Check",
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-              ),
-            ),
+              return "Check";
+            }(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
           ),
         );
       },

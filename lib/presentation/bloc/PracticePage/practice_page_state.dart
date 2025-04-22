@@ -20,7 +20,8 @@ enum PracticePageStatus {
   movingIn,
 
   /// Problem set related status.
-  finishedWithAllQuestions,
+  finished,
+  leaving,
 
   /// Runtime error related status.
   error,
