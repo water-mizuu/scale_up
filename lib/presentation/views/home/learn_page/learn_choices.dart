@@ -276,14 +276,18 @@ class IndirectStepsChoices extends StatelessWidget {
               controller: context.read<TransitionOutAnimationController>().controller,
               autoPlay: false,
             )
-            .slideX(begin: 0.0, end: -0.25, curve: Curves.easeInOut)
+            /// WARNING: This should not be changed. I don't know why,
+            ///   but without this delay, the animation throws.
+            ///  I have NOT yet found the reason.
+            .then(delay: 120.ms)
+            .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
             .fadeOut()
             .animate(
               controller: context.read<TransitionInAnimationController>().controller,
               autoPlay: false,
             )
             .slideX(begin: 0.25, end: 0.0, curve: Curves.easeInOut)
-            .fadeIn(),
+            .fadeIn(), //
         Styles.hint("Tap the units in sequence!", textAlign: TextAlign.center),
       ],
     );
@@ -301,8 +305,6 @@ class IndirectStepsChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // /// If the cubit says that we are null,
-    // ///   then it means that we are moved into the answer list.
     var (key, stateUnit, isAnimating) = context.select(
       (IndirectStepsCubit c) => (
         c.state.choiceKeys[index],
@@ -311,6 +313,7 @@ class IndirectStepsChoice extends StatelessWidget {
       ),
     );
 
+    /// If the stateUnit is null, it means that the user has selected this unit.
     if (stateUnit == null) {
       return BlankChoiceUnitTile(key: key, unit: unit);
     }

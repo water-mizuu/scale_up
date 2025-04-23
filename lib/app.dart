@@ -99,6 +99,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,

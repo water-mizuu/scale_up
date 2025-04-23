@@ -53,9 +53,6 @@ sealed class LearnPageState with _$LearnPageState {
     Object? correctAnswer,
     String? error,
   }) = LoadedLearnPageState;
-
-  LearnQuestion get currentQuestion =>
-      (this as LoadedLearnPageState).questions[(this as LoadedLearnPageState).questionIndex];
 }
 
 @freezed

@@ -16,5 +16,5 @@ abstract class Unit with _$Unit {
       .join(" ");
 
   @override
-  String toString() => "$shortcut";
+  String toString() => shortcut;
 }

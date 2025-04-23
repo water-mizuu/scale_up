@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_instructions.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
-import "package:scale_up/presentation/views/home/learn_page/top_row.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_top_row.dart";
 
 class LearnBody extends StatelessWidget {
   const LearnBody({super.key, required this.progressBarKey});
@@ -17,7 +17,7 @@ class LearnBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TopRow(progressBarKey: progressBarKey),
+          LearnTopRow(progressBarKey: progressBarKey),
           LearnInstructions(),
           const Column(
             spacing: 18.0,

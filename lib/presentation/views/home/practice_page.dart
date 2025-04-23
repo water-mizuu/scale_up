@@ -57,6 +57,7 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
       child: MultiProvider(
         providers: [
           BlocProvider.value(value: bloc),
+          InheritedProvider.value(value: bloc.state.lesson!.hslColor),
           InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
           InheritedProvider.value(value: TransitionInAnimationController(transitionInAnimation)),
           InheritedProvider.value(

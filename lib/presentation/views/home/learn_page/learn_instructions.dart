@@ -267,15 +267,12 @@ class AnswerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<IndirectStepsCubit, IndirectStepsState>(
       builder: (context, state) {
-        if (state.answers[index] case (var choiceIndex, var unit)?) {
-          return Hero(
-            tag: "unit-$choiceIndex",
-            child: ChoiceUnitTile(
-              unit: unit,
-              onTap: () {
-                context.read<IndirectStepsCubit>().putBack(index);
-              },
-            ),
+        if (state.answers[index] case (_, var unit)?) {
+          return ChoiceUnitTile(
+            unit: unit,
+            onTap: () {
+              context.read<IndirectStepsCubit>().putBack(index);
+            },
           );
         } else {
           return BlankChoiceUnitTile(unit: unit);

@@ -19,10 +19,16 @@ import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
 
 class LearnPage extends StatefulWidget {
-  const LearnPage({required this.lessonId, required this.chapterIndex, super.key});
+  const LearnPage({
+    required this.lessonId,
+    required this.chapterIndex,
+    required this.isReview,
+    super.key,
+  });
 
   final String lessonId;
   final int chapterIndex;
+  final bool isReview;
 
   @override
   State<LearnPage> createState() => _LearnPageState();
@@ -38,9 +44,9 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    messageAnimation = AnimationController(vsync: this, duration: 2.seconds);
-    transitionInAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
-    transitionOutAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
+    messageAnimation = AnimationController(vsync: this, duration: 500.ms);
+    transitionInAnimation = AnimationController(vsync: this, duration: 500.ms);
+    transitionOutAnimation = AnimationController(vsync: this, duration: 500.ms);
 
     bloc = LearnPageBloc(
       lessonsHelper: context.read<LessonsHelper>(),
@@ -152,7 +158,11 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
             child: BlocBuilder<LearnPageBloc, LearnPageState>(
               bloc: bloc,
               buildWhen: (previous, current) {
-                assert(!(previous is LoadedLearnPageState && current is LoadingLearnPageState));
+                assert(
+                  !(previous is LoadedLearnPageState && current is LoadingLearnPageState),
+                  "We should never get in a state where we are loading a page "
+                  "while we were already in a loaded state.",
+                );
                 if (previous.runtimeType != current.runtimeType) {
                   return true;
                 }
@@ -175,7 +185,10 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
                   return const Material(child: Center(child: CircularProgressIndicator()));
                 }
 
-                var child = LearnPageView();
+                var child = InheritedProvider.value(
+                  value: bloc.loadedState.lesson.hslColor,
+                  child: LearnPageView(),
+                );
                 var question = state.questions[state.questionIndex];
                 if (question is IndirectStepsLearnQuestion) {
                   return MultiProvider(

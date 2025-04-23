@@ -75,17 +75,12 @@
         {
           "type": "direct",
           "name": "Direct Conversion -- 1",
-          "units": ["meter", "kilometer"]
+          "units": ["meter", "kilometer", "inch"]
         },
         {
           "type": "direct",
           "name": "Direct Conversion -- 2",
-          "units": ["meter", "inch"]
-        },
-        {
-          "type": "direct",
-          "name": "Direct Conversion -- 3",
-          "units": ["feet", "inch"]
+          "units": ["feet", "inch", "meter"]
         },
         {
           "type": "indirect",
@@ -96,22 +91,22 @@
       "practice": [
         {
           "name": "Basic Conversion -- 1",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["meter", "kilometer"]
         },
         {
-          "name": "Basic Conversion -- 3",
-          "question_count": 8,
+          "name": "Basic Conversion -- 2",
+          "question_count": 12,
           "units": ["feet", "inch"]
         },
         {
           "name": "Imperial Conversion",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["meter", "inch"]
         },
         {
           "name": "Full Conversion",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["meter", "kilometer", "feet", "inch"]
         }
       ]
@@ -142,18 +137,18 @@
       ],
       "practice": [
         {
-          "name": "Basic Conversion",
-          "question_count": 8,
-          "units": ["gram", "kilogram"]
+          "name": "Basic Conversion -- 1",
+          "question_count": 12,
+          "units": ["gram", "kilogram", "pound"]
         },
         {
-          "name": "Basic Conversion",
-          "question_count": 8,
-          "units": ["gram", "kilogram"]
+          "name": "Basic Conversion -- 2",
+          "question_count": 12,
+          "units": ["pound", "ounce", "gram"]
         },
         {
           "name": "Imperial Conversion",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["gram", "pound", "ounce", "kilogram"]
         }
       ]
@@ -170,17 +165,12 @@
         {
           "type": "direct",
           "name": "Direct Conversion -- 1",
-          "units": ["celsius", "fahrenheit"]
+          "units": ["celsius", "fahrenheit", "kelvin"]
         },
         {
           "type": "direct",
           "name": "Direct Conversion -- 2",
-          "units": ["celsius", "kelvin"]
-        },
-        {
-          "type": "direct",
-          "name": "Direct Conversion -- 3",
-          "units": ["rankine", "fahrenheit"]
+          "units": ["fahrenheit", "celsius", "rankine"]
         },
         {
           "type": "indirect",
@@ -191,13 +181,18 @@
       "practice": [
         {
           "name": "Basic Conversion",
-          "question_count": 1,
-          "units": ["celsius", "kelvin"]
+          "question_count": 6,
+          "units": ["celsius", "fahrenheit"]
         },
         {
-          "name": "Scientifec Conversion",
-          "question_count": 8,
+          "name": "Scientific Conversion",
+          "question_count": 12,
           "units": ["celsius", "fahrenheit", "kelvin"]
+        },
+        {
+          "name": "Full Conversion",
+          "question_count": 8,
+          "units": ["celsius", "fahrenheit", "kelvin", "rankine"]
         }
       ]
     },
@@ -212,17 +207,12 @@
         {
           "type": "direct",
           "name": "Direct Conversion -- 1",
-          "units": ["second", "minute"]
+          "units": ["second", "minute", "hour"]
         },
         {
           "type": "direct",
           "name": "Direct Conversion -- 2",
-          "units": ["minute", "hour"]
-        },
-        {
-          "type": "direct",
-          "name": "Direct Conversion -- 3",
-          "units": ["hour", "day"]
+          "units": ["hour", "minute", "day"]
         },
         {
           "type": "indirect",
@@ -233,17 +223,17 @@
       "practice": [
         {
           "name": "Short Durations",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["second", "minute", "hour"]
         },
         {
           "name": "Longer Durations",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["hour", "day", "year"]
         },
         {
           "name": "Full Conversion",
-          "question_count": 8,
+          "question_count": 12,
           "units": ["second", "minute", "hour", "day"]
         }
       ]

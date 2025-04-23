@@ -76,6 +76,6 @@ class ToolTip extends SuperTooltip {
          backgroundColor: Colors.white,
          barrierColor: Colors.transparent,
          borderColor: Colors.transparent,
-         shadowColor: Colors.black.withValues(alpha: 0.25),
+         shadowColor: Colors.black.withValues(alpha: 0.125),
        );
 }

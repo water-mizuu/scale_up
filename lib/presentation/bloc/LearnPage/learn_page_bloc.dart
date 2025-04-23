@@ -142,7 +142,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       if (unitGroup == null) {
         throw Exception("There wasn't a unit group for $allUnits");
       }
-      print(unitGroup.units);
 
       for (var from in learnChapter.units) {
         for (var to in learnChapter.units) {

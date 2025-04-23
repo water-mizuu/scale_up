@@ -178,12 +178,14 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
           controller: context.read<TransitionOutAnimationController>().controller,
           autoPlay: false,
         )
+        .then(delay: 150.ms)
         .slideX(begin: 0.0, end: -0.5, curve: Curves.easeOutQuad)
         .fadeOut()
         .animate(
           controller: context.read<TransitionInAnimationController>().controller,
           autoPlay: false,
         )
+        .then(delay: 150.ms)
         .slideX(begin: 0.5, end: 0.0, curve: Curves.easeOutQuad)
         .fadeIn();
   }

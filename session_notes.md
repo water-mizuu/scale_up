@@ -37,3 +37,8 @@ I have finished the main functionality of the application. All of the thought of
 working as needed. Now, I have to focus on lesson content & other windows. I am thinking of
 adding the global prompt based on the "Congrats" / "Oops" messages. This will be useful for
 user confirmation and whatnot.
+
+# April 23, 2025 || 9:42AM.
+I have to do the following things:
+  1. Integrate the sound I requested a while ago.
+  2. Design a learn page

@@ -8,6 +8,7 @@ import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/lesson_page/leading_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
+import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class PracticeTile extends StatelessWidget {
@@ -18,7 +19,8 @@ class PracticeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lessonId = context.read<LessonPageCubit>().state.lesson.id;
+    var cubit = context.read<LessonPageCubit>();
+    var lessonId = cubit.state.lesson.id;
     var key = ChapterType.practice.stringify(lessonId, chapterIndex);
     var isComplete = context.select(
       (UserDataBloc bloc) => bloc.state.finishedChapters.contains(key),
@@ -36,15 +38,61 @@ class PracticeTile extends StatelessWidget {
         leading: LeadingChapterIndex(index: chapterIndex, isCompleted: isComplete),
         title: Styles.body(chapter.name, fontSize: 14),
         subtitle: Styles.body("${chapter.questionCount} questions", color: Colors.grey),
-        onTap:
-        // isComplete
-        // ? null
-        // :
-        () {
-          context.pushNamed(
-            AppRoutes.practice,
-            pathParameters: {"id": lessonId, "chapterIndex": "$chapterIndex"},
-          );
+        onTap: () async {
+          var shouldPush = false;
+          if (isComplete) {
+            // Previous chapter is not complete, ask for confirmation
+
+            var userWantsToReview = await context.showConfirmationDialog(
+              title: "Reviewing?",
+              message:
+                  "You have already finished this chapter. "
+                  "Do you want to review it instead?",
+              cancelButtonText: "No",
+              confirmButtonText: "Review",
+            );
+
+            shouldPush = userWantsToReview;
+          } else {
+            late var previousChapter =
+                chapterIndex > 0 ? cubit.state.lesson.practiceChapters[chapterIndex - 1] : null;
+
+            late var isPreviousComplete = context
+                .read<UserDataBloc>()
+                .state
+                .finishedChapters
+                .contains(ChapterType.learn.stringify(lessonId, chapterIndex - 1));
+
+            if (previousChapter == null) {
+              // No previous chapter, so we can push without confirmation
+              shouldPush = true;
+            } else if (isPreviousComplete) {
+              // Previous chapter is complete, so we can push without confirmation
+              shouldPush = true;
+            } else {
+              // Previous chapter is not complete, ask for confirmation
+
+              var userWantsToSkip = await context.showConfirmationDialog(
+                title: "Skipping Ahead?",
+                message:
+                    "Are you sure you want to start this chapter? "
+                    "These chapters are structured to increse in difficulty. "
+                    "You may find this chapter difficult if you haven't "
+                    "completed the previous one.",
+                cancelButtonText: "No, thanks",
+                confirmButtonText: "Yes",
+              );
+
+              shouldPush = userWantsToSkip;
+            }
+          }
+
+          if (context.mounted && shouldPush) {
+            context.pushNamed(
+              AppRoutes.practice,
+              pathParameters: {"id": lessonId, "chapterIndex": "$chapterIndex"},
+            );
+          }
         },
       ),
     );
