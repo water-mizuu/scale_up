@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/presentation/views/home/widgets/lesson_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/newer_lesson_tile.dart";
 
-class FeaturedLesson extends StatelessWidget {
-  const FeaturedLesson({super.key});
+class LatestLesson extends StatelessWidget {
+  const LatestLesson({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +12,6 @@ class FeaturedLesson extends StatelessWidget {
 
     final lessons = context.read<LessonsHelper>().lessons;
 
-    return LessonTile(lesson: lessons.last);
+    return NewerLessonTile(lesson: lessons.last, isHighlighted: true);
   }
 }

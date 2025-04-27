@@ -98,6 +98,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         questionIndex: 0,
         answer: 0.toStringAsFixed(3),
         progress: 0.0,
+        mistakes: 0,
       ),
     );
   }
@@ -136,7 +137,13 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     if (loadedState.answer == answer) {
       emit(loadedState.copyWith(status: PracticePageStatus.correct));
     } else {
-      emit(loadedState.copyWith(status: PracticePageStatus.incorrect, correctAnswer: answer));
+      emit(
+        loadedState.copyWith(
+          status: PracticePageStatus.incorrect,
+          correctAnswer: answer,
+          mistakes: loadedState.mistakes + 1,
+        ),
+      );
     }
   }
 
@@ -173,7 +180,9 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         loadedState.copyWith(
           status: PracticePageStatus.movingIn,
           questionIndex: newQuestionIndex,
-          progress: newQuestionIndex / loadedState.questions.length,
+          progress:
+              (newQuestionIndex - loadedState.mistakes) /
+              (loadedState.questions.length - loadedState.mistakes),
         ),
       );
     }

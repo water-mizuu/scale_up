@@ -9,19 +9,23 @@ class UserBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var user = context.select((UserDataBloc b) => b.state.user);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 2.0,
       children: [
-        Text("Welcome back", style: TextStyle(fontSize: 12.0), textAlign: TextAlign.start),
-        BlocBuilder<UserDataBloc, UserDataState>(
-          buildWhen: (p, c) => p.user != c.user,
-          builder: (context, state) {
-            return Styles.subtitle(
-              'Hello, ${(state.user?.displayName ?? "User").toTitleCase()}',
+        // Text("Welcome back", style: TextStyle(fontSize: 12.0), textAlign: TextAlign.start),
+        Row(
+          children: [
+            Styles.title("Hello, ", fontSize: 20, textAlign: TextAlign.start),
+            Styles.title(
+              "${(user?.displayName ?? "User").toTitleCase()}!",
+              fontSize: 20,
               textAlign: TextAlign.start,
-            );
-          },
+              color: const Color.fromARGB(255, 45, 103, 47),
+            ),
+          ],
         ),
       ],
     );

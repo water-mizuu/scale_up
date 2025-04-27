@@ -1,6 +1,7 @@
 import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_state.dart";
 
 class HomePageCubit extends Cubit<HomePageState> {
@@ -33,16 +34,17 @@ class HomePageCubit extends Cubit<HomePageState> {
       count[key] = count[key]! + 1;
     }
 
+    double progression(Lesson lesson) =>
+        count[lesson.id] != null
+            ? count[lesson.id]! / (lesson.practiceChapters.length + lesson.learnChapters.length)
+            : 0;
+
     var ongoingLessons = [
       for (var lesson in allLessons)
         if (count[lesson.id] case var chapterCount?
-            when 0 < chapterCount && chapterCount < lesson.practiceChapters.length)
+            when 0 < chapterCount && chapterCount < lesson.chapterCount)
           lesson,
-    ]..sort(
-      (a, b) => (count[b.id]! / b.practiceChapters.length).compareTo(
-        (count[a.id]! / a.practiceChapters.length),
-      ),
-    );
+    ]..sort((a, b) => progression(b).compareTo(progression(a)));
 
     var newLessons = [
       for (var lesson in allLessons)
@@ -51,8 +53,7 @@ class HomePageCubit extends Cubit<HomePageState> {
 
     var finishedLessons = [
       for (var lesson in allLessons)
-        if (count[lesson.id] case var chapterCount?
-            when chapterCount >= lesson.practiceChapters.length)
+        if (count[lesson.id] case var chapterCount? when chapterCount >= lesson.chapterCount)
           lesson,
     ];
 

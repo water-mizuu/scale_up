@@ -174,7 +174,7 @@ $LessonCopyWith<$Res>? get lesson {
 
 
 class LoadedPracticePageState extends PracticePageState {
-  const LoadedPracticePageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, required this.questionIndex, required this.progress, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
+  const LoadedPracticePageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, required this.questionIndex, required this.progress, required this.mistakes, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  PracticePageStatus status;
@@ -189,6 +189,7 @@ class LoadedPracticePageState extends PracticePageState {
 
  final  int questionIndex;
  final  double progress;
+ final  int mistakes;
  final  String? answer;
  final  String? correctAnswer;
 @override final  Object? error;
@@ -203,16 +204,16 @@ $LoadedPracticePageStateCopyWith<LoadedPracticePageState> get copyWith => _$Load
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedPracticePageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.correctAnswer, correctAnswer) || other.correctAnswer == correctAnswer)&&const DeepCollectionEquality().equals(other.error, error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedPracticePageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.mistakes, mistakes) || other.mistakes == mistakes)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.correctAnswer, correctAnswer) || other.correctAnswer == correctAnswer)&&const DeepCollectionEquality().equals(other.error, error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,answer,correctAnswer,const DeepCollectionEquality().hash(error));
+int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,mistakes,answer,correctAnswer,const DeepCollectionEquality().hash(error));
 
 @override
 String toString() {
-  return 'PracticePageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'PracticePageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, mistakes: $mistakes, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
@@ -223,7 +224,7 @@ abstract mixin class $LoadedPracticePageStateCopyWith<$Res> implements $Practice
   factory $LoadedPracticePageStateCopyWith(LoadedPracticePageState value, $Res Function(LoadedPracticePageState) _then) = _$LoadedPracticePageStateCopyWithImpl;
 @override @useResult
 $Res call({
- PracticePageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, int questionIndex, double progress, String? answer, String? correctAnswer, Object? error
+ PracticePageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions, int questionIndex, double progress, int mistakes, String? answer, String? correctAnswer, Object? error
 });
 
 
@@ -240,7 +241,7 @@ class _$LoadedPracticePageStateCopyWithImpl<$Res>
 
 /// Create a copy of PracticePageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? mistakes = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(LoadedPracticePageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as PracticePageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
@@ -248,7 +249,8 @@ as int,lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_t
 as Lesson,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
 as List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
 as int,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
-as double,answer: freezed == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as double,mistakes: null == mistakes ? _self.mistakes : mistakes // ignore: cast_nullable_to_non_nullable
+as int,answer: freezed == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
 as String?,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer // ignore: cast_nullable_to_non_nullable
 as String?,error: freezed == error ? _self.error : error ,
   ));

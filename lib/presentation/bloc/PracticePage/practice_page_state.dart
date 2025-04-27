@@ -44,6 +44,7 @@ sealed class PracticePageState with _$PracticePageState {
     required List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions,
     required int questionIndex,
     required double progress,
+    required int mistakes,
     String? answer,
     String? correctAnswer,
     Object? error,

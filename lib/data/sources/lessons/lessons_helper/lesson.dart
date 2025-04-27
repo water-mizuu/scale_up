@@ -38,4 +38,5 @@ abstract class Lesson with _$Lesson {
 
   Color get foregroundColor => color.contrastingTextColor();
 
+  int get chapterCount => learnChapters.length + practiceChapters.length;
 }

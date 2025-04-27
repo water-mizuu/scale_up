@@ -39,7 +39,6 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
     super.initState();
 
     var lessonsHelper = context.read<LessonsHelper>();
-    super.initState();
 
     messageAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
     transitionInAnimation = AnimationController(vsync: this, duration: 500.milliseconds);
@@ -57,90 +56,92 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
       child: MultiProvider(
         providers: [
           BlocProvider.value(value: bloc),
-          InheritedProvider.value(value: bloc.state.lesson!.hslColor),
-          InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
-          InheritedProvider.value(value: TransitionInAnimationController(transitionInAnimation)),
-          InheritedProvider.value(
-            value: TransitionOutAnimationController(transitionOutAnimation),
-          ),
+          Provider.value(value: bloc.state.lesson!.hslColor),
+          Provider.value(value: MessageAnimationController(messageAnimation)),
+          Provider.value(value: TransitionInAnimationController(transitionInAnimation)),
+          Provider.value(value: TransitionOutAnimationController(transitionOutAnimation)),
         ],
-        child: BlocListener<PracticePageBloc, PracticePageState>(
-          bloc: bloc,
-          listener: (context, state) async {
-            switch (state) {
-              /// If there is an error, we show a snackbar.
-              case LoadedPracticePageState(:var error?):
-                await context.showBasicSnackbar(error.toString());
-
-              /// This is the state when the user has answered a question.
-              case LoadedPracticePageState(status: PracticePageStatus.correct):
-              case LoadedPracticePageState(status: PracticePageStatus.incorrect):
-                messageAnimation.forward(from: 0.0);
-
-              /// When we are [PracticePageStatus.movingAway], then we
-              ///   reverse the animation.
-              case LoadedPracticePageState(status: PracticePageStatus.movingAway):
-                messageAnimation.reverse(from: 1.0);
-
-              /// If the chapter is finished, then we let the bloc know
-              ///   that the user has completed the chapter.
-              /// This will trigger the UserDataBloc to update the stored local data.
-              ///   This will also asynchronously update the server data.
-              case LoadedPracticePageState(status: PracticePageStatus.finished):
-                context.read<UserDataBloc>().add(
-                  PracticeChapterCompletedUserDataEvent(
-                    lessonId: bloc.loadedState.lesson.id,
-                    chapterIndex: bloc.state.chapterIndex,
-                  ),
-                );
-
-              case LoadedPracticePageState(status: PracticePageStatus.leaving):
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.goNamed(
-                    AppRoutes.lesson,
-                    pathParameters: {"lessonId": bloc.loadedState.lesson.id},
-                  );
-                }
-                return;
-
-              /// Ignore the other statuses.
-              case _:
-                return;
-            }
-          },
-          child: BlocListener<PracticePageBloc, PracticePageState>(
-            bloc: bloc,
-            listenWhen: (p, c) => p.status != c.status,
-            listener: (context, state) async {
-              /// Animation engine.
-              ///   Is there a way to do this in the BLoC itself?
-              if (state.status == PracticePageStatus.movingIn) {
-                transitionOutAnimation.reset();
-                await transitionInAnimation.forward(from: 0.0);
-                if (bloc.isClosed) return;
-
-                bloc.add(PracticePageToTransitionComplete());
-              } else if (state.status == PracticePageStatus.movingAway) {
-                /// Just instantly hide the message.
-                messageAnimation.reset();
-                await transitionOutAnimation.forward(from: 0.0);
-
-                if (bloc.isClosed) return;
-                bloc.add(PracticePageFromTransitionComplete());
-              }
-            },
-            child: BlocBuilder(
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<PracticePageBloc, PracticePageState>(
               bloc: bloc,
-              builder: (context, state) {
-                if (state is! LoadedPracticePageState) {
-                  return const Material(child: Center(child: CircularProgressIndicator()));
-                }
+              listener: (context, state) async {
+                switch (state) {
+                  /// If there is an error, we show a snackbar.
+                  case LoadedPracticePageState(:var error?):
+                    await context.showBasicSnackbar(error.toString());
 
-                return PracticePageView();
+                  /// This is the state when the user has answered a question.
+                  case LoadedPracticePageState(status: PracticePageStatus.correct):
+                  case LoadedPracticePageState(status: PracticePageStatus.incorrect):
+                    messageAnimation.forward(from: 0.0);
+
+                  /// When we are [PracticePageStatus.movingAway], then we
+                  ///   reverse the animation.
+                  case LoadedPracticePageState(status: PracticePageStatus.movingAway):
+                    messageAnimation.reverse(from: 1.0);
+
+                  /// If the chapter is finished, then we let the bloc know
+                  ///   that the user has completed the chapter.
+                  /// This will trigger the UserDataBloc to update the stored local data.
+                  ///   This will also asynchronously update the server data.
+                  case LoadedPracticePageState(status: PracticePageStatus.finished):
+                    context.read<UserDataBloc>().add(
+                      PracticeChapterCompletedUserDataEvent(
+                        lessonId: bloc.loadedState.lesson.id,
+                        chapterIndex: bloc.state.chapterIndex,
+                      ),
+                    );
+
+                  case LoadedPracticePageState(status: PracticePageStatus.leaving):
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.goNamed(
+                        AppRoutes.lesson,
+                        pathParameters: {"lessonId": bloc.loadedState.lesson.id},
+                      );
+                    }
+                    return;
+
+                  /// Ignore the other statuses.
+                  case _:
+                    return;
+                }
               },
             ),
+            BlocListener<PracticePageBloc, PracticePageState>(
+              bloc: bloc,
+              listenWhen: (p, c) => p.status != c.status,
+              listener: (context, state) async {
+                /// Animation engine.
+                ///   Is there a way to do this in the BLoC itself?
+                if (state.status == PracticePageStatus.movingIn) {
+                  transitionOutAnimation.reset();
+                  await transitionInAnimation.forward(from: 0.0);
+                  if (bloc.isClosed) return;
+
+                  bloc.add(PracticePageToTransitionComplete());
+                } else if (state.status == PracticePageStatus.movingAway) {
+                  /// Just instantly hide the message.
+                  messageAnimation.reset();
+                  await transitionOutAnimation.forward(from: 0.0);
+
+                  if (bloc.isClosed) return;
+                  bloc.add(PracticePageFromTransitionComplete());
+                }
+              },
+            ),
+          ],
+          child: BlocBuilder<PracticePageBloc, PracticePageState>(
+            bloc: bloc,
+            builder: (context, state) {
+              if (state is! LoadedPracticePageState) {
+                return const Material(child: Center(child: CircularProgressIndicator()));
+              }
+
+              return PracticePageView();
+            },
           ),
         ),
       ),

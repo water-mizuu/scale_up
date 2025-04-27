@@ -1,7 +1,7 @@
 import "dart:async";
 
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
@@ -20,8 +20,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  static const FirestoreHelper _firestoreHelper = FirestoreHelper();
+
   late final Future<LessonsHelper> _lessonHelperFuture;
-  late final FirestoreHelper _firestoreHelper;
   late final FirebaseAuthHelper _firebaseAuthHelper;
 
   @override
@@ -29,7 +30,6 @@ class _AppState extends State<App> {
     super.initState();
 
     _lessonHelperFuture = LessonsHelper.createAsync();
-    _firestoreHelper = const FirestoreHelper();
     _firebaseAuthHelper = FirebaseAuthHelper();
   }
 
@@ -56,35 +56,42 @@ class _AppState extends State<App> {
             late var userDataBloc = context.read<UserDataBloc>();
 
             /// We only want to listen if firebase itself initiated a token change.
-            return BlocListener<AuthenticationBloc, AuthenticationState>(
-              bloc: authenticationBloc,
-              listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
-              listener: (_, state) {
-                if (state.status == AuthenticationStatus.signedIn) {
-                  if (kDebugMode) {
-                    print("User is signed in");
-                  }
 
-                  router.go("/blank");
-                } else if (state.status == AuthenticationStatus.signedOut) {
-                  // Navigate to the login screen
-                  router.goNamed(AppRoutes.login);
-                }
-              },
-
-              /// This listener is for when a user logs in or logs out.
-              child: BlocListener<AuthenticationBloc, AuthenticationState>(
-                bloc: authenticationBloc,
-                listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
-                listener: (context, state) {
-                  if (state.user case var user?) {
-                    userDataBloc.add(SignedInUserDataEvent(user: user));
-                  } else {
-                    userDataBloc.add(SignedOutUserDataEvent());
-                  }
-                },
-                child: AppView(),
-              ),
+            return MultiBlocListener(
+              listeners: [
+                BlocListener<UserDataBloc, UserDataState>(
+                  bloc: userDataBloc,
+                  listener: (context, state) async {
+                    if (state.status == UserDataStatus.loaded) {
+                      await Future.delayed(2.seconds);
+                      router.goNamed(AppRoutes.home);
+                    }
+                  },
+                ),
+                BlocListener<AuthenticationBloc, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
+                  listener: (_, state) {
+                    if (state.status == AuthenticationStatus.signedIn) {
+                      router.go("/blank");
+                    } else if (state.status == AuthenticationStatus.signedOut) {
+                      router.goNamed(AppRoutes.login);
+                    }
+                  },
+                ),
+                BlocListener<AuthenticationBloc, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
+                  listener: (context, state) {
+                    if (state.user case var user?) {
+                      userDataBloc.add(SignedInUserDataEvent(user: user));
+                    } else {
+                      userDataBloc.add(SignedOutUserDataEvent());
+                    }
+                  },
+                ),
+              ],
+              child: AppView(),
             );
           },
         );
@@ -99,7 +106,6 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,

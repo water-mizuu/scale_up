@@ -29,7 +29,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     EmailSignUpAuthenticationEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null));
+    emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null, user: null));
 
     try {
       var user = await _repository.emailSignUp(
@@ -56,6 +56,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           .emailSignIn(email: event.email, password: event.password)
           .then((u) => u!);
 
+      if (kDebugMode) {
+        print("*" * 100);
+        print(user);
+        print("*" * 100);
+      }
+
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
     } catch (e) {
@@ -77,9 +83,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     } on PlatformException catch (e) {
       if (e case PlatformException(code: "sign_in_failed", :var message)) {
         if (kDebugMode) {
-        print("*" * 100);
-        print((message));
-        print("*" * 100);
+          print("*" * 100);
+          print((message));
+          print("*" * 100);
         }
       } else {
         rethrow;
