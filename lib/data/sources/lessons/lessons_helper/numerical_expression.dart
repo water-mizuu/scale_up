@@ -1,14 +1,14 @@
 import "dart:math";
 
 /// A simple mathematical expression evaluator.
-sealed class Expression {
-  const Expression();
+sealed class NumericalExpression {
+  const NumericalExpression();
 
   static const int significantDigits = 5;
 
-  num evaluate(Map<String, num> variables);
-  Expression substitute(String id, Expression expression);
-  Expression substituteString(String id, String expression) =>
+  num evaluate(Map<String, Object> variables);
+  NumericalExpression substitute(String id, NumericalExpression expression);
+  NumericalExpression substituteString(String id, String expression) =>
       substitute(id, VariableExpression(expression));
 
   Iterable<VariableExpression> get variables;
@@ -19,8 +19,8 @@ sealed class Expression {
 
   O captureGeneric<O>(O Function<E>() f);
 
-  static (Expression, VariableExpression) inverse(VariableExpression left, Expression right) {
-    var lhs = left as Expression;
+  static (NumericalExpression, VariableExpression) inverse(VariableExpression left, NumericalExpression right) {
+    var lhs = left as NumericalExpression;
     var rhs = right;
 
     assert(
@@ -123,9 +123,9 @@ sealed class Expression {
   }
 }
 
-sealed class BinaryExpression extends Expression {
-  final Expression left;
-  final Expression right;
+sealed class BinaryExpression extends NumericalExpression {
+  final NumericalExpression left;
+  final NumericalExpression right;
 
   const BinaryExpression(this.left, this.right);
 
@@ -135,7 +135,7 @@ sealed class BinaryExpression extends Expression {
     yield* right.variables;
   }
 
-  BinaryExpression makeCopy(Expression left, Expression right) {
+  BinaryExpression makeCopy(NumericalExpression left, NumericalExpression right) {
     return switch (this) {
       AdditionExpression() => AdditionExpression(left, right),
       SubtractionExpression() => SubtractionExpression(left, right),
@@ -151,11 +151,11 @@ final class AdditionExpression extends BinaryExpression {
   const AdditionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       left.evaluate(variables) + right.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       AdditionExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -169,11 +169,11 @@ final class SubtractionExpression extends BinaryExpression {
   const SubtractionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       left.evaluate(variables) - right.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       SubtractionExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -187,11 +187,11 @@ final class MultiplicationExpression extends BinaryExpression {
   const MultiplicationExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       left.evaluate(variables) * right.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       MultiplicationExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -205,11 +205,11 @@ final class DivisionExpression extends BinaryExpression {
   const DivisionExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       left.evaluate(variables) / right.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       DivisionExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -223,11 +223,11 @@ final class PowerExpression extends BinaryExpression {
   const PowerExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       pow(left.evaluate(variables), right.evaluate(variables));
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       PowerExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -241,11 +241,11 @@ final class LogarithmExpression extends BinaryExpression {
   const LogarithmExpression(super.left, super.right);
 
   @override
-  num evaluate(Map<String, num> variables) =>
+  num evaluate(Map<String, Object> variables) =>
       log(right.evaluate(variables)) / log(left.evaluate(variables));
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       LogarithmExpression(left.substitute(id, expression), right.substitute(id, expression));
 
   @override
@@ -255,8 +255,8 @@ final class LogarithmExpression extends BinaryExpression {
   O captureGeneric<O>(O Function<E>() f) => f<LogarithmExpression>();
 }
 
-sealed class UnaryExpression extends Expression {
-  final Expression operand;
+sealed class UnaryExpression extends NumericalExpression {
+  final NumericalExpression operand;
 
   const UnaryExpression(this.operand);
 
@@ -265,7 +265,7 @@ sealed class UnaryExpression extends Expression {
     yield* operand.variables;
   }
 
-  UnaryExpression makeCopy(Expression operand) {
+  UnaryExpression makeCopy(NumericalExpression operand) {
     return switch (this) {
       NegationExpression() => NegationExpression(operand),
     };
@@ -276,10 +276,10 @@ final class NegationExpression extends UnaryExpression {
   const NegationExpression(super.operand);
 
   @override
-  num evaluate(Map<String, num> variables) => -operand.evaluate(variables);
+  num evaluate(Map<String, Object> variables) => -operand.evaluate(variables);
 
   @override
-  Expression substitute(String id, Expression expression) =>
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
       NegationExpression(operand.substitute(id, expression));
 
   @override
@@ -289,16 +289,16 @@ final class NegationExpression extends UnaryExpression {
   O captureGeneric<O>(O Function<E>() f) => f<NegationExpression>();
 }
 
-final class ConstantExpression extends Expression {
+final class ConstantExpression extends NumericalExpression {
   final num value;
 
   const ConstantExpression(this.value);
 
   @override
-  num evaluate(Map<String, num> variables) => value;
+  num evaluate(Map<String, Object> variables) => value;
 
   @override
-  Expression substitute(String id, Expression expression) => this;
+  NumericalExpression substitute(String id, NumericalExpression expression) => this;
 
   @override
   get variables sync* {}
@@ -310,16 +310,16 @@ final class ConstantExpression extends Expression {
   O captureGeneric<O>(O Function<E>() f) => f<ConstantExpression>();
 }
 
-final class VariableExpression extends Expression {
+final class VariableExpression extends NumericalExpression {
   final String variable;
 
   const VariableExpression(this.variable);
 
   @override
-  num evaluate(Map<String, num> variables) => variables[variable] ?? 0;
+  num evaluate(Map<String, Object> variables) => variables[variable] as num? ?? 0;
 
   @override
-  Expression substitute(String id, Expression expression) => variable == id ? expression : this;
+  NumericalExpression substitute(String id, NumericalExpression expression) => variable == id ? expression : this;
 
   @override
   get variables sync* {
@@ -333,16 +333,16 @@ final class VariableExpression extends Expression {
   O captureGeneric<O>(O Function<E>() f) => f<VariableExpression>();
 }
 
-extension ExpressionList on List<Expression> {
-  num evaluate(num from, {int significantDigits = Expression.significantDigits}) {
+extension ExpressionList on List<NumericalExpression> {
+  num evaluate(num from, {int significantDigits = NumericalExpression.significantDigits}) {
     return fold(from, (value, expr) => expr.evaluate({"from": value}));
   }
 }
 
-extension CustomExpressionExtension on Expression {
+extension CustomExpressionExtension on NumericalExpression {
   static final Random _random = Random();
 
-  Expression mutate({double probability = 0.5}) {
+  NumericalExpression mutate({double probability = 0.5}) {
     var atari = _random.nextDouble();
 
     var shouldMutate = atari < probability;
@@ -398,7 +398,7 @@ extension CustomExpressionExtension on Expression {
   }
 }
 
-extension on Expression {
+extension on NumericalExpression {
   String get string {
     var string = toString();
 

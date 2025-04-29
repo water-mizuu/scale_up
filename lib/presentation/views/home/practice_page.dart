@@ -12,7 +12,6 @@ import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
@@ -218,7 +217,7 @@ class CongratulatoryMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(4.0),
-        boxShadow: [defaultBoxShadow.first.copyWith(offset: Offset(0, -2))],
+        border: Border.all(color: Colors.grey.shade500),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

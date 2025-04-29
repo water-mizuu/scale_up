@@ -1,24 +1,33 @@
 import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_state.dart";
 
 class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({
-    required Set<String> finishedChaptersString,
+    required Map<String, DateTime> finishedChaptersString,
     required LessonsHelper lessonsHelper,
   }) : _lessonsHelper = lessonsHelper,
-       super(HomePageState()) {
+       super(
+         HomePageState(
+           ongoingLessons: [],
+           newLessons: [],
+           finishedLessons: [],
+           averageTimePerLesson: Duration.zero,
+           averageTimePerQuestion: Duration.zero,
+           lessonsCompleted: 0,
+         ),
+       ) {
     Future.delayed(Duration.zero, () => updateFinishedChaptersString(finishedChaptersString));
   }
 
   final LessonsHelper _lessonsHelper;
 
-  void updateFinishedChaptersString(Set<String> finishedChaptersString) async {
+  void updateFinishedChaptersString(Map<String, DateTime> finishedChaptersString) async {
     var allLessons = _lessonsHelper.lessons;
     var finishedChaptersLessonIds =
-        finishedChaptersString
+        finishedChaptersString.keys
             // The format is "$lessonId:$index"
             .map((s) => s.split(":"))
             // We take only the lesson id.

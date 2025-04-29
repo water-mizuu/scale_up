@@ -15,6 +15,62 @@
       ]
     },
     {
+      "type": "area",
+      "conversions": [
+        {
+          "from": "meter_squared",
+          "to": "kilometer_squared",
+          "formula": "from / 1000 / 1000"
+        },
+        {
+          "from": "meter_squared",
+          "to": "inch_squared",
+          "formula": "from * 39.3701 * 39.3701"
+        },
+        {
+          "from": "feet_squared",
+          "to": "inch_squared",
+          "formula": "from * 12 * 12"
+        }
+      ],
+      "units": [
+        { "id": "meter_squared", "shortcut": "m²", "display": "Square Meter" },
+        {
+          "id": "kilometer_squared",
+          "shortcut": "km²",
+          "display": "Square Kilometer"
+        },
+        { "id": "feet_squared", "shortcut": "ft²", "display": "Square Feet" },
+        { "id": "inch_squared", "shortcut": "in²", "display": "Square Inch" }
+      ]
+    },
+    {
+      "type": "volume",
+      "conversions": [
+        { "from": "liter", "to": "milliliter", "formula": "from * 1000" },
+        { "from": "liter", "to": "gallon", "formula": "from / 3.78541" },
+        { "from": "gallon", "to": "quart", "formula": "from * 4" },
+        { "from": "meter_cubed", "to": "liter", "formula": "from * 1000" },
+        { "from": "centimeter_cubed", "to": "liter", "formula": "from / 1000" },
+        { "from": "inch_cubed", "to": "liter", "formula": "from / 61.0237" },
+        { "from": "feet_cubed", "to": "liter", "formula": "from / 35.3147" }
+      ],
+      "units": [
+        { "id": "liter", "shortcut": "L" },
+        { "id": "milliliter", "shortcut": "mL" },
+        { "id": "gallon", "shortcut": "gal" },
+        { "id": "quart", "shortcut": "qt" },
+        { "id": "meter_cubed", "shortcut": "m³", "display": "Cubic Meter" },
+        {
+          "id": "centimeter_cubed",
+          "shortcut": "cm³",
+          "display": "Cubic Centimeter"
+        },
+        { "id": "inch_cubed", "shortcut": "in³", "display": "Cubic Inch" },
+        { "id": "feet_cubed", "shortcut": "ft³", "display": "Cubic Feet" }
+      ]
+    },
+    {
       "type": "mass",
       "conversions": [
         { "from": "gram", "to": "kilogram", "formula": "from / 1000" },
@@ -34,7 +90,8 @@
         {
           "from": "celsius",
           "to": "fahrenheit",
-          "formula": "(from * 1.8) + 32"
+          "formula": "(from * 1.8) + 32",
+          "constants": []
         },
         { "from": "celsius", "to": "kelvin", "formula": "from + 273.15" },
         { "from": "rankine", "to": "fahrenheit", "formula": "from - 459.67" }
@@ -71,6 +128,7 @@
       "icon": "straighten",
       "description": "These are commonly measured using tools such as measuring tapes.",
       "units_type": "length",
+      "color": "#1f77b4",
       "units": ["meter", "kilometer", "feet", "inch"],
       "learn": [
         {
@@ -113,12 +171,112 @@
       ]
     },
     {
+      "id": "area",
+      "category": "Tangible Measurements",
+      "name": "Area",
+      "icon": "map",
+      "description": "These are the amount of space inside a two-dimensional shape.",
+      "units_type": "area",
+
+      "color": "#2ca02c",
+      "units": [
+        "meter_squared",
+        "kilometer_squared",
+        "feet_squared",
+        "inch_squared"
+      ],
+      "learn": [
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["meter_squared", "kilometer_squared", "feet_squared"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["feet_squared", "inch_squared", "kilometer_squared"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": [
+            "meter_squared",
+            "kilometer_squared",
+            "feet_squared",
+            "inch_squared"
+          ]
+        }
+      ],
+      "practice": [
+        {
+          "name": "Basic Conversion -- 1",
+          "question_count": 12,
+          "units": ["meter_squared", "kilometer_squared"]
+        },
+        {
+          "name": "Basic Conversion -- 2",
+          "question_count": 12,
+          "units": ["feet_squared", "inch_squared"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 12,
+          "units": ["meter_squared", "inch_squared"]
+        }
+      ]
+    },
+    {
+      "id": "volume",
+      "category": "Tangible Measurements",
+      "name": "Volume",
+      "icon": "water_drop",
+      "description": "These are the amount of space inside a three-dimensional shape.",
+      "units_type": "volume",
+      "color": "#17becf",
+      "units": ["liter", "milliliter", "gallon", "quart"],
+      "learn": [
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 1",
+          "units": ["liter", "milliliter", "gallon"]
+        },
+        {
+          "type": "direct",
+          "name": "Direct Conversion -- 2",
+          "units": ["gallon", "quart", "liter"]
+        },
+        {
+          "type": "indirect",
+          "name": "Indirect Conversions",
+          "units": ["liter", "milliliter", "gallon", "quart"]
+        }
+      ],
+      "practice": [
+        {
+          "name": "Basic Conversion -- 1",
+          "question_count": 12,
+          "units": ["liter", "milliliter"]
+        },
+        {
+          "name": "Basic Conversion -- 2",
+          "question_count": 12,
+          "units": ["gallon", "quart"]
+        },
+        {
+          "name": "Imperial Conversion",
+          "question_count": 12,
+          "units": ["liter", "gallon"]
+        }
+      ]
+    },
+    {
       "id": "mass",
       "category": "Tangible Measurements",
       "name": "Mass",
       "icon": "weight",
       "description": "These are the amount of matter or molecules in an object.",
       "units_type": "mass",
+      "color": "#9467bd",
       "units": ["gram", "kilogram", "pound", "ounce"],
       "learn": [
         {
@@ -161,8 +319,8 @@
       "name": "Temperature",
       "icon": "device_thermostat",
       "description": "These are the measure of the average kinetic energy of particles in a substance. We perceive temperature as how hot or cold something is.",
-
       "units_type": "temperature",
+      "color": "#d62728",
       "units": ["celsius", "fahrenheit", "kelvin", "rankine"],
       "learn": [
         {
@@ -206,6 +364,7 @@
       "icon": "timer",
       "description": "These are the measure of the duration of an event or the interval between two events.",
       "units_type": "time",
+      "color": "#ff7f0e",
       "units": ["second", "minute", "hour", "day"],
       "learn": [
         {

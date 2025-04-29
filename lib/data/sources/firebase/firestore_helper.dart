@@ -13,25 +13,30 @@ class FirestoreHelper {
 
   const FirestoreHelper();
 
-  Future<Set<String>> getFinishedChapters({required User user}) async {
+  Future<Map<String, DateTime>> getFinishedChapters({required User user}) async {
     var userDoc = await _createUserDocumentIfNotExists(user);
     var finishedChapters = await userDoc //
         .get()
-        .then((d) => d.data()!["finished_chapters"]! as List<Object?>)
-        .then((l) => l.whereType<String>().toSet());
+        .then((d) => d.data()!["finished_chapters"]! as Map<String, Object?>)
+        .then((l) => l.pairs.where((p) => p.$2 is int).map((p) => (p.$1, p.$2 as int)))
+        .then((l) => l.map((p) => (p.$1, DateTime.fromMillisecondsSinceEpoch(p.$2))))
+        .then((l) => l.map((p) => MapEntry(p.$1, p.$2)))
+        .then((p) => Map.fromEntries(p));
 
     return finishedChapters;
   }
 
   static Timer? _registerDebounce;
-  static final _registerQueue = Queue<(String, int)>();
+  static final _registerQueue = Queue<(String, int, DateTime)>();
   Future<void> registerChapterAsCompleted({
     required User user,
     required String lessonId,
     required int chapterIndex,
     required ChapterType chapterType,
+
+    required DateTime finishedDate,
   }) async {
-    _registerQueue.add((lessonId, chapterIndex));
+    _registerQueue.add((lessonId, chapterIndex, finishedDate));
 
     if (_registerDebounce?.isActive ?? false) {
       _registerDebounce?.cancel();
@@ -40,19 +45,17 @@ class FirestoreHelper {
     _registerDebounce = Timer(Duration(seconds: 1), () async {
       var userDoc = await _createUserDocumentIfNotExists(user);
       var finishedChapters = await userDoc.get().then((d) => d.data()!["finished_chapters"]!);
-      if (finishedChapters case List finishedChapters) {
-        for (var (lessonId, chapterIndex) in _registerQueue) {
-          var key = switch (chapterType) {
-            ChapterType.practice => "$lessonId:p:$chapterIndex",
-            ChapterType.learn => "$lessonId:l:$chapterIndex",
-          };
-          if (finishedChapters.contains(key)) continue;
+      if (finishedChapters case Map<String, Object?> finishedChapters) {
+        for (var (lessonId, chapterIndex, dateTime) in _registerQueue) {
+          var key = chapterType.stringify(lessonId, chapterIndex);
 
-          finishedChapters.add(key);
+          finishedChapters[key] = dateTime.millisecondsSinceEpoch;
         }
 
         await userDoc.update({"finished_chapters": finishedChapters});
         _registerQueue.clear();
+      } else {
+        throw Exception(finishedChapters);
       }
     });
   }
@@ -64,7 +67,10 @@ class FirestoreHelper {
     if (await userDoc.get().then((d) => !d.exists)) {
       await userDoc.set({
         "uid": user.uid,
-        "finished_chapters": [],
+        "finished_chapters": <String, int>{},
+        "total_answer_duration_in_ms": 0,
+        "correct_answers": 0,
+        "total_answers": 0,
         "createdAt": FieldValue.serverTimestamp(),
       });
     }
@@ -84,4 +90,8 @@ enum ChapterType {
   final String Function(String lessonId, int chapterIndex) stringify;
 
   const ChapterType(this.stringify);
+}
+
+extension<K, V> on Map<K, V> {
+  Iterable<(K, V)> get pairs => entries.map((e) => (e.key, e.value));
 }

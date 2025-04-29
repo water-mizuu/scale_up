@@ -1,7 +1,7 @@
 import "package:flutter/widgets.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 

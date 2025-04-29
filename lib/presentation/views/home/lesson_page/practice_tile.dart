@@ -2,14 +2,14 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/practice_chapter.dart";
+import "package:scale_up/data/models/practice_chapter.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/lesson_page/leading_chapter_index.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/border_color.dart";
 
 class PracticeTile extends StatelessWidget {
   const PracticeTile({super.key, required this.chapterIndex, required this.chapter});
@@ -23,14 +23,14 @@ class PracticeTile extends StatelessWidget {
     var lessonId = cubit.state.lesson.id;
     var key = ChapterType.practice.stringify(lessonId, chapterIndex);
     var isComplete = context.select(
-      (UserDataBloc bloc) => bloc.state.finishedChapters.contains(key),
+      (UserDataBloc bloc) => bloc.state.finishedChapters.containsKey(key),
     );
 
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.0),
-        boxShadow: defaultBoxShadow,
+        border: Border.all(color: Colors.white.borderColor),
       ),
       child: ListTile(
         tileColor: Colors.white,
@@ -61,7 +61,7 @@ class PracticeTile extends StatelessWidget {
                 .read<UserDataBloc>()
                 .state
                 .finishedChapters
-                .contains(ChapterType.learn.stringify(lessonId, chapterIndex - 1));
+                .containsKey(ChapterType.learn.stringify(lessonId, chapterIndex - 1));
 
             if (previousChapter == null) {
               // No previous chapter, so we can push without confirmation

@@ -406,19 +406,19 @@ $UnitCopyWith<$Res> get to {
 
 
 class DirectFormulaLearnQuestion extends LearnQuestion {
-  const DirectFormulaLearnQuestion({required this.from, required this.to, required final  List<Expression> choices, required this.answer}): _choices = choices,super._();
+  const DirectFormulaLearnQuestion({required this.from, required this.to, required final  List<NumericalExpression> choices, required this.answer}): _choices = choices,super._();
   
 
 @override final  Unit from;
 @override final  Unit to;
- final  List<Expression> _choices;
-@override List<Expression> get choices {
+ final  List<NumericalExpression> _choices;
+@override List<NumericalExpression> get choices {
   if (_choices is EqualUnmodifiableListView) return _choices;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_choices);
 }
 
-@override final  Expression answer;
+@override final  NumericalExpression answer;
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
@@ -450,7 +450,7 @@ abstract mixin class $DirectFormulaLearnQuestionCopyWith<$Res> implements $Learn
   factory $DirectFormulaLearnQuestionCopyWith(DirectFormulaLearnQuestion value, $Res Function(DirectFormulaLearnQuestion) _then) = _$DirectFormulaLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<Expression> choices, Expression answer
+ Unit from, Unit to, List<NumericalExpression> choices, NumericalExpression answer
 });
 
 
@@ -472,8 +472,8 @@ class _$DirectFormulaLearnQuestionCopyWithImpl<$Res>
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
-as List<Expression>,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
-as Expression,
+as List<NumericalExpression>,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as NumericalExpression,
   ));
 }
 
@@ -604,13 +604,13 @@ $UnitCopyWith<$Res> get to {
 
 
 class IndirectStepsLearnQuestion extends LearnQuestion {
-  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), Expression)> steps, required final  List<Unit> choices, required final  List<Unit> answer}): _steps = steps,_choices = choices,_answer = answer,super._();
+  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), NumericalExpression)> steps, required final  List<Unit> choices, required final  List<Unit> answer}): _steps = steps,_choices = choices,_answer = answer,super._();
   
 
 @override final  Unit from;
 @override final  Unit to;
- final  List<((Unit, Unit), Expression)> _steps;
- List<((Unit, Unit), Expression)> get steps {
+ final  List<((Unit, Unit), NumericalExpression)> _steps;
+ List<((Unit, Unit), NumericalExpression)> get steps {
   if (_steps is EqualUnmodifiableListView) return _steps;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_steps);
@@ -661,7 +661,7 @@ abstract mixin class $IndirectStepsLearnQuestionCopyWith<$Res> implements $Learn
   factory $IndirectStepsLearnQuestionCopyWith(IndirectStepsLearnQuestion value, $Res Function(IndirectStepsLearnQuestion) _then) = _$IndirectStepsLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<((Unit, Unit), Expression)> steps, List<Unit> choices, List<Unit> answer
+ Unit from, Unit to, List<((Unit, Unit), NumericalExpression)> steps, List<Unit> choices, List<Unit> answer
 });
 
 
@@ -683,7 +683,7 @@ class _$IndirectStepsLearnQuestionCopyWithImpl<$Res>
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
-as List<((Unit, Unit), Expression)>,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
+as List<((Unit, Unit), NumericalExpression)>,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Unit>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
 as List<Unit>,
   ));

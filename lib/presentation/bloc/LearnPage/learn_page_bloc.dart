@@ -2,11 +2,11 @@ import "dart:async";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/conversion.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/learn_chapter.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/models/conversion.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/learn_chapter.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_event.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_state.dart";
 import "package:scale_up/utils/choose_random.dart";
@@ -107,7 +107,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         var choices = [answer];
 
         for (var i = 0; i < 3; ++i) {
-          Expression mutated;
+          NumericalExpression mutated;
 
           /// There is a probability that the mutated expression is unchanged.
           ///   So, we just keep mutating until we get a different one.

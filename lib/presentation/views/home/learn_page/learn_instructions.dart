@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
@@ -285,7 +285,7 @@ class AnswerTile extends StatelessWidget {
 class IndirectStepsToolTipContent extends StatelessWidget {
   const IndirectStepsToolTipContent({super.key, required this.steps});
 
-  final List<((Unit, Unit), Expression)> steps;
+  final List<((Unit, Unit), NumericalExpression)> steps;
 
   @override
   Widget build(BuildContext context) {

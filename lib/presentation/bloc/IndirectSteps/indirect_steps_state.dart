@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 
 part "indirect_steps_state.freezed.dart";

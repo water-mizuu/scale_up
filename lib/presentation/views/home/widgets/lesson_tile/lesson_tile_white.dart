@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_progression.dart";
@@ -14,7 +14,7 @@ class LessonTileWhite extends StatelessWidget {
     var Lesson(:id, :name, :units, :learnChapters, :practiceChapters, :color) = context.read();
 
     var chaptersDone = context.select(
-      (UserDataBloc b) => b.state.finishedChapters.where((c) => c.startsWith(id)).length,
+      (UserDataBloc b) => b.state.finishedChapters.keys.where((c) => c.startsWith(id)).length,
     );
     var chaptersTotal = learnChapters.length + practiceChapters.length;
     var progressBarValue = chaptersTotal == 0 ? 0.0 : chaptersDone / chaptersTotal;

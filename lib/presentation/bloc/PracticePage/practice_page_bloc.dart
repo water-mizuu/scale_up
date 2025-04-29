@@ -3,9 +3,9 @@ import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
@@ -59,11 +59,11 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         if (unit != null) unit.id: unit,
     };
 
-    var unitPairs = <(Unit, Unit, num, List<((Unit, Unit), Expression)>)>[];
+    var unitPairs = <(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)>[];
     for (var i = 0; i < chapter.questionCount; ++i) {
       Unit fromUnit, toUnit;
       int randomNumber;
-      List<((Unit, Unit), Expression)> conversions;
+      List<((Unit, Unit), NumericalExpression)> conversions;
 
       do {
         var from = chapter.units.selectRandom();

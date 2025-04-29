@@ -5,20 +5,20 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/expression_parser.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/numerical_expression_parser.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/hsl_color_scheme.dart";
 import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 /// A simple non-scientific calculator.
 class CalculatorWidget extends StatefulWidget {
   const CalculatorWidget({required this.onEvaluate, super.key});
 
-  final FutureOr<void> Function(Expression) onEvaluate;
+  final FutureOr<void> Function(NumericalExpression) onEvaluate;
 
   @override
   State<CalculatorWidget> createState() => _CalculatorWidgetState();
@@ -26,7 +26,7 @@ class CalculatorWidget extends StatefulWidget {
 
 class _CalculatorWidgetState extends State<CalculatorWidget> {
   late final HSLColor hslColor;
-  late final ExpressionParser expressionParser;
+  late final NumericalExpressionParser expressionParser;
   late String display;
   late bool appendOverrides;
 
@@ -35,7 +35,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     super.initState();
 
     hslColor = context.read<PracticePageBloc>().loadedState.lesson.hslColor;
-    expressionParser = ExpressionParser();
+    expressionParser = NumericalExpressionParser();
     display = "0";
     appendOverrides = false;
   }
@@ -70,7 +70,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(8.0),
-            boxShadow: defaultBoxShadow,
+            border: Border.all(color: hslColor.borderColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(4.0),
@@ -302,13 +302,13 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(64.0),
-          boxShadow:defaultBoxShadow,
+          border: Border.all(color: hslColor.borderColor),
         ),
         child: FilledButton.icon(
           style: FilledButton.styleFrom(
             padding: EdgeInsets.all(0),
             backgroundColor: color,
-            shadowColor: Colors.black,
+            // shadowColor: Colors.black,
           ),
           onPressed: onTap,
           label: Text(label),

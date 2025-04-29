@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 
 part "learn_page_state.freezed.dart";
 
@@ -62,8 +62,8 @@ sealed class LearnQuestion with _$LearnQuestion {
   const factory LearnQuestion.directFormula({
     required Unit from,
     required Unit to,
-    required List<Expression> choices,
-    required Expression answer,
+    required List<NumericalExpression> choices,
+    required NumericalExpression answer,
   }) = DirectFormulaLearnQuestion;
 
   const factory LearnQuestion.importantNumbers({
@@ -76,7 +76,7 @@ sealed class LearnQuestion with _$LearnQuestion {
   const factory LearnQuestion.indirectSteps({
     required Unit from,
     required Unit to,
-    required List<((Unit, Unit), Expression)> steps,
+    required List<((Unit, Unit), NumericalExpression)> steps,
     required List<Unit> choices,
     required List<Unit> answer,
   }) = IndirectStepsLearnQuestion;
@@ -99,7 +99,7 @@ sealed class LearnQuestion with _$LearnQuestion {
   bool Function(Object?, Object?) get comparison {
     return switch (this) {
       DirectFormulaLearnQuestion() =>
-        (a, b) => a is Expression && b is Expression && a.str == b.str,
+        (a, b) => a is NumericalExpression && b is NumericalExpression && a.str == b.str,
       ImportantNumbersLearnQuestion() => //
         (a, b) =>
             a is Set<num> && b is Set<num> && a.difference(b).isEmpty && b.difference(a).isEmpty,

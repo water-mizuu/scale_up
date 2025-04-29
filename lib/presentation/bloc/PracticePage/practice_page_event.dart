@@ -1,6 +1,6 @@
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 
 sealed class PracticePageEvent {
   const PracticePageEvent();
@@ -8,7 +8,7 @@ sealed class PracticePageEvent {
 
 final class PracticePageLessonLoaded extends PracticePageEvent {
   final Lesson lesson;
-  final List<(Unit, Unit, num, List<((Unit, Unit), Expression)>)> questions;
+  final List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> questions;
 
   const PracticePageLessonLoaded({required this.lesson, required this.questions});
 }
@@ -20,7 +20,7 @@ final class PracticePageLessonLoadFailure extends PracticePageEvent {
 }
 
 final class PracticePageInputChanged extends PracticePageEvent {
-  final Expression input;
+  final NumericalExpression input;
 
   const PracticePageInputChanged(this.input);
 }

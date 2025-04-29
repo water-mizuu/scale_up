@@ -3,15 +3,16 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_inset_shadow/flutter_inset_shadow.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/bordered_widget.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/border_color.dart";
+import "package:scale_up/utils/hsl_color_scheme.dart";
 
 class LearnChoices extends StatelessWidget {
   const LearnChoices({super.key});
@@ -79,7 +80,7 @@ class DirectFormulaChoices extends StatelessWidget {
 class DirectFormulaChoice extends StatelessWidget {
   const DirectFormulaChoice({super.key, required this.choice, required this.currentQuestion});
 
-  final Expression choice;
+  final NumericalExpression choice;
   final DirectFormulaLearnQuestion currentQuestion;
 
   @override
@@ -89,28 +90,23 @@ class DirectFormulaChoice extends StatelessWidget {
     var learnPageBloc = context.watch<LearnPageBloc>();
     var hslColor = learnPageBloc.loadedState.lesson.hslColor;
     var answer = learnPageBloc.loadedState.answer;
-    var backgroundColor =
-        hslColor //
-            .withSaturation(hslColor.saturation * 0.8)
-            .withLightness(0.95)
-            .toColor();
 
-    Widget widget = DecoratedBox(
-      decoration: BoxDecoration(borderRadius: borderRadius, boxShadow: defaultBoxShadow),
-      child: Material(
-        color: backgroundColor,
-        child: ListTile(
-          onTap:
-              learnPageBloc.state.status == LearnPageStatus.waitingForSubmission
-                  ? () {
-                    learnPageBloc.add(LearnPageAnswerUpdated.directFormula(answer: choice));
-                  }
-                  : null,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          title: Text(
-            "${to.shortcut} = ${choice.substituteString("from", from.shortcut)}",
-            style: GoogleFonts.notoSansMath(),
-          ),
+    Widget widget = Material(
+      child: ListTile(
+        onTap:
+            learnPageBloc.state.status == LearnPageStatus.waitingForSubmission
+                ? () {
+                  learnPageBloc.add(LearnPageAnswerUpdated.directFormula(answer: choice));
+                }
+                : null,
+        tileColor: hslColor.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+          side: BorderSide(color: hslColor.borderColor),
+        ),
+        title: Text(
+          "${to.shortcut} = ${choice.substituteString("from", from.shortcut)}",
+          style: GoogleFonts.notoSansMath(),
         ),
       ),
     );
@@ -201,27 +197,30 @@ class ImportantNumbersChoice extends StatelessWidget {
             .withSaturation(hslColor.saturation * 0.8)
             .withLightness(0.95)
             .toColor();
+    var borderColor =
+        hslColor //
+            .withSaturation(hslColor.saturation * 0.8)
+            .withLightness(0.80)
+            .toColor();
 
-    Widget widget = DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: defaultBoxShadow,
-      ),
-      child: Material(
-        borderRadius: BorderRadius.circular(8.0),
-        color: backgroundColor,
-        child: ListTile(
-          onTap: () {
-            if (learnPageBloc.state.status == LearnPageStatus.waitingForSubmission) {
-              return () {
-                learnPageBloc.add(LearnPageAnswerUpdated.importantNumbers(answer: choice));
-              };
-            }
-            return null;
-          }(),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          title: Text(choice.join(", "), style: GoogleFonts.notoSansMath()),
+    Widget widget = Material(
+      borderRadius: BorderRadius.circular(8.0),
+      borderOnForeground: true,
+      color: backgroundColor,
+      child: ListTile(
+        onTap: () {
+          if (learnPageBloc.state.status == LearnPageStatus.waitingForSubmission) {
+            return () {
+              learnPageBloc.add(LearnPageAnswerUpdated.importantNumbers(answer: choice));
+            };
+          }
+          return null;
+        }(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          side: BorderSide(color: borderColor),
         ),
+        title: Text(choice.join(", "), style: GoogleFonts.notoSansMath()),
       ),
     );
 
@@ -349,20 +348,23 @@ class ChoiceUnitTile extends StatelessWidget {
             .withLightness(0.95)
             .toColor();
 
+    var borderColor =
+        hslColor //
+            .withSaturation(hslColor.saturation * 0.8)
+            .withLightness(0.75)
+            .toColor();
+
     return GestureDetector(
       onTap: onTap,
-      child: Material(
-        borderRadius: borderRadius,
-        child: Container(
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: borderRadius,
-            boxShadow: defaultBoxShadow,
-          ),
-          padding: padding,
-          child: Text(unit.shortcut, style: GoogleFonts.notoSansMath()),
-          //
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: borderRadius,
+          border: Border.all(color: borderColor),
         ),
+        padding: padding,
+        child: Text(unit.shortcut, style: GoogleFonts.notoSansMath()),
+        //
       ),
     );
   }
@@ -381,7 +383,7 @@ class BlankChoiceUnitTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: borderRadius,
-          boxShadow: defaultInsetShadow,
+          border: Border.all(color: Colors.grey[200]!.borderColor),
         ),
         padding: EdgeInsets.all(8.0) + EdgeInsets.symmetric(horizontal: 8.0),
         child: Opacity(

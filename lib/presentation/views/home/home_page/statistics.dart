@@ -1,19 +1,23 @@
 import "package:flutter/material.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
+import "package:provider/provider.dart";
+import "package:scale_up/presentation/bloc/HomePage/home_page_cubit.dart";
+import "package:scale_up/utils/border_color.dart";
 
 class Statistics extends StatelessWidget {
   const Statistics({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 16.0,
-      children: [
-        Flexible(child: AverageTimePerLesson()),
-        Flexible(child: AverageTimePerQuestion()),
-        Flexible(child: CoursesCompleted()),
-      ],
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 16.0,
+        children: [
+          Expanded(child: AverageTimePerLesson()),
+          Expanded(child: AverageTimePerQuestion()),
+          Expanded(child: CoursesCompleted()),
+        ],
+      ),
     );
   }
 }
@@ -24,12 +28,17 @@ class AverageTimePerLesson extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFFCF4242);
+    var duration = context.select((HomePageCubit c) => c.state.averageTimePerLesson);
 
-    return StatisticTile(
-      highlight: [("2", 36, isBold: true), ("min", 12, isBold: false)],
-      label: "Average time per lesson",
-      color: color,
-    );
+    if (_captureDuration(duration) case (var number, var unit)) {
+      return StatisticTile(
+        highlight: [("$number", 36, isBold: true), (unit, 12, isBold: false)],
+        label: "Average time per lesson",
+        color: color,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 
@@ -39,12 +48,17 @@ class AverageTimePerQuestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFFBA42CF);
+    var duration = context.select((HomePageCubit c) => c.state.averageTimePerQuestion);
 
-    return StatisticTile(
-      highlight: [("10", 36, isBold: true), ("sec", 12, isBold: false)],
-      label: "Average time per question",
-      color: color,
-    );
+    if (_captureDuration(duration) case (var number, var unit)) {
+      return StatisticTile(
+        highlight: [("$number", 36, isBold: true), (unit, 12, isBold: false)],
+        label: "Average time per question",
+        color: color,
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }
 
@@ -54,9 +68,10 @@ class CoursesCompleted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF7F42CF);
+    var number = context.select((HomePageCubit c) => c.state.lessonsCompleted);
 
     return StatisticTile(
-      highlight: [("5", 36, isBold: true)], //
+      highlight: [("$number", 36, isBold: true)], //
       label: "Lessons completed",
       color: color,
     );
@@ -83,11 +98,12 @@ class StatisticTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8.0),
-        boxShadow: defaultBoxShadow,
+        border: Border.all(color: Colors.white.borderColor),
       ),
       child: Column(
         spacing: 8.0,
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             spacing: 2.0,
@@ -115,4 +131,28 @@ class StatisticTile extends StatelessWidget {
       ),
     );
   }
+}
+
+(int quantity, String unit)? _captureDuration(Duration duration) {
+  if (duration.inHours case var hours && > 0) {
+    return (hours, "hr");
+  }
+
+  if (duration.inMinutes case var minutes && > 0) {
+    return (minutes, "min");
+  }
+
+  if (duration.inSeconds case var seconds && > 0) {
+    return (seconds, "s");
+  }
+
+  if (duration.inMilliseconds case var ms && > 0) {
+    return (ms, "ms");
+  }
+
+  if (duration.inMicroseconds case var us && > 0) {
+    return (us, "μs");
+  }
+
+  return null;
 }

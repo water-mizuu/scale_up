@@ -6,7 +6,23 @@
 import "dart:collection";
 import "dart:math" as math;
 // PREAMBLE
-import "package:scale_up/data/sources/lessons/" "lessons_helper/expression.dart";
+import "package:flutter/foundation.dart";
+import "package:scale_up/data/sources/lessons/" "lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/" "lessons_helper/boolean_expression.dart";
+
+num readEnv(Map<String, Object> env, NumericalExpression key) {
+  try {
+    var value = key.evaluate(env);
+
+    return value;
+  } on Object {
+    if (kDebugMode) {
+      print("Failed to read the variable $key.");
+    }
+
+    rethrow;
+  }
+}
 // base.dart
 abstract base class _PegParser<R extends Object> {
   _PegParser();
@@ -250,8 +266,8 @@ class _Memo {
 }
 
 // GENERATED CODE
-final class ExpressionParser extends _PegParser<Expression > {
-  ExpressionParser();
+final class BooleanParser extends _PegParser<BooleanExpression > {
+  BooleanParser();
 
   @override
   get start => r0;
@@ -327,7 +343,7 @@ final class ExpressionParser extends _PegParser<Expression > {
   }
 
   /// `ROOT`
-  Expression ? f3() {
+  BooleanExpression ? f3() {
     if (this.apply(this.r0) case var $?) {
       return $;
     }
@@ -391,8 +407,8 @@ final class ExpressionParser extends _PegParser<Expression > {
   /// `global::json::atom::number::exponent`
   Object f7() {
     if (this._mark() case var _mark) {
-      if (this.f8() case var $0?) {
-        if (this.f9() case var $1) {
+      if (this.fd() case var $0?) {
+        if (this.fe() case var $1) {
           if (this.f0() case var $2?) {
             return ($0, $1, $2);
           }
@@ -421,7 +437,74 @@ final class ExpressionParser extends _PegParser<Expression > {
   /// `fragment1`
   late final f9 = () {
     if (this._mark() case var _mark) {
+      if (this.matchPattern(_string.$13) case var $?) {
+        return $;
+      }
+      this._recover(_mark);
       if (this.matchPattern(_string.$15) case var $?) {
+        return $;
+      }
+    }
+  };
+
+  /// `fragment2`
+  late final fa = () {
+    if (this.matchPattern(_string.$16) case var $?) {
+      return $;
+    }
+  };
+
+  /// `fragment3`
+  late final fb = () {
+    if (this.matchPattern(_string.$17) case var $?) {
+      return $;
+    }
+  };
+
+  /// `fragment4`
+  late final fc = () {
+    if (this.pos case var from) {
+      if (this._mark() case var _mark) {
+        if (this.f9() case _?) {
+          if (this.fa() case _) {
+            if (this.pos case var to) {
+              if (this.buffer.substring(from, to) case var span) {
+                return span;
+              }
+            }
+          }
+        }
+        this._recover(_mark);
+        if (this.fb() case _) {
+          if (this.matchPattern(_string.$16) case _?) {
+            if (this.pos case var to) {
+              if (this.buffer.substring(from, to) case var span) {
+                return span;
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  /// `fragment5`
+  late final fd = () {
+    if (this._mark() case var _mark) {
+      if (this.matchPattern(_string.$18) case var $?) {
+        return $;
+      }
+      this._recover(_mark);
+      if (this.matchPattern(_string.$19) case var $?) {
+        return $;
+      }
+    }
+  };
+
+  /// `fragment6`
+  late final fe = () {
+    if (this._mark() case var _mark) {
+      if (this.matchPattern(_string.$20) case var $?) {
         return $;
       }
       this._recover(_mark);
@@ -436,37 +519,25 @@ final class ExpressionParser extends _PegParser<Expression > {
   };
 
   /// `global::rule`
-  Expression ? r0() {
+  BooleanExpression ? r0() {
     if (this.pos <= 0) {
-      if (this.apply(this.r1) case var expr?) {
+      if (this.apply(this.r1) case var or?) {
         if (this.pos >= this.buffer.length) {
-          return expr;
+          return or;
         }
       }
     }
   }
 
-  /// `global::expr`
-  Expression ? r1() {
+  /// `global::or`
+  BooleanExpression ? r1() {
     if (this._mark() case var _mark) {
-      if (this.apply(this.r1) case var expr?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.matchPattern(_string.$15) case _?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.apply(this.r2) case var term?) {
-                return AdditionExpression(expr, term);
-              }
-            }
-          }
-        }
-      }
-      this._recover(_mark);
-      if (this.apply(this.r1) case var expr?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.matchPattern(_string.$11) case _?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.apply(this.r2) case var term?) {
-                return SubtractionExpression(expr, term);
+      if (this.apply(this.r1) case var or?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$21) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r2) case var and?) {
+                return OrExpression(or, and);
               }
             }
           }
@@ -479,35 +550,15 @@ final class ExpressionParser extends _PegParser<Expression > {
     }
   }
 
-  /// `global::term`
-  Expression ? r2() {
+  /// `global::and`
+  BooleanExpression ? r2() {
     if (this._mark() case var _mark) {
-      if (this.matchPattern(_string.$11) case _?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.apply(this.r2) case var term?) {
-            return NegationExpression(term);
-          }
-        }
-      }
-      this._recover(_mark);
-      if (this.apply(this.r2) case var term?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.matchPattern(_string.$16) case _?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.apply(this.r3) case var factor?) {
-                return MultiplicationExpression(term, factor);
-              }
-            }
-          }
-        }
-      }
-      this._recover(_mark);
-      if (this.apply(this.r2) case var term?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.matchPattern(_string.$17) case _?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.apply(this.r3) case var factor?) {
-                return DivisionExpression(term, factor);
+      if (this.apply(this.r2) case var and?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$22) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r3) case var not?) {
+                return AndExpression(and, not);
               }
             }
           }
@@ -520,16 +571,14 @@ final class ExpressionParser extends _PegParser<Expression > {
     }
   }
 
-  /// `global::factor`
-  Expression ? r3() {
+  /// `global::not`
+  BooleanExpression ? r3() {
     if (this._mark() case var _mark) {
-      if (this.apply(this.r4) case var primary?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.matchPattern(_string.$18) case _?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.apply(this.r3) case var factor?) {
-                return PowerExpression(primary, factor);
-              }
+      if (this.apply(this.rd)! case _) {
+        if (this.matchPattern(_string.$17) case _?) {
+          if (this.apply(this.r3) case (var $2 && var $)?) {
+            if ($2 case var $) {
+              return NotExpression($);
             }
           }
         }
@@ -541,14 +590,219 @@ final class ExpressionParser extends _PegParser<Expression > {
     }
   }
 
-  /// `global::primary`
-  Expression ? r4() {
+  /// `global::atomic`
+  BooleanExpression ? r4() {
     if (this._mark() case var _mark) {
-      if (this.matchPattern(_string.$20) case _?) {
-        if (this.apply(this.r6)! case _) {
-          if (this.apply(this.r1) case var expr?) {
-            if (this.apply(this.r6)! case _) {
-              if (this.matchPattern(_string.$19) case _?) {
+      if (this.apply(this.r7) case var left?) {
+        if (this.apply(this.r5) case var leftCmp?) {
+          if (this.apply(this.r7) case var mid?) {
+            if (this.apply(this.r5) case var rightCmp?) {
+              if (this.apply(this.r7) case var right?) {
+                var leftFn = leftCmp == "<="
+                        ? (num l, num r) => l <= r
+                        : (num l, num r) => l < r;
+                      var rightFn = rightCmp == "<="
+                        ? (num l, num r) => l <= r
+                        : (num l, num r) => l < r;
+
+                      return LambdaBooleanExpression((env) {
+                        try {
+                          var leftValue = readEnv(env, left);
+                          var middleValue = readEnv(env, mid);
+                          var rightValue = readEnv(env, right);
+
+                          return leftFn(leftValue, middleValue) && rightFn(middleValue, rightValue);
+                        } on Object catch (e) {
+                          if (kDebugMode) {
+                            print("Error caught in evaluation: $e");
+                          }
+                          return false;
+                        }
+                      });
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.r7) case var left?) {
+        if (this.apply(this.r6) case var op?) {
+          if (this.apply(this.r7) case var right?) {
+            var cmp = switch (op) {
+                    "<=" => (num l, num r) => l <= r,
+                    "<"  => (num l, num r) => l < r,
+                    ">=" => (num l, num r) => l >= r,
+                    ">"  => (num l, num r) => l > r,
+                    "="  => (num l, num r) => l == r,
+                    "!=" => (num l, num r) => l != r,
+                    _ => throw Error(),
+                  };
+
+                  return LambdaBooleanExpression((env) {
+                    try {
+                      var leftValue = readEnv(env, left);
+                      var rightValue = readEnv(env, right);
+
+                      return cmp(leftValue, rightValue);
+                    } on Object catch (e) {
+                      if (kDebugMode) {
+                        print("Error caught in evaluation: $e");
+                      }
+                      return false;
+                    }
+                  });
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.matchPattern(_string.$24) case _?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.apply(this.r1) case (var $2 && var $)?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.matchPattern(_string.$23) case _?) {
+                return $2;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /// `global::LESS_OR_EQ`
+  late final r5 = () {
+    if (this.apply(this.rd)! case _) {
+      if (this.f8() case (var $1 && var $)?) {
+        if (this.apply(this.rd)! case _) {
+          return $1;
+        }
+      }
+    }
+  };
+
+  /// `global::CMP`
+  late final r6 = () {
+    if (this.apply(this.rd)! case _) {
+      if (this.fc() case (var $1 && var $)?) {
+        if (this.apply(this.rd)! case _) {
+          return $1;
+        }
+      }
+    }
+  };
+
+  /// `global::numeric::expr`
+  NumericalExpression ? r7() {
+    if (this._mark() case var _mark) {
+      if (this.apply(this.r7) case var expr?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$20) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r8) case var term?) {
+                return AdditionExpression(expr, term);
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.r7) case var expr?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$11) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r8) case var term?) {
+                return SubtractionExpression(expr, term);
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.r8) case var $?) {
+        return $;
+      }
+    }
+  }
+
+  /// `global::numeric::term`
+  NumericalExpression ? r8() {
+    if (this._mark() case var _mark) {
+      if (this.apply(this.r8) case var term?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$25) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r9) case var preUnary?) {
+                return MultiplicationExpression(term, preUnary);
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.r8) case var term?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$26) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.r9) case var preUnary?) {
+                return DivisionExpression(term, preUnary);
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.r9) case var $?) {
+        return $;
+      }
+    }
+  }
+
+  /// `global::numeric::preUnary`
+  NumericalExpression ? r9() {
+    if (this._mark() case var _mark) {
+      if (this.matchPattern(_string.$11) case _?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.apply(this.r9) case var preUnary?) {
+            return NegationExpression(preUnary);
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.ra) case var $?) {
+        return $;
+      }
+    }
+  }
+
+  /// `global::numeric::factor`
+  NumericalExpression ? ra() {
+    if (this._mark() case var _mark) {
+      if (this.apply(this.rb) case var primary?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.matchPattern(_string.$27) case _?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.apply(this.ra) case var factor?) {
+                return PowerExpression(primary, factor);
+              }
+            }
+          }
+        }
+      }
+      this._recover(_mark);
+      if (this.apply(this.rb) case var $?) {
+        return $;
+      }
+    }
+  }
+
+  /// `global::numeric::primary`
+  NumericalExpression ? rb() {
+    if (this._mark() case var _mark) {
+      if (this.matchPattern(_string.$24) case _?) {
+        if (this.apply(this.rd)! case _) {
+          if (this.apply(this.r7) case var expr?) {
+            if (this.apply(this.rd)! case _) {
+              if (this.matchPattern(_string.$23) case _?) {
                 return expr;
               }
             }
@@ -556,14 +810,14 @@ final class ExpressionParser extends _PegParser<Expression > {
         }
       }
       this._recover(_mark);
-      if (this.apply(this.r5) case var $?) {
+      if (this.apply(this.rc) case var $?) {
         return $;
       }
     }
   }
 
-  /// `global::number`
-  Expression ? r5() {
+  /// `global::numeric::number`
+  NumericalExpression ? rc() {
     if (this._mark() case var _mark) {
       if (this.pos case var from) {
         if (this.matchPattern(_regexp.$1) case var $?) {
@@ -632,7 +886,7 @@ final class ExpressionParser extends _PegParser<Expression > {
   }
 
   /// `global::_`
-  late final r6 = () {
+  late final rd = () {
     if (this._mark() case var _mark) {
       if (this.matchPattern(_regexp.$3) case var _0) {
         if ([if (_0 case var _0?) _0] case var _l1) {
@@ -690,22 +944,36 @@ class _string {
   static const $11 = "-";
   /// `"."`
   static const $12 = ".";
+  /// `"<"`
+  static const $13 = "<";
+  /// `"<="`
+  static const $14 = "<=";
+  /// `">"`
+  static const $15 = ">";
+  /// `"="`
+  static const $16 = "=";
+  /// `"!"`
+  static const $17 = "!";
   /// `"E"`
-  static const $13 = "E";
+  static const $18 = "E";
   /// `"e"`
-  static const $14 = "e";
+  static const $19 = "e";
   /// `"+"`
-  static const $15 = "+";
-  /// `"*"`
-  static const $16 = "*";
-  /// `"/"`
-  static const $17 = "/";
-  /// `"^"`
-  static const $18 = "^";
+  static const $20 = "+";
+  /// `"|"`
+  static const $21 = "|";
+  /// `"&"`
+  static const $22 = "&";
   /// `")"`
-  static const $19 = ")";
+  static const $23 = ")";
   /// `"("`
-  static const $20 = "(";
+  static const $24 = "(";
+  /// `"*"`
+  static const $25 = "*";
+  /// `"/"`
+  static const $26 = "/";
+  /// `"^"`
+  static const $27 = "^";
 }
 class _range {
   /// `[A-Za-z0-9_]`

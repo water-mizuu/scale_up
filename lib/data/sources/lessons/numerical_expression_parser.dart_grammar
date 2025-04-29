@@ -1,0 +1,35 @@
+{
+import "package:scale_up/data/sources/lessons/"
+    "lessons_helper/numerical_expression.dart";
+}
+
+NumericalExpression rule = ^ :expr $ { expr };
+
+NumericalExpression expr =
+  | :expr _ "+" _ :term { AdditionExpression(expr, term) }
+  | :expr _ "-" _ :term { SubtractionExpression(expr, term) }
+  | term;
+
+NumericalExpression term =
+  | :term _ "*" _ :preUnary  { MultiplicationExpression(term, preUnary) }
+  | :term _ "/" _ :preUnary  { DivisionExpression(term, preUnary) }
+  | preUnary;
+
+NumericalExpression preUnary =
+  | "-" _ :preUnary { NegationExpression(preUnary) }
+  | factor;
+
+NumericalExpression factor =
+  | :primary _ "^" _ :factor { PowerExpression(primary, factor) }
+  | primary;
+
+NumericalExpression primary =
+  | "(" _ :expr _ ")" { expr }
+  | number;
+
+NumericalExpression number =
+  | json.atom.number        { ConstantExpression(double.parse(span)) }
+  | \d+                     { ConstantExpression(int.parse(span)) }
+  | [A-Za-z_] [A-Za-z0-9_]* { VariableExpression(span) };
+
+_ = \s* { () };

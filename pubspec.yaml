@@ -57,6 +57,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_inset_shadow: ^2.0.3
   flutter_markdown_plus: ^1.0.3
+  cel: ^0.5.3
 
 dev_dependencies:
   flutter_test:

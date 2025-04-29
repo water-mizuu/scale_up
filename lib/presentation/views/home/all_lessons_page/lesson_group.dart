@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/presentation/views/home/widgets/newer_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 

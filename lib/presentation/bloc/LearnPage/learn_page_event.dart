@@ -1,6 +1,6 @@
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 
 sealed class LearnPageEvent {
   const LearnPageEvent();
@@ -15,7 +15,7 @@ final class LearnPageWidgetChanged extends LearnPageEvent {
 
 final class LearnPageAnswerUpdated extends LearnPageEvent {
   const LearnPageAnswerUpdated({required this.answer});
-  const LearnPageAnswerUpdated.directFormula({required Expression this.answer});
+  const LearnPageAnswerUpdated.directFormula({required NumericalExpression this.answer});
   const LearnPageAnswerUpdated.importantNumbers({required Set<num> this.answer});
   const LearnPageAnswerUpdated.indirectSteps({required List<Unit>? this.answer});
 

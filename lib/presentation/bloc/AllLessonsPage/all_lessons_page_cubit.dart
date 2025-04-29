@@ -2,7 +2,7 @@ import "dart:collection";
 import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_state.dart";
 
 export "all_lessons_page_state.dart";

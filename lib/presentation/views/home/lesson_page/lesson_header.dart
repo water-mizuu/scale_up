@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/border_color.dart";
 
 class LessonHeader extends StatelessWidget {
   const LessonHeader({super.key});
@@ -18,7 +18,7 @@ class LessonHeader extends StatelessWidget {
           bottomLeft: Radius.circular(16.0),
           bottomRight: Radius.circular(16.0),
         ),
-        boxShadow: defaultBoxShadow,
+        border: Border(bottom: BorderSide(color: lesson.color.borderColor)),
       ),
       child: Container(
         padding: const EdgeInsets.all(8.0),

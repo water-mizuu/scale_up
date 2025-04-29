@@ -57,6 +57,7 @@ class HomePageView extends StatelessWidget {
             Expanded(
               child: InheritedProvider(
                 create: (_) => AnimatedScrollController(),
+                dispose: (_, v) => v.dispose(),
                 builder: (context, child) {
                   return SingleChildScrollView(
                     controller: context.read<AnimatedScrollController>(),
@@ -72,11 +73,9 @@ class HomePageView extends StatelessWidget {
                     children: [
                       LatestLessonContainer(),
                       Statistics(),
-                      OngoingLessons(),
                       NewLessons(),
+                      OngoingLessons(),
                       FinishedLessons(),
-                      // OngoingLessonsContainer(),
-                      // ExploreLessonsContainer(),
                     ],
                   ),
                 ),
@@ -120,9 +119,14 @@ class OngoingLessons extends StatelessWidget {
   }
 }
 
-class NewLessons extends StatelessWidget {
+class NewLessons extends StatefulWidget {
   const NewLessons({super.key});
 
+  @override
+  State<NewLessons> createState() => _NewLessonsState();
+}
+
+class _NewLessonsState extends State<NewLessons> {
   @override
   Widget build(BuildContext context) {
     var newLessons = context.select((HomePageCubit cubit) => cubit.state.newLessons);
@@ -135,14 +139,26 @@ class NewLessons extends StatelessWidget {
       spacing: 4.0,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Styles.hint("Explore these lessons!"),
-        Column(
-          spacing: 16.0,
-          children: [
-            for (var (i, lesson) in newLessons.indexed)
-              if (NewerLessonTile(lesson: lesson) case var widget)
-                widget.animate().then(delay: (i * 100).ms).slideFadeIn(),
-          ],
+        Styles.hint("Explore these  lessons!"),
+        InheritedProvider(
+          create: (_) => AnimatedScrollController(),
+          dispose: (_, v) => v.dispose(),
+          builder: (context, child) {
+            return SingleChildScrollView(
+              controller: context.read<AnimatedScrollController>(),
+              scrollDirection: Axis.horizontal,
+              child: child!,
+            );
+          },
+          child: Wrap(
+            spacing: 8.0,
+            children: [
+              for (var (i, lesson) in newLessons.indexed)
+                if (IntrinsicWidth(child: NewerLessonTile(lesson: lesson, isSmall: true))
+                    case var widget)
+                  widget.animate().then(delay: (i * 100).ms).slideFadeIn(),
+            ],
+          ),
         ),
       ],
     );
@@ -170,7 +186,7 @@ class FinishedLessons extends StatelessWidget {
           children: [
             for (var (i, lesson) in finishedLessons.indexed)
               if (NewerLessonTile(lesson: lesson) case var widget)
-                widget.animate().then(delay: (i * 100).ms).slideFadeIn(),
+                widget.animate().then(delay: (i * 200).ms).slideFadeIn(),
           ],
         ),
       ],

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/border_color.dart";
 
 class FloatingCardWithHint extends StatelessWidget {
   const FloatingCardWithHint({super.key, required this.hint, required this.child});
@@ -27,14 +27,14 @@ class FloatingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),
-        boxShadow: defaultBoxShadow,
+        border: Border.all(color: Colors.white.borderColor),
       ),
       child: Column(
-        spacing: 12.0,
+        spacing: 10.0,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [child],

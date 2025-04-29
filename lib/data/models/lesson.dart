@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/learn_chapter.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/practice_chapter.dart";
+import "package:scale_up/data/models/learn_chapter.dart";
+import "package:scale_up/data/models/practice_chapter.dart";
 import "package:scale_up/utils/color_luminance.dart";
 
 part "lesson.freezed.dart";
@@ -15,6 +15,7 @@ abstract class Lesson with _$Lesson {
     required String name,
     required String description,
     @JsonKey(name: "units_type") required String unitsType,
+    @JsonKey(includeToJson: false, fromJson: _colorFromJson) required Color color,
     required List<String> units,
     @JsonKey(name: "learn") required List<LearnChapter> learnChapters,
     @JsonKey(name: "practice") required List<PracticeChapter> practiceChapters,
@@ -24,19 +25,19 @@ abstract class Lesson with _$Lesson {
   factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
   static final Expando<HSLColor> _hslExpando = Expando<HSLColor>();
-  static final Expando<Color> _colorExpando = Expando<Color>();
-
-  Color get color => _colorExpando[this] ??= hslColor.toColor();
-  HSLColor get hslColor {
-    late var hash = Object.hashAll([id, category, name]);
-    late var hue = (hash * 123456789.0) % 360;
-    late var saturation = 0.65; // 65% saturation
-    late var lightness = 0.30;
-
-    return _hslExpando[this] ??= HSLColor.fromAHSL(1.0, hue, saturation, lightness);
-  }
-
+  HSLColor get hslColor => _hslExpando[this] ??= HSLColor.fromColor(color);
   Color get foregroundColor => color.contrastingTextColor();
 
   int get chapterCount => learnChapters.length + practiceChapters.length;
+}
+
+Color _colorFromJson(String hex) {
+  var regexp = RegExp(r"\#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})");
+  var parsed = regexp.firstMatch(hex);
+  if (parsed == null) throw Error();
+  var red = int.parse(parsed.group(1)!, radix: 16);
+  var green = int.parse(parsed.group(2)!, radix: 16);
+  var blue = int.parse(parsed.group(3)!, radix: 16);
+
+  return Color.fromARGB(255, red, green, blue);
 }

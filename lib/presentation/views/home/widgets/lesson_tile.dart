@@ -1,9 +1,8 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
+import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile_colored.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile_white.dart";
 
@@ -34,7 +33,7 @@ class LessonTile extends StatelessWidget {
 
       /// Ink is used here to basically make the shadow persistent.
       child: Ink(
-        decoration: BoxDecoration(borderRadius: borderRadius, boxShadow: defaultBoxShadow),
+        decoration: BoxDecoration(borderRadius: borderRadius),
 
         /// This material widget makes sure that the ink doesn't overflow
         ///   through clipping like in scroll views.

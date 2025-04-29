@@ -4,12 +4,12 @@ import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
-import "package:scale_up/data/sources/lessons/expression_parser.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/conversion.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit_group.dart";
+import "package:scale_up/data/models/conversion.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/models/unit_group.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/numerical_expression_parser.dart";
 
 class LessonsHelper {
   LessonsHelper._();
@@ -21,8 +21,8 @@ class LessonsHelper {
     return lessonsHelper;
   }
 
+  bool hasLoaded = false;
   final List<Lesson> _lessons = [];
-
   final List<UnitGroup> _unitGroups = [];
 
   List<Lesson> get lessons {
@@ -30,30 +30,32 @@ class LessonsHelper {
   }
 
   Future<void> initialize() async {
+    if (hasLoaded) return;
+
     var jsonString = await rootBundle.loadString("assets/lessons.json");
     // Parse the JSON string into a Dart object
     var data = await compute(jsonDecode, jsonString) as Map<String, dynamic>;
-    // Use the parsed data
-    var {"lessons": List<dynamic> lessons, "units_present": List<dynamic> unitsPresent} = data;
 
-    var lessonList =
-        lessons //
-            .map((lesson) => Lesson.fromJson(lesson as Map<String, dynamic>))
-            .toList();
+    // Use the parsed data
+    var {
+      "lessons": List<dynamic> lessons, //
+      "units_present": List<dynamic> unitsPresent,
+    } = data;
+
+    var lessonList = lessons.cast<Map<String, dynamic>>().map(Lesson.fromJson).toList();
 
     _lessons
       ..clear()
       ..addAll(lessonList);
 
     // Load the units
-    var unitGroups =
-        unitsPresent //
-            .map((unitGroup) => UnitGroup.fromJson(unitGroup as Map<String, dynamic>))
-            .toList();
+    var unitGroups = unitsPresent.cast<Map<String, dynamic>>().map(UnitGroup.fromJson).toList();
 
     _unitGroups
       ..clear()
       ..addAll(unitGroups);
+
+    hasLoaded = true;
   }
 
   Lesson? getLesson(String id) {
@@ -133,19 +135,19 @@ class LessonsHelper {
 
   /// The canonical conversion graph is an incomplete graph
   ///   which is derived from the defined conversions and their inverses.
-  (Map<String, Unit>, Map<Unit, Map<Unit, Expression>>) _computeCanonicalConversionGraph(
+  (Map<String, Unit>, Map<Unit, Map<Unit, NumericalExpression>>) _computeCanonicalConversionGraph(
     UnitGroup group,
   ) {
     var unitMap = {for (var unit in group.units) unit.id: unit};
-    var conversionGraph = <Unit, Map<Unit, Expression>>{};
+    var conversionGraph = <Unit, Map<Unit, NumericalExpression>>{};
     for (var conversion in group.conversions) {
       var Conversion(:from, :to, :formula) = conversion;
 
-      var lhs = VariableExpression("from") as Expression;
+      var lhs = VariableExpression("from") as NumericalExpression;
       var rhs = formula;
 
       conversionGraph.putIfAbsent(unitMap[from]!, Map.new)[unitMap[to]!] = rhs;
-      (lhs, rhs) = Expression.inverse(lhs as VariableExpression, rhs);
+      (lhs, rhs) = NumericalExpression.inverse(lhs as VariableExpression, rhs);
       conversionGraph.putIfAbsent(unitMap[to]!, Map.new)[unitMap[from]!] = lhs;
     }
 
@@ -154,7 +156,11 @@ class LessonsHelper {
 
   /// This gives a conversion path from [start] to [end] in the form of a list of expressions.
   /// The conversion path is computed using a breadth-first search (BFS) algorithm.
-  List<((Unit, Unit), Expression)>? _computeConversionFor(UnitGroup group, Unit start, Unit end) {
+  List<((Unit, Unit), NumericalExpression)>? _computeConversionFor(
+    UnitGroup group,
+    Unit start,
+    Unit end,
+  ) {
     var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
     var parent = <Unit, Unit>{};
     var visited = <Unit>{};
@@ -196,7 +202,7 @@ class LessonsHelper {
     path.add(start);
     path = path.reversed.toList();
 
-    var conversions = <((Unit, Unit), Expression)>[];
+    var conversions = <((Unit, Unit), NumericalExpression)>[];
     for (var i = 0; i < path.length - 1; ++i) {
       var from = path[i];
       var to = path[i + 1];
@@ -207,7 +213,7 @@ class LessonsHelper {
     return conversions;
   }
 
-  List<((Unit, Unit), Expression)>? getConversionPathFor(Unit from, Unit to) {
+  List<((Unit, Unit), NumericalExpression)>? getConversionPathFor(Unit from, Unit to) {
     var unitGroup =
         _unitGroups //
             .where((group) => group.units.contains(from) && group.units.contains(to))
@@ -234,14 +240,14 @@ class LessonsHelper {
   }
 }
 
-Expression expressionFromJson(String json) {
-  var parser = ExpressionParser();
+NumericalExpression expressionFromJson(String json) {
+  var parser = NumericalExpressionParser();
 
-  if (parser.parse(json) case Expression expression) {
+  if (parser.parse(json) case NumericalExpression expression) {
     return expression;
   }
 
   throw FormatException("Invalid expression format: '$json'");
 }
 
-String expressionToJson(Expression expression) => expression.toString();
+String expressionToJson(NumericalExpression expression) => expression.toString();

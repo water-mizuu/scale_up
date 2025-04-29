@@ -5,7 +5,6 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
 import "package:scale_up/presentation/bloc/ContextDialog/context_dialog_cubit.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 
 class ContextDialogWidget extends StatelessWidget {
   const ContextDialogWidget({super.key, required this.child});
@@ -28,7 +27,7 @@ class ContextDialogWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(4.0),
-                boxShadow: [defaultBoxShadow.first.copyWith(offset: Offset(0, -2))],
+                border: Border.all(color: Colors.grey),
               ),
               child: Column(
                 spacing: 12.0,
@@ -87,7 +86,7 @@ class ContextDialogWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(4.0),
-                boxShadow: [defaultBoxShadow.first.copyWith(offset: Offset(0, -2))],
+                border: Border.all(color: Colors.grey),
               ),
               child: Column(
                 spacing: 12.0,

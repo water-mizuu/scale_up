@@ -9,7 +9,7 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - cloud_firestore (5.6.6):
+  - cloud_firestore (5.6.7):
     - Firebase/CoreOnly (~> 11.10.0)
     - Firebase/Firestore (~> 11.10.0)
     - firebase_core
@@ -22,7 +22,7 @@ PODS:
   - Firebase/Firestore (11.10.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 11.10.0)
-  - firebase_auth (5.5.2):
+  - firebase_auth (5.5.3):
     - Firebase/Auth (~> 11.10.0)
     - Firebase/CoreOnly (~> 11.10.0)
     - firebase_core
@@ -207,9 +207,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  cloud_firestore: b981cee16c0c14b0e408f506af0448d8d60de42b
+  cloud_firestore: 7468f132439c3782d499a60dc174ab8b5cd2e06a
   Firebase: 1fe1c0a7d9aaea32efe01fbea5f0ebd8d70e53a2
-  firebase_auth: 2271b9240513461dfcdcf7cfa0121893acdb2de7
+  firebase_auth: b5fc5da08f862429ad5d29df1113b4ddaa8924ac
   firebase_core: bb06473757206589a00a36920cbf0f33646e19cc
   FirebaseAppCheckInterop: f23709c9ce92d810aa53ff4ce12ad3e666a3c7be
   FirebaseAuth: c4146bdfdc87329f9962babd24dae89373f49a32

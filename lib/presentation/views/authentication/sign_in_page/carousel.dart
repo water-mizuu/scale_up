@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_bloc.dart";
+import "package:scale_up/utils/border_color.dart";
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -110,7 +111,7 @@ class PaginationCircle extends StatelessWidget {
               height: 8,
               width: 8,
               decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Colors.white.borderColor,
                   borderRadius: const BorderRadius.all(Radius.circular(25))));
         }
       },

@@ -1,36 +1,25 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
+import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/expression.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/lesson.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/border_color.dart";
+import "package:scale_up/utils/title_case.dart";
 import "package:scale_up/utils/tool_tip.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 
-class UnitTile extends StatefulWidget {
-  const UnitTile({required this.unit, super.key});
+class UnitTile extends StatelessWidget {
+  const UnitTile({required this.unitString, super.key});
 
-  final String unit;
-
-  @override
-  State<UnitTile> createState() => _UnitTileState();
-}
-
-class _UnitTileState extends State<UnitTile> {
-  bool isShown = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  final String unitString;
 
   @override
   Widget build(BuildContext context) {
-    var unit = context.read<LessonsHelper>().getUnit(widget.unit);
+    var unit = context.read<LessonsHelper>().getUnit(unitString);
     var lesson = context.read<LessonPageCubit>().state.lesson;
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
@@ -44,7 +33,7 @@ class _UnitTileState extends State<UnitTile> {
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           color: Colors.white,
-          boxShadow: defaultBoxShadow,
+          border: Border.all(color: Colors.white.borderColor),
         ),
 
         /// This material widget makes sure that the ink doesn't overflow
@@ -58,7 +47,10 @@ class _UnitTileState extends State<UnitTile> {
               if (unit case Unit(:var shortcut))
                 FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut)),
 
-              FittedBox(fit: BoxFit.scaleDown, child: Text(widget.unit)),
+              if (unit case Unit(:var display?))
+                FittedBox(fit: BoxFit.scaleDown, child: Text(display))
+              else
+                FittedBox(fit: BoxFit.scaleDown, child: Text(unitString.toTitleCase())),
             ],
           ),
         ),

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDataState {
 
- User? get user; UserDataStatus get status; Set<String> get finishedChapters;
+ User? get user; UserDataStatus get status; Map<String, DateTime> get finishedChapters;
 /// Create a copy of UserDataState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -46,7 +46,7 @@ abstract mixin class $UserDataStateCopyWith<$Res>  {
   factory $UserDataStateCopyWith(UserDataState value, $Res Function(UserDataState) _then) = _$UserDataStateCopyWithImpl;
 @useResult
 $Res call({
- User? user, UserDataStatus status, Set<String> finishedChapters
+ User? user, UserDataStatus status, Map<String, DateTime> finishedChapters
 });
 
 
@@ -68,7 +68,7 @@ class _$UserDataStateCopyWithImpl<$Res>
 user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UserDataStatus,finishedChapters: null == finishedChapters ? _self.finishedChapters : finishedChapters // ignore: cast_nullable_to_non_nullable
-as Set<String>,
+as Map<String, DateTime>,
   ));
 }
 
@@ -79,16 +79,16 @@ as Set<String>,
 
 
 class _UserDataState extends UserDataState {
-  const _UserDataState({required this.user, required this.status, required final  Set<String> finishedChapters}): _finishedChapters = finishedChapters,super._();
+  const _UserDataState({required this.user, required this.status, required final  Map<String, DateTime> finishedChapters}): _finishedChapters = finishedChapters,super._();
   
 
 @override final  User? user;
 @override final  UserDataStatus status;
- final  Set<String> _finishedChapters;
-@override Set<String> get finishedChapters {
-  if (_finishedChapters is EqualUnmodifiableSetView) return _finishedChapters;
+ final  Map<String, DateTime> _finishedChapters;
+@override Map<String, DateTime> get finishedChapters {
+  if (_finishedChapters is EqualUnmodifiableMapView) return _finishedChapters;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableSetView(_finishedChapters);
+  return EqualUnmodifiableMapView(_finishedChapters);
 }
 
 
@@ -122,7 +122,7 @@ abstract mixin class _$UserDataStateCopyWith<$Res> implements $UserDataStateCopy
   factory _$UserDataStateCopyWith(_UserDataState value, $Res Function(_UserDataState) _then) = __$UserDataStateCopyWithImpl;
 @override @useResult
 $Res call({
- User? user, UserDataStatus status, Set<String> finishedChapters
+ User? user, UserDataStatus status, Map<String, DateTime> finishedChapters
 });
 
 
@@ -144,7 +144,7 @@ class __$UserDataStateCopyWithImpl<$Res>
 user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UserDataStatus,finishedChapters: null == finishedChapters ? _self._finishedChapters : finishedChapters // ignore: cast_nullable_to_non_nullable
-as Set<String>,
+as Map<String, DateTime>,
   ));
 }
 

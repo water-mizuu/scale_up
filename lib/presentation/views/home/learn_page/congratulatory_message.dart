@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 
@@ -18,7 +17,7 @@ class CongratulatoryMessage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(4.0),
-        boxShadow: defaultBoxShadow,
+        border: Border.all(color: Colors.grey.shade500),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -14,7 +14,7 @@ class LessonUnits extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.subtitle("Units Involved"),
+        Styles.hint("These are the units.."),
         ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: GridView(
@@ -24,11 +24,12 @@ class LessonUnits extends StatelessWidget {
               crossAxisCount: 4,
               mainAxisSpacing: 8.0,
               crossAxisSpacing: 8.0,
+              childAspectRatio: 1.2,
             ),
             children: [
               for (var (index, unit)
                   in context.read<LessonPageCubit>().state.lesson.units.indexed)
-                UnitTile(unit: unit)
+                UnitTile(unitString: unit)
                     .animate()
                     .then(delay: (index * 100).milliseconds)
                     .slideY(duration: 250.ms, begin: 0.1, end: 0.0)

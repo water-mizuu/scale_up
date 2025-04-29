@@ -11,6 +11,5 @@ abstract class PracticeChapter with _$PracticeChapter {
     required List<String> units,
   }) = _PracticeChapter;
 
-  factory PracticeChapter.fromJson(Map<String, dynamic> json) =>
-      _$PracticeChapterFromJson(json);
+  factory PracticeChapter.fromJson(Map<String, dynamic> json) => _$PracticeChapterFromJson(json);
 }

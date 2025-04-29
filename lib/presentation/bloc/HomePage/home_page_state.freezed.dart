@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomePageState {
 
- List<Lesson> get ongoingLessons; List<Lesson> get newLessons; List<Lesson> get finishedLessons;
+ List<Lesson> get ongoingLessons; List<Lesson> get newLessons; List<Lesson> get finishedLessons; Duration get averageTimePerLesson; Duration get averageTimePerQuestion; int get lessonsCompleted;
 /// Create a copy of HomePageState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $HomePageStateCopyWith<HomePageState> get copyWith => _$HomePageStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomePageState&&const DeepCollectionEquality().equals(other.ongoingLessons, ongoingLessons)&&const DeepCollectionEquality().equals(other.newLessons, newLessons)&&const DeepCollectionEquality().equals(other.finishedLessons, finishedLessons));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomePageState&&const DeepCollectionEquality().equals(other.ongoingLessons, ongoingLessons)&&const DeepCollectionEquality().equals(other.newLessons, newLessons)&&const DeepCollectionEquality().equals(other.finishedLessons, finishedLessons)&&(identical(other.averageTimePerLesson, averageTimePerLesson) || other.averageTimePerLesson == averageTimePerLesson)&&(identical(other.averageTimePerQuestion, averageTimePerQuestion) || other.averageTimePerQuestion == averageTimePerQuestion)&&(identical(other.lessonsCompleted, lessonsCompleted) || other.lessonsCompleted == lessonsCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(ongoingLessons),const DeepCollectionEquality().hash(newLessons),const DeepCollectionEquality().hash(finishedLessons));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(ongoingLessons),const DeepCollectionEquality().hash(newLessons),const DeepCollectionEquality().hash(finishedLessons),averageTimePerLesson,averageTimePerQuestion,lessonsCompleted);
 
 @override
 String toString() {
-  return 'HomePageState(ongoingLessons: $ongoingLessons, newLessons: $newLessons, finishedLessons: $finishedLessons)';
+  return 'HomePageState(ongoingLessons: $ongoingLessons, newLessons: $newLessons, finishedLessons: $finishedLessons, averageTimePerLesson: $averageTimePerLesson, averageTimePerQuestion: $averageTimePerQuestion, lessonsCompleted: $lessonsCompleted)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $HomePageStateCopyWith<$Res>  {
   factory $HomePageStateCopyWith(HomePageState value, $Res Function(HomePageState) _then) = _$HomePageStateCopyWithImpl;
 @useResult
 $Res call({
- List<Lesson> ongoingLessons, List<Lesson> newLessons, List<Lesson> finishedLessons
+ List<Lesson> ongoingLessons, List<Lesson> newLessons, List<Lesson> finishedLessons, Duration averageTimePerLesson, Duration averageTimePerQuestion, int lessonsCompleted
 });
 
 
@@ -63,12 +63,15 @@ class _$HomePageStateCopyWithImpl<$Res>
 
 /// Create a copy of HomePageState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ongoingLessons = null,Object? newLessons = null,Object? finishedLessons = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ongoingLessons = null,Object? newLessons = null,Object? finishedLessons = null,Object? averageTimePerLesson = null,Object? averageTimePerQuestion = null,Object? lessonsCompleted = null,}) {
   return _then(_self.copyWith(
 ongoingLessons: null == ongoingLessons ? _self.ongoingLessons : ongoingLessons // ignore: cast_nullable_to_non_nullable
 as List<Lesson>,newLessons: null == newLessons ? _self.newLessons : newLessons // ignore: cast_nullable_to_non_nullable
 as List<Lesson>,finishedLessons: null == finishedLessons ? _self.finishedLessons : finishedLessons // ignore: cast_nullable_to_non_nullable
-as List<Lesson>,
+as List<Lesson>,averageTimePerLesson: null == averageTimePerLesson ? _self.averageTimePerLesson : averageTimePerLesson // ignore: cast_nullable_to_non_nullable
+as Duration,averageTimePerQuestion: null == averageTimePerQuestion ? _self.averageTimePerQuestion : averageTimePerQuestion // ignore: cast_nullable_to_non_nullable
+as Duration,lessonsCompleted: null == lessonsCompleted ? _self.lessonsCompleted : lessonsCompleted // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -79,30 +82,33 @@ as List<Lesson>,
 
 
 class _HomePageState extends HomePageState {
-  const _HomePageState({final  List<Lesson> ongoingLessons = const [], final  List<Lesson> newLessons = const [], final  List<Lesson> finishedLessons = const []}): _ongoingLessons = ongoingLessons,_newLessons = newLessons,_finishedLessons = finishedLessons,super._();
+  const _HomePageState({required final  List<Lesson> ongoingLessons, required final  List<Lesson> newLessons, required final  List<Lesson> finishedLessons, required this.averageTimePerLesson, required this.averageTimePerQuestion, required this.lessonsCompleted}): _ongoingLessons = ongoingLessons,_newLessons = newLessons,_finishedLessons = finishedLessons,super._();
   
 
  final  List<Lesson> _ongoingLessons;
-@override@JsonKey() List<Lesson> get ongoingLessons {
+@override List<Lesson> get ongoingLessons {
   if (_ongoingLessons is EqualUnmodifiableListView) return _ongoingLessons;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_ongoingLessons);
 }
 
  final  List<Lesson> _newLessons;
-@override@JsonKey() List<Lesson> get newLessons {
+@override List<Lesson> get newLessons {
   if (_newLessons is EqualUnmodifiableListView) return _newLessons;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_newLessons);
 }
 
  final  List<Lesson> _finishedLessons;
-@override@JsonKey() List<Lesson> get finishedLessons {
+@override List<Lesson> get finishedLessons {
   if (_finishedLessons is EqualUnmodifiableListView) return _finishedLessons;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_finishedLessons);
 }
 
+@override final  Duration averageTimePerLesson;
+@override final  Duration averageTimePerQuestion;
+@override final  int lessonsCompleted;
 
 /// Create a copy of HomePageState
 /// with the given fields replaced by the non-null parameter values.
@@ -114,16 +120,16 @@ _$HomePageStateCopyWith<_HomePageState> get copyWith => __$HomePageStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomePageState&&const DeepCollectionEquality().equals(other._ongoingLessons, _ongoingLessons)&&const DeepCollectionEquality().equals(other._newLessons, _newLessons)&&const DeepCollectionEquality().equals(other._finishedLessons, _finishedLessons));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomePageState&&const DeepCollectionEquality().equals(other._ongoingLessons, _ongoingLessons)&&const DeepCollectionEquality().equals(other._newLessons, _newLessons)&&const DeepCollectionEquality().equals(other._finishedLessons, _finishedLessons)&&(identical(other.averageTimePerLesson, averageTimePerLesson) || other.averageTimePerLesson == averageTimePerLesson)&&(identical(other.averageTimePerQuestion, averageTimePerQuestion) || other.averageTimePerQuestion == averageTimePerQuestion)&&(identical(other.lessonsCompleted, lessonsCompleted) || other.lessonsCompleted == lessonsCompleted));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_ongoingLessons),const DeepCollectionEquality().hash(_newLessons),const DeepCollectionEquality().hash(_finishedLessons));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_ongoingLessons),const DeepCollectionEquality().hash(_newLessons),const DeepCollectionEquality().hash(_finishedLessons),averageTimePerLesson,averageTimePerQuestion,lessonsCompleted);
 
 @override
 String toString() {
-  return 'HomePageState(ongoingLessons: $ongoingLessons, newLessons: $newLessons, finishedLessons: $finishedLessons)';
+  return 'HomePageState(ongoingLessons: $ongoingLessons, newLessons: $newLessons, finishedLessons: $finishedLessons, averageTimePerLesson: $averageTimePerLesson, averageTimePerQuestion: $averageTimePerQuestion, lessonsCompleted: $lessonsCompleted)';
 }
 
 
@@ -134,7 +140,7 @@ abstract mixin class _$HomePageStateCopyWith<$Res> implements $HomePageStateCopy
   factory _$HomePageStateCopyWith(_HomePageState value, $Res Function(_HomePageState) _then) = __$HomePageStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<Lesson> ongoingLessons, List<Lesson> newLessons, List<Lesson> finishedLessons
+ List<Lesson> ongoingLessons, List<Lesson> newLessons, List<Lesson> finishedLessons, Duration averageTimePerLesson, Duration averageTimePerQuestion, int lessonsCompleted
 });
 
 
@@ -151,12 +157,15 @@ class __$HomePageStateCopyWithImpl<$Res>
 
 /// Create a copy of HomePageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ongoingLessons = null,Object? newLessons = null,Object? finishedLessons = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ongoingLessons = null,Object? newLessons = null,Object? finishedLessons = null,Object? averageTimePerLesson = null,Object? averageTimePerQuestion = null,Object? lessonsCompleted = null,}) {
   return _then(_HomePageState(
 ongoingLessons: null == ongoingLessons ? _self._ongoingLessons : ongoingLessons // ignore: cast_nullable_to_non_nullable
 as List<Lesson>,newLessons: null == newLessons ? _self._newLessons : newLessons // ignore: cast_nullable_to_non_nullable
 as List<Lesson>,finishedLessons: null == finishedLessons ? _self._finishedLessons : finishedLessons // ignore: cast_nullable_to_non_nullable
-as List<Lesson>,
+as List<Lesson>,averageTimePerLesson: null == averageTimePerLesson ? _self.averageTimePerLesson : averageTimePerLesson // ignore: cast_nullable_to_non_nullable
+as Duration,averageTimePerQuestion: null == averageTimePerQuestion ? _self.averageTimePerQuestion : averageTimePerQuestion // ignore: cast_nullable_to_non_nullable
+as Duration,lessonsCompleted: null == lessonsCompleted ? _self.lessonsCompleted : lessonsCompleted // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

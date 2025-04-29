@@ -49,7 +49,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     if (state case UserDataState(:var user?)) {
       var key = chapterType.stringify(lessonId, chapterIndex);
 
-      var finishedChapters = {...state.finishedChapters, key};
+      var finishedDate = DateTime.now();
+      var finishedChapters = {...state.finishedChapters, key: finishedDate};
       emit(state.copyWith(finishedChapters: finishedChapters));
 
       unawaited(
@@ -58,6 +59,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           lessonId: lessonId,
           chapterIndex: chapterIndex,
           chapterType: chapterType,
+          finishedDate: finishedDate,
         ),
       );
     }

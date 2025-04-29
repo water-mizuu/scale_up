@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/widgets/box_shadow.dart";
 import "package:scale_up/presentation/views/home/widgets/colored_progress_bar.dart";
 
 class LearnProgressBar extends StatelessWidget {
@@ -15,13 +14,10 @@ class LearnProgressBar extends StatelessWidget {
     var LoadedLearnPageState(:progress, :lesson) = learnPageBloc.loadedState;
     var hslColor = lesson.hslColor;
 
-    return Ink(
-      decoration: BoxDecoration(boxShadow: defaultBoxShadow),
-      child: ColoredProgressBar(
-        progressBarKey: progressBarKey,
-        progress: progress,
-        hslColor: hslColor,
-      ),
+    return ColoredProgressBar(
+      progressBarKey: progressBarKey,
+      progress: progress,
+      hslColor: hslColor,
     );
   }
 }
