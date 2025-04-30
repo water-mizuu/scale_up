@@ -13,12 +13,14 @@ class LearnTopRow extends StatelessWidget {
   Widget build(BuildContext context) {
     var shouldConfirm = context.select((LearnPageBloc b) => b.loadedState.questionIndex > 0);
 
-    return Row(
-      spacing: 12.0,
-      children: [
-        ConfirmingLeaveChapterWidget(shouldConfirm: shouldConfirm),
-        Expanded(child: LearnProgressBar(progressBarKey: progressBarKey)),
-      ],
+    return SafeArea(
+      child: Row(
+        spacing: 12.0,
+        children: [
+          ConfirmingLeaveChapterWidget(shouldConfirm: shouldConfirm),
+          Expanded(child: LearnProgressBar(progressBarKey: progressBarKey)),
+        ],
+      ),
     );
   }
 }

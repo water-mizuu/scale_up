@@ -254,7 +254,7 @@
       "practice": [
         {
           "name": "Basic Conversion -- 1",
-          "question_count": 12,
+          "question_count": 2,
           "units": ["liter", "milliliter"]
         },
         {
@@ -271,7 +271,7 @@
     },
     {
       "id": "mass",
-      "category": "Tangible Measurements",
+      "category": "Amount",
       "name": "Mass",
       "icon": "weight",
       "description": "These are the amount of matter or molecules in an object.",

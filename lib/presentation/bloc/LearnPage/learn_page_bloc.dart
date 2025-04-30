@@ -1,12 +1,13 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/models/conversion.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/learn_chapter.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_event.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_state.dart";
 import "package:scale_up/utils/choose_random.dart";
@@ -43,6 +44,15 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
   @pragma("vm:prefer-inline")
   LoadedLearnPageState get loadedState => state as LoadedLearnPageState;
+
+  @override
+  void onEvent(LearnPageEvent event) {
+    super.onEvent(event);
+
+    if (kDebugMode) {
+      print(event);
+    }
+  }
 
   /// This generates questions for the given learn chapter.
   List<LearnQuestion> _generateQuestions(Lesson lesson, LearnChapter learnChapter) {
@@ -138,7 +148,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       var allUnits = learnChapter.units.map(_lessonsHelper.getUnit).whereType<Unit>().toList();
       var unitGroup = _lessonsHelper.getUnitGroupForUnits(allUnits);
 
-
       if (unitGroup == null) {
         throw Exception("There wasn't a unit group for $allUnits");
       }
@@ -167,7 +176,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
             var choices = [
               ...answer,
-              for (var i = 0; i < answer.length ; ++i) unitGroup.units.chooseRandom(),
+              for (var i = 0; i < answer.length; ++i) unitGroup.units.chooseRandom(),
             ];
 
             choices.shuffle();
@@ -214,6 +223,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           questionIndex: 0,
           progress: 0.0,
           mistakes: 0,
+          startDateTime: DateTime.now(),
         ),
       );
     } on Exception catch (e) {
@@ -232,23 +242,25 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
     if (question.comparison(answer, correctAnswer)) {
       emit(loadedState.copyWith(status: LearnPageStatus.correct, correctAnswer: correctAnswer));
-    } else {
-      var questions = loadedState.questions;
-      var removed = questions.elementAt(loadedState.questionIndex);
-      var newQuestions = questions.followedBy([removed]).toList();
 
-      /// PROBLEM:
-      ///   When the user answers incorrectly, since we update the [questions],
-      ///   The [questionIndex] is not updated.
-      emit(
-        loadedState.copyWith(
-          status: LearnPageStatus.incorrect,
-          correctAnswer: correctAnswer,
-          questions: newQuestions,
-          mistakes: loadedState.mistakes + 1,
-        ),
-      );
+      return;
     }
+
+    var questions = loadedState.questions;
+    var removed = questions[loadedState.questionIndex];
+    var newQuestions = questions.followedBy([removed]).toList();
+
+    /// PROBLEM:
+    ///   When the user answers incorrectly, since we update the [questions],
+    ///   The [questionIndex] is not updated.
+    emit(
+      loadedState.copyWith(
+        status: LearnPageStatus.incorrect,
+        correctAnswer: correctAnswer,
+        questions: newQuestions,
+        mistakes: loadedState.mistakes + 1,
+      ),
+    );
   }
 
   void _onAnswerUpdated(LearnPageAnswerUpdated event, Emitter<LearnPageState> emit) async {
@@ -269,6 +281,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     Emitter<LearnPageState> emit,
   ) async {
     var newQuestionIndex = loadedState.questionIndex + 1;
+    late var mistakes = loadedState.mistakes;
 
     if (newQuestionIndex >= loadedState.questions.length) {
       emit(loadedState.copyWith(status: LearnPageStatus.finished, progress: 1.0));
@@ -279,9 +292,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       loadedState.copyWith(
         status: LearnPageStatus.movingIn,
         questionIndex: newQuestionIndex,
-        progress:
-            (newQuestionIndex - loadedState.mistakes) /
-            (loadedState.questions.length - loadedState.mistakes),
+        progress: (newQuestionIndex - mistakes) / (loadedState.questions.length - mistakes),
         answer: null,
       ),
     );

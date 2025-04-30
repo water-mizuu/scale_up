@@ -1,10 +1,11 @@
 import "package:flutter/material.dart" hide BoxShadow, BoxDecoration;
+import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_inset_shadow/flutter_inset_shadow.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
@@ -93,12 +94,15 @@ class DirectFormulaChoice extends StatelessWidget {
 
     Widget widget = Material(
       child: ListTile(
-        onTap:
-            learnPageBloc.state.status == LearnPageStatus.waitingForSubmission
-                ? () {
-                  learnPageBloc.add(LearnPageAnswerUpdated.directFormula(answer: choice));
-                }
-                : null,
+        onTap: () {
+          if (learnPageBloc.state.status == LearnPageStatus.waitingForSubmission) {
+            return () {
+              HapticFeedback.selectionClick();
+              learnPageBloc.add(LearnPageAnswerUpdated.directFormula(answer: choice));
+            };
+          }
+          return null;
+        }(),
         tileColor: hslColor.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: borderRadius,
@@ -211,6 +215,7 @@ class ImportantNumbersChoice extends StatelessWidget {
         onTap: () {
           if (learnPageBloc.state.status == LearnPageStatus.waitingForSubmission) {
             return () {
+              HapticFeedback.selectionClick();
               learnPageBloc.add(LearnPageAnswerUpdated.importantNumbers(answer: choice));
             };
           }
@@ -326,6 +331,8 @@ class IndirectStepsChoice extends StatelessWidget {
         }
 
         return () {
+          HapticFeedback.selectionClick();
+
           context.read<IndirectStepsCubit>().answer(index);
         };
       }(),

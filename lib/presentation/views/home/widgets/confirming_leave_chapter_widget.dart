@@ -20,6 +20,7 @@ class ConfirmingLeaveChapterWidget extends StatelessWidget {
           return;
         }
 
+        WillPopScope;
         var hasConfirmed = await context.showConfirmationDialog(
           title: "Quit?",
           message: "Are you sure you want to quit? Your progress will **NOT** be saved.",

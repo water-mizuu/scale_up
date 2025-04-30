@@ -14,30 +14,42 @@ class LessonUnits extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.hint("These are the units.."),
-        ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: GridView(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
-              childAspectRatio: 1.2,
-            ),
+        Styles.subtitle("Units To Learn", fontWeight: FontWeight.w600),
+        for (var group in context.read<LessonPageCubit>().state.lesson.units.indexed.batch(2))
+          Row(
+            spacing: 8.0,
             children: [
-              for (var (index, unit)
-                  in context.read<LessonPageCubit>().state.lesson.units.indexed)
-                UnitTile(unitString: unit)
-                    .animate()
-                    .then(delay: (index * 100).milliseconds)
-                    .slideY(duration: 250.ms, begin: 0.1, end: 0.0)
-                    .fadeIn(duration: 250.ms),
+              for (var (index, element) in group)
+                Expanded(
+                  child: UnitTile(unitString: element)
+                      .animate()
+                      .then(delay: (index * 100).milliseconds)
+                      .slideY(duration: 250.ms, begin: 0.1, end: 0.0)
+                      .fadeIn(duration: 250.ms),
+                ),
             ],
           ),
-        ),
       ],
     );
+  }
+}
+
+extension BatchExtension<T> on Iterable<T> {
+  Iterable<List<T>> batch(int numberOfElementPerBatch) sync* {
+    Iterator<T> iter = iterator;
+    List<T> values = [];
+    while (iter.moveNext()) {
+      values.add(iter.current);
+
+      if (values.length == numberOfElementPerBatch) {
+        yield values;
+        values = [];
+      }
+    }
+
+    if (values.length <= numberOfElementPerBatch) {
+      yield values;
+      values = [];
+    }
   }
 }

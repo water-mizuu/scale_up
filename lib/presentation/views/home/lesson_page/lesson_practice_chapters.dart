@@ -14,7 +14,7 @@ class LessonPracticeChapters extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.hint("Practice what you learned!"),
+        Styles.subtitle("Practice", fontWeight: FontWeight.w600),
         Column(
           spacing: 8.0,
           mainAxisSize: MainAxisSize.min,

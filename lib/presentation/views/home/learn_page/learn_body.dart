@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_check_button.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_instructions.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_page_check_button.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_top_row.dart";
 
 class LearnBody extends StatelessWidget {
@@ -22,7 +22,7 @@ class LearnBody extends StatelessWidget {
           const Column(
             spacing: 18.0,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [LearnChoices(), LearnPageCheckButton()],
+            children: [LearnChoices(), LearnCheckButton()],
           ),
         ],
       ),

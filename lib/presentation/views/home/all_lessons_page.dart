@@ -40,23 +40,24 @@ class _AllLessonsPageState extends State<AllLessonsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var lessons = context.read<LessonsHelper>().lessons;
+    var helper = context.read<LessonsHelper>();
+    var lessons = helper.lessons;
     if (lessons.isEmpty) {
       return const Center(child: Text("No lessons available"));
     }
 
     return MultiProvider(
       providers: [
-        BlocProvider(create: (_) => AllLessonsPageCubit(lessons)),
+        BlocProvider(create: (_) => AllLessonsPageCubit(helper, lessons)),
         InheritedProvider.value(value: searchFocusNode),
       ],
-      child: LessonsPageView(),
+      child: AllLessonsPageView(),
     );
   }
 }
 
-class LessonsPageView extends StatelessWidget {
-  const LessonsPageView({super.key});
+class AllLessonsPageView extends StatelessWidget {
+  const AllLessonsPageView({super.key});
 
   @override
   Widget build(BuildContext context) {

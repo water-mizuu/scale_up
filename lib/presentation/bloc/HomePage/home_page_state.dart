@@ -8,11 +8,12 @@ sealed class HomePageState with _$HomePageState {
   const HomePageState._();
 
   const factory HomePageState({
+    required Lesson? lastLessonReviewed,
     required List<Lesson> ongoingLessons,
     required List<Lesson> newLessons,
     required List<Lesson> finishedLessons,
-    required Duration averageTimePerLesson,
-    required Duration averageTimePerQuestion,
-    required int lessonsCompleted,
+    required Duration averageTimePerChapter,
+    required int chaptersFinished,
+    required int correctRate,
   }) = _HomePageState;
 }

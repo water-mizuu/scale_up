@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_check_button.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_top_row.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
@@ -36,7 +36,7 @@ class CompletedPracticeBody extends StatelessWidget {
               ),
             ),
           ),
-          PracticePageCheckButton(),
+          PracticeCheckButton(),
         ],
       ),
     );

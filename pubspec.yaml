@@ -51,13 +51,10 @@ dependencies:
   google_sign_in: ^6.3.0
   flutter_animation_progress_bar: ^2.3.1
   super_tooltip: ^2.0.9
-  local_hero: ^0.3.0
   dotted_border: ^2.1.0
   flutter_animate: ^4.5.2
   google_fonts: ^6.2.1
-  flutter_inset_shadow: ^2.0.3
   flutter_markdown_plus: ^1.0.3
-  cel: ^0.5.3
 
 dev_dependencies:
   flutter_test:

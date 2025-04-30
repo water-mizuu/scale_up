@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 
 part "practice_page_state.freezed.dart";
 
@@ -45,7 +45,8 @@ sealed class PracticePageState with _$PracticePageState {
     required int questionIndex,
     required double progress,
     required int mistakes,
-    String? answer,
+    required DateTime startDateTime,
+    double? answer,
     String? correctAnswer,
     Object? error,
   }) = LoadedPracticePageState;

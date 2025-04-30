@@ -5,10 +5,13 @@ import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_cubit.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
-import "package:scale_up/presentation/views/home/home_page/latest_lesson_container.dart";
+import "package:scale_up/presentation/views/home/home_page/latest_lesson.dart";
 import "package:scale_up/presentation/views/home/home_page/statistics.dart";
 import "package:scale_up/presentation/views/home/home_page/user_bar.dart";
-import "package:scale_up/presentation/views/home/widgets/newer_lesson_tile.dart";
+import "package:scale_up/presentation/views/home/lesson_page/lesson_units.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/new_lesson_tile.dart";
+import "package:scale_up/presentation/views/home/widgets/lesson_tile/ongoing_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animated_scroll_controller.dart";
 
@@ -23,17 +26,29 @@ class HomePage extends StatelessWidget {
         BlocProvider(
           create:
               (_) => HomePageCubit(
-                finishedChaptersString: userDataBloc.state.finishedChapters,
+                state: userDataBloc.state,
                 lessonsHelper: context.read<LessonsHelper>(),
               ),
         ),
       ],
       builder: (context, _) {
-        return BlocListener<UserDataBloc, UserDataState>(
-          bloc: userDataBloc,
-          listener: (context, state) {
-            context.read<HomePageCubit>().updateFinishedChaptersString(state.finishedChapters);
-          },
+        return MultiBlocListener(
+          listeners: [
+            BlocListener<UserDataBloc, UserDataState>(
+              bloc: userDataBloc,
+              listener: (context, state) {
+                var homePageCubit = context.read<HomePageCubit>();
+
+                homePageCubit.updateFinishedChaptersString(state.finishedChapters);
+                homePageCubit.updateStatistics(
+                  totalTimeInLessons: state.totalTimeInLessons,
+                  chaptersFinished: state.finishedChapters.length,
+                  correctAnswers: state.correctAnswers,
+                  totalAnswers: state.totalAnswers,
+                );
+              },
+            ),
+          ],
           child: HomePageView(),
         );
       },
@@ -41,41 +56,66 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomePageView extends StatelessWidget {
+class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
+
+  @override
+  State<HomePageView> createState() => _HomePageViewState();
+}
+
+class _HomePageViewState extends State<HomePageView> {
+  late final AnimatedScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController = AnimatedScrollController();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top: 16.0),
         child: Column(
           spacing: 16.0,
           children: [
-            UserBar(),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
             Expanded(
-              child: InheritedProvider(
-                create: (_) => AnimatedScrollController(),
-                dispose: (_, v) => v.dispose(),
-                builder: (context, child) {
-                  return SingleChildScrollView(
-                    controller: context.read<AnimatedScrollController>(),
-                    physics: const BouncingScrollPhysics(),
-                    child: child,
-                  );
-                },
+              child: SingleChildScrollView(
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     spacing: 16.0,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      LatestLessonContainer(),
-                      Statistics(),
-                      NewLessons(),
-                      OngoingLessons(),
-                      FinishedLessons(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Statistics(),
+                      ),
+                      LatestLesson(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          spacing: 16.0,
+                          children: [
+                            NewLessons(), //
+                            OngoingLessons(), //
+                            FinishedLessons(),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -103,12 +143,12 @@ class OngoingLessons extends StatelessWidget {
       spacing: 4.0,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Styles.hint("Continue your other lessons!"),
+        Styles.subtitle("Continue your other lessons!", fontWeight: FontWeight.w600),
         Column(
           spacing: 16.0,
           children: [
             for (var (i, lesson) in ongoingLessons.indexed)
-              if (NewerLessonTile(lesson: lesson) case var widget)
+              if (OngoingLessonTile(lesson: lesson) case var widget)
                 widget.animate().then(delay: (i * 100).ms).slideFadeIn(),
           ],
         ),
@@ -127,6 +167,22 @@ class NewLessons extends StatefulWidget {
 }
 
 class _NewLessonsState extends State<NewLessons> {
+  late final AnimatedScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController = AnimatedScrollController();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var newLessons = context.select((HomePageCubit cubit) => cubit.state.newLessons);
@@ -139,27 +195,19 @@ class _NewLessonsState extends State<NewLessons> {
       spacing: 4.0,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Styles.hint("Explore these  lessons!"),
-        InheritedProvider(
-          create: (_) => AnimatedScrollController(),
-          dispose: (_, v) => v.dispose(),
-          builder: (context, child) {
-            return SingleChildScrollView(
-              controller: context.read<AnimatedScrollController>(),
-              scrollDirection: Axis.horizontal,
-              child: child!,
-            );
-          },
-          child: Wrap(
-            spacing: 8.0,
-            children: [
-              for (var (i, lesson) in newLessons.indexed)
-                if (IntrinsicWidth(child: NewerLessonTile(lesson: lesson, isSmall: true))
-                    case var widget)
-                  widget.animate().then(delay: (i * 100).ms).slideFadeIn(),
-            ],
+        Styles.subtitle("Explore New Topics", fontWeight: FontWeight.w600),
+
+        for (var batch in newLessons.batch(2))
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8.0,
+              children: [
+                for (var lesson in batch) //
+                  Expanded(child: NewLessonTile(lesson: lesson)),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -185,7 +233,7 @@ class FinishedLessons extends StatelessWidget {
           spacing: 16.0,
           children: [
             for (var (i, lesson) in finishedLessons.indexed)
-              if (NewerLessonTile(lesson: lesson) case var widget)
+              if (LessonTile(lesson: lesson) case var widget)
                 widget.animate().then(delay: (i * 200).ms).slideFadeIn(),
           ],
         ),

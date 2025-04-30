@@ -30,8 +30,9 @@ class LessonProgression extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.subtitle("Progression"),
+        Styles.subtitle("Progress", fontWeight: FontWeight.w600),
         FAProgressBar(
+          size: 8.0,
           currentValue: progressBarValue * 100,
           progressColor: color,
           backgroundColor: progressionBackgroundColor,

@@ -1,9 +1,10 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_fonts/google_fonts.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
@@ -271,6 +272,8 @@ class AnswerTile extends StatelessWidget {
           return ChoiceUnitTile(
             unit: unit,
             onTap: () {
+              HapticFeedback.selectionClick();
+
               context.read<IndirectStepsCubit>().putBack(index);
             },
           );

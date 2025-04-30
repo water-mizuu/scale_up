@@ -1,11 +1,12 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 
-class PracticePageCheckButton extends StatelessWidget {
-  const PracticePageCheckButton({super.key});
+class PracticeCheckButton extends StatelessWidget {
+  const PracticeCheckButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +31,26 @@ class PracticePageCheckButton extends StatelessWidget {
           style: FilledButton.styleFrom(backgroundColor: buttonColor),
           onPressed: () {
             if (hasAnswered) {
-              return () => chapterPageBloc.add(PracticePageNextQuestionClicked());
+              return () {
+                HapticFeedback.selectionClick();
+
+                chapterPageBloc.add(PracticePageNextQuestionClicked());
+              };
             }
 
             if (chapterPageBloc.loadedState.status == PracticePageStatus.waitingForSubmission &&
                 chapterPageBloc.loadedState.answer != null) {
-              return () => chapterPageBloc.add(PracticePageAnswerSubmitted());
+              return () {
+                HapticFeedback.selectionClick();
+                chapterPageBloc.add(PracticePageAnswerSubmitted());
+              };
             }
 
             if (isFinished) {
-              return () => chapterPageBloc.add(PracticePageReturnToLessonClicked());
+              return () {
+                HapticFeedback.selectionClick();
+                chapterPageBloc.add(PracticePageReturnToLessonClicked());
+              };
             }
           }(),
           child: Padding(

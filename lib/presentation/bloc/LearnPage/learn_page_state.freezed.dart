@@ -227,7 +227,7 @@ as String,
 
 
 class LoadedLearnPageState extends LearnPageState {
-  const LoadedLearnPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<LearnQuestion> questions, required this.questionIndex, required this.progress, required this.comparison, required this.mistakes, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
+  const LoadedLearnPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<LearnQuestion> questions, required this.questionIndex, required this.progress, required this.comparison, required this.mistakes, required this.startDateTime, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  LearnPageStatus status;
@@ -244,6 +244,7 @@ class LoadedLearnPageState extends LearnPageState {
  final  double progress;
  final  bool Function(Object?, Object?) comparison;
  final  int mistakes;
+ final  DateTime startDateTime;
  final  Object? answer;
  final  Object? correctAnswer;
  final  String? error;
@@ -258,16 +259,16 @@ $LoadedLearnPageStateCopyWith<LoadedLearnPageState> get copyWith => _$LoadedLear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedLearnPageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.comparison, comparison) || other.comparison == comparison)&&(identical(other.mistakes, mistakes) || other.mistakes == mistakes)&&const DeepCollectionEquality().equals(other.answer, answer)&&const DeepCollectionEquality().equals(other.correctAnswer, correctAnswer)&&(identical(other.error, error) || other.error == error));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadedLearnPageState&&(identical(other.status, status) || other.status == status)&&(identical(other.chapterIndex, chapterIndex) || other.chapterIndex == chapterIndex)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&const DeepCollectionEquality().equals(other._questions, _questions)&&(identical(other.questionIndex, questionIndex) || other.questionIndex == questionIndex)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.comparison, comparison) || other.comparison == comparison)&&(identical(other.mistakes, mistakes) || other.mistakes == mistakes)&&(identical(other.startDateTime, startDateTime) || other.startDateTime == startDateTime)&&const DeepCollectionEquality().equals(other.answer, answer)&&const DeepCollectionEquality().equals(other.correctAnswer, correctAnswer)&&(identical(other.error, error) || other.error == error));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,comparison,mistakes,const DeepCollectionEquality().hash(answer),const DeepCollectionEquality().hash(correctAnswer),error);
+int get hashCode => Object.hash(runtimeType,status,chapterIndex,lesson,const DeepCollectionEquality().hash(_questions),questionIndex,progress,comparison,mistakes,startDateTime,const DeepCollectionEquality().hash(answer),const DeepCollectionEquality().hash(correctAnswer),error);
 
 @override
 String toString() {
-  return 'LearnPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, comparison: $comparison, mistakes: $mistakes, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
+  return 'LearnPageState.loaded(status: $status, chapterIndex: $chapterIndex, lesson: $lesson, questions: $questions, questionIndex: $questionIndex, progress: $progress, comparison: $comparison, mistakes: $mistakes, startDateTime: $startDateTime, answer: $answer, correctAnswer: $correctAnswer, error: $error)';
 }
 
 
@@ -278,7 +279,7 @@ abstract mixin class $LoadedLearnPageStateCopyWith<$Res> implements $LearnPageSt
   factory $LoadedLearnPageStateCopyWith(LoadedLearnPageState value, $Res Function(LoadedLearnPageState) _then) = _$LoadedLearnPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- LearnPageStatus status, int chapterIndex, Lesson lesson, List<LearnQuestion> questions, int questionIndex, double progress, bool Function(Object?, Object?) comparison, int mistakes, Object? answer, Object? correctAnswer, String? error
+ LearnPageStatus status, int chapterIndex, Lesson lesson, List<LearnQuestion> questions, int questionIndex, double progress, bool Function(Object?, Object?) comparison, int mistakes, DateTime startDateTime, Object? answer, Object? correctAnswer, String? error
 });
 
 
@@ -295,7 +296,7 @@ class _$LoadedLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? comparison = null,Object? mistakes = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? comparison = null,Object? mistakes = null,Object? startDateTime = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(LoadedLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LearnPageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
@@ -305,7 +306,8 @@ as List<LearnQuestion>,questionIndex: null == questionIndex ? _self.questionInde
 as int,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,comparison: null == comparison ? _self.comparison : comparison // ignore: cast_nullable_to_non_nullable
 as bool Function(Object?, Object?),mistakes: null == mistakes ? _self.mistakes : mistakes // ignore: cast_nullable_to_non_nullable
-as int,answer: freezed == answer ? _self.answer : answer ,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer ,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
+as int,startDateTime: null == startDateTime ? _self.startDateTime : startDateTime // ignore: cast_nullable_to_non_nullable
+as DateTime,answer: freezed == answer ? _self.answer : answer ,correctAnswer: freezed == correctAnswer ? _self.correctAnswer : correctAnswer ,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

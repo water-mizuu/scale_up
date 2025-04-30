@@ -88,14 +88,12 @@ class LessonsHelper {
 
   UnitGroup? getExtendedUnitGroup(String type) {
     var unitGroup = getUnitGroup(type);
-    if (unitGroup == null) {
-      return null;
-    }
+    if (unitGroup == null) return null;
 
     var (_, graph) = _computeCanonicalConversionGraph(unitGroup);
     var conversions = [
-      for (var MapEntry(key: from, value: rest0) in graph.entries)
-        for (var MapEntry(key: to, value: formula) in rest0.entries)
+      for (var MapEntry(key: from, value: rest) in graph.entries)
+        for (var MapEntry(key: to, value: formula) in rest.entries)
           Conversion(from: from.id, to: to.id, formula: formula),
     ];
 
@@ -104,9 +102,7 @@ class LessonsHelper {
 
   UnitGroup? getLocalExtendedUnitGroup(String type, List<String> units) {
     var unitGroup = getExtendedUnitGroup(type);
-    if (unitGroup == null) {
-      return null;
-    }
+    if (unitGroup == null) return null;
 
     return unitGroup.copyWith(
       units: [

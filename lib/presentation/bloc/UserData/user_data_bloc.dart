@@ -11,27 +11,43 @@ export "user_data_state.dart";
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataBloc({required FirestoreHelper firestoreHelper})
     : _firestoreHelper = firestoreHelper,
-      super(UserDataState(user: null, status: UserDataStatus.none, finishedChapters: {})) {
+      super(
+        UserDataState(
+          user: null,
+          status: UserDataStatus.none,
+          finishedChapters: {},
+          totalTimeInLessons: Duration.zero,
+          correctAnswers: 0,
+          totalAnswers: 0,
+        ),
+      ) {
     on<SignedInUserDataEvent>(_onSignedIn);
     on<SignedOutUserDataEvent>(_onSignedOut);
-    on<PracticeChapterCompletedUserDataEvent>(_onPracticeChapterCompleted);
-    on<LearnChapterCompletedUserDataEvent>(_onLearnChapterCompleted);
+    on<ChapterCompletedUserDataEvent>(_onChapterCompleted);
   }
 
   final FirestoreHelper _firestoreHelper;
 
   Future<void> _onSignedIn(SignedInUserDataEvent event, Emitter<UserDataState> emit) async {
-    emit(state.copyWith(status: UserDataStatus.loading));
+    try {
+      emit(state.copyWith(status: UserDataStatus.loading));
 
-    var finishedChapters = await _firestoreHelper.getFinishedChapters(user: event.user);
+      var (:finishedChapters, :correctAnswers, :totalAnswers, :totalTimeInLessons) = //
+          await _firestoreHelper.getUserData(user: event.user);
 
-    emit(
-      state.copyWith(
-        status: UserDataStatus.loaded,
-        user: event.user,
-        finishedChapters: finishedChapters,
-      ),
-    );
+      emit(
+        state.copyWith(
+          status: UserDataStatus.loaded,
+          user: event.user,
+          finishedChapters: finishedChapters,
+          totalTimeInLessons: totalTimeInLessons,
+          correctAnswers: correctAnswers,
+          totalAnswers: totalAnswers,
+        ),
+      );
+    } on Object {
+      emit(state.copyWith(status: UserDataStatus.loaded, user: null));
+    }
   }
 
   Future<void> _onSignedOut(SignedOutUserDataEvent event, Emitter<UserDataState> emit) async {
@@ -40,12 +56,20 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     emit(state.copyWith(status: UserDataStatus.loaded, user: null, finishedChapters: {}));
   }
 
-  Future<void> _saveChapterAsCompleted(
-    String lessonId,
-    int chapterIndex,
-    ChapterType chapterType,
+  Future<void> _onChapterCompleted(
+    ChapterCompletedUserDataEvent event,
     Emitter<UserDataState> emit,
   ) async {
+    var ChapterCompletedUserDataEvent(
+      :chapterIndex,
+      :chapterType,
+      :lessonId,
+      :duration,
+      :totalAnswers,
+      :correctAnswers,
+    ) = event;
+
+    print(state.user);
     if (state case UserDataState(:var user?)) {
       var key = chapterType.stringify(lessonId, chapterIndex);
 
@@ -60,18 +84,11 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           chapterIndex: chapterIndex,
           chapterType: chapterType,
           finishedDate: finishedDate,
+          lessonDuration: duration,
+          totalAnswers: totalAnswers,
+          correctAnswers: correctAnswers,
         ),
       );
     }
   }
-
-  Future<void> _onPracticeChapterCompleted(
-    PracticeChapterCompletedUserDataEvent event,
-    Emitter<UserDataState> emit,
-  ) => _saveChapterAsCompleted(event.lessonId, event.chapterIndex, ChapterType.practice, emit);
-
-  Future<void> _onLearnChapterCompleted(
-    LearnChapterCompletedUserDataEvent event,
-    Emitter<UserDataState> emit,
-  ) => _saveChapterAsCompleted(event.lessonId, event.chapterIndex, ChapterType.learn, emit);
 }

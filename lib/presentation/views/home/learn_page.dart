@@ -1,10 +1,12 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/firebase/firestore_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
@@ -113,11 +115,19 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
                   ///   that the user has completed the chapter.
                   /// This will trigger the UserDataBloc to update the stored local data.
                   ///   This will also asynchronously update the server data.
-                  case LoadedLearnPageState(status: LearnPageStatus.finished):
+                  case LoadedLearnPageState(status: LearnPageStatus.finished, :var startDateTime):
+                    var duration = DateTime.now().difference(startDateTime);
+                    var correctAnswers = state.questions.length - state.mistakes;
+                    var totalAnswers = state.questions.length;
+
                     context.read<UserDataBloc>().add(
-                      LearnChapterCompletedUserDataEvent(
+                      ChapterCompletedUserDataEvent(
+                        chapterType: ChapterType.learn,
                         lessonId: bloc.loadedState.lesson.id,
                         chapterIndex: bloc.loadedState.chapterIndex,
+                        correctAnswers: correctAnswers,
+                        totalAnswers: totalAnswers,
+                        duration: duration,
                       ),
                     );
 
@@ -125,6 +135,9 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
                     if (context.canPop()) {
                       context.pop();
                     } else {
+                      if (kDebugMode) {
+                        print("Going to lesson: ${bloc.loadedState.lesson.id}.");
+                      }
                       context.goNamed(
                         AppRoutes.lesson,
                         pathParameters: {"lessonId": bloc.loadedState.lesson.id},

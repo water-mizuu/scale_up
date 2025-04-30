@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
-import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/models/learn_chapter.dart";
+import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
@@ -37,6 +38,8 @@ class LearnTile extends StatelessWidget {
         leading: LeadingChapterIndex(index: chapterIndex, isCompleted: isComplete),
         title: Styles.body(chapter.name, fontSize: 14),
         onTap: () async {
+          HapticFeedback.selectionClick();
+
           var shouldPush = true;
           var isReview = false;
 

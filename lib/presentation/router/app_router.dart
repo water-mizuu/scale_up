@@ -75,6 +75,7 @@ final GoRouter router = GoRouter(
                 GoRoute(
                   path: ":id",
                   name: AppRoutes.lesson,
+                  parentNavigatorKey: _rootNavigatorKey,
                   builder: (context, state) {
                     var lessonId = state.pathParameters["id"];
                     assert(lessonId != null, "Lesson ID cannot be null");

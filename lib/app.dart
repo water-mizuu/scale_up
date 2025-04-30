@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -61,9 +62,14 @@ class _AppState extends State<App> {
               listeners: [
                 BlocListener<UserDataBloc, UserDataState>(
                   bloc: userDataBloc,
+                  listenWhen: (p, c) => p.status != c.status,
                   listener: (context, state) async {
                     if (state.status == UserDataStatus.loaded) {
                       await Future.delayed(2.seconds);
+
+                      if (kDebugMode) {
+                        print("Going home due to user bloc change");
+                      }
                       router.goNamed(AppRoutes.home);
                     }
                   },
@@ -73,8 +79,14 @@ class _AppState extends State<App> {
                   listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
                   listener: (_, state) {
                     if (state.status == AuthenticationStatus.signedIn) {
+                      if (kDebugMode) {
+                        print("Going to splash as signed in.");
+                      }
                       router.go("/blank");
                     } else if (state.status == AuthenticationStatus.signedOut) {
+                      if (kDebugMode) {
+                        print("Going to login as signed out by token.");
+                      }
                       router.goNamed(AppRoutes.login);
                     }
                   },
@@ -106,6 +118,17 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: {
+            ...PageTransitionsTheme().builders,
+            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+          },
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.black,
+        ).copyWith(surface: const Color(0xFFF7F8F9)),
+      ),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,

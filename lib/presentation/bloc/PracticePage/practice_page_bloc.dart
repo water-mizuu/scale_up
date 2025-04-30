@@ -2,13 +2,12 @@ import "dart:async";
 import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
-import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
 
 class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   PracticePageBloc({
@@ -25,6 +24,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
        ) {
     on<PracticePageLessonLoaded>(_onLessonLoaded);
     on<PracticePageLessonLoadFailure>(_onLessonLoadFailure);
+
     on<PracticePageInputChanged>(_onInputChanged);
     on<PracticePageAnswerSubmitted>(_onAnswerSubmitted);
     on<PracticePageNextQuestionClicked>(_onNextQuestionClicked);
@@ -96,9 +96,10 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         chapterIndex: state.chapterIndex,
         questions: questions,
         questionIndex: 0,
-        answer: 0.toStringAsFixed(3),
+        answer: 0,
         progress: 0.0,
         mistakes: 0,
+        startDateTime: DateTime.now(),
       ),
     );
   }
@@ -116,9 +117,9 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   ) async {
     try {
       var expression = event.input;
-      var parsedInput = expression.evaluate({});
+      var parsedInput = expression.evaluate({}).toDouble();
 
-      emit(loadedState.copyWith(answer: parsedInput.toStringAsFixedMax(3)));
+      emit(loadedState.copyWith(answer: parsedInput));
     } on UnsupportedError {
       return;
     }
@@ -132,19 +133,29 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     await Future.delayed(Duration.zero);
 
     var (_, _, fromNum, exprs) = loadedState.questions[loadedState.questionIndex];
-    var answer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsFixedMax(3);
+    var correctAnswer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsPrecision(4);
+    var userAnswer = loadedState.answer?.toStringAsPrecision(4);
 
-    if (loadedState.answer == answer) {
-      emit(loadedState.copyWith(status: PracticePageStatus.correct));
-    } else {
+    if (userAnswer == correctAnswer) {
       emit(
-        loadedState.copyWith(
-          status: PracticePageStatus.incorrect,
-          correctAnswer: answer,
-          mistakes: loadedState.mistakes + 1,
-        ),
+        loadedState.copyWith(status: PracticePageStatus.correct, correctAnswer: correctAnswer),
       );
+
+      return;
     }
+
+    var questions = loadedState.questions;
+    var removed = questions[loadedState.questionIndex];
+    var newQuestions = questions.followedBy([removed]).toList();
+
+    emit(
+      loadedState.copyWith(
+        status: PracticePageStatus.incorrect,
+        correctAnswer: correctAnswer,
+        questions: newQuestions,
+        mistakes: loadedState.mistakes + 1,
+      ),
+    );
   }
 
   Future<void> _onNextQuestionClicked(
@@ -159,12 +170,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     Emitter<PracticePageState> emit,
   ) async {
     /// Since there is a calculator, the default answer is 0.
-    emit(
-      loadedState.copyWith(
-        status: PracticePageStatus.waitingForSubmission,
-        answer: 0.toStringAsFixed(3),
-      ),
-    );
+    emit(loadedState.copyWith(status: PracticePageStatus.waitingForSubmission, answer: 0));
   }
 
   void _onFromTransitionComplete(
@@ -172,6 +178,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     Emitter<PracticePageState> emit,
   ) async {
     var newQuestionIndex = loadedState.questionIndex + 1;
+    late var mistakes = loadedState.mistakes;
 
     if (newQuestionIndex >= loadedState.questions.length) {
       emit(loadedState.copyWith(status: PracticePageStatus.finished, progress: 1.0));
@@ -180,9 +187,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         loadedState.copyWith(
           status: PracticePageStatus.movingIn,
           questionIndex: newQuestionIndex,
-          progress:
-              (newQuestionIndex - loadedState.mistakes) /
-              (loadedState.questions.length - loadedState.mistakes),
+          progress: (newQuestionIndex - mistakes) / (loadedState.questions.length - mistakes),
         ),
       );
     }

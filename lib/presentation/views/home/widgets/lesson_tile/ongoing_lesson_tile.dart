@@ -1,16 +1,18 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/border_color.dart";
 import "package:scale_up/utils/title_case.dart";
 
-class NewerLessonTile extends StatelessWidget {
-  const NewerLessonTile({
+class OngoingLessonTile extends StatelessWidget {
+  const OngoingLessonTile({
     super.key,
     required this.lesson,
     this.onTap = _blank,
@@ -51,92 +53,75 @@ class NewerLessonTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chaptersDone =
-        context
-            .read<UserDataBloc>()
-            .state
-            .finishedChapters
-            .keys
-            .where((e) => e.startsWith(lesson.id))
-            .length;
+    var helper = context.read<LessonsHelper>();
+    var chaptersDone = context.select(
+      (UserDataBloc b) =>
+          b.state.finishedChapters.keys.where((e) => e.startsWith(lesson.id)).length,
+    );
 
     var totalChapters = lesson.learnChapters.length + lesson.practiceChapters.length;
     var progress = chaptersDone / totalChapters;
 
     var (:foreground, :background, :progressBackground) = getColors();
 
-    Widget child;
-    if (isSmall) {
-      child = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Styles.subtitle(lesson.name, fontSize: 20, color: foreground),
-          const SizedBox(height: 8.0),
-
-          Row(
-            children: [
-              Text(
-                "$chaptersDone / $totalChapters",
-                style: TextStyle(fontSize: 12, color: foreground),
+    Widget child = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Styles.subtitle(lesson.name, fontSize: 16, fontWeight: FontWeight.w600),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Styles.subtitle(
+                "Units: ${lesson.units.map((u) => helper.getUnit(u)!).map((u) => u.display ?? u.id.toTitleCase()).join(", ")}",
+                fontSize: 10,
               ),
-
-              const SizedBox(width: 24.0),
-              Text("Not yet", style: TextStyle(fontSize: 12, color: foreground)),
-            ],
-          ),
-
-          const SizedBox(height: 4.0),
-          FAProgressBar(
-            size: 4,
-            currentValue: (progress * 100).floorToDouble(),
-            borderRadius: BorderRadius.circular(24.0),
-            progressColor: foreground,
-            backgroundColor: progressBackground,
-            animatedDuration: const Duration(milliseconds: 150),
-          ),
-        ],
-      );
-    } else {
-      child = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Styles.subtitle(lesson.name, fontSize: 20, color: foreground),
-          Styles.subtitle(
-            "Units: ${lesson.units.map((s) => s.toTitleCase()).join(", ")}",
-            fontSize: 12,
-            color: foreground,
-          ),
-
-          const SizedBox(height: 16.0),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "$chaptersDone / $totalChapters chapters done",
-                style: TextStyle(fontSize: 12, color: foreground),
+            ),
+            SizedBox(width: 12.0),
+            Container(
+              height: 36.0,
+              decoration: BoxDecoration(
+                color: HSLColor.fromColor(foreground).withLightness(0.5).toColor(),
+                borderRadius: BorderRadius.circular(6.0),
               ),
-              Text("Not yet", style: TextStyle(fontSize: 12, color: foreground)),
-            ],
-          ),
+              child: AspectRatio(
+                aspectRatio: 1.0,
+                child: Center(child: Icon(Icons.keyboard_arrow_right, color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
 
-          const SizedBox(height: 4.0),
-          FAProgressBar(
-            size: 16,
-            currentValue: (progress * 100).floorToDouble(),
-            borderRadius: BorderRadius.circular(24.0),
-            progressColor: foreground,
-            backgroundColor: progressBackground,
-            animatedDuration: const Duration(milliseconds: 150),
-          ),
-        ],
-      );
-    }
+        Text(
+          "$chaptersDone / $totalChapters chapters",
+          style: TextStyle(fontSize: 12, color: foreground),
+        ),
 
-    return GestureDetector(
+        if (isHighlighted) const SizedBox(height: 8.0) else const SizedBox(height: 4.0),
+        Row(
+          children: [
+            Expanded(
+              child: FAProgressBar(
+                size: isHighlighted ? 12 : 4,
+                currentValue: (progress * 100).floorToDouble(),
+                borderRadius: BorderRadius.circular(24.0),
+                progressColor: foreground,
+                backgroundColor: progressBackground,
+                animatedDuration: const Duration(milliseconds: 150),
+              ),
+            ),
+            Expanded(child: const SizedBox()),
+          ],
+        ),
+      ],
+    );
+
+    child = GestureDetector(
       onTap: () {
         if (onTap == _blank) {
           return () {
+            HapticFeedback.selectionClick();
+
             context.pushNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
           };
         }
@@ -157,5 +142,7 @@ class NewerLessonTile extends StatelessWidget {
         child: child,
       ),
     );
+
+    return child;
   }
 }

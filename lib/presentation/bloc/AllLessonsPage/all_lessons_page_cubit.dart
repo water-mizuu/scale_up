@@ -3,6 +3,8 @@ import "dart:math";
 
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_state.dart";
 
 export "all_lessons_page_state.dart";
@@ -34,16 +36,12 @@ int _leveshtein(String s, String t) {
 }
 
 class AllLessonsPageCubit extends Cubit<AllLessonsPageState> {
-  AllLessonsPageCubit(List<Lesson> lessons)
-      : super(
-          AllLessonsPageState(
-            lessons: lessons,
-            categoriesByTitle: [],
-            keywords: {},
-          ),
-        ) {
+  AllLessonsPageCubit(this._lessonsHelper, List<Lesson> lessons)
+    : super(AllLessonsPageState(lessons: lessons, categoriesByTitle: [], keywords: {})) {
     _updateAllPartitions();
   }
+
+  final LessonsHelper _lessonsHelper;
 
   /// This function is used to populate the categoriesByTitle list.
   void _updateAllPartitions() {
@@ -55,22 +53,40 @@ class AllLessonsPageCubit extends Cubit<AllLessonsPageState> {
     ///     - In the name
     ///     - In the units involved
 
+    var unitMap = <(String, String), Unit?>{};
+    Unit? unitOf(String lesson, String unitId) {
+      return unitMap.putIfAbsent((lesson, unitId), () => _lessonsHelper.getUnit(unitId));
+    }
+
     var scores = <Lesson, int>{};
-    // var toRemove = <Lesson>{};
     for (var lesson in state.lessons) {
       var score = 1_000_000;
       for (var keyword in state.keywords) {
         score = min(score, _editDistance(lesson.category, keyword));
         score = min(score, _editDistance(lesson.name, keyword));
-        score = min(score, lesson.units.map((unit) => _editDistance(unit, keyword)).reduce(min));
+        score = min(
+          score,
+          lesson.units
+              .expand(
+                (unit) => [
+                  _editDistance(unit, keyword),
+                  if (unitOf(lesson.id, keyword)?.display case var display?)
+                    _editDistance(display.toLowerCase(), keyword),
+                ],
+              )
+              .reduce(min),
+        );
       }
       scores[lesson] = score;
     }
 
-    var sorted = allLessons //
-        .where((l) => scores.containsKey(l))
-        .toList() //
-      ..sort((a, b) => scores[a]!.compareTo(scores[b]!));
+    var minimumScore = scores.values.reduce(min);
+    var sorted =
+        allLessons //
+            .where((l) => scores.containsKey(l))
+            .where((l) => scores[l]! <= 1.5 * minimumScore)
+            .toList() //
+          ..sort((a, b) => scores[a]!.compareTo(scores[b]!));
 
     /// We now have all the lessons which match the keywords.
     /// We now need to group them by category.

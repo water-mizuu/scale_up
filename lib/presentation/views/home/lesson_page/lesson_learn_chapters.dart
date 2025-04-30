@@ -14,7 +14,7 @@ class LessonLearnChapters extends StatelessWidget {
       spacing: 8.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.hint("Learn the lesson:"),
+        Styles.subtitle("Learn", fontWeight: FontWeight.w600),
         Column(
           spacing: 8.0,
           mainAxisSize: MainAxisSize.min,

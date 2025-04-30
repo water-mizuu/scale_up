@@ -1,7 +1,7 @@
 import "package:freezed_annotation/freezed_annotation.dart";
-import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 
 part "learn_page_state.freezed.dart";
 
@@ -49,6 +49,7 @@ sealed class LearnPageState with _$LearnPageState {
     required double progress,
     required bool Function(Object?, Object?) comparison,
     required int mistakes,
+    required DateTime startDateTime,
     Object? answer,
     Object? correctAnswer,
     String? error,

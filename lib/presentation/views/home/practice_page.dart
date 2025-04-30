@@ -3,6 +3,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
+import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
@@ -11,7 +12,7 @@ import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_page_check_button.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_check_button.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/snackbar_util.dart";
@@ -84,14 +85,24 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                   ///   that the user has completed the chapter.
                   /// This will trigger the UserDataBloc to update the stored local data.
                   ///   This will also asynchronously update the server data.
-                  case LoadedPracticePageState(status: PracticePageStatus.finished):
+                  case LoadedPracticePageState(
+                    status: PracticePageStatus.finished,
+                    :var startDateTime,
+                  ):
+                    var duration = DateTime.now().difference(startDateTime);
+                    var correctAnswers = state.questions.length - state.mistakes;
+                    var totalAnswers = state.questions.length;
+
                     context.read<UserDataBloc>().add(
-                      PracticeChapterCompletedUserDataEvent(
+                      ChapterCompletedUserDataEvent(
+                        chapterType: ChapterType.practice,
                         lessonId: bloc.loadedState.lesson.id,
-                        chapterIndex: bloc.state.chapterIndex,
+                        chapterIndex: bloc.loadedState.chapterIndex,
+                        correctAnswers: correctAnswers,
+                        totalAnswers: totalAnswers,
+                        duration: duration,
                       ),
                     );
-
                   case LoadedPracticePageState(status: PracticePageStatus.leaving):
                     if (context.canPop()) {
                       context.pop();
@@ -192,7 +203,7 @@ class ContinueMessage extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: PracticePageCheckButton(),
+                child: PracticeCheckButton(),
               ),
             ],
           );

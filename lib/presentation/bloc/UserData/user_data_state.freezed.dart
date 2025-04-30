@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDataState {
 
- User? get user; UserDataStatus get status; Map<String, DateTime> get finishedChapters;
+ User? get user; UserDataStatus get status; Map<String, DateTime> get finishedChapters; Duration get totalTimeInLessons; int get correctAnswers; int get totalAnswers;
 /// Create a copy of UserDataState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $UserDataStateCopyWith<UserDataState> get copyWith => _$UserDataStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDataState&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.finishedChapters, finishedChapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDataState&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.finishedChapters, finishedChapters)&&(identical(other.totalTimeInLessons, totalTimeInLessons) || other.totalTimeInLessons == totalTimeInLessons)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.totalAnswers, totalAnswers) || other.totalAnswers == totalAnswers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,status,const DeepCollectionEquality().hash(finishedChapters));
+int get hashCode => Object.hash(runtimeType,user,status,const DeepCollectionEquality().hash(finishedChapters),totalTimeInLessons,correctAnswers,totalAnswers);
 
 @override
 String toString() {
-  return 'UserDataState(user: $user, status: $status, finishedChapters: $finishedChapters)';
+  return 'UserDataState(user: $user, status: $status, finishedChapters: $finishedChapters, totalTimeInLessons: $totalTimeInLessons, correctAnswers: $correctAnswers, totalAnswers: $totalAnswers)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $UserDataStateCopyWith<$Res>  {
   factory $UserDataStateCopyWith(UserDataState value, $Res Function(UserDataState) _then) = _$UserDataStateCopyWithImpl;
 @useResult
 $Res call({
- User? user, UserDataStatus status, Map<String, DateTime> finishedChapters
+ User? user, UserDataStatus status, Map<String, DateTime> finishedChapters, Duration totalTimeInLessons, int correctAnswers, int totalAnswers
 });
 
 
@@ -63,12 +63,15 @@ class _$UserDataStateCopyWithImpl<$Res>
 
 /// Create a copy of UserDataState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = freezed,Object? status = null,Object? finishedChapters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = freezed,Object? status = null,Object? finishedChapters = null,Object? totalTimeInLessons = null,Object? correctAnswers = null,Object? totalAnswers = null,}) {
   return _then(_self.copyWith(
 user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UserDataStatus,finishedChapters: null == finishedChapters ? _self.finishedChapters : finishedChapters // ignore: cast_nullable_to_non_nullable
-as Map<String, DateTime>,
+as Map<String, DateTime>,totalTimeInLessons: null == totalTimeInLessons ? _self.totalTimeInLessons : totalTimeInLessons // ignore: cast_nullable_to_non_nullable
+as Duration,correctAnswers: null == correctAnswers ? _self.correctAnswers : correctAnswers // ignore: cast_nullable_to_non_nullable
+as int,totalAnswers: null == totalAnswers ? _self.totalAnswers : totalAnswers // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -79,7 +82,7 @@ as Map<String, DateTime>,
 
 
 class _UserDataState extends UserDataState {
-  const _UserDataState({required this.user, required this.status, required final  Map<String, DateTime> finishedChapters}): _finishedChapters = finishedChapters,super._();
+  const _UserDataState({required this.user, required this.status, required final  Map<String, DateTime> finishedChapters, required this.totalTimeInLessons, required this.correctAnswers, required this.totalAnswers}): _finishedChapters = finishedChapters,super._();
   
 
 @override final  User? user;
@@ -91,6 +94,9 @@ class _UserDataState extends UserDataState {
   return EqualUnmodifiableMapView(_finishedChapters);
 }
 
+@override final  Duration totalTimeInLessons;
+@override final  int correctAnswers;
+@override final  int totalAnswers;
 
 /// Create a copy of UserDataState
 /// with the given fields replaced by the non-null parameter values.
@@ -102,16 +108,16 @@ _$UserDataStateCopyWith<_UserDataState> get copyWith => __$UserDataStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDataState&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._finishedChapters, _finishedChapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDataState&&(identical(other.user, user) || other.user == user)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._finishedChapters, _finishedChapters)&&(identical(other.totalTimeInLessons, totalTimeInLessons) || other.totalTimeInLessons == totalTimeInLessons)&&(identical(other.correctAnswers, correctAnswers) || other.correctAnswers == correctAnswers)&&(identical(other.totalAnswers, totalAnswers) || other.totalAnswers == totalAnswers));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,user,status,const DeepCollectionEquality().hash(_finishedChapters));
+int get hashCode => Object.hash(runtimeType,user,status,const DeepCollectionEquality().hash(_finishedChapters),totalTimeInLessons,correctAnswers,totalAnswers);
 
 @override
 String toString() {
-  return 'UserDataState(user: $user, status: $status, finishedChapters: $finishedChapters)';
+  return 'UserDataState(user: $user, status: $status, finishedChapters: $finishedChapters, totalTimeInLessons: $totalTimeInLessons, correctAnswers: $correctAnswers, totalAnswers: $totalAnswers)';
 }
 
 
@@ -122,7 +128,7 @@ abstract mixin class _$UserDataStateCopyWith<$Res> implements $UserDataStateCopy
   factory _$UserDataStateCopyWith(_UserDataState value, $Res Function(_UserDataState) _then) = __$UserDataStateCopyWithImpl;
 @override @useResult
 $Res call({
- User? user, UserDataStatus status, Map<String, DateTime> finishedChapters
+ User? user, UserDataStatus status, Map<String, DateTime> finishedChapters, Duration totalTimeInLessons, int correctAnswers, int totalAnswers
 });
 
 
@@ -139,12 +145,15 @@ class __$UserDataStateCopyWithImpl<$Res>
 
 /// Create a copy of UserDataState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = freezed,Object? status = null,Object? finishedChapters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? user = freezed,Object? status = null,Object? finishedChapters = null,Object? totalTimeInLessons = null,Object? correctAnswers = null,Object? totalAnswers = null,}) {
   return _then(_UserDataState(
 user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as UserDataStatus,finishedChapters: null == finishedChapters ? _self._finishedChapters : finishedChapters // ignore: cast_nullable_to_non_nullable
-as Map<String, DateTime>,
+as Map<String, DateTime>,totalTimeInLessons: null == totalTimeInLessons ? _self.totalTimeInLessons : totalTimeInLessons // ignore: cast_nullable_to_non_nullable
+as Duration,correctAnswers: null == correctAnswers ? _self.correctAnswers : correctAnswers // ignore: cast_nullable_to_non_nullable
+as int,totalAnswers: null == totalAnswers ? _self.totalAnswers : totalAnswers // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

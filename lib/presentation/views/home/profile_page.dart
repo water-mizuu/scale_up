@@ -1,4 +1,5 @@
 import "package:flutter/material.dart" hide SearchBar;
+import "package:flutter/services.dart";
 import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
@@ -85,6 +86,8 @@ class ProfilePageView extends StatelessWidget {
                       textColor: Colors.redAccent,
                       iconColor: Colors.redAccent,
                       onTap: () async {
+                        HapticFeedback.selectionClick();
+
                         var confirmation = await context.showConfirmationDialog(
                           title: "Log out?",
                           message: "Are you sure you want to log out?",
