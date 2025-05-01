@@ -52,7 +52,7 @@ jobs:
 
       # 5. Build the web release
       - name: Build web release
-        run: flutter build web --release --base-href /${{ github.repository }} # adjust base-href if needed :contentReference[oaicite:6]{index=6}
+        run: flutter build web --release --base-href /${{ github.repository }}/ # adjust base-href if needed :contentReference[oaicite:6]{index=6}
 
       # 6. Deploy to gh-pages branch
       - name: Deploy to GitHub Pages
