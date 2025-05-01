@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LessonPageState {
 
- Lesson get lesson;
+ Lesson get lesson; UnitGroup? get localUnitGroup;
 /// Create a copy of LessonPageState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $LessonPageStateCopyWith<LessonPageState> get copyWith => _$LessonPageStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonPageState&&(identical(other.lesson, lesson) || other.lesson == lesson));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LessonPageState&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.localUnitGroup, localUnitGroup) || other.localUnitGroup == localUnitGroup));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lesson);
+int get hashCode => Object.hash(runtimeType,lesson,localUnitGroup);
 
 @override
 String toString() {
-  return 'LessonPageState(lesson: $lesson)';
+  return 'LessonPageState(lesson: $lesson, localUnitGroup: $localUnitGroup)';
 }
 
 
@@ -46,11 +46,11 @@ abstract mixin class $LessonPageStateCopyWith<$Res>  {
   factory $LessonPageStateCopyWith(LessonPageState value, $Res Function(LessonPageState) _then) = _$LessonPageStateCopyWithImpl;
 @useResult
 $Res call({
- Lesson lesson
+ Lesson lesson, UnitGroup? localUnitGroup
 });
 
 
-$LessonCopyWith<$Res> get lesson;
+$LessonCopyWith<$Res> get lesson;$UnitGroupCopyWith<$Res>? get localUnitGroup;
 
 }
 /// @nodoc
@@ -63,10 +63,11 @@ class _$LessonPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonPageState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lesson = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lesson = null,Object? localUnitGroup = freezed,}) {
   return _then(_self.copyWith(
 lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
-as Lesson,
+as Lesson,localUnitGroup: freezed == localUnitGroup ? _self.localUnitGroup : localUnitGroup // ignore: cast_nullable_to_non_nullable
+as UnitGroup?,
   ));
 }
 /// Create a copy of LessonPageState
@@ -78,6 +79,18 @@ $LessonCopyWith<$Res> get lesson {
   return $LessonCopyWith<$Res>(_self.lesson, (value) {
     return _then(_self.copyWith(lesson: value));
   });
+}/// Create a copy of LessonPageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UnitGroupCopyWith<$Res>? get localUnitGroup {
+    if (_self.localUnitGroup == null) {
+    return null;
+  }
+
+  return $UnitGroupCopyWith<$Res>(_self.localUnitGroup!, (value) {
+    return _then(_self.copyWith(localUnitGroup: value));
+  });
 }
 }
 
@@ -86,10 +99,11 @@ $LessonCopyWith<$Res> get lesson {
 
 
 class _LessonPageState extends LessonPageState {
-  const _LessonPageState({required this.lesson}): super._();
+  const _LessonPageState({required this.lesson, this.localUnitGroup}): super._();
   
 
 @override final  Lesson lesson;
+@override final  UnitGroup? localUnitGroup;
 
 /// Create a copy of LessonPageState
 /// with the given fields replaced by the non-null parameter values.
@@ -101,16 +115,16 @@ _$LessonPageStateCopyWith<_LessonPageState> get copyWith => __$LessonPageStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonPageState&&(identical(other.lesson, lesson) || other.lesson == lesson));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LessonPageState&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.localUnitGroup, localUnitGroup) || other.localUnitGroup == localUnitGroup));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lesson);
+int get hashCode => Object.hash(runtimeType,lesson,localUnitGroup);
 
 @override
 String toString() {
-  return 'LessonPageState(lesson: $lesson)';
+  return 'LessonPageState(lesson: $lesson, localUnitGroup: $localUnitGroup)';
 }
 
 
@@ -121,11 +135,11 @@ abstract mixin class _$LessonPageStateCopyWith<$Res> implements $LessonPageState
   factory _$LessonPageStateCopyWith(_LessonPageState value, $Res Function(_LessonPageState) _then) = __$LessonPageStateCopyWithImpl;
 @override @useResult
 $Res call({
- Lesson lesson
+ Lesson lesson, UnitGroup? localUnitGroup
 });
 
 
-@override $LessonCopyWith<$Res> get lesson;
+@override $LessonCopyWith<$Res> get lesson;@override $UnitGroupCopyWith<$Res>? get localUnitGroup;
 
 }
 /// @nodoc
@@ -138,10 +152,11 @@ class __$LessonPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LessonPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lesson = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lesson = null,Object? localUnitGroup = freezed,}) {
   return _then(_LessonPageState(
 lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
-as Lesson,
+as Lesson,localUnitGroup: freezed == localUnitGroup ? _self.localUnitGroup : localUnitGroup // ignore: cast_nullable_to_non_nullable
+as UnitGroup?,
   ));
 }
 
@@ -153,6 +168,18 @@ $LessonCopyWith<$Res> get lesson {
   
   return $LessonCopyWith<$Res>(_self.lesson, (value) {
     return _then(_self.copyWith(lesson: value));
+  });
+}/// Create a copy of LessonPageState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UnitGroupCopyWith<$Res>? get localUnitGroup {
+    if (_self.localUnitGroup == null) {
+    return null;
+  }
+
+  return $UnitGroupCopyWith<$Res>(_self.localUnitGroup!, (value) {
+    return _then(_self.copyWith(localUnitGroup: value));
   });
 }
 }

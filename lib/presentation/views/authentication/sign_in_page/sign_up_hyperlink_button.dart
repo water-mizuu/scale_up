@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:scale_up/presentation/router/app_router.dart";
@@ -21,14 +22,18 @@ class SignUpHyperlinkButton extends StatelessWidget {
               TextSpan(
                 text: "Sign Up",
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    router.goNamed(AppRoutes.signUp);
-                  },
+                recognizer:
+                    TapGestureRecognizer()
+                      ..onTap = () {
+                        if (kDebugMode) {
+                          print("Going to sign up as clicked by user.");
+                        }
+                        router.goNamed(AppRoutes.signUp);
+                      },
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

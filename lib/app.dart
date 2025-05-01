@@ -1,5 +1,7 @@
 import "dart:async";
+import "dart:ui";
 
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
@@ -19,59 +21,90 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late final FirestoreHelper _firestoreHelper;
+  static const FirestoreHelper _firestoreHelper = FirestoreHelper();
+
+  late final Future<LessonsHelper> _lessonHelperFuture;
   late final FirebaseAuthHelper _firebaseAuthHelper;
-  late final LessonsHelper _lessonRepository;
 
   @override
   void initState() {
     super.initState();
 
-    _firestoreHelper = const FirestoreHelper();
+    _lessonHelperFuture = LessonsHelper.createAsync();
     _firebaseAuthHelper = FirebaseAuthHelper();
-    _lessonRepository = LessonsHelper();
-    unawaited(_lessonRepository.initialize());
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        InheritedProvider.value(value: _lessonRepository),
-        BlocProvider(create: (_) => AuthenticationBloc(repository: _firebaseAuthHelper)),
-        BlocProvider(create: (_) => UserDataBloc(firestoreHelper: _firestoreHelper)),
-      ],
-      builder: (context, _) {
-        late var authenticationBloc = context.read<AuthenticationBloc>();
-        late var userDataBloc = context.read<UserDataBloc>();
+    return FutureBuilder(
+      future: _lessonHelperFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("Error: ${snapshot.error}"));
+        }
 
-        /// We only want to listen if firebase itself initiated a token change.
-        return BlocListener<AuthenticationBloc, AuthenticationState>(
-          bloc: authenticationBloc,
-          listenWhen: (previous, _) => previous.status == AuthenticationStatus.tokenChanging,
-          listener: (context, state) {
-            // if (state.status == AuthenticationStatus.signedIn) {
-            //   router.goNamed(AppRoutes.home);
-            // } else if (state.status == AuthenticationStatus.signedOut) {
-            //   // Navigate to the login screen
-            //   router.goNamed(AppRoutes.login);
-            // }
-            router.goNamed(AppRoutes.login);
+        return MultiProvider(
+          providers: [
+            InheritedProvider.value(value: snapshot.data!),
+            BlocProvider(create: (_) => AuthenticationBloc(repository: _firebaseAuthHelper)),
+            BlocProvider(create: (_) => UserDataBloc(firestoreHelper: _firestoreHelper)),
+          ],
+          builder: (context, _) {
+            late var authenticationBloc = context.read<AuthenticationBloc>();
+            late var userDataBloc = context.read<UserDataBloc>();
+
+            /// We only want to listen if firebase itself initiated a token change.
+            return MultiBlocListener(
+              listeners: [
+                BlocListener<UserDataBloc, UserDataState>(
+                  bloc: userDataBloc,
+                  listenWhen: (p, c) => p.status != c.status,
+                  listener: (context, state) async {
+                    if (state.status == UserDataStatus.loaded && state.user != null) {
+                      if (kDebugMode) {
+                        print("Going home due to user bloc change");
+                      }
+                      router.goNamed(AppRoutes.home);
+                    }
+                  },
+                ),
+
+                /// Hand
+                BlocListener<AuthenticationBloc, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
+                  listener: (_, state) {
+                    if (state.status == AuthenticationStatus.signedIn) {
+                      if (kDebugMode) {
+                        print("Going to splash as signed in.");
+                      }
+                      router.go("/blank");
+                    } else if (state.status == AuthenticationStatus.signedOut) {
+                      if (kDebugMode) {
+                        print("Going to login as signed out by token.");
+                      }
+                      router.goNamed(AppRoutes.login);
+                    }
+                  },
+                ),
+                BlocListener<AuthenticationBloc, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
+                  listener: (context, state) {
+                    if (state.user case var user?) {
+                      userDataBloc.add(SignedInUserDataEvent(user: user));
+                    } else {
+                      userDataBloc.add(SignedOutUserDataEvent());
+                    }
+                  },
+                ),
+              ],
+              child: AppView(),
+            );
           },
-
-          /// This listener is for when a user logs in or logs out.
-          child: BlocListener<AuthenticationBloc, AuthenticationState>(
-            bloc: authenticationBloc,
-            listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
-            listener: (context, state) {
-              if (state.user case var user?) {
-                userDataBloc.add(SignedInUserDataEvent(user: user));
-              } else {
-                userDataBloc.add(SignedOutUserDataEvent());
-              }
-            },
-            child: AppView(),
-          ),
         );
       },
     );
@@ -84,6 +117,20 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.black,
+        ).copyWith(surface: const Color(0xFFF7F8F9)),
+      ),
+
+      scrollBehavior: MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown,
+        },
+      ),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,

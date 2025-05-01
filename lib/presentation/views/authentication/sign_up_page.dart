@@ -9,7 +9,7 @@ import "package:scale_up/presentation/views/authentication/sign_up_page/image_co
 import "package:scale_up/presentation/views/authentication/sign_up_page/page_header.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_button.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_field_group.dart";
-import "package:scale_up/utils/snackbar_util.dart";
+import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -24,22 +24,21 @@ class SignUpPage extends StatelessWidget {
       child: BlocListener<AuthenticationBloc, AuthenticationState>(
         listenWhen: (previous, current) => previous.status == AuthenticationStatus.signingUp,
         listener: (context, state) {
-          if (state
-              case AuthenticationState(
-                error: FirebaseAuthException(:var code),
-                status: AuthenticationStatus.signUpFailure,
-              )) {
+          if (state case AuthenticationState(
+            error: FirebaseAuthException(:var code),
+            status: AuthenticationStatus.signUpFailure,
+          )) {
             var message = switch (code) {
               "weak-password" => //
-                "The password is too weak. Please try a stronger one!",
+              "The password is too weak. Please try a stronger one!",
               "email-already-in-use" =>
                 "The email is already connected with another account. Please try another email.",
               "invalid-email" => //
-                "The email address is not valid. Please check and try again.",
+              "The email address is not valid. Please check and try again.",
               "operation-not-allowed" => //
-                "Email/password accounts are not enabled. Please contact support.",
+              "Email/password accounts are not enabled. Please contact support.",
               "network-request-failed" => //
-                "A network error occurred. Please check your connection and try again.",
+              "A network error occurred. Please check your connection and try again.",
               _ => "An unknown error occurred. Please try again. Code: $code",
             };
 
@@ -77,11 +76,7 @@ class SignUpPageView extends StatelessWidget {
             key: context.read<GlobalKey<FormState>>(),
             child: Column(
               spacing: 16.0,
-              children: [
-                ImageContainer(),
-                SignUpFieldGroup(),
-                SignUpButton(),
-              ],
+              children: [ImageContainer(), SignUpFieldGroup(), SignUpButton()],
             ),
           ),
         ),

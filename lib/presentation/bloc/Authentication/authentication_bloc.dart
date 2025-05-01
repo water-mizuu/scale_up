@@ -1,3 +1,5 @@
+import "package:flutter/foundation.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
@@ -23,21 +25,30 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   final FirebaseAuthHelper _repository;
 
+  @override
+  void onEvent(AuthenticationEvent event) {
+    if (kDebugMode) {
+      print("$AuthenticationBloc: $event");
+    }
+
+    super.onEvent(event);
+  }
+
   void _onEmailSignup(
     EmailSignUpAuthenticationEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null));
+    emit(state.copyWith(status: AuthenticationStatus.signingUp, error: null, user: null));
 
     try {
-      await _repository.emailSignUp(
+      var user = await _repository.emailSignUp(
         username: event.username,
         email: event.email,
         password: event.password,
       );
 
       // Simulate successful authentication
-      emit(state.copyWith(status: AuthenticationStatus.signedUp, error: null));
+      emit(state.copyWith(status: AuthenticationStatus.signedUp, error: null, user: user));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.signUpFailure, error: e));
     }
@@ -53,6 +64,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       var user = await _repository
           .emailSignIn(email: event.email, password: event.password)
           .then((u) => u!);
+
+      if (kDebugMode) {
+        print("*" * 100);
+        print(user);
+        print("*" * 100);
+      }
 
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
@@ -72,6 +89,16 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       // Simulate successful authentication
       emit(state.copyWith(status: AuthenticationStatus.signedIn, error: null, user: user));
+    } on PlatformException catch (e) {
+      if (e case PlatformException(code: "sign_in_failed", :var message)) {
+        if (kDebugMode) {
+          print("*" * 100);
+          print((message));
+          print("*" * 100);
+        }
+      } else {
+        rethrow;
+      }
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.signInFailure, error: e));
     }

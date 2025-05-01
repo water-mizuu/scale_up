@@ -36,10 +36,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,shortcut);
 
-@override
-String toString() {
-  return 'Unit(id: $id, shortcut: $shortcut)';
-}
 
 
 }
@@ -107,10 +103,6 @@ bool operator ==(Object other) {
 @override
 int get hashCode => Object.hash(runtimeType,id,shortcut);
 
-@override
-String toString() {
-  return 'Unit(id: $id, shortcut: $shortcut)';
-}
 
 
 }

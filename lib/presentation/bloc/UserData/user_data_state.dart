@@ -12,6 +12,9 @@ abstract class UserDataState with _$UserDataState {
   const factory UserDataState({
     required User? user,
     required UserDataStatus status,
-    required Set<String> finishedChapters,
+    required Map<String, DateTime> finishedChapters,
+    required Duration totalTimeInLessons,
+    required int correctAnswers,
+    required int totalAnswers,
   }) = _UserDataState;
 }

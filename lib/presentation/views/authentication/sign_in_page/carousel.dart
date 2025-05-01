@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_bloc.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -36,14 +37,15 @@ class _CarouselState extends State<Carousel> {
         children: [
           Expanded(
             child: PageView.builder(
-              onPageChanged: (pageposition) =>
-                  context.read<SignInPageBloc>().add(LoginPageFormSwiped(pageposition)),
+              onPageChanged:
+                  (pageposition) =>
+                      context.read<SignInPageBloc>().add(LoginPageFormSwiped(pageposition)),
               itemCount: attributes.length,
               itemBuilder: (context, index) {
                 return CarouselCard(attribute: attributes[index]);
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -58,16 +60,8 @@ class CarouselCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CardContent(
-          title: attribute.title,
-          description: attribute.description,
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(56.0),
-            child: attribute.image,
-          ),
-        ),
+        CardContent(title: attribute.title, description: attribute.description),
+        Expanded(child: Padding(padding: EdgeInsets.all(56.0), child: attribute.image)),
       ],
     );
   }
@@ -81,11 +75,7 @@ class Pagination extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 8.0,
-      children: [
-        PaginationCircle(p: 0),
-        PaginationCircle(p: 1),
-        PaginationCircle(p: 2),
-      ],
+      children: [PaginationCircle(p: 0), PaginationCircle(p: 1), PaginationCircle(p: 2)],
     );
   }
 }
@@ -101,17 +91,22 @@ class PaginationCircle extends StatelessWidget {
       builder: (context, state) {
         if (state.carouselPosition == p) {
           return Container(
-              height: 8,
-              width: 16,
-              decoration: BoxDecoration(
-                  color: Colors.indigo, borderRadius: const BorderRadius.all(Radius.circular(25))));
+            height: 8,
+            width: 16,
+            decoration: BoxDecoration(
+              color: Colors.indigo,
+              borderRadius: const BorderRadius.all(Radius.circular(25)),
+            ),
+          );
         } else {
           return Container(
-              height: 8,
-              width: 8,
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: const BorderRadius.all(Radius.circular(25))));
+            height: 8,
+            width: 8,
+            decoration: BoxDecoration(
+              color: Colors.white.borderColor,
+              borderRadius: const BorderRadius.all(Radius.circular(25)),
+            ),
+          );
         }
       },
     );
@@ -131,16 +126,8 @@ class CardContent extends StatelessWidget {
       child: Column(
         spacing: 4.0,
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 20.0),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            description,
-            style: TextStyle(fontSize: 12.0),
-            textAlign: TextAlign.center,
-          ),
+          Text(title, style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center),
+          Text(description, style: TextStyle(fontSize: 12.0), textAlign: TextAlign.center),
         ],
       ),
     );
