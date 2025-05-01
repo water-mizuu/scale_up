@@ -134,7 +134,6 @@ units_present:
       - from: celsius
         to: fahrenheit
         formula: "(from * 1.8) + 32"
-        constants: []
       - from: celsius
         to: kelvin
         formula: from + 273.15
@@ -175,6 +174,60 @@ units_present:
         shortcut: d
       - id: year
         shortcut: "y"
+  - type: heat_energy
+    conversions:
+      - from: joule
+        to: calorie
+        formula: from / 4.184
+      - from: joule
+        to: kilojoule
+        formula: from / 1000
+      - from: calorie
+        to: kilocalorie
+        formula: from / 1000
+      - from: kilojoule
+        to: btu
+        formula: from * 0.948
+    units:
+      - id: joule
+        shortcut: J
+      - id: calorie
+        shortcut: cal
+      - id: kilojoule
+        shortcut: kJ
+      - id: kilocalorie
+        shortcut: kcal
+      - id: btu
+        shortcut: BTU
+  - type: force_conversions
+    conversions:
+      - from: mass
+        to: newton
+        formula: from * acceleration
+        parameters:
+          - id: acceleration
+            value:
+              minimum: 1
+              maximum: 100
+      - from: kilogram
+        to: newton
+        formula: from * acceleration
+        parameters:
+          - id: acceleration
+            value:
+              minimum: 1
+              maximum: 100
+      - from: newton
+        to:
+    units:
+      - id: newton
+        shortcut: N
+      - id: kilograms
+        shortcut: kg
+      - id: grams
+        shortcut: g
+      - id: acceleration
+        shortcut: m/s²
 lessons:
   - id: length
     category: Tangible Measurements
@@ -495,3 +548,57 @@ lessons:
           - minute
           - hour
           - day
+  - id: heat_energy
+    category: Heat or Temperature
+    name: Heat Energy
+    icon: local_fire_department
+    description: These are the measure of the energy transferred between two systems due to a temperature difference. This is different from temperature, which is the measure of the average kinetic energy of particles in a substance.
+    units_type: heat_energy
+    color: "#8c564b"
+    units:
+      - joule
+      - calorie
+      - kilojoule
+      - kilocalorie
+      - btu
+    learn:
+      - type: direct
+        name: Direct Conversion -- 1
+        units:
+          - joule
+          - calorie
+          - kilojoule
+      - type: direct
+        name: Direct Conversion -- 2
+        units:
+          - kilojoule
+          - kilocalorie
+          - btu
+      - type: indirect
+        name: Indirect Conversions
+        units:
+          - joule
+          - calorie
+          - kilojoule
+          - kilocalorie
+          - btu
+
+    practice:
+      - name: Basic Conversion -- 1
+        question_count: 12
+        units:
+          - joule
+          - calorie
+      - name: Basic Conversion -- 2
+        question_count: 12
+        units:
+          - kilojoule
+          - kilocalorie
+      - name: Full Conversion
+        question_count: 12
+        units:
+          - joule
+          - calorie
+          - kilojoule
+          - kilocalorie
+          - btu

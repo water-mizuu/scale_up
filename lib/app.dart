@@ -42,6 +42,7 @@ class _AppState extends State<App> {
         if (snapshot.hasError) {
           if (kDebugMode) {
             print("Error loading lessons: ${snapshot.error}");
+            print(snapshot.stackTrace);
           }
         }
 
