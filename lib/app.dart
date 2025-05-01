@@ -57,7 +57,6 @@ class _AppState extends State<App> {
             late var userDataBloc = context.read<UserDataBloc>();
 
             /// We only want to listen if firebase itself initiated a token change.
-
             return MultiBlocListener(
               listeners: [
                 BlocListener<UserDataBloc, UserDataState>(
