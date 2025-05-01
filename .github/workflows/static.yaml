@@ -59,4 +59,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          name: release
+          artifact_name: release
