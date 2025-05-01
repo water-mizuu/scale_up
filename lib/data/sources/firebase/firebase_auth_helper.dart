@@ -9,7 +9,7 @@ import "package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart" 
 
 abstract class FirebaseAuthHelper {
   factory FirebaseAuthHelper() {
-    if (!kIsWeb && Platform.isWindows) {
+    if (kIsWeb || Platform.isWindows) {
       return _FirebaseAuthHelperWindows();
     } else {
       return _FirebaseAuthHelperNotWindows();
@@ -108,7 +108,7 @@ class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
           print(decoded);
         }
       }
-    } else if (Platform.isAndroid) {
+    } else if (kIsWeb || Platform.isAndroid) {
       var jsonString = await rootBundle.loadString("secrets/android.json");
 
       if (jsonDecode(jsonString) case {

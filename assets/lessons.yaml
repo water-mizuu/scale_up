@@ -199,35 +199,6 @@ units_present:
         shortcut: kcal
       - id: btu
         shortcut: BTU
-  - type: force_conversions
-    conversions:
-      - from: mass
-        to: newton
-        formula: from * acceleration
-        parameters:
-          - id: acceleration
-            value:
-              minimum: 1
-              maximum: 100
-      - from: kilogram
-        to: newton
-        formula: from * acceleration
-        parameters:
-          - id: acceleration
-            value:
-              minimum: 1
-              maximum: 100
-      - from: newton
-        to:
-    units:
-      - id: newton
-        shortcut: N
-      - id: kilograms
-        shortcut: kg
-      - id: grams
-        shortcut: g
-      - id: acceleration
-        shortcut: m/s²
 lessons:
   - id: length
     category: Tangible Measurements

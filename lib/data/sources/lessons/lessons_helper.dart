@@ -43,7 +43,7 @@ class LessonsHelper {
   }
 
   dynamic yamlDecode(String object) {
-    var yaml = loadYaml(object);
+    var yaml = loadYaml(object) as YamlMap;
 
     return deepCastYaml(yaml);
   }
@@ -54,13 +54,13 @@ class LessonsHelper {
     // // Parse the JSON string into a Dart object
 
     var yamlString = await rootBundle.loadString("assets/lessons.yaml");
-    var data = await compute(yamlDecode, yamlString) as YamlMap;
+    var data = await compute(yamlDecode, yamlString) as Map<String, dynamic>;
 
     // Use the parsed data
     var {
       "lessons": List<dynamic> lessons, //
       "units_present": List<dynamic> unitsPresent,
-    } = data.value as Map<String, dynamic>;
+    } = data;
 
     var lessonList = lessons.cast<Map<String, dynamic>>().map(Lesson.fromJson).toList();
 
