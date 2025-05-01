@@ -44,11 +44,11 @@ jobs:
 
       # 3. Enable web support
       - name: Enable Flutter web
-        run: flutter config --enable-web :contentReference[oaicite:4]{index=4}
+        run: flutter config --enable-web
 
       # 4. Install dependencies
       - name: Get Flutter packages
-        run: flutter pub get :contentReference[oaicite:5]{index=5}
+        run: flutter pub get
 
       # 5. Build the web release
       - name: Build web release
