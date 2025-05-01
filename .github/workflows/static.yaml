@@ -62,6 +62,6 @@ jobs:
           publish_branch: gh-pages                     # branch to push built site :contentReference[oaicite:9]{index=9}
           publish_dir: ./build/web                     # directory containing Flutter output :contentReference[oaicite:10]{index=10}
           force_orphan: true
-          user_name: 'github-ci[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          user_name: 'water-mizuu'
+          user_email: 'mizu.github.em@gmail.com'
           commit_message: 'Publish to gh-pages'
