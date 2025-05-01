@@ -64,7 +64,7 @@ class PracticeTile extends StatelessWidget {
                 .read<UserDataBloc>()
                 .state
                 .finishedChapters
-                .containsKey(ChapterType.learn.stringify(lessonId, chapterIndex - 1));
+                .containsKey(ChapterType.practice.stringify(lessonId, chapterIndex - 1));
 
             if (previousChapter == null) {
               // No previous chapter, so we can push without confirmation

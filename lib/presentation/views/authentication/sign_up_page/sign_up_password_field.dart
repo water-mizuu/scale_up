@@ -1,7 +1,26 @@
 import "package:flutter/material.dart";
+import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
 import "package:scale_up/presentation/bloc/SignUpPage/signup_page_validator.dart";
+
+double _getStrengthValue(String strength) {
+  return switch (strength) {
+    "Weak" => 0.33,
+    "Medium" => 0.66,
+    "Strong" => 1.0,
+    _ => 0.0,
+  };
+}
+
+Color _getStrengthColor(String strength) {
+  return switch (strength) {
+    "Weak" => Colors.red,
+    "Medium" => Colors.orange,
+    "Strong" => Colors.green,
+    _ => Colors.grey,
+  };
+}
 
 class SignUpPasswordField extends StatefulWidget {
   const SignUpPasswordField({super.key});
@@ -12,24 +31,6 @@ class SignUpPasswordField extends StatefulWidget {
 
 class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPageValidator {
   bool _obscureText = true;
-
-  double _getStrengthValue(String strength) {
-    return switch (strength) {
-      "Weak" => 0.33,
-      "Medium" => 0.66,
-      "Strong" => 1.0,
-      _ => 0.0,
-    };
-  }
-
-  Color _getStrengthColor(String strength) {
-    return switch (strength) {
-      "Weak" => Colors.red,
-      "Medium" => Colors.orange,
-      "Strong" => Colors.green,
-      _ => Colors.transparent,
-    };
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,30 +56,34 @@ class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPa
                 label: Text("Password"),
               ),
             ),
-            if (state.passwordStrength.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    LinearProgressIndicator(
-                      value: _getStrengthValue(state.passwordStrength),
-                      color: _getStrengthColor(state.passwordStrength),
+            // if (state.passwordStrength.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FAProgressBar(
+                    size: 4.0,
+                    backgroundColor: Colors.grey,
+                    currentValue: _getStrengthValue(state.passwordStrength) * 100,
+                    progressColor: _getStrengthColor(state.passwordStrength),
+                  ),
+                  Text(
+                    state.passwordStrength,
+                    style: TextStyle(
+                      color:
+                          state.passwordStrength == "Strong"
+                              ? Colors.green
+                              : state.passwordStrength == "Medium"
+                              ? Colors.orange
+                              : state.passwordStrength == "Weak"
+                              ? Colors.red
+                              : Colors.grey,
                     ),
-                    Text(
-                      state.passwordStrength,
-                      style: TextStyle(
-                        color:
-                            state.passwordStrength == "Strong"
-                                ? Colors.green
-                                : state.passwordStrength == "Medium"
-                                ? Colors.orange
-                                : Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
           ],
         );
       },
