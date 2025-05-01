@@ -45,7 +45,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web release
-        run: flutter build web --release --base-href=/scale_up/
+        run: flutter build web --release --base-href=/scale_up/ --wasm
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
