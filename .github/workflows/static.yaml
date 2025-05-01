@@ -26,37 +26,40 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-  
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      # 1. Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Use Flutter Web Build
-        uses: cedvdb/action-flutter-build-web@v1
+      # 2. Install Flutter SDK
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          build-cmd: flutter build web --release
-          working-directory: ./
-          
-      - name: Archive Production artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: build/web
+          channel: stable           # stable channel for production :contentReference[oaicite:3]{index=3}
 
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # 3. Enable web support
+      - name: Enable Flutter web
+        run: flutter config --enable-web :contentReference[oaicite:4]{index=4}
+
+      # 4. Install dependencies
+      - name: Get Flutter packages
+        run: flutter pub get :contentReference[oaicite:5]{index=5}
+
+      # 5. Build the web release
+      - name: Build web release
+        run: flutter build web --release --base-href /${{ github.repository }} /  # adjust base-href if needed :contentReference[oaicite:6]{index=6}
+
+      # 6. Deploy to gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3           # robust GH Pages publisher :contentReference[oaicite:7]{index=7}
         with:
-          artifact_name: release
+          github_token: ${{ secrets.GITHUB_TOKEN }}    # auto-provided by Actions :contentReference[oaicite:8]{index=8}
+          publish_branch: gh-pages                     # branch to push built site :contentReference[oaicite:9]{index=9}
+          publish_dir: ./build/web                     # directory containing Flutter output :contentReference[oaicite:10]{index=10}
+          user_name: github-actions                    # commit author name :contentReference[oaicite:11]{index=11}
+          user_email: actions@github.com               # commit author email :contentReference[oaicite:12]{index=12}
