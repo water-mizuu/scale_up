@@ -83,6 +83,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           do {
             mutatedAnswer =
                 constants
+                    .take(correctAnswer.length)
                     .map((c) => c.mutate())
                     .whereType<ConstantExpression>()
                     .map((c) => c.value)

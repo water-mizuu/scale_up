@@ -56,14 +56,15 @@ class _AppState extends State<App> {
             late var authenticationBloc = context.read<AuthenticationBloc>();
             late var userDataBloc = context.read<UserDataBloc>();
 
-            /// We only want to listen if firebase itself initiated a token change.
             return MultiBlocListener(
               listeners: [
                 BlocListener<UserDataBloc, UserDataState>(
                   bloc: userDataBloc,
                   listenWhen: (p, c) => p.status != c.status,
                   listener: (context, state) async {
-                    if (state.status == UserDataStatus.loaded && state.user != null) {
+                    if (state.user == null) return;
+
+                    if (state.status == UserDataStatus.loaded) {
                       if (kDebugMode) {
                         print("Going home due to user bloc change");
                       }
@@ -72,7 +73,7 @@ class _AppState extends State<App> {
                   },
                 ),
 
-                /// Hand
+                /// We only want to listen if firebase itself initiated a token change.
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
                   listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
@@ -92,7 +93,7 @@ class _AppState extends State<App> {
                 ),
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
-                  listenWhen: (p, n) => ((p.user == null) ^ (n.user == null)),
+                  listenWhen: (p, n) => (p.user == null) ^ (n.user == null),
                   listener: (context, state) {
                     if (state.user case var user?) {
                       userDataBloc.add(SignedInUserDataEvent(user: user));
@@ -118,25 +119,20 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = MaterialApp.router(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.black,
-        ).copyWith(surface: const Color(0xFFF7F8F9)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black) //
+        .copyWith(surface: const Color(0xFFF7F8F9)),
       ),
-
-      scrollBehavior: MaterialScrollBehavior().copyWith(
-        dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch,
-          PointerDeviceKind.stylus,
-          PointerDeviceKind.unknown,
-        },
-      ),
+      scrollBehavior: MaterialScrollBehavior() //
+          .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,
     );
 
     if (kIsWeb) {
+      /// This allows the application to be tested on a web browser
+      ///   While being in a mobile layout.
+      /// This is useful for testing purposes only, and should not be used in production.
       child = Center(
         child: Container(
           height: 820,
