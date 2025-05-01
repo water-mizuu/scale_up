@@ -24,7 +24,7 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -49,8 +49,12 @@ jobs:
           build-cmd: flutter build web --release
           working-directory: ./
           
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
+      - name: Archive Production artifact
+        uses: actions/upload-artifact@v2
         with:
           name: release
           path: build/web
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
