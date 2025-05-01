@@ -116,7 +116,7 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    Widget child = MaterialApp.router(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
@@ -135,5 +135,18 @@ class AppView extends StatelessWidget {
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,
     );
+
+    if (kIsWeb) {
+      child = Center(
+        child: Container(
+          height: 820,
+          width: 380,
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          child: child,
+        ),
+      );
+    }
+
+    return child;
   }
 }

@@ -19,7 +19,10 @@ sealed class NumericalExpression {
 
   O captureGeneric<O>(O Function<E>() f);
 
-  static (NumericalExpression, VariableExpression) inverse(VariableExpression left, NumericalExpression right) {
+  static (NumericalExpression, VariableExpression) inverse(
+    VariableExpression left,
+    NumericalExpression right,
+  ) {
     var lhs = left as NumericalExpression;
     var rhs = right;
 
@@ -319,7 +322,8 @@ final class VariableExpression extends NumericalExpression {
   num evaluate(Map<String, Object> variables) => variables[variable] as num? ?? 0;
 
   @override
-  NumericalExpression substitute(String id, NumericalExpression expression) => variable == id ? expression : this;
+  NumericalExpression substitute(String id, NumericalExpression expression) =>
+      variable == id ? expression : this;
 
   @override
   get variables sync* {
@@ -376,6 +380,10 @@ extension CustomExpressionExtension on NumericalExpression {
       /// WARNING: This does not work for exponential values.
       var significantDigits = value.computeDecimalPlaces();
       var mutated = value * (Random().nextDouble() + 0.01);
+      if (significantDigits == 0) {
+        return ConstantExpression(mutated.floorToDouble());
+      }
+
       var truncated = mutated.toStringAsPrecision(significantDigits);
       var parsed = double.parse(truncated);
 
