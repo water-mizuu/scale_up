@@ -26,42 +26,32 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Checkout source code
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Install Flutter SDK
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable           # stable channel for production :contentReference[oaicite:3]{index=3}
+          channel: stable
 
-      # 3. Enable web support
       - name: Enable Flutter web
         run: flutter config --enable-web
 
-      # 4. Install dependencies
-      - name: Get Flutter packages
+      - name: Install dependencies
         run: flutter pub get
 
-      # 5. Build the web release
       - name: Build web release
-        run: flutter build web --release --base-href /${{ github.repository }}/ # adjust base-href if needed :contentReference[oaicite:6]{index=6}
+        run: flutter build web --release
 
-      # 6. Deploy to gh-pages branch
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3           # robust GH Pages publisher :contentReference[oaicite:7]{index=7}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}    # auto-provided by Actions :contentReference[oaicite:8]{index=8}
-          publish_branch: gh-pages                     # branch to push built site :contentReference[oaicite:9]{index=9}
-          publish_dir: ./build/web                     # directory containing Flutter output :contentReference[oaicite:10]{index=10}
-          force_orphan: true
-          user_name: 'github-ci[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Publish to gh-pages'
+          path: build/web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
