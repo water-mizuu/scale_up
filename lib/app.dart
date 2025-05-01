@@ -50,12 +50,13 @@ class _AppState extends State<App> {
           bloc: authenticationBloc,
           listenWhen: (previous, _) => previous.status == AuthenticationStatus.tokenChanging,
           listener: (context, state) {
-            if (state.status == AuthenticationStatus.signedIn) {
-              router.goNamed(AppRoutes.home);
-            } else if (state.status == AuthenticationStatus.signedOut) {
-              // Navigate to the login screen
-              router.goNamed(AppRoutes.login);
-            }
+            // if (state.status == AuthenticationStatus.signedIn) {
+            //   router.goNamed(AppRoutes.home);
+            // } else if (state.status == AuthenticationStatus.signedOut) {
+            //   // Navigate to the login screen
+            //   router.goNamed(AppRoutes.login);
+            // }
+            router.goNamed(AppRoutes.login);
           },
 
           /// This listener is for when a user logs in or logs out.

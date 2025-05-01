@@ -9,6 +9,7 @@ class SignupPageState {
   final String email;
   final SignUpStatus status;
   final String? errorMessage;
+  final String passwordStrength;
 
   const SignupPageState({
     this.username = "",
@@ -17,6 +18,7 @@ class SignupPageState {
     this.email = "",
     this.status = SignUpStatus.unknown,
     this.errorMessage,
+    this.passwordStrength = "",
   });
 
   SignupPageState copyWith({
@@ -26,6 +28,7 @@ class SignupPageState {
     String? email,
     SignUpStatus? status,
     String? errorMessage,
+    String? passwordStrength,
   }) {
     return SignupPageState(
       username: username ?? this.username,
@@ -34,6 +37,7 @@ class SignupPageState {
       email: email ?? this.email,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
+      passwordStrength: passwordStrength ?? this.passwordStrength,
     );
   }
 }
