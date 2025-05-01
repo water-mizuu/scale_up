@@ -52,7 +52,7 @@ jobs:
 
       # 5. Build the web release
       - name: Build web release
-        run: flutter build web --release --base-href /${{ github.repository }} /  # adjust base-href if needed :contentReference[oaicite:6]{index=6}
+        run: flutter build web --release --base-href /${{ github.repository }} # adjust base-href if needed :contentReference[oaicite:6]{index=6}
 
       # 6. Deploy to gh-pages branch
       - name: Deploy to GitHub Pages
@@ -61,5 +61,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}    # auto-provided by Actions :contentReference[oaicite:8]{index=8}
           publish_branch: gh-pages                     # branch to push built site :contentReference[oaicite:9]{index=9}
           publish_dir: ./build/web                     # directory containing Flutter output :contentReference[oaicite:10]{index=10}
-          user_name: github-actions                    # commit author name :contentReference[oaicite:11]{index=11}
-          user_email: actions@github.com               # commit author email :contentReference[oaicite:12]{index=12}
+          force_orphan: true
+          user_name: 'github-ci[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Publish to gh-pages'
