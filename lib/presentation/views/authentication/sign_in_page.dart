@@ -8,7 +8,7 @@ import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_bloc.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page/carousel.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page/sign_in_button_group.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page/sign_in_field_group.dart";
-import "package:scale_up/utils/snackbar_util.dart";
+import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});

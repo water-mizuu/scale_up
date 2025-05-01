@@ -2,7 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/title_case.dart";
+import "package:scale_up/utils/extensions/empty_as_null_extension.dart";
+import "package:scale_up/utils/extensions/title_case_extension.dart";
 
 class UserBar extends StatelessWidget {
   const UserBar({super.key});
@@ -11,21 +12,14 @@ class UserBar extends StatelessWidget {
   Widget build(BuildContext context) {
     var user = context.select((UserDataBloc b) => b.state.user);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 2.0,
+    return Row(
       children: [
-        // Text("Welcome back", style: TextStyle(fontSize: 12.0), textAlign: TextAlign.start),
-        Row(
-          children: [
-            Styles.title("Hello, ", fontSize: 20, textAlign: TextAlign.start),
-            Styles.title(
-              "${(user?.displayName ?? "User").toTitleCase()}!",
-              fontSize: 20,
-              textAlign: TextAlign.start,
-              color: const Color.fromARGB(255, 45, 103, 47),
-            ),
-          ],
+        Styles.title("Hello, ", fontSize: 20, textAlign: TextAlign.start),
+        Styles.title(
+          "${(user?.displayName?.emptyAsNull ?? "User").toTitleCase()}!",
+          fontSize: 20,
+          textAlign: TextAlign.start,
+          color: const Color.fromARGB(255, 45, 103, 47),
         ),
       ],
     );

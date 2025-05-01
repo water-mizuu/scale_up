@@ -62,9 +62,9 @@ class AllLessonsPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(scrolledUnderElevation: 0.0, backgroundColor: Colors.transparent),
+      appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
         child: Column(
           spacing: 16.0,
           crossAxisAlignment: CrossAxisAlignment.stretch,

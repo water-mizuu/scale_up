@@ -25,6 +25,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   final FirebaseAuthHelper _repository;
 
+  @override
+  void onEvent(AuthenticationEvent event) {
+    if (kDebugMode) {
+      print("$AuthenticationBloc: $event");
+    }
+
+    super.onEvent(event);
+  }
+
   void _onEmailSignup(
     EmailSignUpAuthenticationEvent event,
     Emitter<AuthenticationState> emit,

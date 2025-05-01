@@ -1,8 +1,8 @@
 import "dart:async";
+import "dart:ui";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
@@ -64,9 +64,7 @@ class _AppState extends State<App> {
                   bloc: userDataBloc,
                   listenWhen: (p, c) => p.status != c.status,
                   listener: (context, state) async {
-                    if (state.status == UserDataStatus.loaded) {
-                      await Future.delayed(2.seconds);
-
+                    if (state.status == UserDataStatus.loaded && state.user != null) {
                       if (kDebugMode) {
                         print("Going home due to user bloc change");
                       }
@@ -74,6 +72,8 @@ class _AppState extends State<App> {
                     }
                   },
                 ),
+
+                /// Hand
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   bloc: authenticationBloc,
                   listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging,
@@ -119,15 +119,18 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: ThemeData(
-        pageTransitionsTheme: PageTransitionsTheme(
-          builders: {
-            ...PageTransitionsTheme().builders,
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
         ).copyWith(surface: const Color(0xFFF7F8F9)),
+      ),
+
+      scrollBehavior: MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown,
+        },
       ),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},

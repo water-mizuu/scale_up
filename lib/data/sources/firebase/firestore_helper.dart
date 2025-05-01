@@ -46,7 +46,7 @@ class FirestoreHelper {
 
     var entries = rawChapters.pairs
         .where((p) => p.$2 is int)
-        .map((p) => (p.$1, p.$2 as int))
+        .cast<(String, int)>()
         .map((p) => (p.$1, DateTime.fromMillisecondsSinceEpoch(p.$2)))
         .map((p) => MapEntry(p.$1, p.$2));
 

@@ -1,7 +1,6 @@
-import "package:flutter/material.dart" hide BoxShadow, BoxDecoration;
+import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_inset_shadow/flutter_inset_shadow.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/models/unit.dart";
@@ -12,8 +11,8 @@ import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/bordered_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:scale_up/utils/border_color.dart";
-import "package:scale_up/utils/hsl_color_scheme.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class LearnChoices extends StatelessWidget {
   const LearnChoices({super.key});

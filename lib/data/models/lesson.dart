@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:scale_up/data/models/learn_chapter.dart";
 import "package:scale_up/data/models/practice_chapter.dart";
-import "package:scale_up/utils/color_luminance.dart";
+import "package:scale_up/utils/extensions/color_luminance_extension.dart";
 
 part "lesson.freezed.dart";
 part "lesson.g.dart";

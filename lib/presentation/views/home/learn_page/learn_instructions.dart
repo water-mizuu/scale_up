@@ -13,7 +13,7 @@ import "package:scale_up/presentation/views/home/widgets/dotted_underline.dart";
 import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:scale_up/utils/tool_tip.dart";
+import "package:scale_up/utils/widgets/tool_tip.dart";
 
 class LearnInstructions extends StatelessWidget {
   const LearnInstructions({super.key});

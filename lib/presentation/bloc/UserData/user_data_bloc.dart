@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_event.dart";
@@ -28,6 +29,14 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   final FirestoreHelper _firestoreHelper;
 
+  @override
+  void onEvent(UserDataEvent event) {
+    if (kDebugMode) {
+      print("[USER_DATA_BLOC]: $event");
+    }
+    super.onEvent(event);
+  }
+
   Future<void> _onSignedIn(SignedInUserDataEvent event, Emitter<UserDataState> emit) async {
     try {
       emit(state.copyWith(status: UserDataStatus.loading));
@@ -45,7 +54,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           totalAnswers: totalAnswers,
         ),
       );
-    } on Object {
+    } on Object catch (e) {
+      if (kDebugMode) {
+        print("[USER_DATA_BLOC] Failed to sign in: $e");
+      }
       emit(state.copyWith(status: UserDataStatus.loaded, user: null));
     }
   }
@@ -69,7 +81,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       :correctAnswers,
     ) = event;
 
-    print(state.user);
+    print((user: state.user));
     if (state case UserDataState(:var user?)) {
       var key = chapterType.stringify(lessonId, chapterIndex);
 

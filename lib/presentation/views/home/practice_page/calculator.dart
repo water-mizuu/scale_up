@@ -11,8 +11,8 @@ import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart"
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:scale_up/utils/hsl_color_scheme.dart";
-import "package:scale_up/utils/to_string_as_fixed_max_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
+import "package:scale_up/utils/extensions/to_string_as_fixed_max_extension.dart";
 
 /// A simple non-scientific calculator.
 class CalculatorWidget extends StatefulWidget {
@@ -79,6 +79,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
+                  textAlign: TextAlign.end,
                   readOnly: true,
                   controller: TextEditingController(text: display),
                   decoration: InputDecoration(
@@ -299,20 +300,10 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     required Color color,
   }) {
     return Expanded(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(64.0),
-          border: Border.all(color: hslColor.borderColor),
-        ),
-        child: FilledButton.icon(
-          style: FilledButton.styleFrom(
-            padding: EdgeInsets.all(0),
-            backgroundColor: color,
-            // shadowColor: Colors.black,
-          ),
-          onPressed: onTap,
-          label: Text(label),
-        ),
+      child: FilledButton.icon(
+        style: FilledButton.styleFrom(padding: EdgeInsets.all(0), backgroundColor: color),
+        onPressed: onTap,
+        label: Text(label),
       ),
     );
   }

@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/HomePage/home_page_cubit.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
-import "package:scale_up/utils/duration_to_brief_description_extension.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/duration_to_brief_description_extension.dart";
 
 class Statistics extends StatelessWidget {
   const Statistics({super.key});

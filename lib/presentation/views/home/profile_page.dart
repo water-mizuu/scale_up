@@ -17,14 +17,16 @@ class ProfilePage extends StatelessWidget {
 }
 
 const frequentlyAskedQuestions = """
-- **How do I reset my password?**
-  - You can reset your password by going to the login page and clicking on "Forgot Password?".
 - **Can the application be used offline?**
   - No, the application requires an internet connection. Local offline may come in the future.
 - **How do I contact support?**
   - You can contact support by going to the "Support" section in the app settings.
 - **What units are used in the app?**
   - The app uses various units for the measurements.
+  - Some of the units include:
+    - Temperature (Fahrenheit, Kelvin, Celsius)
+    - Length (Meters, Feet, Kilometers, Miles)
+    - Volume (Quarts, Gallons, Liters)
 """;
 
 const developerInformation = """
@@ -43,7 +45,7 @@ class ProfilePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(scrolledUnderElevation: 0.0, backgroundColor: Colors.transparent),
+      appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
         padding: EdgeInsets.only(top: 16.0),
         child: Column(

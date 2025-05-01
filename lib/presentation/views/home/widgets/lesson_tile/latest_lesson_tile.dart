@@ -8,8 +8,10 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
-import "package:scale_up/utils/title_case.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/duration_to_brief_description_extension.dart";
+import "package:scale_up/utils/extensions/title_case_extension.dart";
+import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class LatestLessonTile extends StatelessWidget {
   const LatestLessonTile({
@@ -101,7 +103,9 @@ class LatestLessonTile extends StatelessWidget {
               "$chaptersDone/${lesson.chapterCount} chapters done",
               style: TextStyle(fontSize: 12, color: foreground),
             ),
-            Text("Not yet", style: TextStyle(fontSize: 12, color: foreground)),
+
+            if (lastStudied?.description case (var amount, var unit))
+              Text("$amount $unit", style: TextStyle(fontSize: 12, color: foreground)),
           ],
         ),
 
@@ -112,7 +116,7 @@ class LatestLessonTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(24.0),
           progressColor: foreground,
           backgroundColor: progressBackground,
-          animatedDuration: const Duration(milliseconds: 150),
+          animatedDuration: Duration.zero,
         ),
         const SizedBox(height: 12.0),
         FilledButton(
@@ -130,21 +134,23 @@ class LatestLessonTile extends StatelessWidget {
       ],
     );
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => _goToLesson(context),
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [background, background.withValues(alpha: 0.8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return TapScale(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _goToLesson(context),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [background, background.withValues(alpha: 0.8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: Colors.white.borderColor),
           ),
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: Colors.white.borderColor),
+          child: child,
         ),
-        child: child,
       ),
     );
   }

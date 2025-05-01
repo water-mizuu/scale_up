@@ -4,6 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/unit_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class LessonUnits extends StatelessWidget {
   const LessonUnits({super.key});
@@ -21,7 +22,7 @@ class LessonUnits extends StatelessWidget {
             children: [
               for (var (index, element) in group)
                 Expanded(
-                  child: UnitTile(unitString: element)
+                  child: TapScale(child: UnitTile(unitString: element))
                       .animate()
                       .then(delay: (index * 100).milliseconds)
                       .slideY(duration: 250.ms, begin: 0.1, end: 0.0)

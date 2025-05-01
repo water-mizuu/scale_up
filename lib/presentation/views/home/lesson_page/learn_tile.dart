@@ -10,7 +10,7 @@ import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/lesson_page/leading_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
 
 class LearnTile extends StatelessWidget {
   const LearnTile({super.key, required this.chapterIndex, required this.chapter});

@@ -17,8 +17,10 @@ import "package:scale_up/presentation/views/home/learn_page/congratulatory_messa
 import "package:scale_up/presentation/views/home/learn_page/continue_message.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_body.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
+import "package:scale_up/presentation/views/home/notifications/user_quit_notification.dart";
+import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:scale_up/utils/snackbar_util.dart";
+import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class LearnPage extends StatefulWidget {
   const LearnPage({
@@ -79,182 +81,228 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void _initiateLeave(BuildContext context) async {
+    var lesson = bloc.loadedState.lesson;
+    var questionIndex = bloc.loadedState.questionIndex;
+    var shouldPop = false;
+    if (questionIndex == 0) {
+      shouldPop = true;
+    } else {
+      shouldPop = await context.showConfirmationDialog(
+        title: "Quit?",
+        message: "Are you sure you want to quit? Your progress will **NOT** be saved.",
+        cancelButtonText: "Return",
+        confirmButtonText: "Quit",
+        cancelButtonColor: bloc.loadedState.lesson.color,
+        confirmButtonColor: Color(0xFFC63A3A),
+      );
+    }
+
+    if (context.mounted && shouldPop) {
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.pushReplacementNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: MultiProvider(
-        providers: [
-          BlocProvider.value(value: bloc),
-          InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
-          InheritedProvider.value(value: TransitionInAnimationController(transitionInAnimation)),
-          InheritedProvider.value(
-            value: TransitionOutAnimationController(transitionOutAnimation),
-          ),
-        ],
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<LearnPageBloc, LearnPageState>(
-              bloc: bloc,
-              listener: (context, state) {
-                switch (state) {
-                  /// If there is an error, we show a snackbar.
-                  case LoadedLearnPageState(:var error?):
-                    context.showBasicSnackbar(error.toString());
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) async {
+          if (didPop) return;
+          _initiateLeave(context);
+        },
+        child: NotificationListener<UserQuitNotification>(
+          onNotification: (notification) {
+            _initiateLeave(context);
+            return true;
+          },
+          child: MultiProvider(
+            providers: [
+              BlocProvider.value(value: bloc),
+              InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
+              InheritedProvider.value(
+                value: TransitionInAnimationController(transitionInAnimation),
+              ),
+              InheritedProvider.value(
+                value: TransitionOutAnimationController(transitionOutAnimation),
+              ),
+            ],
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<LearnPageBloc, LearnPageState>(
+                  bloc: bloc,
+                  listener: (context, state) {
+                    switch (state) {
+                      /// If there is an error, we show a snackbar.
+                      case LoadedLearnPageState(:var error?):
+                        context.showBasicSnackbar(error.toString());
 
-                  /// This is the state when the user has answered a question.
-                  case LoadedLearnPageState(status: LearnPageStatus.correct):
-                  case LoadedLearnPageState(status: LearnPageStatus.incorrect):
-                    messageAnimation.forward(from: 0.0);
+                      /// This is the state when the user has answered a question.
+                      case LoadedLearnPageState(status: LearnPageStatus.correct):
+                      case LoadedLearnPageState(status: LearnPageStatus.incorrect):
+                        messageAnimation.forward(from: 0.0);
 
-                  /// When we are [LearnPageStatus.movingAway], then we
-                  ///   reverse the animation.
-                  case LoadedLearnPageState(status: LearnPageStatus.movingAway):
-                    messageAnimation.reverse(from: 1.0);
+                      /// When we are [LearnPageStatus.movingAway], then we
+                      ///   reverse the animation.
+                      case LoadedLearnPageState(status: LearnPageStatus.movingAway):
+                        messageAnimation.reverse(from: 1.0);
 
-                  /// If the chapter is finished, then we let the bloc know
-                  ///   that the user has completed the chapter.
-                  /// This will trigger the UserDataBloc to update the stored local data.
-                  ///   This will also asynchronously update the server data.
-                  case LoadedLearnPageState(status: LearnPageStatus.finished, :var startDateTime):
-                    var duration = DateTime.now().difference(startDateTime);
-                    var correctAnswers = state.questions.length - state.mistakes;
-                    var totalAnswers = state.questions.length;
+                      /// If the chapter is finished, then we let the bloc know
+                      ///   that the user has completed the chapter.
+                      /// This will trigger the UserDataBloc to update the stored local data.
+                      ///   This will also asynchronously update the server data.
+                      case LoadedLearnPageState(
+                        status: LearnPageStatus.finished,
+                        :var startDateTime,
+                      ):
+                        var duration = DateTime.now().difference(startDateTime);
+                        var correctAnswers = state.questions.length - state.mistakes;
+                        var totalAnswers = state.questions.length;
 
-                    context.read<UserDataBloc>().add(
-                      ChapterCompletedUserDataEvent(
-                        chapterType: ChapterType.learn,
-                        lessonId: bloc.loadedState.lesson.id,
-                        chapterIndex: bloc.loadedState.chapterIndex,
-                        correctAnswers: correctAnswers,
-                        totalAnswers: totalAnswers,
-                        duration: duration,
-                      ),
-                    );
+                        context.read<UserDataBloc>().add(
+                          ChapterCompletedUserDataEvent(
+                            chapterType: ChapterType.learn,
+                            lessonId: bloc.loadedState.lesson.id,
+                            chapterIndex: bloc.loadedState.chapterIndex,
+                            correctAnswers: correctAnswers,
+                            totalAnswers: totalAnswers,
+                            duration: duration,
+                          ),
+                        );
 
-                  case LoadedLearnPageState(status: LearnPageStatus.leaving):
-                    if (context.canPop()) {
-                      context.pop();
-                    } else {
-                      if (kDebugMode) {
-                        print("Going to lesson: ${bloc.loadedState.lesson.id}.");
-                      }
-                      context.goNamed(
-                        AppRoutes.lesson,
-                        pathParameters: {"lessonId": bloc.loadedState.lesson.id},
-                      );
-                    }
-                    return;
-
-                  /// Ignore the other statuses.
-                  case _:
-                    return;
-                }
-              },
-            ),
-            BlocListener<LearnPageBloc, LearnPageState>(
-              bloc: bloc,
-              listenWhen: (p, c) => p.status != c.status,
-              listener: (context, state) async {
-                /// Animation engine.
-                if (state.status == LearnPageStatus.movingIn) {
-                  transitionOutAnimation.reset();
-                  await transitionInAnimation.forward(from: 0.0);
-                  if (bloc.isClosed) return;
-
-                  bloc.add(LearnPageMovingInComplete());
-                } else if (state.status == LearnPageStatus.movingAway) {
-                  /// Just instantly hide the message.
-                  messageAnimation.reset();
-                  await transitionOutAnimation.forward(from: 0.0);
-                  if (bloc.isClosed) return;
-
-                  bloc.add(LearnPageMovingAwayComplete());
-                }
-              },
-            ),
-          ],
-          child: BlocBuilder<LearnPageBloc, LearnPageState>(
-            bloc: bloc,
-            buildWhen: (previous, current) {
-              assert(
-                !(previous is LoadedLearnPageState && current is LoadingLearnPageState),
-                "We should never get in a state where we are loading a page "
-                "while we were already in a loaded state.",
-              );
-              if (previous.runtimeType != current.runtimeType) {
-                return true;
-              }
-
-              try {
-                var p = previous as LoadedLearnPageState;
-                var c = current as LoadedLearnPageState;
-
-                if (p.questions[p.questionIndex] != c.questions[c.questionIndex]) {
-                  return true;
-                }
-
-                return false;
-              } on Object {
-                return false;
-              }
-            },
-            builder: (context, state) {
-              if (state is! LoadedLearnPageState) {
-                return const Material(child: Center(child: CircularProgressIndicator()));
-              }
-
-              var child = InheritedProvider.value(
-                value: bloc.loadedState.lesson.hslColor,
-                child: LearnPageView(),
-              );
-              var question = state.questions[state.questionIndex];
-              if (question is IndirectStepsLearnQuestion) {
-                return MultiProvider(
-                  providers: [
-                    BlocProvider(
-                      key: ValueKey(question),
-                      create: (_) => IndirectStepsCubit(this, question),
-                    ),
-                  ],
-                  builder: (context, _) {
-                    var key = context.read<IndirectStepsCubit>().state.parentKey;
-                    var animation = context.select((IndirectStepsCubit c) => c.state.animation);
-
-                    return BlocListener<IndirectStepsCubit, IndirectStepsState>(
-                      listenWhen:
-                          (p, c) =>
-                              p.answers.whereType<Object>().length !=
-                              c.answers.whereType<Object>().length,
-                      listener: (context, state) {
-                        var allUnits =
-                            state
-                                .answers //
-                                .map((u) => u?.$2)
-                                .whereType<Unit>()
-                                .toList();
-
-                        if (allUnits.length == question.answer.length) {
-                          bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: allUnits));
+                      case LoadedLearnPageState(status: LearnPageStatus.leaving):
+                        if (context.canPop()) {
+                          context.pop();
                         } else {
-                          bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: null));
+                          if (kDebugMode) {
+                            print("Going to lesson: ${bloc.loadedState.lesson.id}.");
+                          }
+                          context.goNamed(
+                            AppRoutes.lesson,
+                            pathParameters: {"lessonId": bloc.loadedState.lesson.id},
+                          );
                         }
-                      },
-                      child: Stack(
-                        key: key,
-                        children: [
-                          Positioned.fill(child: child),
+                        return;
 
-                          /// This is so cursed.
-                          if (animation case var animation?) FlyingUnit(animation: animation),
-                        ],
-                      ),
-                    );
+                      /// Ignore the other statuses.
+                      case _:
+                        return;
+                    }
                   },
-                );
-              }
+                ),
+                BlocListener<LearnPageBloc, LearnPageState>(
+                  bloc: bloc,
+                  listenWhen: (p, c) => p.status != c.status,
+                  listener: (context, state) async {
+                    /// Animation engine.
+                    if (state.status == LearnPageStatus.movingIn) {
+                      transitionOutAnimation.reset();
+                      await transitionInAnimation.forward(from: 0.0);
+                      if (bloc.isClosed) return;
 
-              return child;
-            },
+                      bloc.add(LearnPageMovingInComplete());
+                    } else if (state.status == LearnPageStatus.movingAway) {
+                      /// Just instantly hide the message.
+                      messageAnimation.reset();
+                      await transitionOutAnimation.forward(from: 0.0);
+                      if (bloc.isClosed) return;
+
+                      bloc.add(LearnPageMovingAwayComplete());
+                    }
+                  },
+                ),
+              ],
+              child: BlocBuilder<LearnPageBloc, LearnPageState>(
+                bloc: bloc,
+                buildWhen: (previous, current) {
+                  assert(
+                    !(previous is LoadedLearnPageState && current is LoadingLearnPageState),
+                    "We should never get in a state where we are loading a page "
+                    "while we were already in a loaded state.",
+                  );
+                  if (previous.runtimeType != current.runtimeType) {
+                    return true;
+                  }
+
+                  try {
+                    var p = previous as LoadedLearnPageState;
+                    var c = current as LoadedLearnPageState;
+
+                    if (p.questions[p.questionIndex] != c.questions[c.questionIndex]) {
+                      return true;
+                    }
+
+                    return false;
+                  } on Object {
+                    return false;
+                  }
+                },
+                builder: (context, state) {
+                  if (state is! LoadedLearnPageState) {
+                    return const Material(child: Center(child: CircularProgressIndicator()));
+                  }
+
+                  var child = InheritedProvider.value(
+                    value: bloc.loadedState.lesson.hslColor,
+                    child: LearnPageView(),
+                  );
+                  var question = state.questions[state.questionIndex];
+                  if (question is IndirectStepsLearnQuestion) {
+                    return MultiProvider(
+                      providers: [
+                        BlocProvider(
+                          key: ValueKey(question),
+                          create: (_) => IndirectStepsCubit(this, question),
+                        ),
+                      ],
+                      builder: (context, _) {
+                        var key = context.read<IndirectStepsCubit>().state.parentKey;
+                        var animation = context.select(
+                          (IndirectStepsCubit c) => c.state.animation,
+                        );
+
+                        return BlocListener<IndirectStepsCubit, IndirectStepsState>(
+                          listenWhen:
+                              (p, c) =>
+                                  p.answers.whereType<Object>().length !=
+                                  c.answers.whereType<Object>().length,
+                          listener: (context, state) {
+                            var allUnits =
+                                state
+                                    .answers //
+                                    .map((u) => u?.$2)
+                                    .whereType<Unit>()
+                                    .toList();
+
+                            if (allUnits.length == question.answer.length) {
+                              bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: allUnits));
+                            } else {
+                              bloc.add(LearnPageAnswerUpdated.indirectSteps(answer: null));
+                            }
+                          },
+                          child: Stack(
+                            key: key,
+                            children: [
+                              Positioned.fill(child: child),
+
+                              /// This is so cursed.
+                              if (animation case var animation?) FlyingUnit(animation: animation),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return child;
+                },
+              ),
+            ),
           ),
         ),
       ),

@@ -6,9 +6,9 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
-import "package:scale_up/utils/title_case.dart";
-import "package:scale_up/utils/tool_tip.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/title_case_extension.dart";
+import "package:scale_up/utils/widgets/tool_tip.dart";
 
 const TextStyle mini = TextStyle(fontSize: 12);
 
@@ -47,6 +47,7 @@ class UnitTile extends StatelessWidget {
               if (unit case Unit(:var shortcut))
                 FittedBox(fit: BoxFit.scaleDown, child: Styles.title(shortcut)),
 
+              const SizedBox(height: 12.0),
               if (unit case Unit(:var display?))
                 FittedBox(fit: BoxFit.scaleDown, child: Text(display))
               else

@@ -92,8 +92,9 @@ class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
 
     if (Platform.isWindows) {
       var jsonString = await rootBundle.loadString("secrets/windows.json");
+      var decoded = jsonDecode(jsonString);
 
-      if (jsonDecode(jsonString) case {
+      if (decoded case {
         "installed": {"client_id": String clientId, "client_secret": String clientSecret},
       }) {
         _googleSignIn = win.GoogleSignIn(
@@ -101,6 +102,11 @@ class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
         );
 
         return _googleSignIn!;
+      } else {
+        if (kDebugMode) {
+          print("Failed to load windows secrets as it didn't match the pattern.");
+          print(decoded);
+        }
       }
     } else if (Platform.isAndroid) {
       var jsonString = await rootBundle.loadString("secrets/android.json");

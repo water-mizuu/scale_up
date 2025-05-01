@@ -8,21 +8,20 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
-import "package:scale_up/utils/title_case.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/title_case_extension.dart";
+import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class OngoingLessonTile extends StatelessWidget {
   const OngoingLessonTile({
     super.key,
     required this.lesson,
     this.onTap = _blank,
-    this.isHighlighted = false,
     this.isSmall = false,
   });
 
   final Lesson lesson;
   final VoidCallback? onTap;
-  final bool isHighlighted;
   final bool isSmall;
 
   /// This is a blank function that does nothing.
@@ -35,14 +34,10 @@ class OngoingLessonTile extends StatelessWidget {
 
   ({Color foreground, Color background, Color progressBackground}) getColors() {
     var lessonColor = lesson.color;
-    var hslColor = lesson.hslColor;
 
-    var foregroundColor = isHighlighted ? Colors.white : lessonColor;
-    var backgroundColor = isHighlighted ? lessonColor : Colors.white;
-    var progressBackgroundColor =
-        isHighlighted //
-            ? hslColor.withLightness(hslColor.lightness * 0.8).toColor()
-            : Colors.grey;
+    var foregroundColor = lessonColor;
+    var backgroundColor = Colors.white;
+    var progressBackgroundColor = Colors.grey;
 
     return (
       foreground: foregroundColor,
@@ -97,12 +92,12 @@ class OngoingLessonTile extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: foreground),
         ),
 
-        if (isHighlighted) const SizedBox(height: 8.0) else const SizedBox(height: 4.0),
+        const SizedBox(height: 4.0),
         Row(
           children: [
             Expanded(
               child: FAProgressBar(
-                size: isHighlighted ? 12 : 4,
+                size: 4,
                 currentValue: (progress * 100).floorToDouble(),
                 borderRadius: BorderRadius.circular(24.0),
                 progressColor: foreground,
@@ -116,33 +111,33 @@ class OngoingLessonTile extends StatelessWidget {
       ],
     );
 
-    child = GestureDetector(
-      onTap: () {
-        if (onTap == _blank) {
-          return () {
-            HapticFeedback.selectionClick();
+    return TapScale(
+      child: GestureDetector(
+        onTap: () {
+          if (onTap == _blank) {
+            return () {
+              HapticFeedback.selectionClick();
 
-            context.pushNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
-          };
-        }
+              context.pushNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
+            };
+          }
 
-        return onTap;
-      }(),
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [background, background.withValues(alpha: 0.8)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          return onTap;
+        }(),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [background, background.withValues(alpha: 0.8)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: Colors.white.borderColor),
           ),
-          borderRadius: BorderRadius.circular(8.0),
-          border: Border.all(color: Colors.white.borderColor),
+          child: child,
         ),
-        child: child,
       ),
     );
-
-    return child;
   }
 }

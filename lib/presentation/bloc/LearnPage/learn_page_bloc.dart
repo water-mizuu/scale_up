@@ -10,7 +10,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_event.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_state.dart";
-import "package:scale_up/utils/choose_random.dart";
+import "package:scale_up/utils/extensions/choose_random_extension.dart";
 
 export "learn_page_event.dart";
 export "learn_page_state.dart";

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
 
 class FloatingCardWithHint extends StatelessWidget {
   const FloatingCardWithHint({super.key, required this.hint, required this.child});

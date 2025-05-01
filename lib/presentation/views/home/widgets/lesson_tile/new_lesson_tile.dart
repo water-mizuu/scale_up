@@ -1,15 +1,15 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/border_color.dart";
+import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/widgets/tap_scale.dart";
 
-class NewLessonTile extends StatefulWidget {
+class NewLessonTile extends StatelessWidget {
   const NewLessonTile({
     super.key,
     required this.lesson,
@@ -31,23 +31,14 @@ class NewLessonTile extends StatefulWidget {
     throw StateError("onTap function is not defined");
   }
 
-  @override
-  State<NewLessonTile> createState() => _NewLessonTileState();
-}
-
-class _NewLessonTileState extends State<NewLessonTile> with SingleTickerProviderStateMixin {
-  late final AnimationController animationController;
-  late Animation<double>? scaleAnimation;
-
   ({Color foreground, Color background, Color progressBackground}) getColors() {
-    var lessonColor = widget.lesson.color;
-    var hslColor = widget.lesson.hslColor;
+    var lessonColor = lesson.color;
+    var hslColor = lesson.hslColor;
 
-    var foregroundColor = widget.isHighlighted ? Colors.white : lessonColor;
-    var backgroundColor = widget.isHighlighted ? lessonColor : Colors.white;
+    var foregroundColor = isHighlighted ? Colors.white : lessonColor;
+    var backgroundColor = isHighlighted ? lessonColor : Colors.white;
     var progressBackgroundColor =
-        widget
-                .isHighlighted //
+        isHighlighted //
             ? hslColor.withLightness(hslColor.lightness * 0.8).toColor()
             : Colors.grey;
 
@@ -59,17 +50,9 @@ class _NewLessonTileState extends State<NewLessonTile> with SingleTickerProvider
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    animationController = AnimationController(vsync: this, duration: 500.ms);
-    scaleAnimation = AlwaysStoppedAnimation(1.0);
-  }
-
-  @override
   Widget build(BuildContext context) {
     var lessonsHelper = context.read<LessonsHelper>();
-    var totalChapters = widget.lesson.chapterCount;
+    var totalChapters = lesson.chapterCount;
     var (:foreground, :background, :progressBackground) = getColors();
 
     Widget child = Column(
@@ -83,19 +66,16 @@ class _NewLessonTileState extends State<NewLessonTile> with SingleTickerProvider
                 color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              child: Styles.title(
-                widget.lesson.name.characters.first.toUpperCase(),
-                color: foreground,
-              ),
+              child: Styles.title(lesson.name.characters.first.toUpperCase(), color: foreground),
             ),
             const SizedBox(width: 8.0),
-            Styles.subtitle(widget.lesson.name, fontSize: 14, color: foreground),
+            Styles.subtitle(lesson.name, fontSize: 14, color: foreground),
           ],
         ),
 
         const SizedBox(height: 4.0),
         Styles.caption(
-          "Learn about ${widget.lesson.units.map((u) => lessonsHelper.getUnit(u)?.shortcut ?? u).join(", ")}.",
+          "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(u)?.shortcut ?? u).join(", ")}.",
           fontSize: 12.0,
         ),
 
@@ -121,50 +101,19 @@ class _NewLessonTileState extends State<NewLessonTile> with SingleTickerProvider
       ],
     );
 
-    return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          scaleAnimation = CurvedAnimation(
-            curve: Curves.elasticOut,
-            parent: animationController,
-          ).drive(Tween(begin: 1.0, end: 0.98));
-          animationController.forward(from: 0.0);
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          scaleAnimation = CurvedAnimation(
-            curve: Curves.elasticOut,
-            parent: animationController,
-          ).drive(Tween(begin: 0.98, end: 1.0));
-          animationController.forward(from: 0.0);
-        });
-      },
-      onTapUp: (_) {
-        setState(() {
-          scaleAnimation = CurvedAnimation(
-            curve: Curves.elasticOut,
-            parent: animationController,
-          ).drive(Tween(begin: 0.98, end: 1.0));
-          animationController.reverse(from: 1.0);
-        });
-      },
-      onTap: () {
-        if (widget.onTap == NewLessonTile._blank) {
-          return () {
-            HapticFeedback.selectionClick();
+    return TapScale(
+      child: GestureDetector(
+        onTap: () {
+          if (onTap == _blank) {
+            return () {
+              HapticFeedback.selectionClick();
 
-            context.pushNamed(AppRoutes.lesson, pathParameters: {"id": widget.lesson.id});
-          };
-        }
+              context.pushNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
+            };
+          }
 
-        return widget.onTap;
-      }(),
-      child: AnimatedBuilder(
-        animation: animationController,
-        builder: (context, child) {
-          return Transform.scale(scale: scaleAnimation?.value ?? 1.0, child: child!);
-        },
+          return onTap;
+        }(),
         child: Container(
           padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(

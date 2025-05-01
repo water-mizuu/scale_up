@@ -9,28 +9,44 @@ import "package:scale_up/presentation/views/home/home_page/latest_lesson.dart";
 import "package:scale_up/presentation/views/home/home_page/statistics.dart";
 import "package:scale_up/presentation/views/home/home_page/user_bar.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_units.dart";
-import "package:scale_up/presentation/views/home/widgets/lesson_tile/lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/new_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/ongoing_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animated_scroll_controller.dart";
+import "package:scale_up/utils/extensions/fade_slide_in.dart";
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final HomePageCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+
+    cubit = HomePageCubit(
+      state: context.read<UserDataBloc>().state,
+      lessonsHelper: context.read<LessonsHelper>(),
+    );
+  }
+
+  @override
+  void dispose() {
+    cubit.close();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var userDataBloc = context.read<UserDataBloc>();
     return MultiProvider(
-      providers: [
-        BlocProvider(
-          create:
-              (_) => HomePageCubit(
-                state: userDataBloc.state,
-                lessonsHelper: context.read<LessonsHelper>(),
-              ),
-        ),
-      ],
+      providers: [BlocProvider.value(value: cubit)],
       builder: (context, _) {
         return MultiBlocListener(
           listeners: [
@@ -63,18 +79,23 @@ class HomePageView extends StatefulWidget {
   State<HomePageView> createState() => _HomePageViewState();
 }
 
-class _HomePageViewState extends State<HomePageView> {
+class _HomePageViewState extends State<HomePageView> with SingleTickerProviderStateMixin {
   late final AnimatedScrollController scrollController;
+  late final AnimationController animationController;
+  late ValueKey<int> listKey;
 
   @override
   void initState() {
     super.initState();
 
     scrollController = AnimatedScrollController();
+    animationController = AnimationController(vsync: this);
+    listKey = ValueKey(0);
   }
 
   @override
   void dispose() {
+    animationController.dispose();
     scrollController.dispose();
 
     super.dispose();
@@ -86,42 +107,40 @@ class _HomePageViewState extends State<HomePageView> {
       appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
-        child: Column(
-          spacing: 16.0,
-          children: [
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
-            Expanded(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(500.ms);
+            setState(() {
+              listKey = ValueKey(listKey.value + 1);
+            });
+            await animationController.reverse(from: 0.8);
+            animationController.reset();
+          },
+          child: KeyedSubtree(
+            key: listKey,
+            child: ListView(
+              controller: scrollController,
+              children: const [
+                Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: UserBar()),
+                SizedBox(height: 12.0),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
+                SizedBox(height: 12.0),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: LatestLesson()),
+                SizedBox(height: 12.0),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     spacing: 16.0,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Statistics(),
-                      ),
-                      LatestLesson(),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Column(
-                          spacing: 16.0,
-                          children: [
-                            NewLessons(), //
-                            OngoingLessons(), //
-                            FinishedLessons(),
-                          ],
-                        ),
-                      ),
+                      NewLessons(), //
+                      OngoingLessons(), //
+                      FinishedLessons(),
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ).animate(controller: animationController, autoPlay: false).fadeOut(begin: 1.0),
         ),
       ),
     );
@@ -233,22 +252,11 @@ class FinishedLessons extends StatelessWidget {
           spacing: 16.0,
           children: [
             for (var (i, lesson) in finishedLessons.indexed)
-              if (LessonTile(lesson: lesson) case var widget)
+              if (OngoingLessonTile(lesson: lesson) case var widget)
                 widget.animate().then(delay: (i * 200).ms).slideFadeIn(),
           ],
         ),
       ],
-    );
-  }
-}
-
-extension on Animate {
-  Animate slideFadeIn() {
-    return fadeIn().slideY(
-      begin: -0.1,
-      end: 0.0,
-      duration: 500.ms,
-      curve: Curves.linearToEaseOut,
     );
   }
 }

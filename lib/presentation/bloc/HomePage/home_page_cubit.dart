@@ -1,4 +1,3 @@
-import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
@@ -43,10 +42,6 @@ class HomePageCubit extends Cubit<HomePageState> {
             .map((s) => s.$1) //
             .toList();
 
-    if (kDebugMode) {
-      print(finishedChaptersString);
-    }
-
     /// Count the amount each chapter has been reviewed.
     var reviewCount = {for (var lessonId in finishedChaptersLessonIds) lessonId: 0};
     for (var key in finishedChaptersLessonIds) {
@@ -75,7 +70,7 @@ class HomePageCubit extends Cubit<HomePageState> {
       for (var lesson in allLessons)
         if (reviewCount[lesson.id] case var chapterCount?
             when 0 < chapterCount && chapterCount < lesson.chapterCount)
-          lesson,
+          if (lesson != lastLessonReviewed) lesson,
     ]..sort((a, b) => progression(b).compareTo(progression(a)));
 
     var newLessons = [
@@ -110,6 +105,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         chaptersFinished == 0
             ? (Duration.zero) //
             : totalTimeInLessons * (1 / chaptersFinished);
+
     var correctRate =
         totalAnswers == 0
             ? 0 //
