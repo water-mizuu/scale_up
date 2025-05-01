@@ -1,5 +1,5 @@
 {
-  "cmake.sourceDirectory": "/Users/mackenziecerenio/Developer/Flutter/scale_up/windows",
+  "cmake.sourceDirectory": "/Users/michael/Programming/projects/dart/flutter/scale_up/linux",
   // "dart.flutterSdkPath": ".fvm/versions/3.29.2",
   "editor.wordWrapColumn": 100,
   "editor.rulers": [
@@ -8,6 +8,6 @@
   "dart.lineLength": 100,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.dart": "*.${basename}.dart",
+    "*.dart": "$(capture).*.dart",
   },
 }
