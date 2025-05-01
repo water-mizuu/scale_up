@@ -72,7 +72,11 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       ///    "What are the important numbers for converting from X to Y?"
       for (var conversion in unitGroup.conversions) {
         var Conversion(:from, :to, formula: expression) = conversion;
-        var (fromUnit, toUnit) = (_lessonsHelper.getUnit(from)!, _lessonsHelper.getUnit(to)!);
+        var unitGroupId = lesson.unitsType;
+        var (fromUnit, toUnit) = (
+          _lessonsHelper.getUnit(unitGroupId, from)!,
+          _lessonsHelper.getUnit(unitGroupId, to)!,
+        );
         var constants = expression.constants.toSet();
         var correctAnswer = constants.map((c) => c.value).toSet();
         var choices = {correctAnswer};
@@ -114,7 +118,11 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         assert(units.length == units.whereType<Object>().length);
 
         var Conversion(:from, :to, formula: answer) = conversion;
-        var (fromUnit, toUnit) = (_lessonsHelper.getUnit(from)!, _lessonsHelper.getUnit(to)!);
+        var unitGroupId = lesson.unitsType;
+        var (fromUnit, toUnit) = (
+          _lessonsHelper.getUnit(unitGroupId, from)!,
+          _lessonsHelper.getUnit(unitGroupId, to)!,
+        );
         var choices = [answer];
 
         for (var i = 0; i < 3; ++i) {
@@ -146,7 +154,12 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       return questions;
     } else if (learnChapter.type == "indirect") {
       var questions = <LearnQuestion>[];
-      var allUnits = learnChapter.units.map(_lessonsHelper.getUnit).whereType<Unit>().toList();
+      var unitGroupId = lesson.unitsType;
+      var allUnits =
+          learnChapter.units
+              .map((u) => _lessonsHelper.getUnit(unitGroupId, u))
+              .whereType<Unit>()
+              .toList();
       var unitGroup = _lessonsHelper.getUnitGroupForUnits(allUnits);
 
       if (unitGroup == null) {
@@ -157,8 +170,8 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         for (var to in learnChapter.units) {
           if (from == to) continue;
 
-          var fromUnit = _lessonsHelper.getUnit(from);
-          var toUnit = _lessonsHelper.getUnit(to);
+          var fromUnit = _lessonsHelper.getUnit(unitGroupId, from);
+          var toUnit = _lessonsHelper.getUnit(unitGroupId, to);
 
           if (fromUnit == null || toUnit == null) {
             throw Exception("Unit not found");

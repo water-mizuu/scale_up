@@ -55,7 +55,16 @@ class AllLessonsPageCubit extends Cubit<AllLessonsPageState> {
 
     var unitMap = <(String, String), Unit?>{};
     Unit? unitOf(String lesson, String unitId) {
-      return unitMap.putIfAbsent((lesson, unitId), () => _lessonsHelper.getUnit(unitId));
+      var lessonObject = allLessons.cast<Lesson?>().firstWhere(
+        (l) => l?.id == lesson,
+        orElse: () => null,
+      );
+      if (lessonObject == null) return null;
+
+      return unitMap.putIfAbsent((
+        lesson,
+        unitId,
+      ), () => _lessonsHelper.getUnit(lessonObject.unitsType, unitId));
     }
 
     var scores = <Lesson, int>{};

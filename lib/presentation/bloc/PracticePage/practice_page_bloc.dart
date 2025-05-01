@@ -53,7 +53,8 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     var chapter = lesson.practiceChapters[state.chapterIndex];
 
     /// We need te get units by random.
-    var allUnits = chapter.units.map(_lessonsHelper.getUnit).toList();
+    var unitGroupId = lesson.unitsType;
+    var allUnits = chapter.units.map((u) => _lessonsHelper.getUnit(unitGroupId, u)).toList();
     var unitMap = <String, Unit>{
       for (var unit in allUnits)
         if (unit != null) unit.id: unit,

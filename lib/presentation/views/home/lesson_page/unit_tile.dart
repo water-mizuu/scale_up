@@ -19,8 +19,8 @@ class UnitTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var unit = context.read<LessonsHelper>().getUnit(unitString);
     var lesson = context.read<LessonPageCubit>().state.lesson;
+    var unit = context.read<LessonsHelper>().getUnit(lesson.unitsType, unitString);
     const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
     return ToolTip(
@@ -93,7 +93,10 @@ class UnitToolTip extends StatelessWidget {
                         children: [
                           for (var conversion in unitGroup.conversions)
                             if (conversion.from == unit.id)
-                              if (context.read<LessonsHelper>().getUnit(conversion.to)
+                              if (context.read<LessonsHelper>().getUnit(
+                                    lesson.unitsType,
+                                    conversion.to,
+                                  )
                                   case var unit?)
                                 Text(unit.shortcut),
                         ],

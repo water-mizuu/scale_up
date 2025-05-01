@@ -1,6 +1,5 @@
 import "dart:async";
 import "dart:collection";
-import "dart:convert";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
@@ -10,6 +9,7 @@ import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/models/unit_group.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/sources/lessons/numerical_expression_parser.dart";
+import "package:yaml/yaml.dart";
 
 class LessonsHelper {
   LessonsHelper._();
@@ -29,18 +29,38 @@ class LessonsHelper {
     return _lessons;
   }
 
+  /// This casts a yaml object to a JSON style object.
+  /// This is needed as YAML maps are typed as Map\<dynamic, dynamic\>,
+  /// but we need them to be Map\<String, dynamic> for JSON parsing.
+  Object? deepCastYaml(Object? yaml) {
+    if (yaml is YamlList) {
+      return yaml.map((e) => deepCastYaml(e)).toList();
+    } else if (yaml is YamlMap) {
+      return yaml.map((key, value) => MapEntry(key.toString(), deepCastYaml(value)));
+    } else {
+      return yaml;
+    }
+  }
+
+  dynamic yamlDecode(String object) {
+    var yaml = loadYaml(object);
+
+    return deepCastYaml(yaml);
+  }
+
   Future<void> initialize() async {
     if (hasLoaded) return;
 
-    var jsonString = await rootBundle.loadString("assets/lessons.json");
-    // Parse the JSON string into a Dart object
-    var data = await compute(jsonDecode, jsonString) as Map<String, dynamic>;
+    // // Parse the JSON string into a Dart object
+
+    var yamlString = await rootBundle.loadString("assets/lessons.yaml");
+    var data = await compute(yamlDecode, yamlString) as YamlMap;
 
     // Use the parsed data
     var {
       "lessons": List<dynamic> lessons, //
       "units_present": List<dynamic> unitsPresent,
-    } = data;
+    } = data.value as Map<String, dynamic>;
 
     var lessonList = lessons.cast<Map<String, dynamic>>().map(Lesson.fromJson).toList();
 
@@ -117,16 +137,16 @@ class LessonsHelper {
   }
 
   final Map<String, Unit?> _unitMap = {};
-  Unit? getUnit(String id) {
+  Unit? getUnit(String unitGroup, String id) {
     if (_unitMap.containsKey(id)) {
       return _unitMap[id];
     }
 
-    return _unitMap[id] =
-        _unitGroups //
-            .expand((g) => g.units)
-            .where((unit) => unit.id == id)
-            .firstOrNull;
+    return _unitGroups //
+        .where((group) => group.type == unitGroup)
+        .expand((group) => group.units)
+        .where((unit) => unit.id == id)
+        .firstOrNull;
   }
 
   /// The canonical conversion graph is an incomplete graph

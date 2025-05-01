@@ -39,11 +39,14 @@ class _AppState extends State<App> {
     return FutureBuilder(
       future: _lessonHelperFuture,
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          if (kDebugMode) {
+            print("Error loading lessons: ${snapshot.error}");
+          }
+        }
+
         if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
         }
 
         return MultiProvider(

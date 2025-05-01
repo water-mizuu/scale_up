@@ -75,7 +75,7 @@ class NewLessonTile extends StatelessWidget {
 
         const SizedBox(height: 4.0),
         Styles.caption(
-          "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(u)?.shortcut ?? u).join(", ")}.",
+          "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(lesson.unitsType, u)?.shortcut ?? u).join(", ")}.",
           fontSize: 12.0,
         ),
 

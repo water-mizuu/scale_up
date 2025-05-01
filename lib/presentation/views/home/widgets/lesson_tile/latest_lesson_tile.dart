@@ -89,7 +89,7 @@ class LatestLessonTile extends StatelessWidget {
       children: [
         Styles.subtitle(lesson.name, fontSize: 20, color: foreground),
         Styles.subtitle(
-          "Units: ${lesson.units.map((u) => helper.getUnit(u)!).map((u) => u.display ?? u.id.toTitleCase()).join(", ")}",
+          "Units: ${lesson.units.map((u) => helper.getUnit(lesson.unitsType, u)!).map((u) => u.display ?? u.id.toTitleCase()).join(", ")}",
           fontSize: 12,
           color: foreground,
         ),

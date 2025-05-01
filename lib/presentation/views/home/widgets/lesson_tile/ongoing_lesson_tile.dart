@@ -68,7 +68,7 @@ class OngoingLessonTile extends StatelessWidget {
           children: [
             Expanded(
               child: Styles.subtitle(
-                "Units: ${lesson.units.map((u) => helper.getUnit(u)!).map((u) => u.display ?? u.id.toTitleCase()).join(", ")}",
+                "Units: ${lesson.units.map((u) => helper.getUnit(lesson.unitsType, u)!).map((u) => u.display ?? u.id.toTitleCase()).join(", ")}",
                 fontSize: 10,
               ),
             ),
