@@ -11,11 +11,32 @@ units_present:
       - from: feet
         to: inch
         formula: from * 12
+      - from: meter
+        to: feet
+        formula: from * 3.28084
+      - from: kilometer
+        to: mile
+        formula: from / 1.60934
+      - from: centimeter
+        to: millimeter
+        formula: from * 10
+      - from: centimeter
+        to: meter
+        formula: from / 100
+      - from: inch
+        to: centimeter
+        formula: from * 2.54
     units:
       - id: meter
         shortcut: m
+      - id: centimeter
+        shortcut: cm
+      - id: millimeter
+        shortcut: mm
       - id: kilometer
         shortcut: km
+      - id: mile
+        shortcut: mi
       - id: feet
         shortcut: ft
       - id: inch
@@ -167,18 +188,29 @@ lessons:
       - kilometer
       - feet
       - inch
+      - centimeter
+      - millimeter
+      - mile
     learn:
       - type: direct
         name: Direct Conversion -- 1
         units:
           - meter
           - kilometer
-          - inch
+          - centimeter
+          - millimeter
       - type: direct
         name: Direct Conversion -- 2
         units:
           - feet
           - inch
+          - meter
+          - centimeter
+      - type: direct
+        name: Direct Conversion -- 3
+        units:
+          - mile
+          - kilometer
           - meter
       - type: indirect
         name: Indirect Conversions
@@ -390,7 +422,7 @@ lessons:
           - celsius
           - fahrenheit
           - kelvin
-          - fahrenheit
+          - rankine
     practice:
       - name: Basic Conversion
         question_count: 6
