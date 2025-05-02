@@ -42,3 +42,15 @@ user confirmation and whatnot.
 I have to do the following things:
   1. Integrate the sound I requested a while ago.
   2. Design a learn page
+
+
+# May 2, 2025 || 10:22AM.
+I have started to use some *ehem* tools for assisting with design. These are really good.
+However, there are still some things I need to do.
+  1. Implement the plain "continue" things in learn.
+    - These are the questions which just describe the conversion and stuff.
+    As such, there are things I need to do:
+      1. Create a template for each (direct and direct)
+      2. Create variations
+      3. Designate the constrained shuffling.
+  2. Indicate to the user the locked and stuff.

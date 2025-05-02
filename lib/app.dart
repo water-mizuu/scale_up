@@ -128,12 +128,7 @@ class AppView extends StatelessWidget {
       ),
 
       scrollBehavior: MaterialScrollBehavior().copyWith(
-        dragDevices: {
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.touch,
-          PointerDeviceKind.stylus,
-          PointerDeviceKind.unknown,
-        },
+        dragDevices: PointerDeviceKind.values.toSet(),
       ),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
@@ -144,14 +139,17 @@ class AppView extends StatelessWidget {
       /// This allows the application to be tested on a web browser
       ///   While being in a mobile layout.
       /// This is useful for testing purposes only, and should not be used in production.
-      child = Center(
-        child: Container(
-          height: 820,
-          width: 380,
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-          child: child,
-        ),
-      );
+      var size = MediaQuery.sizeOf(context);
+      if (size.width / size.height > 0.6) {
+        child = Center(
+          child: Container(
+            height: 820,
+            width: 380,
+            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            child: child,
+          ),
+        );
+      }
     }
 
     return child;

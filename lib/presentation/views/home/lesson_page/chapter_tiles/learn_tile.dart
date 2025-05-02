@@ -7,10 +7,11 @@ import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/home/lesson_page/leading_chapter_index.dart";
+import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/leading_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class LearnTile extends StatelessWidget {
   const LearnTile({super.key, required this.chapterIndex, required this.chapter});
@@ -26,15 +27,13 @@ class LearnTile extends StatelessWidget {
       (UserDataBloc b) => b.state.finishedChapters.containsKey(key),
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.white.borderColor),
-      ),
+    return TapScale(
       child: ListTile(
         tileColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.white.borderColor),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
         leading: LeadingChapterIndex(index: chapterIndex, isCompleted: isComplete),
         title: Styles.body(chapter.name, fontSize: 14),
         onTap: () async {

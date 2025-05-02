@@ -16,17 +16,22 @@ class LeadingChapterIndex extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
+            color: Colors.grey.shade100,
+            // border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
           ),
           child: Center(
-            child:
-                isCompleted
-                    ? Icon(Icons.check, color: Colors.green)
-                    : Styles.title(
-                      "${index + 1}",
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                    ),
+            child: Builder(
+              builder: (_) {
+                if (isCompleted) {
+                  return Icon(Icons.check, color: Colors.green);
+                }
+                return Styles.title(
+                  "${index + 1}",
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                );
+              },
+            ),
           ),
         ),
       ),

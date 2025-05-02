@@ -7,7 +7,7 @@ import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/home/lesson_page/leading_chapter_index.dart";
+import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/leading_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";

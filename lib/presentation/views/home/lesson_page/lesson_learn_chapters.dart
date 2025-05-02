@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
-import "package:scale_up/presentation/views/home/lesson_page/learn_tile.dart";
+import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/learn_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
@@ -23,7 +23,7 @@ class LessonLearnChapters extends StatelessWidget {
           children: [
             for (var (index, chapter)
                 in context.read<LessonPageCubit>().state.lesson.learnChapters.indexed)
-              TapScale(child: LearnTile(chapterIndex: index, chapter: chapter))
+              LearnTile(chapterIndex: index, chapter: chapter)
                   .animate() //
                   .then(delay: (index * 100).milliseconds)
                   .slideY(duration: 250.ms, begin: 0.1, end: 0.0)
