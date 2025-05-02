@@ -22,11 +22,14 @@ class LearnCheckButton extends StatelessWidget {
         learnPageBloc.state.status == LearnPageStatus.incorrect;
 
     var isFinished = learnPageBloc.loadedState.status == LearnPageStatus.finished;
+    var isPlain =
+        learnPageBloc.loadedState.questions[learnPageBloc.loadedState.questionIndex]
+            is PlainLearnQuestion;
 
     return FilledButton(
       style: FilledButton.styleFrom(backgroundColor: buttonColor),
       onPressed: () {
-        if (hasAnswered) {
+        if (hasAnswered || isPlain) {
           return () {
             HapticFeedback.selectionClick();
 
@@ -54,7 +57,7 @@ class LearnCheckButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 12.0),
         child: Text(() {
-          if (hasAnswered || isFinished) {
+          if (hasAnswered || isFinished || isPlain) {
             return "Continue";
           }
 

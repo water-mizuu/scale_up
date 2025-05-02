@@ -11,7 +11,6 @@ import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/bordered_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class LearnChoices extends StatelessWidget {
@@ -24,6 +23,8 @@ class LearnChoices extends StatelessWidget {
     );
 
     switch (currentQuestion) {
+      case PlainLearnQuestion():
+        return const SizedBox.shrink();
       case DirectFormulaLearnQuestion():
         return DirectFormulaChoices(currentQuestion: currentQuestion);
       case ImportantNumbersLearnQuestion():

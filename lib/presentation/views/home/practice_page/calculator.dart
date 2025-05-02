@@ -6,7 +6,7 @@ import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/data/sources/lessons/numerical_expression_parser.dart";
+import "package:scale_up/data/sources/lessons/parsers/numerical_expression_parser.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";

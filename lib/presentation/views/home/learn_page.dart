@@ -124,13 +124,9 @@ class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
           child: MultiProvider(
             providers: [
               BlocProvider.value(value: bloc),
-              InheritedProvider.value(value: MessageAnimationController(messageAnimation)),
-              InheritedProvider.value(
-                value: TransitionInAnimationController(transitionInAnimation),
-              ),
-              InheritedProvider.value(
-                value: TransitionOutAnimationController(transitionOutAnimation),
-              ),
+              Provider.value(value: MessageAnimationController(messageAnimation)),
+              Provider.value(value: TransitionInAnimationController(transitionInAnimation)),
+              Provider.value(value: TransitionOutAnimationController(transitionOutAnimation)),
             ],
             child: MultiBlocListener(
               listeners: [

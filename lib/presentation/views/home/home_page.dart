@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var userDataBloc = context.read<UserDataBloc>();
+
     return MultiProvider(
       providers: [BlocProvider.value(value: cubit)],
       builder: (context, _) {

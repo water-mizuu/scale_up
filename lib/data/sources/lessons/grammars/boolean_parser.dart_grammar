@@ -1,10 +1,8 @@
 {
 
 import "package:flutter/foundation.dart";
-import "package:scale_up/data/sources/lessons/"
-    "lessons_helper/numerical_expression.dart";
-import "package:scale_up/data/sources/lessons/"
-    "lessons_helper/boolean_expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/boolean_expression.dart";
 
 num readEnv(Map<String, Object> env, NumericalExpression key) {
   try {

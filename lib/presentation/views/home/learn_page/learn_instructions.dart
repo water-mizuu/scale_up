@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
@@ -9,7 +10,6 @@ import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.da
 import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
-import "package:scale_up/presentation/views/home/widgets/dotted_underline.dart";
 import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
@@ -25,6 +25,8 @@ class LearnInstructions extends StatelessWidget {
     );
 
     switch (currentQuestion) {
+      case PlainLearnQuestion():
+        return PlainLearnInstructions(currentQuestion: currentQuestion);
       case DirectFormulaLearnQuestion():
         return DirectFormulaInstructions(currentQuestion: currentQuestion);
       case ImportantNumbersLearnQuestion():
@@ -32,6 +34,23 @@ class LearnInstructions extends StatelessWidget {
       case IndirectStepsLearnQuestion():
         return IndirectStepsInstructions(currentQuestion: currentQuestion);
     }
+  }
+}
+
+// LearnQuestion.plainLearn
+class PlainLearnInstructions extends StatelessWidget {
+  const PlainLearnInstructions({super.key, required this.currentQuestion});
+
+  final PlainLearnQuestion currentQuestion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var information in currentQuestion.informations)
+          Markdown(data: information, shrinkWrap: true),
+      ],
+    );
   }
 }
 
@@ -52,41 +71,42 @@ class DirectFormulaInstructions extends StatelessWidget {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Styles.subtitle("How would you convert from "),
-          DottedUnderline(
-            dashPattern: [4, 4],
-            child: ToolTip(
-              content: IntrinsicWidth(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Styles.subtitle("Conversion formula:", fontWeight: FontWeight.w600),
-                    Text.rich(
-                      TextSpan(
-                        style: GoogleFonts.notoSansMath(),
-                        children: [
-                          TextSpan(text: to.shortcut),
-                          TextSpan(text: " = "),
-                          TextSpan(text: answer.substituteString("from", from.shortcut).str),
-                        ],
-                      ),
+          ToolTip(
+            content: IntrinsicWidth(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Styles.subtitle("Conversion formula:", fontWeight: FontWeight.w600),
+                  Text.rich(
+                    TextSpan(
+                      style: GoogleFonts.notoSansMath(),
+                      children: [
+                        TextSpan(text: to.shortcut),
+                        TextSpan(text: " = "),
+                        TextSpan(text: answer.substituteString("from", from.shortcut).str),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "${from.name} (${from.shortcut})",
-                      style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    TextSpan(text: " to ", style: Styles.subtitle),
-                    TextSpan(
-                      text: "${to.name} (${to.shortcut})",
-                      style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+            ),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.dashed,
                 ),
+                children: [
+                  TextSpan(
+                    text: "${from.name} (${from.shortcut})",
+                    style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: " to ", style: Styles.subtitle),
+                  TextSpan(
+                    text: "${to.name} (${to.shortcut})",
+                    style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
           ),
@@ -119,18 +139,18 @@ class ImportantNumbersInstructions extends StatelessWidget {
             Styles.subtitle("What are the "),
           ToolTip(
             content: IntrinsicWidth(child: Styles.subtitle(answer.join(", "))),
-            child: DottedUnderline(
-              dashPattern: [4, 4],
-              stackFit: StackFit.passthrough,
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    if (answer.length == 1)
-                      TextSpan(text: "number", style: Styles.subtitle)
-                    else
-                      TextSpan(text: "numbers", style: Styles.subtitle),
-                  ],
-                ),
+            child: Text.rich(
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.dashed,
+              ),
+              TextSpan(
+                children: [
+                  if (answer.length == 1)
+                    TextSpan(text: "number", style: Styles.subtitle)
+                  else
+                    TextSpan(text: "numbers", style: Styles.subtitle),
+                ],
               ),
             ),
           ),
@@ -146,6 +166,7 @@ class ImportantNumbersInstructions extends StatelessWidget {
   }
 }
 
+// LearnQuestion.indirectSteps
 class IndirectStepsInstructions extends StatelessWidget {
   const IndirectStepsInstructions({super.key, required this.currentQuestion});
 
@@ -212,24 +233,25 @@ class IndirectStepsInstructions extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Styles.subtitle("How would you convert from "),
-              DottedUnderline(
-                dashPattern: [4, 4],
-                child: ToolTip(
-                  content: IndirectStepsToolTipContent(steps: steps),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "${from.name} (${from.shortcut})",
-                          style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(text: " to ", style: Styles.subtitle),
-                        TextSpan(
-                          text: "${to.name} (${to.shortcut})",
-                          style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+              ToolTip(
+                content: IndirectStepsToolTipContent(steps: steps),
+                child: Text.rich(
+                  TextSpan(
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.dashed,
                     ),
+                    children: [
+                      TextSpan(
+                        text: "${from.name} (${from.shortcut})",
+                        style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(text: " to ", style: Styles.subtitle),
+                      TextSpan(
+                        text: "${to.name} (${to.shortcut})",
+                        style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -345,16 +367,5 @@ class _AnimatedQuestionPanel extends StatelessWidget {
         )
         .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
         .fadeIn();
-  }
-}
-
-class UnitTile extends StatelessWidget {
-  const UnitTile({super.key, required this.unit});
-
-  final Unit unit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(unit.shortcut, style: GoogleFonts.notoSansMath());
   }
 }

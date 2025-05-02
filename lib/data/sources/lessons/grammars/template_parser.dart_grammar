@@ -1,0 +1,11 @@
+{
+
+import "package:scale_up/data/sources/lessons/lessons_helper/template_node.dart";
+
+}
+
+TemplateNode document = ^ :templateNode $ { templateNode };
+
+TemplateNode templateNode = $:(variable | rawString)+ { MultiNode($) };
+TemplateNode variable = "{{" \s* $:<[A-Za-z_][A-Za-z0-9_]*> \s* "}}" { VariableNode($) };
+TemplateNode rawString = (~"{{")+ { RawStringNode(span) };

@@ -41,7 +41,6 @@ class UnitTile extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (unit case Unit(:var shortcut))

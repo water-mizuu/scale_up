@@ -50,7 +50,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     super.onEvent(event);
 
     if (kDebugMode) {
-      print(event);
+      print("[LEARN_PAGE_BLOC] $event");
     }
   }
 
@@ -66,6 +66,32 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       );
       if (unitGroup == null || extendedUnitGroup == null) {
         throw Exception("Unit group not found");
+      }
+
+      /// This block is responsible for generating
+      ///    the descriptive (plain) questions.
+      for (var conversion in unitGroup.conversions) {
+        var Conversion(:from, :to, formula: expression) = conversion;
+        var unitGroupId = lesson.unitsType;
+        var (fromUnit, toUnit) = (
+          _lessonsHelper.getUnit(unitGroupId, from)!,
+          _lessonsHelper.getUnit(unitGroupId, to)!,
+        );
+
+        var templates = _lessonsHelper.getTemplate("direct");
+        if (templates == null) {
+          throw Exception("Template not found for 'direct'.");
+        }
+
+        var generated = templates.generateRandom({
+          "from": fromUnit.display ?? fromUnit.name,
+          "to": toUnit.display ?? toUnit.name,
+          "left_conversion_english": "",
+          "number": expression.constants.map((c) => c.value).join(", "),
+          "equation": expression.toString(),
+        });
+
+        questions.add(LearnQuestion.plain(informations: generated));
       }
 
       /// This block is responsible for generating
@@ -251,30 +277,39 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     await Future.delayed(Duration.zero);
 
     var question = loadedState.questions[loadedState.questionIndex];
-    var correctAnswer = question.answer;
-    var answer = loadedState.answer;
+    switch (question) {
+      case PlainLearnQuestion():
+        emit(loadedState.copyWith(status: LearnPageStatus.correct));
+        return;
+      case DirectFormulaLearnQuestion(answer: Object correctAnswer):
+      case ImportantNumbersLearnQuestion(answer: Object correctAnswer):
+      case IndirectStepsLearnQuestion(answer: Object correctAnswer):
+        var answer = loadedState.answer;
 
-    if (question.comparison(answer, correctAnswer)) {
-      emit(loadedState.copyWith(status: LearnPageStatus.correct, correctAnswer: correctAnswer));
+        if (question.comparison(answer, correctAnswer)) {
+          emit(
+            loadedState.copyWith(status: LearnPageStatus.correct, correctAnswer: correctAnswer),
+          );
 
-      return;
+          return;
+        }
+
+        var questions = loadedState.questions;
+        var removed = questions[loadedState.questionIndex];
+        var newQuestions = questions.followedBy([removed]).toList();
+
+        /// PROBLEM:
+        ///   When the user answers incorrectly, since we update the [questions],
+        ///   The [questionIndex] is not updated.
+        emit(
+          loadedState.copyWith(
+            status: LearnPageStatus.incorrect,
+            correctAnswer: correctAnswer,
+            questions: newQuestions,
+            mistakes: loadedState.mistakes + 1,
+          ),
+        );
     }
-
-    var questions = loadedState.questions;
-    var removed = questions[loadedState.questionIndex];
-    var newQuestions = questions.followedBy([removed]).toList();
-
-    /// PROBLEM:
-    ///   When the user answers incorrectly, since we update the [questions],
-    ///   The [questionIndex] is not updated.
-    emit(
-      loadedState.copyWith(
-        status: LearnPageStatus.incorrect,
-        correctAnswer: correctAnswer,
-        questions: newQuestions,
-        mistakes: loadedState.mistakes + 1,
-      ),
-    );
   }
 
   void _onAnswerUpdated(LearnPageAnswerUpdated event, Emitter<LearnPageState> emit) async {

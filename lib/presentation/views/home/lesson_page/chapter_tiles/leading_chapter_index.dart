@@ -1,11 +1,20 @@
 import "package:flutter/material.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class LeadingChapterIndex extends StatelessWidget {
-  const LeadingChapterIndex({super.key, required this.index, required this.isCompleted});
+  const LeadingChapterIndex({
+    super.key,
+    required this.index,
+    required this.color,
+    required this.isCompleted,
+    required this.isNext,
+  });
 
   final int index;
+  final Color color;
   final bool isCompleted;
+  final bool isNext;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +25,16 @@ class LeadingChapterIndex extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
-            color: Colors.grey.shade100,
-            // border: Border.all(color: Colors.black.withValues(alpha: 0.1)),
+            color: () {
+              if (isCompleted) {
+                return Colors.green.shade50;
+              }
+              if (isNext) {
+                return color.backgroundColor;
+              }
+
+              return Colors.grey.shade100;
+            }(),
           ),
           child: Center(
             child: Builder(
@@ -27,7 +44,7 @@ class LeadingChapterIndex extends StatelessWidget {
                 }
                 return Styles.title(
                   "${index + 1}",
-                  color: Colors.black,
+                  color: isNext ? color : Colors.grey,
                   fontWeight: FontWeight.w400,
                 );
               },

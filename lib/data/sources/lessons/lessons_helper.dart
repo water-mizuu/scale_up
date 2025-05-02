@@ -5,10 +5,11 @@ import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:scale_up/data/models/conversion.dart";
 import "package:scale_up/data/models/lesson.dart";
+import "package:scale_up/data/models/template.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/models/unit_group.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/data/sources/lessons/numerical_expression_parser.dart";
+import "package:scale_up/data/sources/lessons/parsers/numerical_expression_parser.dart";
 import "package:yaml/yaml.dart";
 
 class LessonsHelper {
@@ -22,6 +23,7 @@ class LessonsHelper {
   }
 
   bool hasLoaded = false;
+  final List<Template> _templates = [];
   final List<Lesson> _lessons = [];
   final List<UnitGroup> _unitGroups = [];
 
@@ -42,7 +44,7 @@ class LessonsHelper {
     }
   }
 
-  dynamic yamlDecode(String object) {
+  Object? yamlDecode(String object) {
     var yaml = loadYaml(object) as YamlMap;
 
     return deepCastYaml(yaml);
@@ -58,9 +60,15 @@ class LessonsHelper {
 
     // Use the parsed data
     var {
+      "templates": List<dynamic> templates,
       "lessons": List<dynamic> lessons, //
       "units_present": List<dynamic> unitsPresent,
     } = data;
+
+    var templateList = templates.cast<Map<String, dynamic>>().map(Template.fromJson).toList();
+    _templates
+      ..clear()
+      ..addAll(templateList);
 
     var lessonList = lessons.cast<Map<String, dynamic>>().map(Lesson.fromJson).toList();
 
@@ -149,6 +157,38 @@ class LessonsHelper {
         .firstOrNull;
   }
 
+  Template? getTemplate(String type) {
+    return _templates //
+        .where((template) => template.type == type)
+        .firstOrNull;
+  }
+
+  List<((Unit, Unit), NumericalExpression)>? getConversionPathFor(Unit from, Unit to) {
+    var unitGroup =
+        _unitGroups //
+            .where((group) => group.units.contains(from) && group.units.contains(to))
+            .firstOrNull;
+
+    if (unitGroup == null) {
+      if (kDebugMode) {
+        throw UnsupportedError("No unit group found for units $from and $to");
+      }
+      return null;
+    }
+
+    return _computeConversionFor(unitGroup, from, to);
+  }
+
+  UnitGroup? getUnitGroupForUnits(List<Unit> allUnits) {
+    Set<UnitGroup> candidates = _unitGroups.toSet();
+
+    for (var unit in allUnits) {
+      candidates.removeWhere((g) => !g.units.contains(unit));
+    }
+
+    return candidates.first;
+  }
+
   /// The canonical conversion graph is an incomplete graph
   ///   which is derived from the defined conversions and their inverses.
   (Map<String, Unit>, Map<Unit, Map<Unit, NumericalExpression>>) _computeCanonicalConversionGraph(
@@ -227,32 +267,6 @@ class LessonsHelper {
     }
 
     return conversions;
-  }
-
-  List<((Unit, Unit), NumericalExpression)>? getConversionPathFor(Unit from, Unit to) {
-    var unitGroup =
-        _unitGroups //
-            .where((group) => group.units.contains(from) && group.units.contains(to))
-            .firstOrNull;
-
-    if (unitGroup == null) {
-      if (kDebugMode) {
-        throw UnsupportedError("No unit group found for units $from and $to");
-      }
-      return null;
-    }
-
-    return _computeConversionFor(unitGroup, from, to);
-  }
-
-  UnitGroup? getUnitGroupForUnits(List<Unit> allUnits) {
-    Set<UnitGroup> candidates = _unitGroups.toSet();
-
-    for (var unit in allUnits) {
-      candidates.removeWhere((g) => !g.units.contains(unit));
-    }
-
-    return candidates.first;
   }
 }
 

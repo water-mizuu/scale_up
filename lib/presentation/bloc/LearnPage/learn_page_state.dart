@@ -60,11 +60,17 @@ sealed class LearnPageState with _$LearnPageState {
 sealed class LearnQuestion with _$LearnQuestion {
   const LearnQuestion._();
 
+  const factory LearnQuestion.plain({
+    required List<String> informations,
+    @Default(false) bool isRetry,
+  }) = PlainLearnQuestion;
+
   const factory LearnQuestion.directFormula({
     required Unit from,
     required Unit to,
     required List<NumericalExpression> choices,
     required NumericalExpression answer,
+    @Default(false) bool isRetry,
   }) = DirectFormulaLearnQuestion;
 
   const factory LearnQuestion.importantNumbers({
@@ -72,6 +78,7 @@ sealed class LearnQuestion with _$LearnQuestion {
     required Unit to,
     required Set<Set<num>> choices,
     required Set<num> answer,
+    @Default(false) bool isRetry,
   }) = ImportantNumbersLearnQuestion;
 
   const factory LearnQuestion.indirectSteps({
@@ -80,10 +87,13 @@ sealed class LearnQuestion with _$LearnQuestion {
     required List<((Unit, Unit), NumericalExpression)> steps,
     required List<Unit> choices,
     required List<Unit> answer,
+    @Default(false) bool isRetry,
   }) = IndirectStepsLearnQuestion;
 
   String get correctAnswerString {
     return switch (this) {
+      PlainLearnQuestion() => throw Error(),
+
       DirectFormulaLearnQuestion(:var from, :var to, answer: var o) => //
       "${to.shortcut} = ${o.substituteString("from", from.shortcut)}",
 
@@ -99,6 +109,8 @@ sealed class LearnQuestion with _$LearnQuestion {
 
   bool Function(Object?, Object?) get comparison {
     return switch (this) {
+      PlainLearnQuestion() => (a, b) => true,
+
       DirectFormulaLearnQuestion() =>
         (a, b) => a is NumericalExpression && b is NumericalExpression && a.str == b.str,
       ImportantNumbersLearnQuestion() => //

@@ -30,22 +30,33 @@ class LessonProgression extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Styles.subtitle("Progress", fontWeight: FontWeight.w600),
-        FAProgressBar(
-          size: 8.0,
-          currentValue: progressBarValue * 100,
-          progressColor: color,
-          backgroundColor: progressionBackgroundColor,
-          borderRadius: BorderRadius.circular(24.0),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Styles.body(
-              "$chaptersDone / $chapterCount chapters",
-              color: color,
-              textAlign: TextAlign.right,
-            ),
-          ],
+        Container(
+          padding: EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Column(
+            children: [
+              FAProgressBar(
+                size: 8.0,
+                currentValue: progressBarValue * 100,
+                progressColor: color,
+                backgroundColor: progressionBackgroundColor,
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Styles.body(
+                    "$chaptersDone / $chapterCount chapters",
+                    color: color,
+                    textAlign: TextAlign.right,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

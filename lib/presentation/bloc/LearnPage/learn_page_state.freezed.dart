@@ -327,7 +327,7 @@ $LessonCopyWith<$Res> get lesson {
 /// @nodoc
 mixin _$LearnQuestion {
 
- Unit get from; Unit get to; Object get choices; Object get answer;
+ bool get isRetry;
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -338,16 +338,16 @@ $LearnQuestionCopyWith<LearnQuestion> get copyWith => _$LearnQuestionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other.choices, choices)&&const DeepCollectionEquality().equals(other.answer, answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnQuestion&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(choices),const DeepCollectionEquality().hash(answer));
+int get hashCode => Object.hash(runtimeType,isRetry);
 
 @override
 String toString() {
-  return 'LearnQuestion(from: $from, to: $to, choices: $choices, answer: $answer)';
+  return 'LearnQuestion(isRetry: $isRetry)';
 }
 
 
@@ -358,11 +358,11 @@ abstract mixin class $LearnQuestionCopyWith<$Res>  {
   factory $LearnQuestionCopyWith(LearnQuestion value, $Res Function(LearnQuestion) _then) = _$LearnQuestionCopyWithImpl;
 @useResult
 $Res call({
- Unit from, Unit to
+ bool isRetry
 });
 
 
-$UnitCopyWith<$Res> get from;$UnitCopyWith<$Res> get to;
+
 
 }
 /// @nodoc
@@ -375,52 +375,108 @@ class _$LearnQuestionCopyWithImpl<$Res>
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? from = null,Object? to = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isRetry = null,}) {
   return _then(_self.copyWith(
-from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
-as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
-as Unit,
+isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
-/// Create a copy of LearnQuestion
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UnitCopyWith<$Res> get from {
-  
-  return $UnitCopyWith<$Res>(_self.from, (value) {
-    return _then(_self.copyWith(from: value));
-  });
-}/// Create a copy of LearnQuestion
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$UnitCopyWith<$Res> get to {
-  
-  return $UnitCopyWith<$Res>(_self.to, (value) {
-    return _then(_self.copyWith(to: value));
-  });
-}
+
 }
 
 
 /// @nodoc
 
 
-class DirectFormulaLearnQuestion extends LearnQuestion {
-  const DirectFormulaLearnQuestion({required this.from, required this.to, required final  List<NumericalExpression> choices, required this.answer}): _choices = choices,super._();
+class PlainLearnQuestion extends LearnQuestion {
+  const PlainLearnQuestion({required final  List<String> informations, this.isRetry = false}): _informations = informations,super._();
   
 
-@override final  Unit from;
-@override final  Unit to;
+ final  List<String> _informations;
+ List<String> get informations {
+  if (_informations is EqualUnmodifiableListView) return _informations;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_informations);
+}
+
+@override@JsonKey() final  bool isRetry;
+
+/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PlainLearnQuestionCopyWith<PlainLearnQuestion> get copyWith => _$PlainLearnQuestionCopyWithImpl<PlainLearnQuestion>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlainLearnQuestion&&const DeepCollectionEquality().equals(other._informations, _informations)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_informations),isRetry);
+
+@override
+String toString() {
+  return 'LearnQuestion.plain(informations: $informations, isRetry: $isRetry)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PlainLearnQuestionCopyWith<$Res> implements $LearnQuestionCopyWith<$Res> {
+  factory $PlainLearnQuestionCopyWith(PlainLearnQuestion value, $Res Function(PlainLearnQuestion) _then) = _$PlainLearnQuestionCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> informations, bool isRetry
+});
+
+
+
+
+}
+/// @nodoc
+class _$PlainLearnQuestionCopyWithImpl<$Res>
+    implements $PlainLearnQuestionCopyWith<$Res> {
+  _$PlainLearnQuestionCopyWithImpl(this._self, this._then);
+
+  final PlainLearnQuestion _self;
+  final $Res Function(PlainLearnQuestion) _then;
+
+/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? informations = null,Object? isRetry = null,}) {
+  return _then(PlainLearnQuestion(
+informations: null == informations ? _self._informations : informations // ignore: cast_nullable_to_non_nullable
+as List<String>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class DirectFormulaLearnQuestion extends LearnQuestion {
+  const DirectFormulaLearnQuestion({required this.from, required this.to, required final  List<NumericalExpression> choices, required this.answer, this.isRetry = false}): _choices = choices,super._();
+  
+
+ final  Unit from;
+ final  Unit to;
  final  List<NumericalExpression> _choices;
-@override List<NumericalExpression> get choices {
+ List<NumericalExpression> get choices {
   if (_choices is EqualUnmodifiableListView) return _choices;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_choices);
 }
 
-@override final  NumericalExpression answer;
+ final  NumericalExpression answer;
+@override@JsonKey() final  bool isRetry;
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
@@ -432,16 +488,16 @@ $DirectFormulaLearnQuestionCopyWith<DirectFormulaLearnQuestion> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectFormulaLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._choices, _choices)&&(identical(other.answer, answer) || other.answer == answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectFormulaLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._choices, _choices)&&(identical(other.answer, answer) || other.answer == answer)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_choices),answer);
+int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_choices),answer,isRetry);
 
 @override
 String toString() {
-  return 'LearnQuestion.directFormula(from: $from, to: $to, choices: $choices, answer: $answer)';
+  return 'LearnQuestion.directFormula(from: $from, to: $to, choices: $choices, answer: $answer, isRetry: $isRetry)';
 }
 
 
@@ -452,11 +508,11 @@ abstract mixin class $DirectFormulaLearnQuestionCopyWith<$Res> implements $Learn
   factory $DirectFormulaLearnQuestionCopyWith(DirectFormulaLearnQuestion value, $Res Function(DirectFormulaLearnQuestion) _then) = _$DirectFormulaLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<NumericalExpression> choices, NumericalExpression answer
+ Unit from, Unit to, List<NumericalExpression> choices, NumericalExpression answer, bool isRetry
 });
 
 
-@override $UnitCopyWith<$Res> get from;@override $UnitCopyWith<$Res> get to;
+$UnitCopyWith<$Res> get from;$UnitCopyWith<$Res> get to;
 
 }
 /// @nodoc
@@ -469,13 +525,14 @@ class _$DirectFormulaLearnQuestionCopyWithImpl<$Res>
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? choices = null,Object? answer = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? choices = null,Object? answer = null,Object? isRetry = null,}) {
   return _then(DirectFormulaLearnQuestion(
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<NumericalExpression>,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
-as NumericalExpression,
+as NumericalExpression,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -504,25 +561,26 @@ $UnitCopyWith<$Res> get to {
 
 
 class ImportantNumbersLearnQuestion extends LearnQuestion {
-  const ImportantNumbersLearnQuestion({required this.from, required this.to, required final  Set<Set<num>> choices, required final  Set<num> answer}): _choices = choices,_answer = answer,super._();
+  const ImportantNumbersLearnQuestion({required this.from, required this.to, required final  Set<Set<num>> choices, required final  Set<num> answer, this.isRetry = false}): _choices = choices,_answer = answer,super._();
   
 
-@override final  Unit from;
-@override final  Unit to;
+ final  Unit from;
+ final  Unit to;
  final  Set<Set<num>> _choices;
-@override Set<Set<num>> get choices {
+ Set<Set<num>> get choices {
   if (_choices is EqualUnmodifiableSetView) return _choices;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_choices);
 }
 
  final  Set<num> _answer;
-@override Set<num> get answer {
+ Set<num> get answer {
   if (_answer is EqualUnmodifiableSetView) return _answer;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableSetView(_answer);
 }
 
+@override@JsonKey() final  bool isRetry;
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
@@ -534,16 +592,16 @@ $ImportantNumbersLearnQuestionCopyWith<ImportantNumbersLearnQuestion> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ImportantNumbersLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._choices, _choices)&&const DeepCollectionEquality().equals(other._answer, _answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ImportantNumbersLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._choices, _choices)&&const DeepCollectionEquality().equals(other._answer, _answer)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_choices),const DeepCollectionEquality().hash(_answer));
+int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_choices),const DeepCollectionEquality().hash(_answer),isRetry);
 
 @override
 String toString() {
-  return 'LearnQuestion.importantNumbers(from: $from, to: $to, choices: $choices, answer: $answer)';
+  return 'LearnQuestion.importantNumbers(from: $from, to: $to, choices: $choices, answer: $answer, isRetry: $isRetry)';
 }
 
 
@@ -554,11 +612,11 @@ abstract mixin class $ImportantNumbersLearnQuestionCopyWith<$Res> implements $Le
   factory $ImportantNumbersLearnQuestionCopyWith(ImportantNumbersLearnQuestion value, $Res Function(ImportantNumbersLearnQuestion) _then) = _$ImportantNumbersLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, Set<Set<num>> choices, Set<num> answer
+ Unit from, Unit to, Set<Set<num>> choices, Set<num> answer, bool isRetry
 });
 
 
-@override $UnitCopyWith<$Res> get from;@override $UnitCopyWith<$Res> get to;
+$UnitCopyWith<$Res> get from;$UnitCopyWith<$Res> get to;
 
 }
 /// @nodoc
@@ -571,13 +629,14 @@ class _$ImportantNumbersLearnQuestionCopyWithImpl<$Res>
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? choices = null,Object? answer = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? choices = null,Object? answer = null,Object? isRetry = null,}) {
   return _then(ImportantNumbersLearnQuestion(
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as Set<Set<num>>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
-as Set<num>,
+as Set<num>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -606,11 +665,11 @@ $UnitCopyWith<$Res> get to {
 
 
 class IndirectStepsLearnQuestion extends LearnQuestion {
-  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), NumericalExpression)> steps, required final  List<Unit> choices, required final  List<Unit> answer}): _steps = steps,_choices = choices,_answer = answer,super._();
+  const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), NumericalExpression)> steps, required final  List<Unit> choices, required final  List<Unit> answer, this.isRetry = false}): _steps = steps,_choices = choices,_answer = answer,super._();
   
 
-@override final  Unit from;
-@override final  Unit to;
+ final  Unit from;
+ final  Unit to;
  final  List<((Unit, Unit), NumericalExpression)> _steps;
  List<((Unit, Unit), NumericalExpression)> get steps {
   if (_steps is EqualUnmodifiableListView) return _steps;
@@ -619,19 +678,20 @@ class IndirectStepsLearnQuestion extends LearnQuestion {
 }
 
  final  List<Unit> _choices;
-@override List<Unit> get choices {
+ List<Unit> get choices {
   if (_choices is EqualUnmodifiableListView) return _choices;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_choices);
 }
 
  final  List<Unit> _answer;
-@override List<Unit> get answer {
+ List<Unit> get answer {
   if (_answer is EqualUnmodifiableListView) return _answer;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_answer);
 }
 
+@override@JsonKey() final  bool isRetry;
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
@@ -643,16 +703,16 @@ $IndirectStepsLearnQuestionCopyWith<IndirectStepsLearnQuestion> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IndirectStepsLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._steps, _steps)&&const DeepCollectionEquality().equals(other._choices, _choices)&&const DeepCollectionEquality().equals(other._answer, _answer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IndirectStepsLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&const DeepCollectionEquality().equals(other._steps, _steps)&&const DeepCollectionEquality().equals(other._choices, _choices)&&const DeepCollectionEquality().equals(other._answer, _answer)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_steps),const DeepCollectionEquality().hash(_choices),const DeepCollectionEquality().hash(_answer));
+int get hashCode => Object.hash(runtimeType,from,to,const DeepCollectionEquality().hash(_steps),const DeepCollectionEquality().hash(_choices),const DeepCollectionEquality().hash(_answer),isRetry);
 
 @override
 String toString() {
-  return 'LearnQuestion.indirectSteps(from: $from, to: $to, steps: $steps, choices: $choices, answer: $answer)';
+  return 'LearnQuestion.indirectSteps(from: $from, to: $to, steps: $steps, choices: $choices, answer: $answer, isRetry: $isRetry)';
 }
 
 
@@ -663,11 +723,11 @@ abstract mixin class $IndirectStepsLearnQuestionCopyWith<$Res> implements $Learn
   factory $IndirectStepsLearnQuestionCopyWith(IndirectStepsLearnQuestion value, $Res Function(IndirectStepsLearnQuestion) _then) = _$IndirectStepsLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- Unit from, Unit to, List<((Unit, Unit), NumericalExpression)> steps, List<Unit> choices, List<Unit> answer
+ Unit from, Unit to, List<((Unit, Unit), NumericalExpression)> steps, List<Unit> choices, List<Unit> answer, bool isRetry
 });
 
 
-@override $UnitCopyWith<$Res> get from;@override $UnitCopyWith<$Res> get to;
+$UnitCopyWith<$Res> get from;$UnitCopyWith<$Res> get to;
 
 }
 /// @nodoc
@@ -680,14 +740,15 @@ class _$IndirectStepsLearnQuestionCopyWithImpl<$Res>
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? steps = null,Object? choices = null,Object? answer = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? steps = null,Object? choices = null,Object? answer = null,Object? isRetry = null,}) {
   return _then(IndirectStepsLearnQuestion(
 from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
 as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as Unit,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
 as List<((Unit, Unit), NumericalExpression)>,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Unit>,answer: null == answer ? _self._answer : answer // ignore: cast_nullable_to_non_nullable
-as List<Unit>,
+as List<Unit>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

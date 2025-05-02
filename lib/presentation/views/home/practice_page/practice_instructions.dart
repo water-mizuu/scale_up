@@ -4,7 +4,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
-import "package:scale_up/presentation/views/home/widgets/dotted_underline.dart";
 import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
@@ -87,12 +86,13 @@ class PracticeInstructions extends StatelessWidget {
                     ],
                   ),
                 ),
-                child: DottedUnderline(
-                  dashPattern: [4, 4],
-                  child: Container(
-                    /// There should be an underline under the text.
-                    padding: EdgeInsets.only(bottom: 4.0),
-                    child: Styles.title("$number ${left.shortcut} to ___ ${right.shortcut}?"),
+                child: Container(
+                  /// There should be an underline under the text.
+                  padding: EdgeInsets.only(bottom: 4.0),
+                  child: Styles.title(
+                    "$number ${left.shortcut} to ___ ${right.shortcut}?",
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.dashed,
                   ),
                 ),
               ),

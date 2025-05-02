@@ -7,8 +7,8 @@ import "dart:collection";
 import "dart:math" as math;
 // PREAMBLE
 import "package:flutter/foundation.dart";
-import "package:scale_up/data/sources/lessons/" "lessons_helper/numerical_expression.dart";
-import "package:scale_up/data/sources/lessons/" "lessons_helper/boolean_expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/boolean_expression.dart";
 
 num readEnv(Map<String, Object> env, NumericalExpression key) {
   try {
@@ -23,6 +23,7 @@ num readEnv(Map<String, Object> env, NumericalExpression key) {
     rethrow;
   }
 }
+
 // base.dart
 abstract base class _PegParser<R extends Object> {
   _PegParser();
@@ -266,12 +267,11 @@ class _Memo {
 }
 
 // GENERATED CODE
-final class BooleanParser extends _PegParser<BooleanExpression > {
+final class BooleanParser extends _PegParser<BooleanExpression> {
   BooleanParser();
 
   @override
   get start => r0;
-
 
   /// `global::json::atom::number::digits`
   Object? f0() {
@@ -343,7 +343,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `ROOT`
-  BooleanExpression ? f3() {
+  BooleanExpression? f3() {
     if (this.apply(this.r0) case var $?) {
       return $;
     }
@@ -519,7 +519,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   };
 
   /// `global::rule`
-  BooleanExpression ? r0() {
+  BooleanExpression? r0() {
     if (this.pos <= 0) {
       if (this.apply(this.r1) case var or?) {
         if (this.pos >= this.buffer.length) {
@@ -530,7 +530,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::or`
-  BooleanExpression ? r1() {
+  BooleanExpression? r1() {
     if (this._mark() case var _mark) {
       if (this.apply(this.r1) case var or?) {
         if (this.apply(this.rd)! case _) {
@@ -551,7 +551,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::and`
-  BooleanExpression ? r2() {
+  BooleanExpression? r2() {
     if (this._mark() case var _mark) {
       if (this.apply(this.r2) case var and?) {
         if (this.apply(this.rd)! case _) {
@@ -572,7 +572,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::not`
-  BooleanExpression ? r3() {
+  BooleanExpression? r3() {
     if (this._mark() case var _mark) {
       if (this.apply(this.rd)! case _) {
         if (this.matchPattern(_string.$17) case _?) {
@@ -591,34 +591,31 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::atomic`
-  BooleanExpression ? r4() {
+  BooleanExpression? r4() {
     if (this._mark() case var _mark) {
       if (this.apply(this.r7) case var left?) {
         if (this.apply(this.r5) case var leftCmp?) {
           if (this.apply(this.r7) case var mid?) {
             if (this.apply(this.r5) case var rightCmp?) {
               if (this.apply(this.r7) case var right?) {
-                var leftFn = leftCmp == "<="
-                        ? (num l, num r) => l <= r
-                        : (num l, num r) => l < r;
-                      var rightFn = rightCmp == "<="
-                        ? (num l, num r) => l <= r
-                        : (num l, num r) => l < r;
+                var leftFn = leftCmp == "<=" ? (num l, num r) => l <= r : (num l, num r) => l < r;
+                var rightFn =
+                    rightCmp == "<=" ? (num l, num r) => l <= r : (num l, num r) => l < r;
 
-                      return LambdaBooleanExpression((env) {
-                        try {
-                          var leftValue = readEnv(env, left);
-                          var middleValue = readEnv(env, mid);
-                          var rightValue = readEnv(env, right);
+                return LambdaBooleanExpression((env) {
+                  try {
+                    var leftValue = readEnv(env, left);
+                    var middleValue = readEnv(env, mid);
+                    var rightValue = readEnv(env, right);
 
-                          return leftFn(leftValue, middleValue) && rightFn(middleValue, rightValue);
-                        } on Object catch (e) {
-                          if (kDebugMode) {
-                            print("Error caught in evaluation: $e");
-                          }
-                          return false;
-                        }
-                      });
+                    return leftFn(leftValue, middleValue) && rightFn(middleValue, rightValue);
+                  } on Object catch (e) {
+                    if (kDebugMode) {
+                      print("Error caught in evaluation: $e");
+                    }
+                    return false;
+                  }
+                });
               }
             }
           }
@@ -629,28 +626,28 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
         if (this.apply(this.r6) case var op?) {
           if (this.apply(this.r7) case var right?) {
             var cmp = switch (op) {
-                    "<=" => (num l, num r) => l <= r,
-                    "<"  => (num l, num r) => l < r,
-                    ">=" => (num l, num r) => l >= r,
-                    ">"  => (num l, num r) => l > r,
-                    "="  => (num l, num r) => l == r,
-                    "!=" => (num l, num r) => l != r,
-                    _ => throw Error(),
-                  };
+              "<=" => (num l, num r) => l <= r,
+              "<" => (num l, num r) => l < r,
+              ">=" => (num l, num r) => l >= r,
+              ">" => (num l, num r) => l > r,
+              "=" => (num l, num r) => l == r,
+              "!=" => (num l, num r) => l != r,
+              _ => throw Error(),
+            };
 
-                  return LambdaBooleanExpression((env) {
-                    try {
-                      var leftValue = readEnv(env, left);
-                      var rightValue = readEnv(env, right);
+            return LambdaBooleanExpression((env) {
+              try {
+                var leftValue = readEnv(env, left);
+                var rightValue = readEnv(env, right);
 
-                      return cmp(leftValue, rightValue);
-                    } on Object catch (e) {
-                      if (kDebugMode) {
-                        print("Error caught in evaluation: $e");
-                      }
-                      return false;
-                    }
-                  });
+                return cmp(leftValue, rightValue);
+              } on Object catch (e) {
+                if (kDebugMode) {
+                  print("Error caught in evaluation: $e");
+                }
+                return false;
+              }
+            });
           }
         }
       }
@@ -692,7 +689,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   };
 
   /// `global::numeric::expr`
-  NumericalExpression ? r7() {
+  NumericalExpression? r7() {
     if (this._mark() case var _mark) {
       if (this.apply(this.r7) case var expr?) {
         if (this.apply(this.rd)! case _) {
@@ -725,7 +722,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::numeric::term`
-  NumericalExpression ? r8() {
+  NumericalExpression? r8() {
     if (this._mark() case var _mark) {
       if (this.apply(this.r8) case var term?) {
         if (this.apply(this.rd)! case _) {
@@ -758,7 +755,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::numeric::preUnary`
-  NumericalExpression ? r9() {
+  NumericalExpression? r9() {
     if (this._mark() case var _mark) {
       if (this.matchPattern(_string.$11) case _?) {
         if (this.apply(this.rd)! case _) {
@@ -775,7 +772,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::numeric::factor`
-  NumericalExpression ? ra() {
+  NumericalExpression? ra() {
     if (this._mark() case var _mark) {
       if (this.apply(this.rb) case var primary?) {
         if (this.apply(this.rd)! case _) {
@@ -796,7 +793,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::numeric::primary`
-  NumericalExpression ? rb() {
+  NumericalExpression? rb() {
     if (this._mark() case var _mark) {
       if (this.matchPattern(_string.$24) case _?) {
         if (this.apply(this.rd)! case _) {
@@ -817,7 +814,7 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
   }
 
   /// `global::numeric::number`
-  NumericalExpression ? rc() {
+  NumericalExpression? rc() {
     if (this._mark() case var _mark) {
       if (this.pos case var from) {
         if (this.matchPattern(_regexp.$1) case var $?) {
@@ -909,75 +906,106 @@ final class BooleanParser extends _PegParser<BooleanExpression > {
       }
     }
   };
-
 }
+
 class _regexp {
   /// `/-?\d+(\.\d+)?([eE][+-]?\d+)?/`
   static final $1 = RegExp("-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?");
+
   /// `/\d/`
   static final $2 = RegExp("\\d");
+
   /// `/\s/`
   static final $3 = RegExp("\\s");
 }
+
 class _string {
   /// `"0"`
   static const $1 = "0";
+
   /// `"1"`
   static const $2 = "1";
+
   /// `"2"`
   static const $3 = "2";
+
   /// `"3"`
   static const $4 = "3";
+
   /// `"4"`
   static const $5 = "4";
+
   /// `"5"`
   static const $6 = "5";
+
   /// `"6"`
   static const $7 = "6";
+
   /// `"7"`
   static const $8 = "7";
+
   /// `"8"`
   static const $9 = "8";
+
   /// `"9"`
   static const $10 = "9";
+
   /// `"-"`
   static const $11 = "-";
+
   /// `"."`
   static const $12 = ".";
+
   /// `"<"`
   static const $13 = "<";
+
   /// `"<="`
   static const $14 = "<=";
+
   /// `">"`
   static const $15 = ">";
+
   /// `"="`
   static const $16 = "=";
+
   /// `"!"`
   static const $17 = "!";
+
   /// `"E"`
   static const $18 = "E";
+
   /// `"e"`
   static const $19 = "e";
+
   /// `"+"`
   static const $20 = "+";
+
   /// `"|"`
   static const $21 = "|";
+
   /// `"&"`
   static const $22 = "&";
+
   /// `")"`
   static const $23 = ")";
+
   /// `"("`
   static const $24 = "(";
+
   /// `"*"`
   static const $25 = "*";
+
   /// `"/"`
   static const $26 = "/";
+
   /// `"^"`
   static const $27 = "^";
 }
+
 class _range {
   /// `[A-Za-z0-9_]`
-  static const $1 = { (65, 90), (97, 122), (48, 57), (95, 95) };
+  static const $1 = {(65, 90), (97, 122), (48, 57), (95, 95)};
+
   /// `[A-Za-z_]`
-  static const $2 = { (65, 90), (97, 122), (95, 95) };
+  static const $2 = {(65, 90), (97, 122), (95, 95)};
 }

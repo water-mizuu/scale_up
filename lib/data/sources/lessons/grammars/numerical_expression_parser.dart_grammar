@@ -1,6 +1,5 @@
 {
-import "package:scale_up/data/sources/lessons/"
-    "lessons_helper/numerical_expression.dart";
+import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 }
 
 NumericalExpression rule = ^ :expr $ { expr };
