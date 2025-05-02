@@ -55,52 +55,6 @@ class NewLessonTile extends StatelessWidget {
     var totalChapters = lesson.chapterCount;
     var (:foreground, :background, :progressBackground) = getColors();
 
-    Widget child = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
-              decoration: BoxDecoration(
-                color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
-                borderRadius: BorderRadius.circular(6.0),
-              ),
-              child: Styles.title(lesson.name.characters.first.toUpperCase(), color: foreground),
-            ),
-            const SizedBox(width: 8.0),
-            Styles.subtitle(lesson.name, fontSize: 14, color: foreground),
-          ],
-        ),
-
-        const SizedBox(height: 4.0),
-        Styles.caption(
-          "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(lesson.unitsType, u)?.shortcut ?? u).join(", ")}.",
-          fontSize: 12.0,
-        ),
-
-        const SizedBox(height: 8.0),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Styles.hint("$totalChapters chapters", fontSize: 12),
-            Container(
-              height: 32.0,
-              decoration: BoxDecoration(
-                color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: Icon(Icons.keyboard_arrow_right, color: foreground),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-
     return TapScale(
       child: GestureDetector(
         onTap: () {
@@ -125,7 +79,54 @@ class NewLessonTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             border: Border.all(color: Colors.white.borderColor),
           ),
-          child: child,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
+                    decoration: BoxDecoration(
+                      color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    child: Styles.title(
+                      lesson.name.characters.first.toUpperCase(),
+                      color: foreground,
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  Styles.subtitle(lesson.name, fontSize: 14, color: foreground),
+                ],
+              ),
+
+              const SizedBox(height: 4.0),
+              Styles.caption(
+                "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(lesson.unitsType, u)?.shortcut ?? u).join(", ")}.",
+                fontSize: 12.0,
+              ),
+
+              const SizedBox(height: 8.0),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Styles.hint("$totalChapters chapters", fontSize: 12),
+                  Container(
+                    height: 32.0,
+                    decoration: BoxDecoration(
+                      color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Icon(Icons.keyboard_arrow_right, color: foreground),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

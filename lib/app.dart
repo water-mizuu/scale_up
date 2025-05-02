@@ -122,12 +122,19 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child = MaterialApp.router(
-      theme: ThemeData(
+      theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black) //
         .copyWith(surface: const Color(0xFFF7F8F9)),
       ),
-      scrollBehavior: MaterialScrollBehavior() //
-          .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
+
+      scrollBehavior: MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown,
+        },
+      ),
       debugShowCheckedModeBanner: false,
       actions: {...WidgetsApp.defaultActions, ScrollIntent: AnimatedScrollAction()},
       routerConfig: router,
