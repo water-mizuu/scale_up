@@ -8,26 +8,17 @@ import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_event.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_state.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_event.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_state.dart";
 import "package:scale_up/utils/extensions/choose_random_extension.dart";
 
 export "learn_page_event.dart";
 export "learn_page_state.dart";
 
 class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
-  LearnPageBloc({
-    required LessonsHelper lessonsHelper,
-    required Lesson? lesson,
-    required int chapterIndex,
-  }) : _lessonsHelper = lessonsHelper,
-       super(
-         LearnPageState.loading(
-           status: LearnPageStatus.loading,
-           lesson: lesson,
-           chapterIndex: chapterIndex,
-         ),
-       ) {
+  LearnPageBloc({required LessonsHelper lessonsHelper})
+    : _lessonsHelper = lessonsHelper,
+      super(LearnPageState.blank()) {
     on<LearnPageWidgetChanged>(_onLearnPageWidgetChanged);
     on<LearnPageAnswerUpdated>(_onAnswerUpdated);
     on<LearnPageAnswerSubmitted>(_onAnswerSubmitted);
@@ -36,8 +27,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
     on<LearnPageMovingAwayComplete>(_onMovingAwayComplete);
     on<LearnPageMovingInComplete>(_onMovingInComplete);
-
-    add(LearnPageWidgetChanged(lesson: lesson, chapterIndex: chapterIndex));
   }
 
   final LessonsHelper _lessonsHelper;
@@ -91,7 +80,10 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           "equation": expression.toString(),
         });
 
-        questions.add(LearnQuestion.plain(informations: generated));
+        /// There are four parts.
+        var informations = generated.values.toList();
+
+        questions.add(LearnQuestion.plain(informations: informations));
       }
 
       /// This block is responsible for generating
@@ -200,26 +192,38 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           var toUnit = _lessonsHelper.getUnit(unitGroupId, to);
 
           if (fromUnit == null || toUnit == null) {
+            if (kDebugMode) {
+              print("Unit not found for $from and $to within $unitGroupId");
+            }
             throw Exception("Unit not found");
           }
 
           var steps = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
           if (steps == null) {
+            if (kDebugMode) {
+              print("Path not found for $fromUnit to $toUnit");
+            }
             throw Exception("Path not found");
           }
 
           if (steps.length > 1) {
-            var answer = [
-              for (var ((from, to), _) in steps) ...[from, to],
-            ];
+            /// We take the units from each path,
+            var answer = steps.expand((s) => [s.$1.$1, s.$1.$2]).toList();
+
+            /// Remove the first and last units. (They are the from and to units.)
             answer = answer.sublist(1, answer.length - 1);
 
-            var choices = [
-              ...answer,
-              for (var i = 0; i < answer.length; ++i) unitGroup.units.chooseRandom(),
-            ];
+            /// We need to generate incorrect answers, so we need
+            ///   to remove the answer from the list of all units.
+            var remainingOptions = unitGroup.units.where((u) => !answer.contains(u)).toList();
 
-            choices.shuffle();
+            /// Then, we generate incorrect answers with the same length
+            ///   as the answer.
+            var incorrect = answer.map((_) => remainingOptions.chooseRandom());
+
+            /// Then, the total choices are the answer followed by the incorrect ones.
+            ///   We need to shuffle them.
+            var choices = answer.followedBy(incorrect).toList()..shuffle();
 
             questions.add(
               LearnQuestion.indirectSteps(
@@ -358,3 +362,5 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     emit(loadedState.copyWith(status: LearnPageStatus.leaving));
   }
 }
+
+class PlainQuestionBlock {}

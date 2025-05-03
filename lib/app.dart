@@ -9,7 +9,7 @@ import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
-import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scroll_animator/scroll_animator.dart";
 

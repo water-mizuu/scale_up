@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
 import "package:scale_up/presentation/views/home/widgets/colored_progress_bar.dart";
 
 class PracticeProgressBar extends StatelessWidget {

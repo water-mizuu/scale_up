@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_bloc.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_progress_bar.dart";
 import "package:scale_up/presentation/views/home/widgets/confirming_leave_chapter_widget.dart";
 

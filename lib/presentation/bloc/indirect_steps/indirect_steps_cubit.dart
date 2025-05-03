@@ -1,27 +1,37 @@
 import "package:flutter/widgets.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/unit.dart";
-import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
+import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 
 class IndirectStepsCubit extends Cubit<IndirectStepsState> {
-  IndirectStepsCubit(TickerProvider vsync, IndirectStepsLearnQuestion question)
-    : super(
-        IndirectStepsState(
-          question: question,
-          status: IndirectStepsStatus.idle,
-          answers: List.filled(question.answer.length, null),
-          choices: List<Unit?>.of(question.choices, growable: false),
-          animationController: AnimationController(vsync: vsync, duration: 200.milliseconds),
-          parentKey: GlobalKey(),
-          answerKeys: List.generate(question.answer.length, (_) => GlobalKey()),
-          choiceKeys: List.generate(question.choices.length, (_) => GlobalKey()),
-          animation: null,
-        ),
-      );
+  IndirectStepsCubit() : super(IndirectStepsState.blank());
+
+  ActiveIndirectStepsState get activeState => state as ActiveIndirectStepsState;
+
+  void setupQuestion(
+    AnimationController animationController,
+    IndirectStepsLearnQuestion question,
+  ) {
+    emit(
+      IndirectStepsState.active(
+        question: question,
+        status: IndirectStepsStatus.idle,
+        answers: List<(int, Unit)?>.filled(question.answer.length, null),
+        choices: List<Unit?>.of(question.choices, growable: false),
+        animationController: animationController,
+        parentKey: GlobalKey(),
+        answerKeys: List<GlobalKey>.generate(question.answer.length, (_) => GlobalKey()),
+        choiceKeys: List<GlobalKey>.generate(question.choices.length, (_) => GlobalKey()),
+        animation: null,
+      ),
+    );
+  }
 
   void answer(int choiceIndex) async {
+    var state = this.state;
+    if (state is! ActiveIndirectStepsState) return;
+
     var unit = state.choices[choiceIndex];
 
     /// If the unit is not null, we can add it to the answers.
@@ -40,6 +50,8 @@ class IndirectStepsCubit extends Cubit<IndirectStepsState> {
 
       emit(state.copyWith(choices: updatedChoices));
       await _animateMoveToAnswer(choiceIndex, availableIndex, unit);
+      if (isClosed) return;
+
       emit(state.copyWith(status: IndirectStepsStatus.idle, animation: null));
 
       var updatedAnswers = state.answers.toList();
@@ -50,6 +62,9 @@ class IndirectStepsCubit extends Cubit<IndirectStepsState> {
   }
 
   void putBack(int answerIndex) async {
+    var state = this.state;
+    if (state is! ActiveIndirectStepsState) return;
+
     if (state.answers[answerIndex] == null) {
       return;
     }
@@ -61,6 +76,8 @@ class IndirectStepsCubit extends Cubit<IndirectStepsState> {
 
     emit(state.copyWith(answers: updatedAnswers));
     await _animateMoveBackToChoice(choiceIndex, answerIndex, unit);
+    if (isClosed) return;
+
     emit(state.copyWith(status: IndirectStepsStatus.idle, animation: null));
 
     var updatedChoices = state.choices.toList();
@@ -70,6 +87,9 @@ class IndirectStepsCubit extends Cubit<IndirectStepsState> {
   }
 
   Future<void> _animateMoveToAnswer(int choiceIndex, int availableIndex, Unit unit) async {
+    var state = this.state;
+    if (state is! ActiveIndirectStepsState) return;
+
     var parentKey = state.parentKey;
     var choiceKey = state.choiceKeys[choiceIndex];
     var answerKey = state.answerKeys[availableIndex];
@@ -95,6 +115,9 @@ class IndirectStepsCubit extends Cubit<IndirectStepsState> {
   }
 
   Future<void> _animateMoveBackToChoice(int choiceIndex, int answerIndex, Unit unit) async {
+    var state = this.state;
+    if (state is! ActiveIndirectStepsState) return;
+
     var parentKey = state.parentKey;
     var choiceKey = state.choiceKeys[choiceIndex];
     var answerKey = state.answerKeys[answerIndex];

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/SignUpPage/signup_page_bloc.dart";
-import "package:scale_up/presentation/bloc/SignUpPage/signup_page_validator.dart";
+import "package:scale_up/presentation/bloc/sign_up_page/signup_page_bloc.dart";
+import "package:scale_up/presentation/bloc/sign_up_page/signup_page_validator.dart";
 
 double _getStrengthValue(String strength) {
   return switch (strength) {

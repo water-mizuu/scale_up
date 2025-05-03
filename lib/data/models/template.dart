@@ -14,10 +14,10 @@ abstract class Template with _$Template {
 
   factory Template.fromJson(Map<String, dynamic> json) => _$TemplateFromJson(json);
 
-  List<String> generateRandom(Map<String, String> variables) {
-    var completedParts = <String>[];
+  Map<String, String> generateRandom(Map<String, String> variables) {
+    var completedParts = <String, String>{};
     for (var part in parts) {
-      completedParts.add(part.generateRandom(variables));
+      completedParts[part.type] = part.generateRandom(variables);
     }
     return completedParts;
   }

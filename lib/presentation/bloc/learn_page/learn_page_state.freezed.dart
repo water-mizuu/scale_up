@@ -15,62 +15,63 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LearnPageState {
 
- LearnPageStatus get status;
-/// Create a copy of LearnPageState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$LearnPageStateCopyWith<LearnPageState> get copyWith => _$LearnPageStateCopyWithImpl<LearnPageState>(this as LearnPageState, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnPageState&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnPageState);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'LearnPageState(status: $status)';
+  return 'LearnPageState()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $LearnPageStateCopyWith<$Res>  {
-  factory $LearnPageStateCopyWith(LearnPageState value, $Res Function(LearnPageState) _then) = _$LearnPageStateCopyWithImpl;
-@useResult
-$Res call({
- LearnPageStatus status
-});
-
-
-
-
+class $LearnPageStateCopyWith<$Res>  {
+$LearnPageStateCopyWith(LearnPageState _, $Res Function(LearnPageState) __);
 }
+
+
 /// @nodoc
-class _$LearnPageStateCopyWithImpl<$Res>
-    implements $LearnPageStateCopyWith<$Res> {
-  _$LearnPageStateCopyWithImpl(this._self, this._then);
 
-  final LearnPageState _self;
-  final $Res Function(LearnPageState) _then;
 
-/// Create a copy of LearnPageState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,}) {
-  return _then(_self.copyWith(
-status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as LearnPageStatus,
-  ));
+class BlankLearnPageState extends LearnPageState {
+  const BlankLearnPageState(): super._();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BlankLearnPageState);
 }
 
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'LearnPageState.blank()';
 }
+
+
+}
+
+
 
 
 /// @nodoc
@@ -80,13 +81,13 @@ class LoadingLearnPageState extends LearnPageState {
   const LoadingLearnPageState({required this.status, required this.lesson, required this.chapterIndex}): super._();
   
 
-@override final  LearnPageStatus status;
+ final  LearnPageStatus status;
  final  Lesson? lesson;
  final  int chapterIndex;
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $LoadingLearnPageStateCopyWith<LoadingLearnPageState> get copyWith => _$LoadingLearnPageStateCopyWithImpl<LoadingLearnPageState>(this, _$identity);
 
@@ -112,7 +113,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $LoadingLearnPageStateCopyWith<$Res> implements $LearnPageStateCopyWith<$Res> {
   factory $LoadingLearnPageStateCopyWith(LoadingLearnPageState value, $Res Function(LoadingLearnPageState) _then) = _$LoadingLearnPageStateCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  LearnPageStatus status, Lesson? lesson, int chapterIndex
 });
@@ -131,7 +132,7 @@ class _$LoadingLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? lesson = freezed,Object? chapterIndex = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? status = null,Object? lesson = freezed,Object? chapterIndex = null,}) {
   return _then(LoadingLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LearnPageStatus,lesson: freezed == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
@@ -162,12 +163,12 @@ class ErrorLearnPageState extends LearnPageState {
   const ErrorLearnPageState({required this.status, required this.error}): super._();
   
 
-@override final  LearnPageStatus status;
+ final  LearnPageStatus status;
  final  String error;
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $ErrorLearnPageStateCopyWith<ErrorLearnPageState> get copyWith => _$ErrorLearnPageStateCopyWithImpl<ErrorLearnPageState>(this, _$identity);
 
@@ -193,7 +194,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $ErrorLearnPageStateCopyWith<$Res> implements $LearnPageStateCopyWith<$Res> {
   factory $ErrorLearnPageStateCopyWith(ErrorLearnPageState value, $Res Function(ErrorLearnPageState) _then) = _$ErrorLearnPageStateCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  LearnPageStatus status, String error
 });
@@ -212,7 +213,7 @@ class _$ErrorLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = null,}) {
   return _then(ErrorLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LearnPageStatus,error: null == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -230,7 +231,7 @@ class LoadedLearnPageState extends LearnPageState {
   const LoadedLearnPageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<LearnQuestion> questions, required this.questionIndex, required this.progress, required this.comparison, required this.mistakes, required this.startDateTime, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
-@override final  LearnPageStatus status;
+ final  LearnPageStatus status;
  final  int chapterIndex;
  final  Lesson lesson;
  final  List<LearnQuestion> _questions;
@@ -251,7 +252,7 @@ class LoadedLearnPageState extends LearnPageState {
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $LoadedLearnPageStateCopyWith<LoadedLearnPageState> get copyWith => _$LoadedLearnPageStateCopyWithImpl<LoadedLearnPageState>(this, _$identity);
 
@@ -277,7 +278,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $LoadedLearnPageStateCopyWith<$Res> implements $LearnPageStateCopyWith<$Res> {
   factory $LoadedLearnPageStateCopyWith(LoadedLearnPageState value, $Res Function(LoadedLearnPageState) _then) = _$LoadedLearnPageStateCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  LearnPageStatus status, int chapterIndex, Lesson lesson, List<LearnQuestion> questions, int questionIndex, double progress, bool Function(Object?, Object?) comparison, int mistakes, DateTime startDateTime, Object? answer, Object? correctAnswer, String? error
 });
@@ -296,7 +297,7 @@ class _$LoadedLearnPageStateCopyWithImpl<$Res>
 
 /// Create a copy of LearnPageState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? comparison = null,Object? mistakes = null,Object? startDateTime = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? status = null,Object? chapterIndex = null,Object? lesson = null,Object? questions = null,Object? questionIndex = null,Object? progress = null,Object? comparison = null,Object? mistakes = null,Object? startDateTime = null,Object? answer = freezed,Object? correctAnswer = freezed,Object? error = freezed,}) {
   return _then(LoadedLearnPageState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LearnPageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable

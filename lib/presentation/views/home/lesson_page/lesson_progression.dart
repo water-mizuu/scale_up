@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/lesson.dart";
-import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
-import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
+import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 
 class LessonProgression extends StatelessWidget {

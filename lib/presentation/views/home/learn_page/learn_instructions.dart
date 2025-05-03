@@ -1,15 +1,20 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_cubit.dart";
-import "package:scale_up/presentation/bloc/IndirectSteps/indirect_steps_state.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_choices.dart";
+import "package:scale_up/hooks/use_provider_hooks.dart";
+import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
+import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
+import "package:scale_up/presentation/views/home/learn_page/"
+    "learn_choices/blank_choice_unit_tile.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_choices/choice_unit_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
@@ -23,7 +28,6 @@ class LearnInstructions extends StatelessWidget {
     var currentQuestion = context.select(
       (LearnPageBloc b) => b.loadedState.questions[b.loadedState.questionIndex],
     );
-
     switch (currentQuestion) {
       case PlainLearnQuestion():
         return PlainLearnInstructions(currentQuestion: currentQuestion);
@@ -167,61 +171,16 @@ class ImportantNumbersInstructions extends StatelessWidget {
 }
 
 // LearnQuestion.indirectSteps
-class IndirectStepsInstructions extends StatelessWidget {
+class IndirectStepsInstructions extends HookWidget {
   const IndirectStepsInstructions({super.key, required this.currentQuestion});
 
   final IndirectStepsLearnQuestion currentQuestion;
 
   @override
   Widget build(BuildContext context) {
-    var answerKeys = context.read<IndirectStepsCubit>().state.answerKeys;
-    var IndirectStepsLearnQuestion(:from, :to, :steps) =
-        context.read<IndirectStepsCubit>().state.question;
-
-    var child = Table(
-      defaultColumnWidth: const IntrinsicColumnWidth(),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: [
-        for (var (i, ((from, to), _)) in steps.indexed)
-          TableRow(
-            children: [
-              if (i == 0)
-                Styles.subtitle("First, convert ")
-              else
-                Styles.subtitle("Then, convert "),
-
-              if (i == 0)
-                Center(
-                  child: Styles.subtitle(
-                    from.shortcut,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: GoogleFonts.notoSansMath().fontFamily,
-                  ),
-                )
-              else
-                AnswerTile(key: answerKeys[2 * i - 1], index: 2 * i - 1, unit: from),
-
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: Styles.subtitle(" to "),
-              ),
-
-              if (i == steps.length - 1)
-                Center(
-                  child: Styles.subtitle(
-                    to.shortcut,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: GoogleFonts.notoSansMath().fontFamily,
-                  ),
-                )
-              else
-                AnswerTile(key: answerKeys[2 * i], index: 2 * i, unit: from),
-
-              Padding(padding: EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
-            ],
-          ),
-      ],
-    );
+    var cubit = context.read<IndirectStepsCubit>();
+    var answerKeys = useSelect((IndirectStepsCubit c) => c.activeState.answerKeys);
+    var IndirectStepsLearnQuestion(:from, :to, :steps) = cubit.activeState.question;
 
     return Column(
       spacing: 32.0,
@@ -260,21 +219,70 @@ class IndirectStepsInstructions extends StatelessWidget {
           ),
         ),
 
-        child
-            .animate(
-              controller: context.read<TransitionOutAnimationController>().controller,
-              autoPlay: false,
-            )
-            .then(delay: 120.milliseconds)
-            .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
-            .fadeOut()
-            .animate(
-              controller: context.read<TransitionInAnimationController>().controller,
-              autoPlay: false,
-            )
-            .then(delay: 120.milliseconds)
-            .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
-            .fadeIn(),
+        Builder(
+          builder: (context) {
+            var child = Table(
+              defaultColumnWidth: const IntrinsicColumnWidth(),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                for (var (i, ((from, to), _)) in steps.indexed)
+                  TableRow(
+                    children: [
+                      if (i == 0)
+                        Styles.subtitle("First, convert ")
+                      else
+                        Styles.subtitle("Then, convert "),
+
+                      if (i == 0)
+                        Center(
+                          child: Styles.subtitle(
+                            from.shortcut,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.notoSansMath().fontFamily,
+                          ),
+                        )
+                      else
+                        AnswerTile(key: answerKeys[2 * i - 1], index: 2 * i - 1, unit: from),
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        child: Styles.subtitle(" to "),
+                      ),
+
+                      if (i == steps.length - 1)
+                        Center(
+                          child: Styles.subtitle(
+                            to.shortcut,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.notoSansMath().fontFamily,
+                          ),
+                        )
+                      else
+                        AnswerTile(key: answerKeys[2 * i], index: 2 * i, unit: from),
+
+                      Padding(padding: EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
+                    ],
+                  ),
+              ],
+            );
+
+            return child
+                .animate(
+                  controller: context.read<TransitionOutAnimationController>().controller,
+                  autoPlay: false,
+                )
+                .then(delay: 120.milliseconds)
+                .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
+                .fadeOut()
+                .animate(
+                  controller: context.read<TransitionInAnimationController>().controller,
+                  autoPlay: false,
+                )
+                .then(delay: 120.milliseconds)
+                .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
+                .fadeIn();
+          },
+        ),
       ],
     );
   }
@@ -288,22 +296,27 @@ class AnswerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<IndirectStepsCubit, IndirectStepsState>(
-      builder: (context, state) {
-        if (state.answers[index] case (_, var unit)?) {
-          return ChoiceUnitTile(
-            unit: unit,
-            onTap: () {
-              HapticFeedback.selectionClick();
+    var state = context.select((IndirectStepsCubit c) => c.state);
+    if (state is! ActiveIndirectStepsState) {
+      if (kDebugMode) {
+        print("AnswerTile: state is not active indirect steps state");
+      }
 
-              context.read<IndirectStepsCubit>().putBack(index);
-            },
-          );
-        } else {
-          return BlankChoiceUnitTile(unit: unit);
-        }
-      },
-    );
+      return const SizedBox.shrink();
+    }
+
+    if (state.answers[index] case (_, var unit)?) {
+      return ChoiceUnitTile(
+        unit: unit,
+        onTap: () {
+          HapticFeedback.selectionClick();
+
+          context.read<IndirectStepsCubit>().putBack(index);
+        },
+      );
+    } else {
+      return BlankChoiceUnitTile(unit: unit);
+    }
   }
 }
 

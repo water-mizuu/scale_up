@@ -6,8 +6,8 @@ import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_event.dart";
-import "package:scale_up/presentation/bloc/PracticePage/practice_page_state.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_event.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
 
 class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   PracticePageBloc({

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 
 class LearnCheckButton extends StatelessWidget {
   const LearnCheckButton({super.key});
@@ -9,6 +9,11 @@ class LearnCheckButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var learnPageBloc = context.watch<LearnPageBloc>();
+    var state = learnPageBloc.state;
+    if (state is! LoadedLearnPageState) {
+      return const SizedBox();
+    }
+
     var hslColor = learnPageBloc.loadedState.lesson.hslColor;
     var buttonColor =
         hslColor //
@@ -18,8 +23,8 @@ class LearnCheckButton extends StatelessWidget {
             .toColor();
 
     var hasAnswered =
-        learnPageBloc.state.status == LearnPageStatus.correct || //
-        learnPageBloc.state.status == LearnPageStatus.incorrect;
+        state.status == LearnPageStatus.correct || //
+        state.status == LearnPageStatus.incorrect;
 
     var isFinished = learnPageBloc.loadedState.status == LearnPageStatus.finished;
     var isPlain =

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/ContextDialog/context_dialog_state.dart";
+import "package:scale_up/presentation/bloc/context_dialog/context_dialog_state.dart";
 
 export "context_dialog_state.dart";
 

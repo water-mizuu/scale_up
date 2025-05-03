@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
-import "package:scale_up/presentation/bloc/ContextDialog/context_dialog_cubit.dart";
+import "package:scale_up/presentation/bloc/context_dialog/context_dialog_cubit.dart";
 
 class ContextDialogWidget extends StatefulWidget {
   const ContextDialogWidget({super.key, required this.child});

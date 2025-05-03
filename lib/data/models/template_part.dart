@@ -29,7 +29,6 @@ abstract class TemplatePart with _$TemplatePart {
 
       return chosen;
     }
-    print(parsed);
 
     return parsed.evaluate(variables);
   }

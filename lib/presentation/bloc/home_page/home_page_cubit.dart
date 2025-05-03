@@ -2,8 +2,8 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/presentation/bloc/HomePage/home_page_state.dart";
-import "package:scale_up/presentation/bloc/UserData/user_data_bloc.dart";
+import "package:scale_up/presentation/bloc/home_page/home_page_state.dart";
+import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 
 class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({required UserDataState state, required LessonsHelper lessonsHelper})

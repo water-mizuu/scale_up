@@ -4,7 +4,7 @@ import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
+import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/blank_lesson_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_header.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_information.dart";

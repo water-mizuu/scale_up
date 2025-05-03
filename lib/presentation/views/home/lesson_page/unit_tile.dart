@@ -4,7 +4,7 @@ import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
-import "package:scale_up/presentation/bloc/LessonPage/lesson_page_bloc.dart";
+import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/title_case_extension.dart";

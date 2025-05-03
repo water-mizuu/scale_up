@@ -2,7 +2,7 @@ import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/presentation/bloc/AllLessonsPage/all_lessons_page_cubit.dart";
+import "package:scale_up/presentation/bloc/all_lessons_page/all_lessons_page_cubit.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/all_lessons_body.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/search_bar.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/title_bar.dart";

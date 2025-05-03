@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_bloc.dart";
+import "package:scale_up/presentation/bloc/sign_in_page/sign_in_page_bloc.dart";
 
 class SignInPasswordField extends StatefulWidget {
   const SignInPasswordField({super.key});
@@ -20,9 +20,7 @@ class _SignInPasswordFieldState extends State<SignInPasswordField> with SignInPa
       onChanged: (value) => context.read<SignInPageBloc>().add(LoginPagePasswordChanged(value)),
       decoration: InputDecoration(
         suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility : Icons.visibility_off,
-          ),
+          icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;

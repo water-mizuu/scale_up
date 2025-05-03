@@ -1,6 +1,6 @@
 import "package:bloc/bloc.dart";
-import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_event.dart";
-import "package:scale_up/presentation/bloc/SignInPage/sign_in_page_state.dart";
+import "package:scale_up/presentation/bloc/sign_in_page/sign_in_page_event.dart";
+import "package:scale_up/presentation/bloc/sign_in_page/sign_in_page_state.dart";
 
 export "sign_in_page_event.dart";
 export "sign_in_page_state.dart";

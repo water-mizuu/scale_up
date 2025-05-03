@@ -31,6 +31,8 @@ enum LearnPageStatus {
 sealed class LearnPageState with _$LearnPageState {
   const LearnPageState._();
 
+  const factory LearnPageState.blank() = BlankLearnPageState;
+
   const factory LearnPageState.loading({
     required LearnPageStatus status,
     required Lesson? lesson,

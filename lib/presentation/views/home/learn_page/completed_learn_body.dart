@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/LearnPage/learn_page_bloc.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_check_button.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_top_row.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";

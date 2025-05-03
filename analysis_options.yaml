@@ -13,6 +13,7 @@ analyzer:
     - "**/*.freezed.dart"
   errors:
     invalid_annotation_target: ignore
+    body_might_complete_normally_nullable: ignore
 
 formatter:
   page_width: 98
