@@ -22,6 +22,7 @@ _Lesson _$LessonFromJson(Map<String, dynamic> json) => _Lesson(
       (json['practice'] as List<dynamic>)
           .map((e) => PracticeChapter.fromJson(e as Map<String, dynamic>))
           .toList(),
+  icon: json['icon'] as String,
 );
 
 Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
@@ -33,4 +34,5 @@ Map<String, dynamic> _$LessonToJson(_Lesson instance) => <String, dynamic>{
   'units': instance.units,
   'learn': instance.learnChapters,
   'practice': instance.practiceChapters,
+  'icon': instance.icon,
 };

@@ -10,10 +10,12 @@ abstract class Unit with _$Unit {
 
   factory Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
 
-  String get name => id //
-      .split("_")
-      .map((e) => e[0].toUpperCase() + e.split("").sublist(1).join(""))
-      .join(" ");
+  String get name =>
+      display ??
+      id //
+          .split("_")
+          .map((e) => e[0].toUpperCase() + e.split("").sublist(1).join(""))
+          .join(" ");
 
   @override
   String toString() => shortcut;

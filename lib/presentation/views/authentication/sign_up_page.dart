@@ -2,13 +2,13 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/sign_up_page/signup_page_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/image_container.dart";
-import "package:scale_up/presentation/views/authentication/sign_up_page/page_header.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_button.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_field_group.dart";
+import "package:scale_up/presentation/views/authentication/sign_up_page/sign_up_page_header.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class SignUpPage extends StatelessWidget {
@@ -58,7 +58,7 @@ class SignUpPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: PageHeader(),
+        title: SignUpPageHeader(),
         leading: SizedBox(
           height: 24.0,
           child: IconButton(

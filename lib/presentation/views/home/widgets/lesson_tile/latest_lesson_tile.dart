@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
@@ -11,6 +12,7 @@ import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/duration_to_brief_description_extension.dart";
 import "package:scale_up/utils/extensions/title_case_extension.dart";
+import "package:scale_up/utils/string_to_icon.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class LatestLessonTile extends StatelessWidget {
@@ -83,7 +85,7 @@ class LatestLessonTile extends StatelessWidget {
     var (chaptersDone, lastStudied) = context.select(_readUserDataBloc);
     var progress = chaptersDone / lesson.chapterCount;
     var (:foreground, :background, :progressBackground) = _getColors();
-
+    var icon = lesson.icon;
     var unitDisplay = lesson.units
         .map((u) => helper.getUnit(lesson.unitsType, u)!)
         .map((u) => u.display ?? u.id.toTitleCase())
@@ -95,65 +97,99 @@ class LatestLessonTile extends StatelessWidget {
         onTap: () => _goToLesson(context),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
-          child: IgnorePointer(
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [background, background.withValues(alpha: 0.8)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          child: ClipRRect(
+            clipBehavior: Clip.hardEdge,
+            child: IgnorePointer(
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [background, background.withValues(alpha: 0.8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: Colors.white.borderColor),
                 ),
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Colors.white.borderColor),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Styles.subtitle(lesson.name, fontSize: 20, color: foreground),
-                  Styles.subtitle("Units: $unitDisplay", fontSize: 12, color: foreground),
-
-                  const SizedBox(height: 16.0),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "$chaptersDone/${lesson.chapterCount} chapters done",
-                        style: TextStyle(fontSize: 12, color: foreground),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 0.0,
+                      right: 0.0,
+                      child: Transform.translate(
+                        offset: Offset(32, 12),
+                        child: Icon(
+                          () {
+                            if (kDebugMode) {
+                              print((icon: icon));
+                            }
+                            return stringToIcon[icon]!;
+                          }(),
+                          color:
+                              lesson.hslColor
+                                  .withLightness(lesson.hslColor.lightness * 0.90)
+                                  .withSaturation(lesson.hslColor.saturation * 0.8)
+                                  .toColor(),
+                          size: 128.0,
+                        ),
                       ),
-
-                      if (lastStudied?.description case (var amount, var unit))
-                        Text("$amount $unit", style: TextStyle(fontSize: 12, color: foreground)),
-                    ],
-                  ),
-
-                  const SizedBox(height: 8.0),
-                  FAProgressBar(
-                    size: 8,
-                    currentValue: progress * 100,
-                    borderRadius: BorderRadius.circular(24.0),
-                    progressColor: foreground,
-                    backgroundColor: progressBackground,
-                    animatedDuration: Duration.zero,
-                  ),
-                  const SizedBox(height: 12.0),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: lesson.color,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Icon(Icons.play_arrow_outlined),
-                        const Text("Continue Learning"),
+                        Styles.subtitle(lesson.name, fontSize: 20, color: foreground),
+                        Styles.subtitle("Units: $unitDisplay", fontSize: 12, color: foreground),
+
+                        const SizedBox(height: 16.0),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "$chaptersDone/${lesson.chapterCount} chapters done",
+                              style: TextStyle(fontSize: 12, color: foreground),
+                            ),
+
+                            if (lastStudied?.description case (var amount, var unit))
+                              Text(
+                                "$amount $unit",
+                                style: TextStyle(fontSize: 12, color: foreground),
+                              ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 8.0),
+                        FAProgressBar(
+                          size: 8,
+                          currentValue: progress * 100,
+                          borderRadius: BorderRadius.circular(24.0),
+                          progressColor: foreground,
+                          backgroundColor: progressBackground,
+                          animatedDuration: Duration.zero,
+                        ),
+                        const SizedBox(height: 12.0),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: lesson.color,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.play_arrow_outlined),
+                              const Text("Continue Learning"),
+                            ],
+                          ),
+                          onPressed: () => _goToLesson(context),
+                        ),
                       ],
                     ),
-                    onPressed: () => _goToLesson(context),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -162,3 +198,5 @@ class LatestLessonTile extends StatelessWidget {
     );
   }
 }
+
+// Icon(stringToIcon[icon], color: Colors.white, size: 32.0)

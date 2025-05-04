@@ -1,9 +1,11 @@
+import "dart:async";
+
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_event.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_state.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_event.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_state.dart";
 
 export "authentication_event.dart";
 export "authentication_state.dart";
@@ -17,6 +19,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<EmailSignInAuthenticationEvent>(_onEmailSignIn);
     on<LogoutAuthenticationEvent>(_onLogout);
     on<AuthenticationTokenChangedEvent>(_onAuthenticationTokenChanged);
+    on<PasswordResetAuthenticationEvent>(_onPasswordReset);
 
     _repository.authStateChanges.forEach((user) async {
       add(AuthenticationTokenChangedEvent(user: user));
@@ -129,5 +132,19 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
                 : AuthenticationStatus.signedOut,
       ),
     );
+  }
+
+  FutureOr<void> _onPasswordReset(
+    PasswordResetAuthenticationEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(state.copyWith(status: AuthenticationStatus.resettingEmail, error: null));
+    try {
+      await _repository.sendPasswordResetEmail(email: event.email);
+
+      emit(state.copyWith(status: AuthenticationStatus.signedOut, error: null));
+    } catch (e) {
+      emit(state.copyWith(status: AuthenticationStatus.error, error: e));
+    }
   }
 }

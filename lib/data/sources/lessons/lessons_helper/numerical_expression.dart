@@ -19,6 +19,22 @@ sealed class NumericalExpression {
 
   O captureGeneric<O>(O Function<E>() f);
 
+  String toLatex() {
+    return switch (this) {
+      ConstantExpression(:var value) => value.toString(),
+      VariableExpression(:var variable) => variable,
+      AdditionExpression(:var left, :var right) => "${left.toLatex()} + ${right.toLatex()}",
+      SubtractionExpression(:var left, :var right) => "${left.toLatex()} - ${right.toLatex()}",
+      MultiplicationExpression(:var left, :var right) => "${left.toLatex()} * ${right.toLatex()}",
+      DivisionExpression(:var left, :var right) =>
+        "\\frac{${left.toLatex()}}{${right.toLatex()}}",
+      PowerExpression(:var left, :var right) => "${left.toLatex()}^{${right.toLatex()}}",
+      LogarithmExpression(:var left, :var right) =>
+        "\\log_{${left.toLatex()}}(${right.toLatex()})",
+      NegationExpression(:var operand) => "-${operand.toLatex()}",
+    };
+  }
+
   static (NumericalExpression, VariableExpression) inverse(
     VariableExpression left,
     NumericalExpression right,
@@ -123,6 +139,46 @@ sealed class NumericalExpression {
     }
 
     return (lhs, rhs);
+  }
+
+  static String? toLeftEnglish(NumericalExpression expr) {
+    // 1. Walk down the left-aligned chain and collect nodes
+    var chain = <BinaryExpression>[];
+    var current = expr;
+    while (current is BinaryExpression) {
+      chain.add(current);
+      current = current.left;
+    }
+
+    // 2. Process in root-to-leaf order (chain[0] is the outermost, chain.last is the deepest)
+    var parts = <String>[];
+    for (var node in chain.reversed) {
+      // Determine verb
+      var verb = switch (node) {
+        AdditionExpression() => "add",
+        SubtractionExpression() => "subtract",
+        MultiplicationExpression() => "multiply it by",
+        DivisionExpression() => "divide it by",
+        PowerExpression() => "raise it to the power of",
+        _ => null,
+      };
+
+      if (verb == null) {
+        return null;
+      }
+
+      // Render operand
+      var right = node.right;
+      var operand = right.str;
+
+      parts.add("$verb $operand");
+    }
+
+    // 3, Join with ", then "
+    if (parts.isEmpty) {
+      return null;
+    }
+    return parts.join(", then ");
   }
 }
 

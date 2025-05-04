@@ -98,9 +98,7 @@ class LessonsHelper {
 
   UnitGroup? getLocalUnitGroup(String type, List<String> units) {
     var unitGroup = getUnitGroup(type);
-    if (unitGroup == null) {
-      return null;
-    }
+    if (unitGroup == null) return null;
 
     return unitGroup.copyWith(
       units: [

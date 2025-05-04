@@ -44,3 +44,9 @@ class SignInWaitingAuthenticationEvent extends AuthenticationEvent {
 class SignInCompleteAuthenticationEvent extends AuthenticationEvent {
   const SignInCompleteAuthenticationEvent();
 }
+
+class PasswordResetAuthenticationEvent extends AuthenticationEvent {
+  const PasswordResetAuthenticationEvent({required this.email});
+
+  final String email;
+}

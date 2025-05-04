@@ -7,6 +7,7 @@ void useBlocListener<S>(
   BlocBase<S> bloc,
   void Function(S current) listener, {
   BlocComparativeListenerCondition<S>? listenWhen,
+  List<Object?>? keys,
 }) {
   final currentState = useRef(bloc.state);
   final context = useContext();
@@ -25,5 +26,5 @@ void useBlocListener<S>(
         });
 
     return subscription.cancel;
-  }, [bloc]);
+  }, [bloc, ...keys ?? []]);
 }

@@ -16,6 +16,9 @@ enum AuthenticationStatus {
   signedUp,
   signingUp,
   signUpFailure,
+
+  /// Resetting password states
+  resettingEmail,
 }
 
 const undefined = #undefined;

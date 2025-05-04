@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page.dart";
 import "package:scale_up/presentation/views/authentication/sign_up_page.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page.dart";
@@ -15,6 +16,7 @@ import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.d
 class AppRoutes {
   static const String login = "login";
   static const String signUp = "signup";
+  static const String forgotPassword = "forgot_password";
   static const String home = "home";
   static const String profile = "profile";
   static const String lesson = "lesson";
@@ -49,6 +51,11 @@ final GoRouter router = GoRouter(
               path: "register",
               name: AppRoutes.signUp,
               builder: (context, state) => const SignUpPage(),
+            ),
+            GoRoute(
+              path: "forgot_password",
+              name: AppRoutes.forgotPassword,
+              builder: (context, state) => const ForgotPasswordPage(),
             ),
           ],
         ),

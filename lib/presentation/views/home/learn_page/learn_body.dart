@@ -18,7 +18,7 @@ class LearnBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LearnTopRow(progressBarKey: progressBarKey),
-          LearnInstructions(),
+          Flexible(child: LearnInstructions()),
           const Column(
             spacing: 18.0,
             crossAxisAlignment: CrossAxisAlignment.stretch,

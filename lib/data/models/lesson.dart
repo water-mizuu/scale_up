@@ -19,6 +19,7 @@ abstract class Lesson with _$Lesson {
     required List<String> units,
     @JsonKey(name: "learn") required List<LearnChapter> learnChapters,
     @JsonKey(name: "practice") required List<PracticeChapter> practiceChapters,
+    required String icon,
   }) = _Lesson;
 
   const Lesson._();

@@ -27,6 +27,7 @@ abstract class FirebaseAuthHelper {
   Future<void> signOut();
   Future<User?> googleSignIn();
   Future<User?> emailSignIn({required String email, required String password});
+  Future<void> sendPasswordResetEmail({required String email});
 }
 
 class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
@@ -83,6 +84,11 @@ class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
     var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
     return userCredential.user;
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 
   Future<win.GoogleSignIn> _getGoogleSignIn() async {
@@ -179,5 +185,13 @@ class _FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
     var userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
 
     return userCredential.user;
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    // How would you verify the existence of the email, especially if
+    //   it doesn't throw anymore?
+
+    await _auth.sendPasswordResetEmail(email: email);
   }
 }

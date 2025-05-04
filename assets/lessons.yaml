@@ -4,18 +4,25 @@ templates:
     parts:
       - type: main_sentence
         variants:
-          - "To convert from **{{ from }}** to **{{ to }}**, you need to {{ left_conversion_english }}."
-          - "Converting **{{ from }}** to **{{ to }}** involves {{ left_conversion_english }}."
-          - "The process of converting **{{ from }}** to **{{ to }}** requires you to {{ left_conversion_english }}."
-          - "When converting from **{{ from }}** to **{{ to }}**, you must {{ left_conversion_english }}."
-          - "To convert **{{ from }}** into **{{ to }}**, the operation is to {{ left_conversion_english }}."
+          - "To convert from **{{ from_full }}** to **{{ to_full }}**, you need to {{ left_conversion_english }}."
+          - "Converting **{{ from_full }}** to **{{ to_full }}**, you need to {{ left_conversion_english }}."
+          - "The process of converting **{{ from_full }}** to **{{ to_full }}** requires you to {{ left_conversion_english }}."
+          - "When converting from **{{ from_full }}** to **{{ to_full }}**, you must {{ left_conversion_english }}."
+          - "To convert **{{ from_full }}** into **{{ to_full }}**, the operation is to {{ left_conversion_english }}."
+      - type: main_sentence_no_conversion
+        variants:
+          - "To convert from **{{ from_full }}** to **{{ to_full }}**, you can use the equation:"
+          - "To convert **{{ from_full }}** into **{{ to_full }}**, the equation is:"
+          - "To convert **{{ from_full }}** to **{{ to_full }}**, the equation is:"
+          - "To convert from **{{ from_full }}** to **{{ to_full }}**, the formula is:"
+          - "To convert **{{ from_full }}** into **{{ to_full }}**, the formula is:"
       - type: equation_display
         variants:
-          - "The conversion can be represented by the equation: ${{ equation }}$."
-          - "Mathematically, the relationship is expressed as: ${{ equation }}$."
-          - "The formula for converting **{{ from }}** to **{{ to }}** is: ${{ equation }}$."
-          - "This conversion follows the equation: ${{ equation }}$."
-          - "The equation illustrating the conversion is: ${{ equation }}$."
+          - "The conversion can be represented by the equation: $${{ equation }}$$"
+          - "Mathematically, the relationship is expressed as: $${{ equation }}$$"
+          - "The formula for this is described as: $${{ equation }}$$"
+          - "This conversion follows the equation: $${{ equation }}$$"
+          - "The equation illustrating the conversion is: $${{ equation }}$$"
       - type: important_number
         variants:
           - "The number **{{ number }}** is the conversion factor between **{{ from }}** and **{{ to }}**."
@@ -30,6 +37,59 @@ templates:
           - "Remember, converting from **{{ from }}** to **{{ to }}** or vice versa involves the same factor: **{{ number }}**."
           - "The value **{{ number }}** is used for both converting from **{{ from }}** to **{{ to }}** and from **{{ to }}** to **{{ from }}**."
           - "The conversion between **{{ from }}** and **{{ to }}** uses the same number, **{{ number }}**, in both directions."
+      - type: common_mistake
+        variants:
+          - "Common mistake: forgetting to use **{{ number }}** consistently."
+          - "Watch out: mixing up your units if you omit the factor **{{ number }}**."
+          - "Don’t forget: the factor **{{ number }}** must be applied exactly once."
+          - "A frequent error is using 100 instead of **{{ number }}**—double-check!"
+          - "Be careful not to invert the factor; use **{{ number }}** in the correct direction."
+      - type: usage_tip
+        variants:
+          - "Tip: label your units clearly when you multiply by **{{ number }}**."
+          - "Hint: write out the factor **{{ number }}** next to your variables."
+          - "Advice: keep a reference sheet with **{{ number }}** for quick recall."
+          - "Suggestion: practice with sample numbers to internalize **{{ number }}**."
+          - "Pro tip: say the phrase '{{ left_conversion_english }}' aloud to reinforce the step."
+
+      - type: confidence_booster
+        variants:
+          - "Once you learn this conversion, it’ll feel automatic in no time!"
+          - "You've already seen conversions before—this is just one more building block."
+          - "You’re doing great—mastering this factor means you’re one step closer to fluency in unit conversions."
+          - "Keep at it—understanding this single number can unlock lots of related conversions."
+          - "Every pro once started with just one conversion—just like this one."
+  - type: indirect
+    parts:
+      - type: overview_path
+        description: "Introduce the multi-step conversion process."
+        variants:
+          - "To convert from **{{ from_full }}** to **{{ to_full }}**, you first convert {{ path }}."
+          - "When going from **{{ from_full }}** to **{{ to_full }}**, begin by converting {{ path }}."
+          - "The first step in converting **{{ from_full }}** to **{{ to_full }}** is to convert {{ path }}."
+          - "Start your conversion from **{{ from_full }}** to **{{ to_full }}** by converting {{ path }}."
+          - "Begin converting **{{ from_full }}** into **{{ to_full }}** with the step: convert {{ path }}."
+          - "Your initial move converting **{{ from_full }}** to **{{ to_full }}** is to convert {{ path }}."
+      - type: benefit_vs_memory
+        description: "Contrast the direct formula against the memory load of multiple steps."
+        variants:
+          - "While having a single direct formula is convenient, memorizing every possible conversion permutation quickly becomes impractical."
+          - "A direct equation is easy to apply, but remembering all possible formulas for all combinations is very difficult."
+          - "Direct formulas simplify computation, but required a lot of memorization."
+      - type: when_to_use_indirect
+        description: "Guide when chaining is necessary."
+        variants:
+          - "Use a step-by-step path when no direct formula is available or when you need to understand each intermediate relationship."
+          - "Chaining is preferable if you want to verify each conversion stage rather than relying on a black-box formula."
+          - "Opt for indirect steps when working with less common unit pairs that lack a standardized direct formula."
+      - type: summary_encouragement
+        description: "Conclude with motivation or reassurance."
+        variants:
+          - "With practice, chaining conversions becomes as intuitive as using a direct formula."
+          - "Mastering stepwise conversions will deepen your understanding of how units relate."
+          - "Don’t worry if it seems complex at first—each step builds on familiar conversions."
+          - "Soon, you’ll be able to map any conversion path without hesitation."
+
 hints:
   - "You can click on the underlined text to view hints on each question!"
   - "While not recommended, you can learn locked chapters by clicking on them."
@@ -57,6 +117,8 @@ hints:
   - "Mass milestone: 1 ton (metric) = 1 000 kg."
   - "Volume variety: 1 tablespoon ≈ 15 mL."
   - "Quick fact: 1 cubic centimeter (1 cm³) = 1 milliliter (1 mL)."
+  - "Did you know? Kelvin is considered a ratio scale, while Celsius is not."
+
 units_present:
   - type: length
     conversions:
@@ -257,377 +319,424 @@ units_present:
         shortcut: kcal
       - id: btu
         shortcut: BTU
+        display: British Thermal Unit
+
 lessons:
   - id: length
     category: Tangible Measurements
     name: Length
-    icon: straighten
-    description: These are commonly measured using tools such as measuring tapes.
+    icon: straight_ruler
+    description: Measure the span between two points in space.
     units_type: length
     color: "#1f77b4"
     units:
+      - millimeter
+      - centimeter
       - meter
       - kilometer
-      - feet
       - inch
-      - centimeter
-      - millimeter
+      - feet
       - mile
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Metric Fundamentals
         units:
-          - meter
-          - kilometer
-          - centimeter
           - millimeter
-      - type: direct
-        name: Direct Conversion -- 2
-        units:
-          - feet
-          - inch
-          - meter
           - centimeter
-      - type: direct
-        name: Direct Conversion -- 3
+          - meter
+          - kilometer
+      - name: Imperial Fundamentals
         units:
+          - inch
+          - feet
           - mile
-          - kilometer
-          - meter
-      - type: indirect
-        name: Indirect Conversions
+      - name: Bridging Systems
         units:
           - meter
-          - kilometer
-          - feet
           - inch
+          - feet
+          - kilometer
+          - mile
+      - name: Advanced Paths
+        units:
+          - millimeter
+          - mile
+          - centimeter
+          - feet
     practice:
-      - name: Basic Conversion -- 1
-        question_count: 12
+      - name: Metric Practice
+        question_count: 10
         units:
+          - millimeter
+          - centimeter
           - meter
           - kilometer
-      - name: Basic Conversion -- 2
-        question_count: 12
+      - name: Imperial Practice
+        question_count: 10
         units:
-          - feet
           - inch
-      - name: Imperial Conversion
-        question_count: 12
+          - feet
+          - mile
+      - name: Mixed Practice
+        question_count: 15
         units:
           - meter
+          - feet
           - inch
-      - name: Full Conversion
-        question_count: 12
+      - name: Mastery Challenge
+        question_count: 20
         units:
+          - millimeter
+          - centimeter
           - meter
           - kilometer
-          - feet
           - inch
+          - feet
+          - mile
+
   - id: area
     category: Tangible Measurements
     name: Area
-    icon: map
-    description: These are the amount of space inside a two-dimensional shape.
+    icon: square_foot
+    description: Measure two-dimensional surfaces.
     units_type: area
-    color: "#2ca02c"
+    color: "#ff7f0e"
     units:
       - meter_squared
       - kilometer_squared
       - feet_squared
       - inch_squared
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Metric Area Fundamentals
         units:
           - meter_squared
           - kilometer_squared
-          - feet_squared
-      - type: direct
-        name: Direct Conversion -- 2
+      - name: Imperial Area Fundamentals
         units:
-          - feet_squared
           - inch_squared
-          - kilometer_squared
-      - type: indirect
-        name: Indirect Conversions
+          - feet_squared
+      - name: Bridging Systems
         units:
           - meter_squared
-          - kilometer_squared
-          - feet_squared
           - inch_squared
+          - feet_squared
+          - kilometer_squared
+      - name: Advanced Paths
+        units:
+          - inch_squared
+          - meter_squared
+          - kilometer_squared
     practice:
-      - name: Basic Conversion -- 1
-        question_count: 12
+      - name: Metric Area Practice
+        question_count: 10
         units:
           - meter_squared
           - kilometer_squared
-      - name: Basic Conversion -- 2
-        question_count: 12
+      - name: Imperial Area Practice
+        question_count: 10
         units:
-          - feet_squared
           - inch_squared
-      - name: Imperial Conversion
-        question_count: 12
+          - feet_squared
+      - name: Mixed Area Practice
+        question_count: 15
         units:
           - meter_squared
+          - feet_squared
+          - kilometer_squared
+      - name: Mastery Challenge
+        question_count: 20
+        units:
+          - meter_squared
+          - kilometer_squared
           - inch_squared
+          - feet_squared
+
   - id: volume
     category: Tangible Measurements
     name: Volume
-    icon: water_drop
-    description: These are the amount of space inside a three-dimensional shape.
+    icon: beaker
+    description: Measure three-dimensional capacity.
     units_type: volume
-    color: "#17becf"
+    color: "#2ca02c"
     units:
-      - liter
       - milliliter
+      - liter
+      - meter_cubed
+      - centimeter_cubed
+      - inch_cubed
+      - feet_cubed
       - gallon
       - quart
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Metric Volume Fundamentals
         units:
-          - liter
           - milliliter
-          - gallon
-      - type: direct
-        name: Direct Conversion -- 2
+          - liter
+          - centimeter_cubed
+          - meter_cubed
+      - name: Imperial Volume Fundamentals
         units:
           - gallon
           - quart
-          - liter
-      - type: indirect
-        name: Indirect Conversions
+      - name: Bridging Systems
         units:
           - liter
-          - milliliter
           - gallon
-          - quart
+          - meter_cubed
+      - name: Advanced Paths
+        units:
+          - milliliter
+          - inch_cubed
+          - feet_cubed
     practice:
-      - name: Basic Conversion -- 1
-        question_count: 2
+      - name: Metric Volume Practice
+        question_count: 10
         units:
-          - liter
           - milliliter
-      - name: Basic Conversion -- 2
-        question_count: 12
+          - liter
+          - centimeter_cubed
+      - name: Imperial Volume Practice
+        question_count: 10
         units:
           - gallon
           - quart
-      - name: Imperial Conversion
-        question_count: 12
+      - name: Mixed Volume Practice
+        question_count: 15
         units:
           - liter
+          - inch_cubed
+          - quart
+      - name: Mastery Challenge
+        question_count: 20
+        units:
+          - milliliter
+          - liter
+          - meter_cubed
           - gallon
+          - quart
+          - inch_cubed
+          - feet_cubed
+
   - id: mass
-    category: Amount
+    category: Tangible Measurements
     name: Mass
-    icon: weight
-    description: These are the amount of matter or molecules in an object.
+    icon: balance_scale
+    description: Measure the amount of matter.
     units_type: mass
-    color: "#9467bd"
+    color: "#d62728"
     units:
       - gram
       - kilogram
       - pound
       - ounce
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Metric Mass Fundamentals
         units:
           - gram
           - kilogram
-          - pound
-      - type: direct
-        name: Direct Conversion -- 2
+      - name: Imperial Mass Fundamentals
         units:
           - pound
           - ounce
-          - gram
-      - type: indirect
-        name: Indirect Conversions
+      - name: Bridging Systems
         units:
-          - gram
           - kilogram
-          - ounce
           - pound
+      - name: Advanced Paths
+        units:
+          - gram
+          - ounce
     practice:
-      - name: Basic Conversion -- 1
-        question_count: 12
+      - name: Metric Mass Practice
+        question_count: 10
+        units:
+          - gram
+          - kilogram
+      - name: Imperial Mass Practice
+        question_count: 10
+        units:
+          - pound
+          - ounce
+      - name: Mixed Mass Practice
+        question_count: 15
+        units:
+          - gram
+          - pound
+          - kilogram
+      - name: Mastery Challenge
+        question_count: 20
         units:
           - gram
           - kilogram
           - pound
-      - name: Basic Conversion -- 2
-        question_count: 12
-        units:
-          - pound
           - ounce
-          - gram
-      - name: Imperial Conversion
-        question_count: 12
-        units:
-          - gram
-          - pound
-          - ounce
-          - kilogram
+
   - id: temperature
-    category: Heat or Temperature
+    category: Thermodynamic Measurements
     name: Temperature
-    icon: device_thermostat
-    description: These are the measure of the average kinetic energy of particles in
-      a substance. We perceive temperature as how hot or cold something is.
+    icon: thermometer
+    description: Measure thermal intensity on various scales.
     units_type: temperature
-    color: "#d62728"
+    color: "#9467bd"
     units:
       - celsius
       - fahrenheit
       - kelvin
       - rankine
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Celsius ↔ Kelvin
         units:
           - celsius
+          - kelvin
+      - name: Celsius ↔ Fahrenheit
+        units:
+          - celsius
+          - fahrenheit
+      - name: Fahrenheit ↔ Kelvin
+        units:
           - fahrenheit
           - kelvin
-      - type: direct
-        name: Direct Conversion -- 2
-        units:
-          - fahrenheit
-          - celsius
-          - rankine
-      - type: indirect
-        name: Indirect Conversions
+      - name: Chained Conversions
         units:
           - celsius
           - fahrenheit
           - kelvin
           - rankine
     practice:
-      - name: Basic Conversion
-        question_count: 6
+      - name: C↔K Practice
+        question_count: 10
+        units:
+          - celsius
+          - kelvin
+      - name: C↔F Practice
+        question_count: 10
         units:
           - celsius
           - fahrenheit
-      - name: Scientific Conversion
-        question_count: 12
+      - name: F↔K Practice
+        question_count: 10
         units:
-          - celsius
           - fahrenheit
           - kelvin
-      - name: Full Conversion
-        question_count: 8
+      - name: Mastery Challenge
+        question_count: 15
         units:
           - celsius
           - fahrenheit
           - kelvin
           - rankine
+
   - id: time
-    category: Time
+    category: Temporal Measurements
     name: Time
-    icon: timer
-    description: These are the measure of the duration of an event or the interval between
-      two events.
+    icon: clock
+    description: Measure spans of duration.
     units_type: time
-    color: "#ff7f0e"
+    color: "#8c564b"
     units:
       - second
       - minute
       - hour
       - day
+      - year
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: Small Units Fundamentals
         units:
           - second
           - minute
           - hour
-      - type: direct
-        name: Direct Conversion -- 2
+      - name: Extended Units Fundamentals
         units:
-          - hour
-          - minute
           - day
-      - type: indirect
-        name: Indirect Conversions
-        units:
-          - second
-          - minute
-          - hour
-          - day
-    practice:
-      - name: Short Durations
-        question_count: 12
-        units:
-          - second
-          - minute
-          - hour
-      - name: Longer Durations
-        question_count: 12
+          - year
+      - name: Bridging Systems
         units:
           - hour
           - day
           - year
-      - name: Full Conversion
-        question_count: 12
+      - name: Advanced Paths
+        units:
+          - second
+          - year
+    practice:
+      - name: Small Units Practice
+        question_count: 10
+        units:
+          - second
+          - minute
+          - hour
+      - name: Extended Units Practice
+        question_count: 10
+        units:
+          - day
+          - year
+      - name: Mixed Time Practice
+        question_count: 15
+        units:
+          - minute
+          - day
+          - hour
+      - name: Mastery Challenge
+        question_count: 20
         units:
           - second
           - minute
           - hour
           - day
+          - year
+
   - id: heat_energy
-    category: Heat or Temperature
-    name: Heat Energy
-    icon: local_fire_department
-    description: These are the measure of the energy transferred between two systems due to a temperature difference. This is different from temperature, which is the measure of the average kinetic energy of particles in a substance.
+    category: Energy Measurements
+    name: Heat & Energy
+    icon: fire
+    description: Measure thermal energy content.
     units_type: heat_energy
-    color: "#8c564b"
+    color: "#e377c2"
     units:
       - joule
-      - calorie
       - kilojoule
+      - calorie
       - kilocalorie
       - btu
     learn:
-      - type: direct
-        name: Direct Conversion -- 1
+      - name: SI Energy Fundamentals
+        units:
+          - joule
+          - kilojoule
+      - name: Caloric Units Fundamentals
+        units:
+          - calorie
+          - kilocalorie
+      - name: Imperial Energy Fundamentals
+        units:
+          - btu
+          - joule
+      - name: Bridging Systems
         units:
           - joule
           - calorie
-          - kilojoule
-      - type: direct
-        name: Direct Conversion -- 2
-        units:
-          - kilojoule
-          - kilocalorie
           - btu
-      - type: indirect
-        name: Indirect Conversions
-        units:
-          - joule
-          - calorie
-          - kilojoule
-          - kilocalorie
-          - btu
-
     practice:
-      - name: Basic Conversion -- 1
-        question_count: 12
+      - name: SI Energy Practice
+        question_count: 10
         units:
           - joule
-          - calorie
-      - name: Basic Conversion -- 2
-        question_count: 12
-        units:
           - kilojoule
+      - name: Caloric Practice
+        question_count: 10
+        units:
+          - calorie
           - kilocalorie
-      - name: Full Conversion
-        question_count: 12
+      - name: Mixed Energy Practice
+        question_count: 15
         units:
           - joule
-          - calorie
+          - kilocalorie
+          - btu
+      - name: Mastery Challenge
+        question_count: 20
+        units:
+          - joule
           - kilojoule
+          - calorie
           - kilocalorie
           - btu

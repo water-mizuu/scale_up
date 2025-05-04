@@ -14,7 +14,7 @@ class FloatingCardWithHint extends StatelessWidget {
       spacing: 4.0,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [Styles.hint("Answer the question:"), FloatingCard(child: child)],
+      children: [Styles.hint(hint), Flexible(child: FloatingCard(child: child))],
     );
   }
 }
@@ -33,12 +33,7 @@ class FloatingCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(color: Colors.white.borderColor),
       ),
-      child: Column(
-        spacing: 10.0,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [child],
-      ),
+      child: child,
     );
   }
 }

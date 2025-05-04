@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/sign_up_page/signup_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 

@@ -1,3 +1,4 @@
+import "package:flutter/material.dart";
 import "package:freezed_annotation/freezed_annotation.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
@@ -63,7 +64,7 @@ sealed class LearnQuestion with _$LearnQuestion {
   const LearnQuestion._();
 
   const factory LearnQuestion.plain({
-    required List<String> informations,
+    required List<Widget> children,
     @Default(false) bool isRetry,
   }) = PlainLearnQuestion;
 

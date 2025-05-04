@@ -1,8 +1,8 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter/services.dart";
-import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
+import "package:markdown_widget/markdown_widget.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animated_scroll_controller.dart";
@@ -72,15 +72,17 @@ class ProfilePageView extends StatelessWidget {
                   children: [
                     ExpansionTile(
                       title: Text("Common Questions (FAQ)"),
-                      children: [Markdown(data: frequentlyAskedQuestions, shrinkWrap: true)],
+                      children: [
+                        MarkdownWidget(data: frequentlyAskedQuestions, shrinkWrap: true),
+                      ],
                     ),
                     ExpansionTile(
                       title: Text("Support Details"),
-                      children: [Markdown(data: developerInformation, shrinkWrap: true)],
+                      children: [MarkdownWidget(data: developerInformation, shrinkWrap: true)],
                     ),
                     ExpansionTile(
                       title: Text("About"),
-                      children: [Markdown(data: appAbout, shrinkWrap: true)],
+                      children: [MarkdownWidget(data: appAbout, shrinkWrap: true)],
                     ),
                     ListTile(
                       title: Text("Log out"),

@@ -4,10 +4,10 @@ import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:flutter_markdown_plus/flutter_markdown_plus.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/hooks/use_animated_scroll_controller.dart";
 import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
@@ -28,6 +28,7 @@ class LearnInstructions extends StatelessWidget {
     var currentQuestion = context.select(
       (LearnPageBloc b) => b.loadedState.questions[b.loadedState.questionIndex],
     );
+
     switch (currentQuestion) {
       case PlainLearnQuestion():
         return PlainLearnInstructions(currentQuestion: currentQuestion);
@@ -42,18 +43,27 @@ class LearnInstructions extends StatelessWidget {
 }
 
 // LearnQuestion.plainLearn
-class PlainLearnInstructions extends StatelessWidget {
+class PlainLearnInstructions extends HookWidget {
   const PlainLearnInstructions({super.key, required this.currentQuestion});
 
   final PlainLearnQuestion currentQuestion;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var information in currentQuestion.informations)
-          Markdown(data: information, shrinkWrap: true),
-      ],
+    var scrollController = useAnimatedScrollController();
+
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 24.0),
+      child: _AnimatedQuestionPanel(
+        hint: "Read the lesson:",
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [for (var child in currentQuestion.children) child],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -178,113 +188,127 @@ class IndirectStepsInstructions extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = context.read<IndirectStepsCubit>();
-    var answerKeys = useSelect((IndirectStepsCubit c) => c.activeState.answerKeys);
-    var IndirectStepsLearnQuestion(:from, :to, :steps) = cubit.activeState.question;
-
     return Column(
+      mainAxisSize: MainAxisSize.min,
       spacing: 32.0,
-      children: [
-        _AnimatedQuestionPanel(
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Styles.subtitle("How would you convert from "),
-              ToolTip(
-                content: IndirectStepsToolTipContent(steps: steps),
-                child: Text.rich(
-                  TextSpan(
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      decorationStyle: TextDecorationStyle.dashed,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "${from.name} (${from.shortcut})",
-                        style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      TextSpan(text: " to ", style: Styles.subtitle),
-                      TextSpan(
-                        text: "${to.name} (${to.shortcut})",
-                        style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+      children: [IndirectStepsQuestionPanel(), IndirectStepsAnswerSpots()],
+    );
+  }
+}
+
+class IndirectStepsQuestionPanel extends HookWidget {
+  const IndirectStepsQuestionPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var IndirectStepsLearnQuestion(:from, :to, :steps) = useSelect(
+      (IndirectStepsCubit c) => c.activeState.question,
+    );
+
+    return _AnimatedQuestionPanel(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Styles.subtitle("How would you convert from "),
+          ToolTip(
+            content: IndirectStepsToolTipContent(steps: steps),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationStyle: TextDecorationStyle.dashed,
                 ),
+                children: [
+                  TextSpan(
+                    text: "${from.name} (${from.shortcut})",
+                    style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: " to ", style: Styles.subtitle),
+                  TextSpan(
+                    text: "${to.name} (${to.shortcut})",
+                    style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
-              Styles.subtitle(" without a direct formula?"),
+            ),
+          ),
+          Styles.subtitle(" without a direct formula?"),
+        ],
+      ),
+    );
+  }
+}
+
+class IndirectStepsAnswerSpots extends HookWidget {
+  const IndirectStepsAnswerSpots({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var answerKeys = useSelect((IndirectStepsCubit c) => c.activeState.answerKeys);
+    var steps = useSelect((IndirectStepsCubit c) => c.activeState.question.steps);
+
+    var child = Table(
+      defaultColumnWidth: const IntrinsicColumnWidth(),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: [
+        for (var (i, ((from, to), _)) in steps.indexed)
+          TableRow(
+            children: [
+              if (i == 0)
+                Styles.subtitle("First, convert ")
+              else
+                Styles.subtitle("Then, convert "),
+
+              if (i == 0)
+                Center(
+                  child: Styles.subtitle(
+                    from.shortcut,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: GoogleFonts.notoSansMath().fontFamily,
+                  ),
+                )
+              else
+                AnswerTile(key: answerKeys[2 * i - 1], index: 2 * i - 1, unit: from),
+
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.0),
+                child: Styles.subtitle(" to "),
+              ),
+
+              if (i == steps.length - 1)
+                Center(
+                  child: Styles.subtitle(
+                    to.shortcut,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: GoogleFonts.notoSansMath().fontFamily,
+                  ),
+                )
+              else
+                AnswerTile(key: answerKeys[2 * i], index: 2 * i, unit: from),
+
+              Padding(padding: EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
             ],
           ),
-        ),
-
-        Builder(
-          builder: (context) {
-            var child = Table(
-              defaultColumnWidth: const IntrinsicColumnWidth(),
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: [
-                for (var (i, ((from, to), _)) in steps.indexed)
-                  TableRow(
-                    children: [
-                      if (i == 0)
-                        Styles.subtitle("First, convert ")
-                      else
-                        Styles.subtitle("Then, convert "),
-
-                      if (i == 0)
-                        Center(
-                          child: Styles.subtitle(
-                            from.shortcut,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: GoogleFonts.notoSansMath().fontFamily,
-                          ),
-                        )
-                      else
-                        AnswerTile(key: answerKeys[2 * i - 1], index: 2 * i - 1, unit: from),
-
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12.0),
-                        child: Styles.subtitle(" to "),
-                      ),
-
-                      if (i == steps.length - 1)
-                        Center(
-                          child: Styles.subtitle(
-                            to.shortcut,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: GoogleFonts.notoSansMath().fontFamily,
-                          ),
-                        )
-                      else
-                        AnswerTile(key: answerKeys[2 * i], index: 2 * i, unit: from),
-
-                      Padding(padding: EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
-                    ],
-                  ),
-              ],
-            );
-
-            return child
-                .animate(
-                  controller: context.read<TransitionOutAnimationController>().controller,
-                  autoPlay: false,
-                )
-                .then(delay: 120.milliseconds)
-                .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
-                .fadeOut()
-                .animate(
-                  controller: context.read<TransitionInAnimationController>().controller,
-                  autoPlay: false,
-                )
-                .then(delay: 120.milliseconds)
-                .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
-                .fadeIn();
-          },
-        ),
       ],
     );
+
+    return child
+        .animate(
+          controller: context.read<TransitionOutAnimationController>().controller,
+          autoPlay: false,
+        )
+        .then(delay: 120.milliseconds)
+        .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
+        .fadeOut()
+        .animate(
+          controller: context.read<TransitionInAnimationController>().controller,
+          autoPlay: false,
+        )
+        .then(delay: 120.milliseconds)
+        .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
+        .fadeIn();
   }
 }
 
@@ -359,13 +383,14 @@ class IndirectStepsToolTipContent extends StatelessWidget {
 }
 
 class _AnimatedQuestionPanel extends StatelessWidget {
-  const _AnimatedQuestionPanel({required this.child});
+  const _AnimatedQuestionPanel({required this.child, this.hint = "Answer the question: "});
 
   final Widget child;
+  final String hint;
 
   @override
   Widget build(BuildContext context) {
-    var widget = FloatingCardWithHint(hint: "Answer the question:", child: child);
+    var widget = FloatingCardWithHint(hint: hint, child: child);
 
     return widget
         .animate(

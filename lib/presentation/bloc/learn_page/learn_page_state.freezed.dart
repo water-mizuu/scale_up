@@ -390,14 +390,14 @@ as bool,
 
 
 class PlainLearnQuestion extends LearnQuestion {
-  const PlainLearnQuestion({required final  List<String> informations, this.isRetry = false}): _informations = informations,super._();
+  const PlainLearnQuestion({required final  List<Widget> children, this.isRetry = false}): _children = children,super._();
   
 
- final  List<String> _informations;
- List<String> get informations {
-  if (_informations is EqualUnmodifiableListView) return _informations;
+ final  List<Widget> _children;
+ List<Widget> get children {
+  if (_children is EqualUnmodifiableListView) return _children;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_informations);
+  return EqualUnmodifiableListView(_children);
 }
 
 @override@JsonKey() final  bool isRetry;
@@ -412,16 +412,16 @@ $PlainLearnQuestionCopyWith<PlainLearnQuestion> get copyWith => _$PlainLearnQues
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlainLearnQuestion&&const DeepCollectionEquality().equals(other._informations, _informations)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlainLearnQuestion&&const DeepCollectionEquality().equals(other._children, _children)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_informations),isRetry);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_children),isRetry);
 
 @override
 String toString() {
-  return 'LearnQuestion.plain(informations: $informations, isRetry: $isRetry)';
+  return 'LearnQuestion.plain(children: $children, isRetry: $isRetry)';
 }
 
 
@@ -432,7 +432,7 @@ abstract mixin class $PlainLearnQuestionCopyWith<$Res> implements $LearnQuestion
   factory $PlainLearnQuestionCopyWith(PlainLearnQuestion value, $Res Function(PlainLearnQuestion) _then) = _$PlainLearnQuestionCopyWithImpl;
 @override @useResult
 $Res call({
- List<String> informations, bool isRetry
+ List<Widget> children, bool isRetry
 });
 
 
@@ -449,10 +449,10 @@ class _$PlainLearnQuestionCopyWithImpl<$Res>
 
 /// Create a copy of LearnQuestion
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? informations = null,Object? isRetry = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? children = null,Object? isRetry = null,}) {
   return _then(PlainLearnQuestion(
-informations: null == informations ? _self._informations : informations // ignore: cast_nullable_to_non_nullable
-as List<String>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+children: null == children ? _self._children : children // ignore: cast_nullable_to_non_nullable
+as List<Widget>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

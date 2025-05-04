@@ -8,33 +8,29 @@ class SignUpHyperlinkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: "Don't have an account?",
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-              ),
-              WidgetSpan(child: SizedBox(width: 8.0)),
-              TextSpan(
-                text: "Sign Up",
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                recognizer:
-                    TapGestureRecognizer()
-                      ..onTap = () {
-                        if (kDebugMode) {
-                          print("Going to sign up as clicked by user.");
-                        }
-                        router.goNamed(AppRoutes.signUp);
-                      },
-              ),
-            ],
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: "Don't have an account?",
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-        ),
-      ],
+          WidgetSpan(child: SizedBox(width: 8.0)),
+          TextSpan(
+            text: "Sign Up",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    if (kDebugMode) {
+                      print("Going to sign up as clicked by user.");
+                    }
+                    router.goNamed(AppRoutes.signUp);
+                  },
+          ),
+        ],
+      ),
     );
   }
 }

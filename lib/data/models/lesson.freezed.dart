@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Lesson {
 
- String get id; String get category; String get name; String get description;@JsonKey(name: "units_type") String get unitsType;@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color get color; List<String> get units;@JsonKey(name: "learn") List<LearnChapter> get learnChapters;@JsonKey(name: "practice") List<PracticeChapter> get practiceChapters;
+ String get id; String get category; String get name; String get description;@JsonKey(name: "units_type") String get unitsType;@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color get color; List<String> get units;@JsonKey(name: "learn") List<LearnChapter> get learnChapters;@JsonKey(name: "practice") List<PracticeChapter> get practiceChapters; String get icon;
 /// Create a copy of Lesson
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $LessonCopyWith<Lesson> get copyWith => _$LessonCopyWithImpl<Lesson>(this as Les
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lesson&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.unitsType, unitsType) || other.unitsType == unitsType)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.units, units)&&const DeepCollectionEquality().equals(other.learnChapters, learnChapters)&&const DeepCollectionEquality().equals(other.practiceChapters, practiceChapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Lesson&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.unitsType, unitsType) || other.unitsType == unitsType)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other.units, units)&&const DeepCollectionEquality().equals(other.learnChapters, learnChapters)&&const DeepCollectionEquality().equals(other.practiceChapters, practiceChapters)&&(identical(other.icon, icon) || other.icon == icon));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,category,name,description,unitsType,color,const DeepCollectionEquality().hash(units),const DeepCollectionEquality().hash(learnChapters),const DeepCollectionEquality().hash(practiceChapters));
+int get hashCode => Object.hash(runtimeType,id,category,name,description,unitsType,color,const DeepCollectionEquality().hash(units),const DeepCollectionEquality().hash(learnChapters),const DeepCollectionEquality().hash(practiceChapters),icon);
 
 @override
 String toString() {
-  return 'Lesson(id: $id, category: $category, name: $name, description: $description, unitsType: $unitsType, color: $color, units: $units, learnChapters: $learnChapters, practiceChapters: $practiceChapters)';
+  return 'Lesson(id: $id, category: $category, name: $name, description: $description, unitsType: $unitsType, color: $color, units: $units, learnChapters: $learnChapters, practiceChapters: $practiceChapters, icon: $icon)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $LessonCopyWith<$Res>  {
   factory $LessonCopyWith(Lesson value, $Res Function(Lesson) _then) = _$LessonCopyWithImpl;
 @useResult
 $Res call({
- String id, String category, String name, String description,@JsonKey(name: "units_type") String unitsType,@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color color, List<String> units,@JsonKey(name: "learn") List<LearnChapter> learnChapters,@JsonKey(name: "practice") List<PracticeChapter> practiceChapters
+ String id, String category, String name, String description,@JsonKey(name: "units_type") String unitsType,@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color color, List<String> units,@JsonKey(name: "learn") List<LearnChapter> learnChapters,@JsonKey(name: "practice") List<PracticeChapter> practiceChapters, String icon
 });
 
 
@@ -66,7 +66,7 @@ class _$LessonCopyWithImpl<$Res>
 
 /// Create a copy of Lesson
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? category = null,Object? name = null,Object? description = null,Object? unitsType = null,Object? color = null,Object? units = null,Object? learnChapters = null,Object? practiceChapters = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? category = null,Object? name = null,Object? description = null,Object? unitsType = null,Object? color = null,Object? units = null,Object? learnChapters = null,Object? practiceChapters = null,Object? icon = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
@@ -77,7 +77,8 @@ as String,color: null == color ? _self.color : color // ignore: cast_nullable_to
 as Color,units: null == units ? _self.units : units // ignore: cast_nullable_to_non_nullable
 as List<String>,learnChapters: null == learnChapters ? _self.learnChapters : learnChapters // ignore: cast_nullable_to_non_nullable
 as List<LearnChapter>,practiceChapters: null == practiceChapters ? _self.practiceChapters : practiceChapters // ignore: cast_nullable_to_non_nullable
-as List<PracticeChapter>,
+as List<PracticeChapter>,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -88,7 +89,7 @@ as List<PracticeChapter>,
 @JsonSerializable()
 
 class _Lesson extends Lesson {
-  const _Lesson({required this.id, required this.category, required this.name, required this.description, @JsonKey(name: "units_type") required this.unitsType, @JsonKey(includeToJson: false, fromJson: _colorFromJson) required this.color, required final  List<String> units, @JsonKey(name: "learn") required final  List<LearnChapter> learnChapters, @JsonKey(name: "practice") required final  List<PracticeChapter> practiceChapters}): _units = units,_learnChapters = learnChapters,_practiceChapters = practiceChapters,super._();
+  const _Lesson({required this.id, required this.category, required this.name, required this.description, @JsonKey(name: "units_type") required this.unitsType, @JsonKey(includeToJson: false, fromJson: _colorFromJson) required this.color, required final  List<String> units, @JsonKey(name: "learn") required final  List<LearnChapter> learnChapters, @JsonKey(name: "practice") required final  List<PracticeChapter> practiceChapters, required this.icon}): _units = units,_learnChapters = learnChapters,_practiceChapters = practiceChapters,super._();
   factory _Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
 
 @override final  String id;
@@ -118,6 +119,7 @@ class _Lesson extends Lesson {
   return EqualUnmodifiableListView(_practiceChapters);
 }
 
+@override final  String icon;
 
 /// Create a copy of Lesson
 /// with the given fields replaced by the non-null parameter values.
@@ -132,16 +134,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lesson&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.unitsType, unitsType) || other.unitsType == unitsType)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other._units, _units)&&const DeepCollectionEquality().equals(other._learnChapters, _learnChapters)&&const DeepCollectionEquality().equals(other._practiceChapters, _practiceChapters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Lesson&&(identical(other.id, id) || other.id == id)&&(identical(other.category, category) || other.category == category)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.unitsType, unitsType) || other.unitsType == unitsType)&&(identical(other.color, color) || other.color == color)&&const DeepCollectionEquality().equals(other._units, _units)&&const DeepCollectionEquality().equals(other._learnChapters, _learnChapters)&&const DeepCollectionEquality().equals(other._practiceChapters, _practiceChapters)&&(identical(other.icon, icon) || other.icon == icon));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,category,name,description,unitsType,color,const DeepCollectionEquality().hash(_units),const DeepCollectionEquality().hash(_learnChapters),const DeepCollectionEquality().hash(_practiceChapters));
+int get hashCode => Object.hash(runtimeType,id,category,name,description,unitsType,color,const DeepCollectionEquality().hash(_units),const DeepCollectionEquality().hash(_learnChapters),const DeepCollectionEquality().hash(_practiceChapters),icon);
 
 @override
 String toString() {
-  return 'Lesson(id: $id, category: $category, name: $name, description: $description, unitsType: $unitsType, color: $color, units: $units, learnChapters: $learnChapters, practiceChapters: $practiceChapters)';
+  return 'Lesson(id: $id, category: $category, name: $name, description: $description, unitsType: $unitsType, color: $color, units: $units, learnChapters: $learnChapters, practiceChapters: $practiceChapters, icon: $icon)';
 }
 
 
@@ -152,7 +154,7 @@ abstract mixin class _$LessonCopyWith<$Res> implements $LessonCopyWith<$Res> {
   factory _$LessonCopyWith(_Lesson value, $Res Function(_Lesson) _then) = __$LessonCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String category, String name, String description,@JsonKey(name: "units_type") String unitsType,@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color color, List<String> units,@JsonKey(name: "learn") List<LearnChapter> learnChapters,@JsonKey(name: "practice") List<PracticeChapter> practiceChapters
+ String id, String category, String name, String description,@JsonKey(name: "units_type") String unitsType,@JsonKey(includeToJson: false, fromJson: _colorFromJson) Color color, List<String> units,@JsonKey(name: "learn") List<LearnChapter> learnChapters,@JsonKey(name: "practice") List<PracticeChapter> practiceChapters, String icon
 });
 
 
@@ -169,7 +171,7 @@ class __$LessonCopyWithImpl<$Res>
 
 /// Create a copy of Lesson
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? category = null,Object? name = null,Object? description = null,Object? unitsType = null,Object? color = null,Object? units = null,Object? learnChapters = null,Object? practiceChapters = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? category = null,Object? name = null,Object? description = null,Object? unitsType = null,Object? color = null,Object? units = null,Object? learnChapters = null,Object? practiceChapters = null,Object? icon = null,}) {
   return _then(_Lesson(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
@@ -180,7 +182,8 @@ as String,color: null == color ? _self.color : color // ignore: cast_nullable_to
 as Color,units: null == units ? _self._units : units // ignore: cast_nullable_to_non_nullable
 as List<String>,learnChapters: null == learnChapters ? _self._learnChapters : learnChapters // ignore: cast_nullable_to_non_nullable
 as List<LearnChapter>,practiceChapters: null == practiceChapters ? _self._practiceChapters : practiceChapters // ignore: cast_nullable_to_non_nullable
-as List<PracticeChapter>,
+as List<PracticeChapter>,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

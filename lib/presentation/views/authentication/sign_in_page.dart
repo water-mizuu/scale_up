@@ -3,7 +3,7 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:provider/provider.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/sign_in_page/sign_in_page_bloc.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page/carousel.dart";
 import "package:scale_up/presentation/views/authentication/sign_in_page/sign_in_button_group.dart";

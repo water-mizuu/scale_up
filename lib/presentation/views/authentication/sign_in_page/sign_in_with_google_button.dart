@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/Authentication/authentication_bloc.dart";
+import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 
 class SignInWithGoogleButton extends StatelessWidget {
   const SignInWithGoogleButton({super.key});
@@ -23,10 +23,7 @@ class SignInWithGoogleButton extends StatelessWidget {
                 spacing: 8.0,
                 children: [
                   Image.asset("assets/logos/google.png", height: 18.0, width: 18.0),
-                  Text(
-                    "Log in with Google",
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  Text("Log in with Google", style: TextStyle(fontSize: 16.0)),
                 ],
               ),
             ),

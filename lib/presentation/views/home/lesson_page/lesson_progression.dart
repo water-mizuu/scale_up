@@ -1,3 +1,4 @@
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -5,6 +6,7 @@ import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/string_to_icon.dart";
 
 class LessonProgression extends StatelessWidget {
   const LessonProgression({super.key});
@@ -12,7 +14,7 @@ class LessonProgression extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var lesson = context.read<LessonPageCubit>().state.lesson;
-    var Lesson(:id, :units, :practiceChapters, :learnChapters, :color, :hslColor) = lesson;
+    var Lesson(:id, :units, :practiceChapters, :learnChapters, :color, :hslColor, :icon) = lesson;
 
     var chaptersDone = context.select((UserDataBloc bloc) {
       return bloc.state.finishedChapters.keys.where((n) => n.startsWith(id)).length;
@@ -36,26 +38,54 @@ class LessonProgression extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.0),
           ),
-          child: Column(
-            children: [
-              FAProgressBar(
-                size: 8.0,
-                currentValue: progressBarValue * 100,
-                progressColor: color,
-                backgroundColor: progressionBackgroundColor,
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Styles.body(
-                    "$chaptersDone / $chapterCount chapters",
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
                     color: color,
-                    textAlign: TextAlign.right,
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ],
-              ),
-            ],
+                  child: Icon(
+                    () {
+                      if (kDebugMode) {
+                        print((icon: icon));
+                      }
+                      return stringToIcon[icon]!;
+                    }(),
+                    color: Colors.white,
+                    size: 32.0,
+                  ),
+                ),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FAProgressBar(
+                        size: 8.0,
+                        currentValue: progressBarValue * 100,
+                        progressColor: color,
+                        backgroundColor: progressionBackgroundColor,
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Styles.body(
+                            "$chaptersDone / $chapterCount chapters",
+                            color: color,
+                            textAlign: TextAlign.right,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

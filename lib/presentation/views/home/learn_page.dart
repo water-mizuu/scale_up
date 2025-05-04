@@ -50,6 +50,8 @@ class LearnPage extends HookWidget {
     var learnPageBloc = useCreateNewBloc(() => LearnPageBloc(lessonsHelper: helper));
     var indirectStepsCubit = useCreateNewBloc(() => IndirectStepsCubit());
 
+    /// Whenever the lessonId or chapterIndex changes, we want to
+    ///   update the bloc with the new lesson and chapter index.
     useEffect(() {
       learnPageBloc.add(
         LearnPageWidgetChanged(
@@ -315,16 +317,10 @@ class IndirectStepsLearnPage extends HookWidget {
             c is ActiveIndirectStepsState &&
             p.answers.whereType<Object>().length != c.answers.whereType<Object>().length;
       },
+      keys: [question],
     );
 
-    if (state is! ActiveIndirectStepsState) {
-      if (kDebugMode) {
-        print("State is not ActiveIndirectStepsState");
-      }
-      return const SizedBox.shrink();
-    }
-
-    var key = state.parentKey;
+    var key = (state as ActiveIndirectStepsState).parentKey;
     var animation = state.animation;
 
     return Stack(

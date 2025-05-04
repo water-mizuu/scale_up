@@ -1,16 +1,21 @@
 import "dart:async";
 
 import "package:flutter/foundation.dart";
+import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/data/models/conversion.dart";
+import "package:markdown_widget/markdown_widget.dart";
 import "package:scale_up/data/models/learn_chapter.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
+import "package:scale_up/data/models/unit_group.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_event.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_state.dart";
 import "package:scale_up/utils/extensions/choose_random_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
+import "package:scale_up/utils/extensions/unindent_extension.dart";
+import "package:scale_up/utils/markdown_latex.dart";
 
 export "learn_page_event.dart";
 export "learn_page_state.dart";
@@ -45,203 +50,65 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
   /// This generates questions for the given learn chapter.
   List<LearnQuestion> _generateQuestions(Lesson lesson, LearnChapter learnChapter) {
-    if (learnChapter.type == "direct") {
-      var questions = <LearnQuestion>[];
+    var questions = <LearnQuestion>[];
+    var directQuestions = <LearnQuestion>[];
+    var indirectQuestions = <LearnQuestion>[];
 
-      var unitGroup = _lessonsHelper.getLocalUnitGroup(lesson.unitsType, learnChapter.units);
-      var extendedUnitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
-        lesson.unitsType,
-        learnChapter.units,
-      );
-      if (unitGroup == null || extendedUnitGroup == null) {
-        throw Exception("Unit group not found");
-      }
+    var unitGroup = _lessonsHelper.getLocalUnitGroup(lesson.unitsType, learnChapter.units);
+    var extendedUnitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
+      lesson.unitsType,
+      learnChapter.units,
+    );
 
-      /// This block is responsible for generating
-      ///    the descriptive (plain) questions.
-      for (var conversion in unitGroup.conversions) {
-        var Conversion(:from, :to, formula: expression) = conversion;
-        var unitGroupId = lesson.unitsType;
-        var (fromUnit, toUnit) = (
-          _lessonsHelper.getUnit(unitGroupId, from)!,
-          _lessonsHelper.getUnit(unitGroupId, to)!,
-        );
-
-        var templates = _lessonsHelper.getTemplate("direct");
-        if (templates == null) {
-          throw Exception("Template not found for 'direct'.");
-        }
-
-        var generated = templates.generateRandom({
-          "from": fromUnit.display ?? fromUnit.name,
-          "to": toUnit.display ?? toUnit.name,
-          "left_conversion_english": "",
-          "number": expression.constants.map((c) => c.value).join(", "),
-          "equation": expression.toString(),
-        });
-
-        /// There are four parts.
-        var informations = generated.values.toList();
-
-        questions.add(LearnQuestion.plain(informations: informations));
-      }
-
-      /// This block is responsible for generating
-      ///    "What are the important numbers for converting from X to Y?"
-      for (var conversion in unitGroup.conversions) {
-        var Conversion(:from, :to, formula: expression) = conversion;
-        var unitGroupId = lesson.unitsType;
-        var (fromUnit, toUnit) = (
-          _lessonsHelper.getUnit(unitGroupId, from)!,
-          _lessonsHelper.getUnit(unitGroupId, to)!,
-        );
-        var constants = expression.constants.toSet();
-        var correctAnswer = constants.map((c) => c.value).toSet();
-        var choices = {correctAnswer};
-
-        for (var i = 0; i < 3; ++i) {
-          Set<num> mutatedAnswer;
-
-          do {
-            mutatedAnswer =
-                constants
-                    .take(correctAnswer.length)
-                    .map((c) => c.mutate())
-                    .whereType<ConstantExpression>()
-                    .map((c) => c.value)
-                    .toSet();
-          } while (choices.any((c) => c.difference(mutatedAnswer).isEmpty));
-
-          choices.add(mutatedAnswer);
-        }
-
-        questions.add(
-          LearnQuestion.importantNumbers(
-            from: fromUnit,
-            to: toUnit,
-            choices: choices,
-            answer: correctAnswer,
-          ),
-        );
-      }
-
-      questions.shuffle();
-
-      /// This block is responsible for generating
-      ///   "What is the formula for converting from X to Y?"
-      ///   questions.
-      var units = extendedUnitGroup.units;
-      for (var conversion in extendedUnitGroup.conversions) {
-        assert(units.isNotEmpty);
-        assert(units.length == units.whereType<Object>().length);
-
-        var Conversion(:from, :to, formula: answer) = conversion;
-        var unitGroupId = lesson.unitsType;
-        var (fromUnit, toUnit) = (
-          _lessonsHelper.getUnit(unitGroupId, from)!,
-          _lessonsHelper.getUnit(unitGroupId, to)!,
-        );
-        var choices = [answer];
-
-        for (var i = 0; i < 3; ++i) {
-          NumericalExpression mutated;
-
-          /// There is a probability that the mutated expression is unchanged.
-          ///   So, we just keep mutating until we get a different one.
-          do {
-            mutated = answer.mutate();
-          } while (choices.any((c) => c.str == mutated.str));
-
-          choices.add(mutated);
-        }
-        choices.shuffle();
-        assert(choices.contains(answer));
-
-        /// To make choices, we have to "mutate" the answer.
-        questions.add(
-          LearnQuestion.directFormula(
-            from: fromUnit,
-            to: toUnit,
-            choices: choices,
-            answer: answer,
-          ),
-        );
-      }
-      questions.shuffle();
-
-      return questions;
-    } else if (learnChapter.type == "indirect") {
-      var questions = <LearnQuestion>[];
-      var unitGroupId = lesson.unitsType;
-      var allUnits =
-          learnChapter.units
-              .map((u) => _lessonsHelper.getUnit(unitGroupId, u))
-              .whereType<Unit>()
-              .toList();
-      var unitGroup = _lessonsHelper.getUnitGroupForUnits(allUnits);
-
-      if (unitGroup == null) {
-        throw Exception("There wasn't a unit group for $allUnits");
-      }
-
-      for (var from in learnChapter.units) {
-        for (var to in learnChapter.units) {
-          if (from == to) continue;
-
-          var fromUnit = _lessonsHelper.getUnit(unitGroupId, from);
-          var toUnit = _lessonsHelper.getUnit(unitGroupId, to);
-
-          if (fromUnit == null || toUnit == null) {
-            if (kDebugMode) {
-              print("Unit not found for $from and $to within $unitGroupId");
-            }
-            throw Exception("Unit not found");
-          }
-
-          var steps = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
-          if (steps == null) {
-            if (kDebugMode) {
-              print("Path not found for $fromUnit to $toUnit");
-            }
-            throw Exception("Path not found");
-          }
-
-          if (steps.length > 1) {
-            /// We take the units from each path,
-            var answer = steps.expand((s) => [s.$1.$1, s.$1.$2]).toList();
-
-            /// Remove the first and last units. (They are the from and to units.)
-            answer = answer.sublist(1, answer.length - 1);
-
-            /// We need to generate incorrect answers, so we need
-            ///   to remove the answer from the list of all units.
-            var remainingOptions = unitGroup.units.where((u) => !answer.contains(u)).toList();
-
-            /// Then, we generate incorrect answers with the same length
-            ///   as the answer.
-            var incorrect = answer.map((_) => remainingOptions.chooseRandom());
-
-            /// Then, the total choices are the answer followed by the incorrect ones.
-            ///   We need to shuffle them.
-            var choices = answer.followedBy(incorrect).toList()..shuffle();
-
-            questions.add(
-              LearnQuestion.indirectSteps(
-                from: fromUnit,
-                to: toUnit,
-                steps: steps,
-                choices: choices,
-                answer: answer,
-              ),
-            );
-          }
-        }
-      }
-
-      return questions;
+    if (unitGroup == null || extendedUnitGroup == null) {
+      throw Exception("Unit group not found");
     }
 
-    return [];
+    var hasEncouragedIndirect = false;
+
+    /// O(n^2) scan through all units in the learn chapter.
+    for (var from in learnChapter.units) {
+      for (var to in learnChapter.units) {
+        if (from == to) continue;
+
+        var fromUnit = _lessonsHelper.getUnit(lesson.unitsType, from);
+        var toUnit = _lessonsHelper.getUnit(lesson.unitsType, to);
+
+        if (fromUnit == null || toUnit == null) {
+          throw Exception("Unit not found");
+        }
+
+        var conversion = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
+        if (conversion == null) {
+          if (kDebugMode) {
+            print("Conversion not found for $fromUnit to $toUnit");
+          }
+          throw Exception("Conversion not found");
+        }
+
+        var isDirect = conversion.length == 1;
+        var generated = _generateQuestionsForConversion(
+          lesson,
+          conversion,
+          unitGroup,
+          extendedUnitGroup,
+          isUserEncouraged: !isDirect && hasEncouragedIndirect,
+        );
+
+        if (isDirect) {
+          directQuestions.addAll(generated);
+        } else {
+          indirectQuestions.addAll(generated);
+          hasEncouragedIndirect = true;
+        }
+      }
+    }
+
+    questions
+      ..addAll(indirectQuestions)
+      ..addAll(directQuestions);
+
+    return questions;
   }
 
   void _onLearnPageWidgetChanged(
@@ -361,6 +228,338 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   ) async {
     emit(loadedState.copyWith(status: LearnPageStatus.leaving));
   }
+
+  List<LearnQuestion> _generateQuestionsForConversion(
+    Lesson lesson,
+    List<((Unit, Unit), NumericalExpression)> path,
+    UnitGroup unitGroup,
+    UnitGroup extendedUnitGroup, {
+    bool isUserEncouraged = false,
+  }) {
+    var isDirect = path.length == 1;
+    var questions = <LearnQuestion>[];
+
+    if (isDirect) {
+      var quizQuestions = <LearnQuestion>[];
+      var ((from, to), expression) = path.single;
+      var isInverse =
+          extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id) &&
+          !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id));
+      if (kDebugMode) {
+        print((
+          extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id),
+          !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id)),
+          unitGroup.conversions,
+        ));
+      }
+
+      /// This block is responsible for generating
+      ///    the descriptive (plain) questions.
+      do {
+        var templates = _lessonsHelper.getTemplate("direct");
+        if (templates == null) {
+          throw Exception("Template not found for 'direct'.");
+        }
+
+        var leftConversion = NumericalExpression.toLeftEnglish(expression);
+        var lhs = to.shortcut;
+        var rhs = expression.substituteString("from", from.shortcut).toString();
+
+        var fromBase = from.display ?? from.name;
+        var toBase = to.display ?? to.name;
+
+        var generated = templates.generateRandom({
+          "from_full": "$fromBase (${from.shortcut})",
+          "to_full": "$toBase (${to.shortcut})",
+          "from": fromBase,
+          "to": toBase,
+          "left_conversion_english": leftConversion ?? "",
+          "number": expression.constants.map((c) => c.value).toSet().join(", "),
+          "equation": "$lhs = $rhs",
+        });
+
+        var children = <Widget>[
+          if (leftConversion != null) ...[
+            _markdown(generated["main_sentence"]!),
+            _markdown(generated["equation_display"]!),
+          ] else
+            _markdown(generated["main_sentence_no_conversion"]!),
+
+          if (isInverse)
+            _markdown(generated["inverse"]!)
+          else
+            _markdown(generated["important_number"]!),
+        ];
+
+        questions.add(LearnQuestion.plain(children: children));
+      } while (false);
+
+      /// This block is responsible for generating
+      ///  "What are the important numbers for converting from X to Y?"
+      do {
+        if (isInverse) break;
+
+        var constants = expression.constants.toSet();
+        var correctAnswer = constants.map((c) => c.value).toSet();
+        var choices = {correctAnswer};
+
+        for (var i = 0; i < 3; ++i) {
+          Set<num> mutatedAnswer;
+
+          do {
+            mutatedAnswer =
+                (constants.take(correctAnswer.length))
+                    .map((c) => c.mutate())
+                    .whereType<ConstantExpression>()
+                    .map((c) => c.value)
+                    .toSet();
+          } while (choices.any((c) {
+            return c.difference(mutatedAnswer).isEmpty && mutatedAnswer.difference(c).isEmpty;
+          }));
+
+          choices.add(mutatedAnswer);
+        }
+
+        quizQuestions.add(
+          LearnQuestion.importantNumbers(
+            from: from,
+            to: to,
+            choices: choices,
+            answer: correctAnswer,
+          ),
+        );
+      } while (false);
+
+      /// This block is responsible for generating
+      ///   "What is the formula for converting from X to Y?"
+      ///   questions.
+      do {
+        var choices = [expression];
+        for (var i = 0; i < 3; ++i) {
+          NumericalExpression mutated;
+
+          /// There is a probability that the mutated expression is unchanged.
+          ///   So, we just keep mutating until we get a different one.
+          do {
+            mutated = expression.mutate();
+          } while (choices.any((c) => c.str == mutated.str));
+
+          choices.add(mutated);
+        }
+        choices.shuffle();
+        assert(choices.contains(expression));
+
+        /// To make choices, we have to "mutate" the answer.
+        quizQuestions.add(
+          LearnQuestion.directFormula(
+            from: from, //
+            to: to,
+            choices: choices,
+            answer: expression,
+          ),
+        );
+      } while (false);
+
+      quizQuestions.shuffle();
+      questions.addAll(quizQuestions);
+    } else {
+      var ((from, _), _) = path.first;
+      var ((_, to), _) = path.last;
+
+      /// This block is responsible for generating
+      ///    the descriptive (plain) questions.
+      do {
+        var templates = _lessonsHelper.getTemplate("indirect");
+        if (templates == null) {
+          throw Exception("Template not found for 'indirect'.");
+        }
+        var pathBuffer = [
+          for (var ((from, to), _) in path)
+            "**${from.name} (${from.shortcut})** to **${to.name} (${to.shortcut})**",
+        ];
+        var pathString = pathBuffer.join(", then ");
+
+        var fromBase = from.display ?? from.name;
+        var toBase = to.display ?? to.name;
+
+        var generated = templates.generateRandom({
+          "from_full": "$fromBase (${from.shortcut})",
+          "to_full": "$toBase (${to.shortcut})",
+          "path": pathString,
+        });
+
+        var children = <Widget>[
+          _markdown(generated["overview_path"]!),
+          // conversion_box
+          _conversionPathBox(lesson.color, path),
+          _markdown("---"),
+          if (!isUserEncouraged) _markdown(generated["benefit_vs_memory"]!),
+          Column(
+            spacing: 8.0,
+            children: [
+              for (var (index, step) in path.indexed)
+                _conversionStepBox(index, lesson.color, step),
+              _combinedFormulaBox(lesson.color, path),
+            ],
+          ),
+
+          if (!isUserEncouraged) ...[
+            _markdown(generated["when_to_use_indirect"]!),
+            _markdown(generated["summary_encouragement"]!),
+          ],
+        ];
+
+        questions.add(LearnQuestion.plain(children: children));
+      } while (false);
+
+      /// This block is responsible for generating
+      ///  "What are the important numbers for converting from X to Y?"
+      do {
+        var steps = path;
+
+        /// We take the units from each path,
+        var answer = steps.expand((s) => [s.$1.$1, s.$1.$2]).toList();
+
+        /// Remove the first and last units. (They are the from and to units.)
+        answer = answer.sublist(1, answer.length - 1);
+
+        /// We need to generate incorrect answers, so we need
+        ///   to remove the answer from the list of all units.
+        var remainingOptions = unitGroup.units.where((u) => !answer.contains(u)).toList();
+
+        /// Then, we generate incorrect answers with the same length
+        ///   as the answer.
+        var incorrect = answer.map((_) => remainingOptions.chooseRandom());
+
+        /// Then, the total choices are the answer followed by the incorrect ones.
+        ///   We need to shuffle them.
+        var choices = answer.followedBy(incorrect).toList()..shuffle();
+
+        questions.add(
+          LearnQuestion.indirectSteps(
+            from: from,
+            to: to,
+            steps: steps,
+            choices: choices,
+            answer: answer,
+          ),
+        );
+      } while (false);
+    }
+
+    return questions;
+  }
 }
 
-class PlainQuestionBlock {}
+Widget _combinedFormulaBox(Color originalColor, List<((Unit, Unit), NumericalExpression)> path) {
+  var ((from, _), expression) = path.first;
+  var ((_, to), _) = path.last;
+  for (var (_, expr) in path.skip(1)) {
+    expression = expr.substitute("from", expression);
+  }
+
+  var lhs = to.shortcut;
+  var rhs = expression.substituteString("from", from.shortcut);
+  var formula = "$lhs = $rhs";
+
+  var data = """
+    **Combined Formula**
+    Formula: \$$formula\$
+    """;
+  data = data.unindent();
+
+  var originalHslColor = HSLColor.fromColor(originalColor);
+  var hslColor =
+      originalHslColor //
+          .withHue((originalHslColor.hue + ((path.length + 1) * 30)) % 360)
+          .toColor();
+
+  return Container(
+    padding: EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: hslColor.backgroundColor,
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: _markdown(data, height: 1.5),
+  );
+}
+
+Widget _conversionStepBox(
+  int index,
+  Color originalColor,
+  ((Unit, Unit), NumericalExpression) step,
+) {
+  var ((from, to), expression) = step;
+
+  var lhs = to.shortcut;
+  var rhs = expression.substituteString("from", from.shortcut);
+  var formula = "$lhs = $rhs";
+
+  var data = """
+    **Step ${index + 1}: ${from.name} to ${to.name}**
+    Formula: \$$formula\$
+    """;
+  data = data.unindent();
+
+  var originalHslColor = HSLColor.fromColor(originalColor);
+  var hslColor =
+      originalHslColor //
+          .withHue((originalHslColor.hue + ((index + 1) * 30)) % 360)
+          .toColor();
+
+  return Container(
+    padding: EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: hslColor.backgroundColor,
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: _markdown(data, height: 1.5),
+  );
+}
+
+Widget _conversionPathBox(Color color, List<((Unit, Unit), NumericalExpression)> path) {
+  var stringPath = path.map((p) => p.$1.$1.name).followedBy([path.last.$1.$2.name]).join(" → ");
+  var data = "**Conversion Path:** $stringPath";
+
+  var hslColor = HSLColor.fromColor(color);
+  var backgroundHslColor = HSLColor.fromColor(hslColor.backgroundColor);
+
+  return Container(
+    padding: EdgeInsets.all(12.0),
+    decoration: BoxDecoration(
+      color: hslColor.backgroundColor,
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(4.0),
+          decoration: BoxDecoration(
+            color: backgroundHslColor.withLightness(backgroundHslColor.lightness * 0.9).toColor(),
+            borderRadius: BorderRadius.circular(64.0),
+          ),
+          child: Icon(Icons.arrow_forward, color: color),
+        ),
+        const SizedBox(width: 12.0),
+        Expanded(child: _markdown(data, height: 1.2)),
+      ],
+    ),
+  );
+}
+
+Widget _markdown(String data, {double? height}) {
+  return MarkdownWidget(
+    data: data,
+    shrinkWrap: true,
+    selectable: false,
+    config: MarkdownConfig.defaultConfig.copy(
+      configs: [
+        PConfig(textStyle: TextStyle(fontSize: 14.0, color: Colors.black, height: height ?? 2.0)),
+      ],
+    ),
+    markdownGenerator: MarkdownGenerator(
+      generators: [latexGenerator],
+      inlineSyntaxList: [LatexSyntax()],
+    ),
+  );
+}

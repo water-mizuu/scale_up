@@ -14,7 +14,7 @@ class LearnCheckButton extends StatelessWidget {
       return const SizedBox();
     }
 
-    var hslColor = learnPageBloc.loadedState.lesson.hslColor;
+    var hslColor = state.lesson.hslColor;
     var buttonColor =
         hslColor //
             .withHue((hslColor.hue + 180) % 360)
@@ -26,10 +26,8 @@ class LearnCheckButton extends StatelessWidget {
         state.status == LearnPageStatus.correct || //
         state.status == LearnPageStatus.incorrect;
 
-    var isFinished = learnPageBloc.loadedState.status == LearnPageStatus.finished;
-    var isPlain =
-        learnPageBloc.loadedState.questions[learnPageBloc.loadedState.questionIndex]
-            is PlainLearnQuestion;
+    var isFinished = state.status == LearnPageStatus.finished;
+    var isPlain = state.questions[state.questionIndex] is PlainLearnQuestion;
 
     return FilledButton(
       style: FilledButton.styleFrom(backgroundColor: buttonColor),

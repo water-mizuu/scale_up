@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$LearnChapter {
 
- String get type; String get name; List<String> get units;
+ String get name; List<String> get units;
 /// Create a copy of LearnChapter
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $LearnChapterCopyWith<LearnChapter> get copyWith => _$LearnChapterCopyWithImpl<L
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnChapter&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.units, units));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LearnChapter&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.units, units));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,name,const DeepCollectionEquality().hash(units));
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(units));
 
 @override
 String toString() {
-  return 'LearnChapter(type: $type, name: $name, units: $units)';
+  return 'LearnChapter(name: $name, units: $units)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $LearnChapterCopyWith<$Res>  {
   factory $LearnChapterCopyWith(LearnChapter value, $Res Function(LearnChapter) _then) = _$LearnChapterCopyWithImpl;
 @useResult
 $Res call({
- String type, String name, List<String> units
+ String name, List<String> units
 });
 
 
@@ -66,10 +66,9 @@ class _$LearnChapterCopyWithImpl<$Res>
 
 /// Create a copy of LearnChapter
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? name = null,Object? units = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? units = null,}) {
   return _then(_self.copyWith(
-type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,units: null == units ? _self.units : units // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
@@ -82,10 +81,9 @@ as List<String>,
 @JsonSerializable()
 
 class _LearnChapter extends LearnChapter {
-  const _LearnChapter({required this.type, required this.name, required final  List<String> units}): _units = units,super._();
+  const _LearnChapter({required this.name, required final  List<String> units}): _units = units,super._();
   factory _LearnChapter.fromJson(Map<String, dynamic> json) => _$LearnChapterFromJson(json);
 
-@override final  String type;
 @override final  String name;
  final  List<String> _units;
 @override List<String> get units {
@@ -108,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LearnChapter&&(identical(other.type, type) || other.type == type)&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._units, _units));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LearnChapter&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other._units, _units));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,name,const DeepCollectionEquality().hash(_units));
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(_units));
 
 @override
 String toString() {
-  return 'LearnChapter(type: $type, name: $name, units: $units)';
+  return 'LearnChapter(name: $name, units: $units)';
 }
 
 
@@ -128,7 +126,7 @@ abstract mixin class _$LearnChapterCopyWith<$Res> implements $LearnChapterCopyWi
   factory _$LearnChapterCopyWith(_LearnChapter value, $Res Function(_LearnChapter) _then) = __$LearnChapterCopyWithImpl;
 @override @useResult
 $Res call({
- String type, String name, List<String> units
+ String name, List<String> units
 });
 
 
@@ -145,10 +143,9 @@ class __$LearnChapterCopyWithImpl<$Res>
 
 /// Create a copy of LearnChapter
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? name = null,Object? units = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? units = null,}) {
   return _then(_LearnChapter(
-type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,units: null == units ? _self._units : units // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
