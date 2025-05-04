@@ -41,7 +41,8 @@ sealed class PracticePageState with _$PracticePageState {
     required PracticePageStatus status,
     required int chapterIndex,
     required Lesson lesson,
-    required List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> questions,
+    required List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})>
+    questions,
     required int questionIndex,
     required double progress,
     required int mistakes,

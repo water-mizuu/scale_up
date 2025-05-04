@@ -174,14 +174,14 @@ $LessonCopyWith<$Res>? get lesson {
 
 
 class LoadedPracticePageState extends PracticePageState {
-  const LoadedPracticePageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> questions, required this.questionIndex, required this.progress, required this.mistakes, required this.startDateTime, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
+  const LoadedPracticePageState({required this.status, required this.chapterIndex, required this.lesson, required final  List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})> questions, required this.questionIndex, required this.progress, required this.mistakes, required this.startDateTime, this.answer, this.correctAnswer, this.error}): _questions = questions,super._();
   
 
 @override final  PracticePageStatus status;
 @override final  int chapterIndex;
 @override final  Lesson lesson;
- final  List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> _questions;
- List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> get questions {
+ final  List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})> _questions;
+ List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})> get questions {
   if (_questions is EqualUnmodifiableListView) return _questions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_questions);
@@ -225,7 +225,7 @@ abstract mixin class $LoadedPracticePageStateCopyWith<$Res> implements $Practice
   factory $LoadedPracticePageStateCopyWith(LoadedPracticePageState value, $Res Function(LoadedPracticePageState) _then) = _$LoadedPracticePageStateCopyWithImpl;
 @override @useResult
 $Res call({
- PracticePageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)> questions, int questionIndex, double progress, int mistakes, DateTime startDateTime, double? answer, String? correctAnswer, Object? error
+ PracticePageStatus status, int chapterIndex, Lesson lesson, List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})> questions, int questionIndex, double progress, int mistakes, DateTime startDateTime, double? answer, String? correctAnswer, Object? error
 });
 
 
@@ -248,7 +248,7 @@ status: null == status ? _self.status : status // ignore: cast_nullable_to_non_n
 as PracticePageStatus,chapterIndex: null == chapterIndex ? _self.chapterIndex : chapterIndex // ignore: cast_nullable_to_non_nullable
 as int,lesson: null == lesson ? _self.lesson : lesson // ignore: cast_nullable_to_non_nullable
 as Lesson,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
+as List<(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})>,questionIndex: null == questionIndex ? _self.questionIndex : questionIndex // ignore: cast_nullable_to_non_nullable
 as int,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,mistakes: null == mistakes ? _self.mistakes : mistakes // ignore: cast_nullable_to_non_nullable
 as int,startDateTime: null == startDateTime ? _self.startDateTime : startDateTime // ignore: cast_nullable_to_non_nullable

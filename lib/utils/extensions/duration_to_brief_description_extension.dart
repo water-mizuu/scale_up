@@ -1,5 +1,9 @@
 extension DurationToBriefDescriptionExtension on Duration {
   (int quantity, String unit) get description {
+    if (inHours ~/ 24 case var days && > 0) {
+      return (days, "days");
+    }
+
     if (inHours case var hours && > 0) {
       return (hours, "hr");
     }

@@ -1,20 +1,43 @@
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/fade_slide_in.dart";
 
 class FloatingCardWithHint extends StatelessWidget {
-  const FloatingCardWithHint({super.key, required this.hint, required this.child});
+  const FloatingCardWithHint({
+    super.key,
+    required this.hint,
+    required this.child,
+    required this.isRetry,
+  });
 
   final String hint;
   final Widget child;
+  final bool isRetry;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 4.0,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [Styles.hint(hint), Flexible(child: FloatingCard(child: child))],
+    return IntrinsicWidth(
+      child: Column(
+        spacing: 4.0,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Styles.hint(hint),
+              if (isRetry)
+                Styles.hint(
+                  "Another Try!",
+                  color: Colors.redAccent,
+                ).animate().then(delay: 1000.ms).slideFadeIn(),
+            ],
+          ),
+          Flexible(child: FloatingCard(child: child)),
+        ],
+      ),
     );
   }
 }

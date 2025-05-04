@@ -105,8 +105,8 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     }
 
     questions
-      ..addAll(indirectQuestions)
-      ..addAll(directQuestions);
+      ..addAll(directQuestions)
+      ..addAll(indirectQuestions);
 
     return questions;
   }
@@ -166,7 +166,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         }
 
         var questions = loadedState.questions;
-        var removed = questions[loadedState.questionIndex];
+        var removed = questions[loadedState.questionIndex].copyWith(isRetry: true);
         var newQuestions = questions.followedBy([removed]).toList();
 
         /// PROBLEM:

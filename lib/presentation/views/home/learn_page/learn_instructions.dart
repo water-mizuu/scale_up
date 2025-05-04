@@ -55,6 +55,7 @@ class PlainLearnInstructions extends HookWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 24.0),
       child: _AnimatedQuestionPanel(
+        isRetry: false,
         hint: "Read the lesson:",
         child: SingleChildScrollView(
           controller: scrollController,
@@ -76,9 +77,10 @@ class DirectFormulaInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var DirectFormulaLearnQuestion(:from, :to, :answer) = currentQuestion;
+    var DirectFormulaLearnQuestion(:from, :to, :answer, :isRetry) = currentQuestion;
 
     return _AnimatedQuestionPanel(
+      isRetry: isRetry,
       child: Wrap(
         alignment: WrapAlignment.center,
         runAlignment: WrapAlignment.center,
@@ -139,9 +141,10 @@ class ImportantNumbersInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var ImportantNumbersLearnQuestion(:from, :to, :answer) = currentQuestion;
+    var ImportantNumbersLearnQuestion(:from, :to, :answer, :isRetry) = currentQuestion;
 
     return _AnimatedQuestionPanel(
+      isRetry: isRetry,
       child: Wrap(
         alignment: WrapAlignment.center,
         runAlignment: WrapAlignment.center,
@@ -201,11 +204,12 @@ class IndirectStepsQuestionPanel extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var IndirectStepsLearnQuestion(:from, :to, :steps) = useSelect(
+    var IndirectStepsLearnQuestion(:from, :to, :steps, :isRetry) = useSelect(
       (IndirectStepsCubit c) => c.activeState.question,
     );
 
     return _AnimatedQuestionPanel(
+      isRetry: isRetry,
       child: Wrap(
         alignment: WrapAlignment.center,
         runAlignment: WrapAlignment.center,
@@ -383,14 +387,19 @@ class IndirectStepsToolTipContent extends StatelessWidget {
 }
 
 class _AnimatedQuestionPanel extends StatelessWidget {
-  const _AnimatedQuestionPanel({required this.child, this.hint = "Answer the question: "});
+  const _AnimatedQuestionPanel({
+    required this.child,
+    required this.isRetry,
+    this.hint = "Answer the question: ",
+  });
 
   final Widget child;
   final String hint;
+  final bool isRetry;
 
   @override
   Widget build(BuildContext context) {
-    var widget = FloatingCardWithHint(hint: hint, child: child);
+    var widget = FloatingCardWithHint(hint: hint, isRetry: isRetry, child: child);
 
     return widget
         .animate(

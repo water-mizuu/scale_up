@@ -1,4 +1,3 @@
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -47,16 +46,7 @@ class LessonProgression extends StatelessWidget {
                     color: color,
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: Icon(
-                    () {
-                      if (kDebugMode) {
-                        print((icon: icon));
-                      }
-                      return stringToIcon[icon]!;
-                    }(),
-                    color: Colors.white,
-                    size: 32.0,
-                  ),
+                  child: Icon(stringToIcon[icon]!, color: Colors.white, size: 32.0),
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(

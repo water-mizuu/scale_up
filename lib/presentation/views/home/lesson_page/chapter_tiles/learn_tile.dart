@@ -7,8 +7,10 @@ import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/leading_chapter_index.dart";
-import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/trailing_chapter_index.dart";
+import "package:scale_up/presentation/views/home/lesson_page/"
+    "chapter_tiles/leading_chapter_index.dart";
+import "package:scale_up/presentation/views/home/lesson_page/"
+    "chapter_tiles/trailing_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/border_color_extension.dart";
@@ -61,7 +63,11 @@ class LearnTile extends StatelessWidget {
             isNext: isNext,
             color: lesson.color,
           ),
-          title: Styles.body(chapter.name, fontSize: 14),
+          title: Styles.body(
+            chapter.name,
+            fontSize: 14,
+            color: (isComplete || isNext) ? Colors.black : Colors.grey,
+          ),
           onTap: () async {
             HapticFeedback.selectionClick();
 

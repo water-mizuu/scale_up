@@ -8,9 +8,12 @@ import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/forgot_password_page/forgot_password_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
-import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_button.dart";
-import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_image_container.dart";
-import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_page_header.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page/"
+    "forgot_password_button.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page/"
+    "forgot_password_image_container.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page/"
+    "forgot_password_page_header.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class ForgotPasswordPage extends HookWidget {

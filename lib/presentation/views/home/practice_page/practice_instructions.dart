@@ -17,9 +17,10 @@ class PracticeInstructions extends StatelessWidget {
     var chapterPageBloc = context.read<PracticePageBloc>();
     var state = chapterPageBloc.state as LoadedPracticePageState;
     var LoadedPracticePageState(:questions, :questionIndex) = state;
-    var (left, right, number, steps) = questions[questionIndex];
+    var (left, right, number, steps, :isRetry) = questions[questionIndex];
 
     var widget = FloatingCardWithHint(
+      isRetry: isRetry,
       hint: "Do the computation:",
       child: Column(
         mainAxisSize: MainAxisSize.min,

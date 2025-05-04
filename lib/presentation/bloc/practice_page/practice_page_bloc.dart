@@ -60,7 +60,8 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
         if (unit != null) unit.id: unit,
     };
 
-    var unitPairs = <(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>)>[];
+    var unitPairs =
+        <(Unit, Unit, num, List<((Unit, Unit), NumericalExpression)>, {bool isRetry})>[];
     for (var i = 0; i < chapter.questionCount; ++i) {
       Unit fromUnit, toUnit;
       int randomNumber;
@@ -75,7 +76,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
       } while (conversions.length > 3);
 
       randomNumber = Random().nextInt(100) + 20;
-      unitPairs.add((fromUnit, toUnit, randomNumber, conversions));
+      unitPairs.add((fromUnit, toUnit, randomNumber, conversions, isRetry: false));
     }
 
     add(PracticePageLessonLoaded(lesson: lesson, questions: unitPairs));
@@ -133,7 +134,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     emit(loadedState.copyWith(status: PracticePageStatus.evaluating));
     await Future.delayed(Duration.zero);
 
-    var (_, _, fromNum, exprs) = loadedState.questions[loadedState.questionIndex];
+    var (_, _, fromNum, exprs, isRetry: _) = loadedState.questions[loadedState.questionIndex];
     var correctAnswer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsPrecision(4);
     var userAnswer = loadedState.answer?.toStringAsPrecision(4);
 
@@ -146,8 +147,8 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     }
 
     var questions = loadedState.questions;
-    var removed = questions[loadedState.questionIndex];
-    var newQuestions = questions.followedBy([removed]).toList();
+    var (from, to, _, _, isRetry: _) = questions[loadedState.questionIndex];
+    var newQuestions = questions.followedBy([(from, to, fromNum, exprs, isRetry: true)]).toList();
 
     emit(
       loadedState.copyWith(

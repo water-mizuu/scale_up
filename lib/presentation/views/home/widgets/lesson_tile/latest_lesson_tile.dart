@@ -1,4 +1,3 @@
-import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart";
@@ -113,27 +112,7 @@ class LatestLessonTile extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    Positioned(
-                      bottom: 0.0,
-                      right: 0.0,
-                      child: Transform.translate(
-                        offset: Offset(32, 12),
-                        child: Icon(
-                          () {
-                            if (kDebugMode) {
-                              print((icon: icon));
-                            }
-                            return stringToIcon[icon]!;
-                          }(),
-                          color:
-                              lesson.hslColor
-                                  .withLightness(lesson.hslColor.lightness * 0.90)
-                                  .withSaturation(lesson.hslColor.saturation * 0.8)
-                                  .toColor(),
-                          size: 128.0,
-                        ),
-                      ),
-                    ),
+                    TileBackgroundIcon(icon: icon, lesson: lesson),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -153,7 +132,7 @@ class LatestLessonTile extends StatelessWidget {
 
                             if (lastStudied?.description case (var amount, var unit))
                               Text(
-                                "$amount $unit",
+                                "$amount $unit ago",
                                 style: TextStyle(fontSize: 12, color: foreground),
                               ),
                           ],
@@ -193,6 +172,33 @@ class LatestLessonTile extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TileBackgroundIcon extends StatelessWidget {
+  const TileBackgroundIcon({super.key, required this.icon, required this.lesson});
+
+  final String icon;
+  final Lesson lesson;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 0.0,
+      right: 0.0,
+      child: Transform.translate(
+        offset: Offset(32, 12),
+        child: Icon(
+          stringToIcon[icon]!,
+          color:
+              lesson.hslColor
+                  .withLightness(lesson.hslColor.lightness * 0.90)
+                  .withSaturation(lesson.hslColor.saturation * 0.8)
+                  .toColor(),
+          size: 128.0,
         ),
       ),
     );

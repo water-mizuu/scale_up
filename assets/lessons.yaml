@@ -90,35 +90,6 @@ templates:
           - "Don’t worry if it seems complex at first—each step builds on familiar conversions."
           - "Soon, you’ll be able to map any conversion path without hesitation."
 
-hints:
-  - "You can click on the underlined text to view hints on each question!"
-  - "While not recommended, you can learn locked chapters by clicking on them."
-  - "Quick refresher: 1 mile ≈ 1 609 meters."
-  - "Remember: 1 kg = 1 000 g and 1 g = 0.001 kg."
-  - "Did you know? 1 liter of water has a mass of about 1 kg."
-  - "Area shortcut: 1 km² = 1 000 000 m² (that’s a million!)."
-  - "Temp tip: °F = (°C × 1.8) + 32. Try it: 20 °C → ? °F."
-  - "Metric prefixes matter: kilo- is 10³, centi- is 10⁻², milli- is 10⁻³."
-  - "Volume check: 1 m³ = 1 000 L."
-  - "Energy fact: 1 BTU ≈ 1 055 J (joules)."
-  - "Pro tip: Round to two significant figures for a quick estimate."
-  - "Offline insight: All conversion factors are built in—no Internet needed!"
-  - "Speed hack: Group similar units—convert mm→cm→m in one go."
-  - "Heat energy refresher: 1 cal ≈ 4.184 J."
-  - "Fun challenge: How many square meters are in 5 acres? (Hint: 1 ac ≈ 4 047 m²)"
-  - "Accuracy matters: Double-check your decimal point—it can shift your result by 1 000×!"
-  - "Conversion memory: 1 inch = 2.54 cm (keep this one handy!)."
-  - "Volume relation: 1 US gallon ≈ 3.785 liters."
-  - "Mass equivalence: 1 pound (lb) ≈ 0.4536 kg."
-  - "Temperature trick: To go from °F to °C: (°F - 32) × 5/9."
-  - "Area conversion: 1 hectare = 10 000 m²."
-  - "Energy insight: 1 kWh = 3.6 million joules."
-  - "Length ladder: 1 mm → 1 cm → 1 m → 1 km—move the decimal 3 places each step."
-  - "Mass milestone: 1 ton (metric) = 1 000 kg."
-  - "Volume variety: 1 tablespoon ≈ 15 mL."
-  - "Quick fact: 1 cubic centimeter (1 cm³) = 1 milliliter (1 mL)."
-  - "Did you know? Kelvin is considered a ratio scale, while Celsius is not."
-
 units_present:
   - type: length
     conversions:
@@ -208,6 +179,9 @@ units_present:
       - from: feet_cubed
         to: liter
         formula: from / 35.3147
+      - from: centimeter_cubed
+        to: milliliter
+        formula: from
     units:
       - id: liter
         shortcut: L
@@ -325,7 +299,7 @@ lessons:
   - id: length
     category: Tangible Measurements
     name: Length
-    icon: straight_ruler
+    icon: straighten
     description: Measure the span between two points in space.
     units_type: length
     color: "#1f77b4"
@@ -396,7 +370,7 @@ lessons:
   - id: area
     category: Tangible Measurements
     name: Area
-    icon: square_foot
+    icon: map
     description: Measure two-dimensional surfaces.
     units_type: area
     color: "#ff7f0e"
@@ -453,7 +427,7 @@ lessons:
   - id: volume
     category: Tangible Measurements
     name: Volume
-    icon: beaker
+    icon: water_drop
     description: Measure three-dimensional capacity.
     units_type: volume
     color: "#2ca02c"
@@ -519,7 +493,7 @@ lessons:
   - id: mass
     category: Tangible Measurements
     name: Mass
-    icon: balance_scale
+    icon: scale
     description: Measure the amount of matter.
     units_type: mass
     color: "#d62728"
@@ -573,7 +547,7 @@ lessons:
   - id: temperature
     category: Thermodynamic Measurements
     name: Temperature
-    icon: thermometer
+    icon: thermostat
     description: Measure thermal intensity on various scales.
     units_type: temperature
     color: "#9467bd"
@@ -628,7 +602,7 @@ lessons:
   - id: time
     category: Temporal Measurements
     name: Time
-    icon: clock
+    icon: timer
     description: Measure spans of duration.
     units_type: time
     color: "#8c564b"
@@ -687,7 +661,7 @@ lessons:
   - id: heat_energy
     category: Energy Measurements
     name: Heat & Energy
-    icon: fire
+    icon: local_fire_department
     description: Measure thermal energy content.
     units_type: heat_energy
     color: "#e377c2"
