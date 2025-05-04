@@ -59,6 +59,7 @@ dependencies:
   markdown_widget: ^2.3.2+8
   flutter_math_fork: ^0.7.3
   markdown: ^7.3.0
+  audioplayers: ^6.4.0
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/audio/
     - assets/logos/google.png
     - assets/illustrations/
     - assets/illustrations/topic.png

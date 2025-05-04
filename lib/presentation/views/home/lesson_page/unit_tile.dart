@@ -6,7 +6,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/title_case_extension.dart";
 import "package:scale_up/utils/widgets/tool_tip.dart";
 
@@ -39,7 +39,7 @@ class UnitTile extends StatelessWidget {
         /// This material widget makes sure that the ink doesn't overflow
         ///   through clipping like in scroll views.
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -103,7 +103,7 @@ class UnitToolTip extends StatelessWidget {
                       Column(
                         children: [
                           for (var conversion in unitGroup.conversions)
-                            if (conversion.from == unit.id) Text("="),
+                            if (conversion.from == unit.id) const Text("="),
                         ],
                       ),
                       Column(

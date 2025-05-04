@@ -4,7 +4,7 @@ part "signup_page_event.dart";
 part "signup_page_state.dart";
 
 class SignupPageBloc extends Bloc<SignupPageEvent, SignupPageState> {
-  SignupPageBloc() : super(SignupPageState()) {
+  SignupPageBloc() : super(const SignupPageState()) {
     on<SignupPageUsernameChanged>(_onUsernameChanged);
     on<SignupPagePasswordChanged>(_onPasswordChanged);
     on<SignUpPageConfirmPasswordChanged>(_onConfirmPasswordChanged);

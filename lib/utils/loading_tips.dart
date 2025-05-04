@@ -10,7 +10,6 @@ const loadingTips = [
   "Volume check: 1 m³ = 1 000 L.",
   "Energy fact: 1 BTU ≈ 1 055 J (joules).",
   "Pro tip: Round to two significant figures for a quick estimate.",
-  "Offline insight: All conversion factors are built in—no Internet needed!",
   "Speed hack: Group similar units—convert mm→cm→m in one go.",
   "Heat energy refresher: 1 cal ≈ 4.184 J.",
   "Fun challenge: How many square meters are in 5 acres? (Hint: 1 ac ≈ 4 047 m²)",

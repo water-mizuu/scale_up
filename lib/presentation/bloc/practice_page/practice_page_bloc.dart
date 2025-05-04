@@ -8,6 +8,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
+import "package:scale_up/utils/sound_player.dart";
 
 class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   PracticePageBloc({
@@ -46,7 +47,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
   Future<void> _initializeLesson() async {
     var lesson = state.lesson;
     if (lesson == null) {
-      add(PracticePageLessonLoadFailure("Lesson not found"));
+      add(const PracticePageLessonLoadFailure("Lesson not found"));
       return;
     }
 
@@ -134,30 +135,32 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     emit(loadedState.copyWith(status: PracticePageStatus.evaluating));
     await Future.delayed(Duration.zero);
 
-    var (_, _, fromNum, exprs, isRetry: _) = loadedState.questions[loadedState.questionIndex];
+    var (from, to, fromNum, exprs, isRetry: _) = loadedState.questions[loadedState.questionIndex];
     var correctAnswer = exprs.map((p) => p.$2).toList().evaluate(fromNum).toStringAsPrecision(4);
     var userAnswer = loadedState.answer?.toStringAsPrecision(4);
 
     if (userAnswer == correctAnswer) {
+      playCorrect();
+
       emit(
         loadedState.copyWith(status: PracticePageStatus.correct, correctAnswer: correctAnswer),
       );
+    } else {
+      playIncorrect();
 
-      return;
+      var questions = loadedState.questions;
+      var mistaken = (from, to, fromNum, exprs, isRetry: true);
+      var newQuestions = questions.followedBy([mistaken]).toList();
+
+      emit(
+        loadedState.copyWith(
+          status: PracticePageStatus.incorrect,
+          correctAnswer: correctAnswer,
+          questions: newQuestions,
+          mistakes: loadedState.mistakes + 1,
+        ),
+      );
     }
-
-    var questions = loadedState.questions;
-    var (from, to, _, _, isRetry: _) = questions[loadedState.questionIndex];
-    var newQuestions = questions.followedBy([(from, to, fromNum, exprs, isRetry: true)]).toList();
-
-    emit(
-      loadedState.copyWith(
-        status: PracticePageStatus.incorrect,
-        correctAnswer: correctAnswer,
-        questions: newQuestions,
-        mistakes: loadedState.mistakes + 1,
-      ),
-    );
   }
 
   Future<void> _onNextQuestionClicked(

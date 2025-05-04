@@ -103,7 +103,7 @@ sealed class NumericalExpression {
         /// This case occurs when the variable is on the left.
         /// lhs = x^a
         case PowerExpression() when isLeftHoldingVariable:
-          lhs = PowerExpression(lhs, DivisionExpression(ConstantExpression(1), right));
+          lhs = PowerExpression(lhs, DivisionExpression(const ConstantExpression(1), right));
           rhs = left;
 
         /// This case occurs when the variable is on the right.
@@ -122,7 +122,7 @@ sealed class NumericalExpression {
         /// (e^(ln a))^(1 / lhs) = x
         /// a^(1 / lhs)          = x
         case LogarithmExpression() when isLeftHoldingVariable:
-          lhs = PowerExpression(right, DivisionExpression(ConstantExpression(1), left));
+          lhs = PowerExpression(right, DivisionExpression(const ConstantExpression(1), left));
           rhs = left;
 
         /// This occurs when the variable is on the right (it is the power.)

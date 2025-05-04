@@ -13,7 +13,7 @@ import "package:scale_up/presentation/views/home/lesson_page/"
     "chapter_tiles/trailing_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class LearnTile extends StatelessWidget {
@@ -36,11 +36,11 @@ class LearnTile extends StatelessWidget {
             ? context.read<LessonPageCubit>().state.lesson.learnChapters[chapterIndex - 1]
             : null;
 
-    late var isPreviousComplete = context
-        .read<UserDataBloc>() //
-        .state
-        .finishedChapters
-        .containsKey(ChapterType.learn.stringify(lessonId, chapterIndex - 1));
+    var isPreviousComplete = context.select((UserDataBloc b) {
+      return b.state.finishedChapters.containsKey(
+        ChapterType.learn.stringify(lessonId, chapterIndex - 1),
+      );
+    });
 
     var isNext = previousChapter == null ? true : isPreviousComplete;
 

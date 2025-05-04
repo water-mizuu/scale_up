@@ -9,54 +9,48 @@ class ForgotPasswordButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = context.select((ForgotPasswordBloc b) => b.state);
+    var isProcessing = state is SendingForgotPasswordState;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FilledButton(
           onPressed: () {
-            var isProcessing = state is SendingForgotPasswordState;
+            if (isProcessing) return null;
 
-            if (isProcessing) {
-              return null;
-            }
-
-            return () async {
-              // if (state is! InitialForgotPasswordState) {
-              //   return;
-              // }
-
-              context.read<ForgotPasswordBloc>().add(ForgotPasswordSubmitting());
-
-              // context.read<AuthenticationBloc>().add(
-              //   PasswordResetAuthenticationEvent(email: state.email),
-              // );
-
-              /// Validate the form.
-
-              // if (context.read<GlobalKey<FormState>>().currentState?.validate() == true) {
-              //   var SignupPageState(:username, :email, :password, :passwordStrength) =
-              //       context.read<SignupPageBloc>().state;
-
-              //   if (!context.mounted) return;
-
-              //   var event = EmailSignUpAuthenticationEvent(
-              //     username: username,
-              //     email: email,
-              //     password: password,
-              //   );
-
-              //   context.read<AuthenticationBloc>().add(event);
-              // }
+            return () {
+              context.read<ForgotPasswordBloc>().add(const ForgotPasswordSubmitting());
             };
           }(),
           child: Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text("Send an email", style: TextStyle(fontSize: 16.0)),
+            padding: const EdgeInsets.all(12.0),
+            child: Builder(
+              builder: (context) {
+                if (isProcessing) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          strokeWidth: 2.0,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text("Sending Email...", style: TextStyle(fontSize: 16.0)),
+                    ],
+                  );
+                } else {
+                  return const Text("Send Reset Link", style: TextStyle(fontSize: 16.0));
+                }
+              },
+            ),
           ),
         ),
         const SizedBox(height: 16.0),
-        TextButton(child: Text("Back to Login"), onPressed: () => context.pop()),
+        TextButton(child: const Text("Back to Login"), onPressed: () => context.pop()),
       ],
     );
   }

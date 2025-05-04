@@ -5,7 +5,7 @@ class SignUpPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return const Text(
       "Create an account",
       style: TextStyle(fontSize: 20.0),
       textAlign: TextAlign.center,

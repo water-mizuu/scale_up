@@ -9,7 +9,7 @@ class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({required UserDataState state, required LessonsHelper lessonsHelper})
     : _lessonsHelper = lessonsHelper,
       super(
-        HomePageState(
+        const HomePageState(
           lastLessonReviewed: null,
           ongoingLessons: [],
           newLessons: [],

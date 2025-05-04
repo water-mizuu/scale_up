@@ -12,27 +12,49 @@ class SignInButton extends StatelessWidget {
     late var globalKey = context.read<GlobalKey<FormState>>();
     late var signInPageBloc = context.read<SignInPageBloc>();
 
+    final isProcessing = authenticationBloc.state.status == AuthenticationStatus.signingIn;
+
     return Row(
       children: [
         Expanded(
           child: FilledButton(
-            onPressed:
-                (authenticationBloc.state.status != AuthenticationStatus.signingIn)
-                    ? () {
-                      if (globalKey.currentState?.validate() == true) {
-                        var SignInPageState(:email, :password) = signInPageBloc.state;
-                        var event = EmailSignInAuthenticationEvent(
-                          email: email,
-                          password: password,
-                        );
+            onPressed: () {
+              if (isProcessing) return null;
 
-                        authenticationBloc.add(event);
-                      }
-                    }
-                    : null,
+              return () {
+                if (globalKey.currentState?.validate() == true) {
+                  var SignInPageState(:email, :password) = signInPageBloc.state;
+                  var event = EmailSignInAuthenticationEvent(email: email, password: password);
+
+                  authenticationBloc.add(event);
+                }
+              };
+            }(),
             child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text("Login", style: TextStyle(fontSize: 16.0)),
+              padding: const EdgeInsets.all(12.0),
+              child: Builder(
+                builder: (context) {
+                  if (isProcessing) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            strokeWidth: 2.0,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text("Logging In", style: TextStyle(fontSize: 16.0)),
+                      ],
+                    );
+                  } else {
+                    return const Text("Login", style: TextStyle(fontSize: 16.0));
+                  }
+                },
+              ),
             ),
           ),
         ),

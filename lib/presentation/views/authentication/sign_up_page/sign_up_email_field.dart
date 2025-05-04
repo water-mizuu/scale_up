@@ -11,7 +11,7 @@ class SignUpEmailField extends StatelessWidget with SignupPageValidator {
     return TextFormField(
       validator: validateEmail,
       onChanged: (v) => context.read<SignupPageBloc>().add(SignupPageEmailChanged(v)),
-      decoration: InputDecoration(border: OutlineInputBorder(), label: Text("Email")),
+      decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Email")),
     );
   }
 }

@@ -129,14 +129,14 @@ class LearnPage extends HookWidget {
           await transitionInAnimation.forward(from: 0.0);
           if (learnPageBloc.isClosed) return;
 
-          learnPageBloc.add(LearnPageMovingInComplete());
+          learnPageBloc.add(const LearnPageMovingInComplete());
         } else if (state.status == LearnPageStatus.movingAway) {
           /// Just instantly hide the message.
           messageAnimation.reset();
           await transitionOutAnimation.forward(from: 0.0);
           if (learnPageBloc.isClosed) return;
 
-          learnPageBloc.add(LearnPageMovingAwayComplete());
+          learnPageBloc.add(const LearnPageMovingAwayComplete());
         }
       },
       listenWhen: (p, c) {
@@ -227,7 +227,7 @@ class LearnPage extends HookWidget {
         cancelButtonText: "Return",
         confirmButtonText: "Quit",
         cancelButtonColor: bloc.loadedState.lesson.color,
-        confirmButtonColor: Color(0xFFC63A3A),
+        confirmButtonColor: const Color(0xFFC63A3A),
       );
     }
 
@@ -309,7 +309,7 @@ class IndirectStepsLearnPage extends HookWidget {
         if (allUnits.length == question.answer.length) {
           learnPageBloc.add(LearnPageAnswerUpdated.indirectSteps(answer: allUnits));
         } else {
-          learnPageBloc.add(LearnPageAnswerUpdated.indirectSteps(answer: null));
+          learnPageBloc.add(const LearnPageAnswerUpdated.indirectSteps(answer: null));
         }
       },
       listenWhen: (p, c) {
@@ -350,8 +350,8 @@ class LearnPageView extends HookWidget {
         else ...[
           Positioned.fill(child: LearnBody(progressBarKey: progressBarKey)),
 
-          Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
-          Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
         ],
       ],
     );

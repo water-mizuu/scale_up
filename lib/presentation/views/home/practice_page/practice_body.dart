@@ -15,13 +15,13 @@ class PracticeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PracticeTopRow(progressBarKey: progressBarKey),
-          PracticeInstructions(),
+          const PracticeInstructions(),
           Column(
             spacing: 24.0,
             crossAxisAlignment: CrossAxisAlignment.stretch,

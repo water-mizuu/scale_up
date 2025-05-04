@@ -8,8 +8,8 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/duration_to_brief_description_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/title_case_extension.dart";
 import "package:scale_up/utils/string_to_icon.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
@@ -100,7 +100,7 @@ class LatestLessonTile extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: IgnorePointer(
               child: Container(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [background, background.withValues(alpha: 0.8)],
@@ -156,11 +156,11 @@ class LatestLessonTile extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.play_arrow_outlined),
-                              const Text("Continue Learning"),
+                              Text("Continue Learning"),
                             ],
                           ),
                           onPressed: () => _goToLesson(context),
@@ -190,7 +190,7 @@ class TileBackgroundIcon extends StatelessWidget {
       bottom: 0.0,
       right: 0.0,
       child: Transform.translate(
-        offset: Offset(32, 12),
+        offset: const Offset(32, 12),
         child: Icon(
           stringToIcon[icon]!,
           color:

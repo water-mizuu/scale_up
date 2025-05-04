@@ -5,6 +5,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:markdown_widget/widget/markdown.dart";
 import "package:scale_up/presentation/bloc/context_dialog/context_dialog_cubit.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/unindent_extension.dart";
 
 class ContextDialogWidget extends StatefulWidget {
@@ -44,11 +45,18 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
     var state = cubit.state;
     var dialog = switch (state) {
       ShowConfirmationDialog() => Container(
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(4.0),
-          border: Border.all(color: Colors.grey),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Colors.white.borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10.0,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,40 +64,39 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
             MarkdownWidget(
               data:
                   """
-                  ## ${state.title}
+                  ### ${state.title}
 
                   ${state.message}
                   """.unindent(),
               shrinkWrap: true,
               padding: EdgeInsets.zero,
             ),
-            const SizedBox(height: 12.0),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 16.0),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: state.cancelButtonColor),
+              style: FilledButton.styleFrom(
+                backgroundColor: state.cancelButtonColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
               onPressed: state.onCancelPressed,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  state.cancelButtonText,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                ),
+              child: Text(
+                state.cancelButtonText,
+                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
               ),
             ),
-            const SizedBox(height: 4.0),
-            Center(
-              child: TextButton(
-                onPressed: state.onConfirmPressed,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    state.confirmButtonText,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w700,
-                      color: state.confirmButtonColor,
-                    ),
-                  ),
+            const SizedBox(height: 8.0),
+            TextButton(
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
+              onPressed: state.onConfirmPressed,
+              child: Text(
+                state.confirmButtonText,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                  color: state.confirmButtonColor,
                 ),
               ),
             ),
@@ -97,11 +104,18 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
         ),
       ),
       ShowInfoDialog() => Container(
-        padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(4.0),
-          border: Border.all(color: Colors.grey),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: Colors.white.borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10.0,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -109,23 +123,24 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
             MarkdownWidget(
               data:
                   """
-                  ## ${state.title}
+                  ### ${state.title}
 
                   ${state.message}
                   """.unindent(),
               shrinkWrap: true,
               padding: EdgeInsets.zero,
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 16.0),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: state.buttonColor),
+              style: FilledButton.styleFrom(
+                backgroundColor: state.buttonColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+              ),
               onPressed: state.onPressed,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  state.buttonText,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                ),
+              child: Text(
+                state.buttonText,
+                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -137,7 +152,7 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
     if (dialog != null) {
       dialog = dialog
           .animate() //
-          .slideY(duration: 250.ms, begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
+          .slideY(duration: 250.ms, begin: 1.0, end: 0.0, curve: Curves.easeOutQuad);
     }
 
     return BlocProvider.value(
@@ -151,7 +166,7 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
               Positioned.fill(
                 child: GestureDetector(
                   onTap: () => cubit.cancelDialogs(),
-                  child: ColoredBox(color: Colors.transparent),
+                  child: const ColoredBox(color: Colors.transparent),
                 ),
               ),
 

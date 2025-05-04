@@ -15,7 +15,7 @@ class TrailingChapterIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isCompleted) {
-      return Icon(Icons.arrow_forward_ios_sharp, size: 12.0);
+      return const Icon(Icons.arrow_forward_ios_sharp, size: 12.0);
     }
 
     return Padding(
@@ -29,13 +29,13 @@ class TrailingChapterIndex extends StatelessWidget {
         child: Builder(
           builder: (_) {
             if (isNext) {
-              return Text(
+              return const Text(
                 "Start",
                 style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white),
               );
             }
 
-            return Text("Locked", style: TextStyle(fontWeight: FontWeight.w400));
+            return const Text("Locked", style: TextStyle(fontWeight: FontWeight.w400));
           },
         ),
       ),

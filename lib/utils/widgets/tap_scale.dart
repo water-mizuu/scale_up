@@ -18,7 +18,7 @@ class _TapScaleState extends SingleChildState<TapScale> with SingleTickerProvide
     super.initState();
 
     animationController = AnimationController(vsync: this, duration: 300.ms);
-    scaleAnimation = AlwaysStoppedAnimation(1.0);
+    scaleAnimation = const AlwaysStoppedAnimation(1.0);
   }
 
   @override

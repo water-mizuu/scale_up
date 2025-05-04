@@ -16,7 +16,7 @@ class SignUpHyperlinkButton extends StatelessWidget {
             text: "Don't have an account?",
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          WidgetSpan(child: SizedBox(width: 8.0)),
+          const WidgetSpan(child: SizedBox(width: 8.0)),
           TextSpan(
             text: "Sign Up",
             style: TextStyle(color: Theme.of(context).colorScheme.primary),

@@ -27,8 +27,8 @@ class _SignInPasswordFieldState extends State<SignInPasswordField> with SignInPa
             });
           },
         ),
-        border: OutlineInputBorder(),
-        label: Text("Password"),
+        border: const OutlineInputBorder(),
+        label: const Text("Password"),
       ),
     );
   }

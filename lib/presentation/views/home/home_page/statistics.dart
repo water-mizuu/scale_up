@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/home_page/home_page_cubit.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/duration_to_brief_description_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class Statistics extends StatelessWidget {
   const Statistics({super.key});
@@ -16,13 +16,13 @@ class Statistics extends StatelessWidget {
         Styles.subtitle("Your Overall Performance", fontWeight: FontWeight.w600),
         const SizedBox(height: 8.0),
         Container(
-          padding: EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Colors.white.borderColor),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             spacing: 16.0,
             children: [AverageTimePerChapter(), ChaptersFinished(), AnswerAccuracyRate()],
@@ -129,7 +129,11 @@ class StatisticTile extends StatelessWidget {
             ),
           ),
         ),
-        Text(label, textAlign: TextAlign.center, style: TextStyle(height: 1.5, fontSize: 10)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(height: 1.5, fontSize: 10),
+        ),
       ],
     );
   }

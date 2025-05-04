@@ -5,7 +5,7 @@ import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.d
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 
 class IndirectStepsCubit extends Cubit<IndirectStepsState> {
-  IndirectStepsCubit() : super(IndirectStepsState.blank());
+  IndirectStepsCubit() : super(const IndirectStepsState.blank());
 
   ActiveIndirectStepsState get activeState => state as ActiveIndirectStepsState;
 

@@ -8,7 +8,11 @@ class BlankLessonPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 0.0, scrolledUnderElevation: 0.0, title: Text("Lesson page")),
+      appBar: AppBar(
+        elevation: 0.0,
+        scrolledUnderElevation: 0.0,
+        title: const Text("Lesson page"),
+      ),
       body: Center(child: Text("Lesson not found '$id'")),
     );
   }

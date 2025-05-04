@@ -20,8 +20,8 @@ class ContinueMessage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: LearnCheckButton(),
+                padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
+                child: const LearnCheckButton(),
               ),
             ],
           );

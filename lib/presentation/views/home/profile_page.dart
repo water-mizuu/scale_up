@@ -1,5 +1,6 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter/services.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:markdown_widget/markdown_widget.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
@@ -12,7 +13,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProfilePageView();
+    return const ProfilePageView();
   }
 }
 
@@ -44,75 +45,166 @@ class ProfilePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final hslColor = HSLColor.fromColor(primaryColor);
+
     return Scaffold(
       appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
-        padding: EdgeInsets.only(top: 16.0),
+        padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
         child: Column(
           spacing: 16.0,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Styles.title("Help Center", textAlign: TextAlign.left),
-            ),
-            Expanded(
-              child: InheritedProvider(
-                create: (_) => AnimatedScrollController(),
-                dispose: (_, v) => v.dispose(),
-                builder: (context, child) {
-                  return SingleChildScrollView(
-                    controller: context.read<AnimatedScrollController>(),
-                    child: child,
-                  );
-                },
-                child: Column(
-                  spacing: 8.0,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ExpansionTile(
-                      title: Text("Common Questions (FAQ)"),
-                      children: [
-                        MarkdownWidget(data: frequentlyAskedQuestions, shrinkWrap: true),
-                      ],
-                    ),
-                    ExpansionTile(
-                      title: Text("Support Details"),
-                      children: [MarkdownWidget(data: developerInformation, shrinkWrap: true)],
-                    ),
-                    ExpansionTile(
-                      title: Text("About"),
-                      children: [MarkdownWidget(data: appAbout, shrinkWrap: true)],
-                    ),
-                    ListTile(
-                      title: Text("Log out"),
-                      trailing: Icon(Icons.logout),
-                      textColor: Colors.redAccent,
-                      iconColor: Colors.redAccent,
-                      onTap: () async {
-                        HapticFeedback.selectionClick();
-
-                        var confirmation = await context.showConfirmationDialog(
-                          title: "Log out?",
-                          message: "Are you sure you want to log out?",
-                          cancelButtonText: "No",
-                          confirmButtonText: "Log out",
-                        );
-
-                        if (context.mounted && confirmation) {
-                          // Perform logout action
-                          context.read<AuthenticationBloc>().add(LogoutAuthenticationEvent());
-                        }
-                      },
-                    ),
-                    Center(child: Styles.hint("ScaleUp v0.0.1")),
-                  ],
-                ),
-              ),
-            ),
+            Styles.title("Help Center"),
+            Expanded(child: _buildContent(context, hslColor)),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildContent(BuildContext context, HSLColor hslColor) {
+    return InheritedProvider(
+      create: (_) => AnimatedScrollController(),
+      dispose: (_, v) => v.dispose(),
+      builder: (context, child) {
+        return SingleChildScrollView(
+          controller: context.read<AnimatedScrollController>(),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            spacing: 16.0,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildInfoSection(
+                context,
+                "Common Questions (FAQ)",
+                frequentlyAskedQuestions,
+                Icons.question_answer_rounded,
+                hslColor,
+              ),
+              _buildInfoSection(
+                context,
+                "Support Details",
+                developerInformation,
+                Icons.support_agent_rounded,
+                hslColor.withHue((hslColor.hue + 40) % 360),
+              ),
+              _buildInfoSection(
+                context,
+                "About",
+                appAbout,
+                Icons.info_outline_rounded,
+                hslColor.withHue((hslColor.hue + 80) % 360),
+              ),
+              _buildLogoutButton(context, hslColor),
+              Center(
+                child: Text(
+                  "ScaleUp v0.0.1",
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInfoSection(
+    BuildContext context,
+    String title,
+    String content,
+    IconData icon,
+    HSLColor color,
+  ) {
+    var widget = Container(
+      margin: const EdgeInsets.only(bottom: 12.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colors.grey.shade100),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12.0),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+            colorScheme: ColorScheme.light(primary: color.toColor(), secondary: color.toColor()),
+          ),
+          child: ExpansionTile(
+            leading: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: color.withLightness(0.95).withSaturation(0.2).toColor(),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Icon(icon, color: color.toColor()),
+            ),
+            title: Text(title, style: TextStyle(fontSize: 16.0, color: Colors.grey.shade800)),
+            childrenPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            children: [
+              MarkdownWidget(
+                data: content,
+                shrinkWrap: true,
+                config: MarkdownConfig(
+                  configs: [
+                    PConfig(
+                      textStyle: TextStyle(
+                        fontSize: 14.0,
+                        height: 1.5,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return widget
+        .animate()
+        .fadeIn(duration: 200.ms, delay: 200.ms)
+        .slideY(begin: 0.2, end: 0, duration: 200.ms, delay: 200.ms, curve: Curves.easeOutQuad);
+  }
+
+  Widget _buildLogoutButton(BuildContext context, HSLColor hslColor) {
+    var widget = Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: FilledButton.icon(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.redAccent,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        ),
+        icon: const Icon(Icons.logout_rounded),
+        label: const Text("Log out", style: TextStyle(fontSize: 16.0)),
+        onPressed: () async {
+          HapticFeedback.selectionClick();
+
+          var confirmation = await context.showConfirmationDialog(
+            title: "Log out?",
+            message: "Are you sure you want to log out?",
+            cancelButtonText: "No",
+            confirmButtonText: "Log out",
+          );
+
+          if (context.mounted && confirmation) {
+            // Perform logout action
+            context.read<AuthenticationBloc>().add(const LogoutAuthenticationEvent());
+          }
+        },
+      ),
+    );
+
+    return widget
+        .animate()
+        .fadeIn(duration: 200.ms, delay: 200.ms)
+        .slideY(begin: 0.2, end: 0, duration: 200.ms, delay: 200.ms, curve: Curves.easeOutQuad);
   }
 }

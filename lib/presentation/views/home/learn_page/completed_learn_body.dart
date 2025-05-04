@@ -17,7 +17,7 @@ class CompletedLearnBody extends StatelessWidget {
     var currentChapter = chapters[state.chapterIndex];
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,7 +36,7 @@ class CompletedLearnBody extends StatelessWidget {
               ),
             ),
           ),
-          LearnCheckButton(),
+          const LearnCheckButton(),
         ],
       ),
     );

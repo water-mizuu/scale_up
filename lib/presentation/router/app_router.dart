@@ -41,7 +41,7 @@ final GoRouter router = GoRouter(
       builder: (context, state, child) => ContextDialogWidget(child: child),
       routes: [
         /// We add a blank route to have the application load this screen first.
-        GoRoute(path: AppRoutes._blank, builder: (context, state) => SplashPage()),
+        GoRoute(path: AppRoutes._blank, builder: (context, state) => const SplashPage()),
         GoRoute(
           path: "/login",
           name: AppRoutes.login,

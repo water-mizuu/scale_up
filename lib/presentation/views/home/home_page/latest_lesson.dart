@@ -31,7 +31,7 @@ class LatestLesson extends StatelessWidget {
     var helper = context.read<LessonsHelper>();
     var lesson = context.select((UserDataBloc b) => (_readLatestLesson(b, helper)));
     if (lesson == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return LatestLessonTile(lesson: lesson);

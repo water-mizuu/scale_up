@@ -13,7 +13,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataBloc({required FirestoreHelper firestoreHelper})
     : _firestoreHelper = firestoreHelper,
       super(
-        UserDataState(
+        const UserDataState(
           user: null,
           status: UserDataStatus.none,
           finishedChapters: {},

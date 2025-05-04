@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class LessonHeader extends StatelessWidget {
   const LessonHeader({super.key});

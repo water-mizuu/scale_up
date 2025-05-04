@@ -102,12 +102,12 @@ class _AppState extends State<App> {
                     if (state.user case var user?) {
                       userDataBloc.add(SignedInUserDataEvent(user: user));
                     } else {
-                      userDataBloc.add(SignedOutUserDataEvent());
+                      userDataBloc.add(const SignedOutUserDataEvent());
                     }
                   },
                 ),
               ],
-              child: AppView(),
+              child: const AppView(),
             );
           },
         );
@@ -127,7 +127,7 @@ class AppView extends StatelessWidget {
         .copyWith(surface: const Color(0xFFF7F8F9)),
       ),
 
-      scrollBehavior: MaterialScrollBehavior().copyWith(
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: PointerDeviceKind.values.toSet(),
       ),
       debugShowCheckedModeBanner: false,

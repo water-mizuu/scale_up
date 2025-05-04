@@ -7,7 +7,7 @@ class ForgotPasswordImageContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(56.0),
+        padding: const EdgeInsets.all(56.0),
         child: Image.asset("assets/illustrations/signup.png"),
       ),
     );

@@ -321,5 +321,5 @@ class ChoicesWrap extends StatelessWidget {
   }
 }
 
-final padding = EdgeInsets.all(8.0) + EdgeInsets.symmetric(horizontal: 8.0);
+final padding = const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 8.0);
 final borderRadius = BorderRadius.circular(8.0);

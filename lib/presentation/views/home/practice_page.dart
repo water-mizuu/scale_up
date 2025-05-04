@@ -65,7 +65,7 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
         cancelButtonText: "Return",
         confirmButtonText: "Quit",
         cancelButtonColor: bloc.loadedState.lesson.color,
-        confirmButtonColor: Color(0xFFC63A3A),
+        confirmButtonColor: const Color(0xFFC63A3A),
       );
     }
 
@@ -170,14 +170,14 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                       await transitionInAnimation.forward(from: 0.0);
                       if (bloc.isClosed) return;
 
-                      bloc.add(PracticePageToTransitionComplete());
+                      bloc.add(const PracticePageToTransitionComplete());
                     } else if (state.status == PracticePageStatus.movingAway) {
                       /// Just instantly hide the message.
                       messageAnimation.reset();
                       await transitionOutAnimation.forward(from: 0.0);
 
                       if (bloc.isClosed) return;
-                      bloc.add(PracticePageFromTransitionComplete());
+                      bloc.add(const PracticePageFromTransitionComplete());
                     }
                   },
                 ),
@@ -189,7 +189,7 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                     return const Material(child: Center(child: CircularProgressIndicator()));
                   }
 
-                  return PracticePageView();
+                  return const PracticePageView();
                 },
               ),
             ),
@@ -212,17 +212,19 @@ class _PracticePageViewState extends State<PracticePageView> {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.select((PracticePageBloc bloc) => bloc.state);
+    var isFinished = context.select(
+      (PracticePageBloc bloc) => bloc.state.status == PracticePageStatus.finished,
+    );
 
     return Stack(
       children: [
-        if (state.status == PracticePageStatus.finished)
+        if (isFinished)
           Positioned.fill(child: CompletedPracticeBody(progressBarKey: progressBarKey))
         else ...[
           Positioned.fill(child: PracticeBody(progressBarKey: progressBarKey)),
 
-          Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
-          Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
         ],
       ],
     );
@@ -243,8 +245,8 @@ class ContinueMessage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
-                child: PracticeCheckButton(),
+                padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
+                child: const PracticeCheckButton(),
               ),
             ],
           );
@@ -263,6 +265,7 @@ class CongratulatoryMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = context.read<PracticePageBloc>().loadedState;
+    var status = context.select((PracticePageBloc b) => b.loadedState.status);
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
@@ -275,18 +278,18 @@ class CongratulatoryMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (state.status == PracticePageStatus.correct) ...[
+                if (status == PracticePageStatus.correct) ...[
                   Styles.title("Correct!", color: Colors.green),
                   Styles.subtitle(
                     "You got it right!",
                     color: Colors.green,
                     fontWeight: FontWeight.w600,
                   ),
-                ] else if (state.status == PracticePageStatus.incorrect) ...[
+                ] else if (status == PracticePageStatus.incorrect) ...[
                   Styles.title("Oops!", color: Colors.red),
                   Text.rich(
                     TextSpan(
@@ -312,12 +315,15 @@ class CongratulatoryMessage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
             child: TickerMode(
               enabled: false,
               child: FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                ),
                 onPressed: null,
-                child: Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
                     "Check",

@@ -197,7 +197,7 @@ class LessonsHelper {
     for (var conversion in group.conversions) {
       var Conversion(:from, :to, :formula) = conversion;
 
-      var lhs = VariableExpression("from") as NumericalExpression;
+      var lhs = const VariableExpression("from") as NumericalExpression;
       var rhs = formula;
 
       conversionGraph.putIfAbsent(unitMap[from]!, Map.new)[unitMap[to]!] = rhs;

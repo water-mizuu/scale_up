@@ -10,7 +10,7 @@ class SignInEmailField extends StatelessWidget with SignInPageValidator {
     return TextFormField(
       validator: validateEmail,
       onChanged: (value) => context.read<SignInPageBloc>().add(LoginPageEmailChanged(value)),
-      decoration: InputDecoration(border: OutlineInputBorder(), label: Text("Email")),
+      decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Email")),
     );
   }
 }

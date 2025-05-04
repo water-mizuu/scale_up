@@ -15,7 +15,7 @@ void main() async {
 
   if (!kIsWeb && (Platform.isMacOS || Platform.isWindows)) {
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(
+    WindowOptions windowOptions = const WindowOptions(
       size: Size(372, 817),
       center: true,
       backgroundColor: Colors.transparent,
@@ -27,5 +27,5 @@ void main() async {
     await windowManager.focus();
   }
 
-  runApp(App());
+  runApp(const App());
 }

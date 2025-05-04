@@ -30,13 +30,16 @@ class LearnCheckButton extends StatelessWidget {
     var isPlain = state.questions[state.questionIndex] is PlainLearnQuestion;
 
     return FilledButton(
-      style: FilledButton.styleFrom(backgroundColor: buttonColor),
+      style: FilledButton.styleFrom(
+        backgroundColor: buttonColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
       onPressed: () {
         if (hasAnswered || isPlain) {
           return () {
             HapticFeedback.selectionClick();
 
-            learnPageBloc.add(LearnPageNextQuestionClicked());
+            learnPageBloc.add(const LearnPageNextQuestionClicked());
           };
         }
 
@@ -45,7 +48,7 @@ class LearnCheckButton extends StatelessWidget {
           return () {
             HapticFeedback.selectionClick();
 
-            learnPageBloc.add(LearnPageAnswerSubmitted());
+            learnPageBloc.add(const LearnPageAnswerSubmitted());
           };
         }
 
@@ -53,19 +56,19 @@ class LearnCheckButton extends StatelessWidget {
           return () {
             HapticFeedback.selectionClick();
 
-            learnPageBloc.add(LearnPageReturnToLessonClicked());
+            learnPageBloc.add(const LearnPageReturnToLessonClicked());
           };
         }
       }(),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 12.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Text(() {
           if (hasAnswered || isFinished || isPlain) {
             return "Continue";
           }
 
           return "Check";
-        }(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
+        }(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
       ),
     );
   }

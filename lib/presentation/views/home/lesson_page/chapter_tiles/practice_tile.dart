@@ -12,6 +12,7 @@ import "package:scale_up/presentation/views/home/lesson_page/"
 import "package:scale_up/presentation/views/home/lesson_page/chapter_tiles/trailing_chapter_index.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class PracticeTile extends StatelessWidget {
@@ -35,11 +36,11 @@ class PracticeTile extends StatelessWidget {
             ? context.read<LessonPageCubit>().state.lesson.learnChapters[chapterIndex - 1]
             : null;
 
-    var isPreviousComplete = context
-        .read<UserDataBloc>() //
-        .state
-        .finishedChapters
-        .containsKey(ChapterType.practice.stringify(lessonId, chapterIndex - 1));
+    var isPreviousComplete = context.select((UserDataBloc b) {
+      return b.state.finishedChapters.containsKey(
+        ChapterType.practice.stringify(lessonId, chapterIndex - 1),
+      );
+    });
 
     var isNext = previousChapter == null ? true : isPreviousComplete;
 
@@ -47,7 +48,10 @@ class PracticeTile extends StatelessWidget {
       child: Material(
         child: ListTile(
           tileColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.white.borderColor),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
           leading: LeadingChapterIndex(
             index: chapterIndex,
             isCompleted: isComplete,

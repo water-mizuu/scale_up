@@ -10,8 +10,8 @@ class UnselectedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DottedBorder(
       borderType: BorderType.RRect,
-      radius: Radius.circular(8.0),
-      dashPattern: [4, 4],
+      radius: const Radius.circular(8.0),
+      dashPattern: const [4, 4],
       strokeWidth: 2.0,
       color: Colors.transparent,
       child: child,
@@ -28,8 +28,8 @@ class SelectedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DottedBorder(
       borderType: BorderType.RRect,
-      radius: Radius.circular(8.0),
-      dashPattern: [4, 4],
+      radius: const Radius.circular(8.0),
+      dashPattern: const [4, 4],
       strokeWidth: 2.0,
       color: Colors.blue,
       child: child,
@@ -48,8 +48,8 @@ class CorrectWidget extends StatelessWidget {
       children: [
         DottedBorder(
           borderType: BorderType.RRect,
-          radius: Radius.circular(8.0),
-          dashPattern: [4, 4],
+          radius: const Radius.circular(8.0),
+          dashPattern: const [4, 4],
           strokeWidth: 2.0,
           color: Colors.green,
           child: child,
@@ -59,7 +59,7 @@ class CorrectWidget extends StatelessWidget {
           right: 0,
           child: Transform.translate(
             offset: const Offset(8.0, -8.0),
-            child: Icon(Icons.check_circle, color: Colors.green, size: 24.0),
+            child: const Icon(Icons.check_circle, color: Colors.green, size: 24.0),
           ),
         ),
       ],
@@ -78,8 +78,8 @@ class IncorrectWidget extends StatelessWidget {
       children: [
         DottedBorder(
           borderType: BorderType.RRect,
-          radius: Radius.circular(8.0),
-          dashPattern: [4, 4],
+          radius: const Radius.circular(8.0),
+          dashPattern: const [4, 4],
           strokeWidth: 2.0,
           color: Colors.red,
           child: widget,
@@ -89,7 +89,7 @@ class IncorrectWidget extends StatelessWidget {
           right: 0,
           child: Transform.translate(
             offset: const Offset(8.0, -8.0),
-            child: Icon(Icons.cancel, color: Colors.red, size: 24.0),
+            child: const Icon(Icons.cancel, color: Colors.red, size: 24.0),
           ),
         ),
       ],

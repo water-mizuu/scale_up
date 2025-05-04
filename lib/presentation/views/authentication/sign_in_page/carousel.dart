@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/sign_in_page/sign_in_page_bloc.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -61,7 +61,7 @@ class CarouselCard extends StatelessWidget {
     return Column(
       children: [
         CardContent(title: attribute.title, description: attribute.description),
-        Expanded(child: Padding(padding: EdgeInsets.all(56.0), child: attribute.image)),
+        Expanded(child: Padding(padding: const EdgeInsets.all(56.0), child: attribute.image)),
       ],
     );
   }
@@ -72,7 +72,7 @@ class Pagination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 8.0,
       children: [PaginationCircle(p: 0), PaginationCircle(p: 1), PaginationCircle(p: 2)],
@@ -93,9 +93,9 @@ class PaginationCircle extends StatelessWidget {
           return Container(
             height: 8,
             width: 16,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.indigo,
-              borderRadius: const BorderRadius.all(Radius.circular(25)),
+              borderRadius: BorderRadius.all(Radius.circular(25)),
             ),
           );
         } else {
@@ -126,8 +126,8 @@ class CardContent extends StatelessWidget {
       child: Column(
         spacing: 4.0,
         children: [
-          Text(title, style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center),
-          Text(description, style: TextStyle(fontSize: 12.0), textAlign: TextAlign.center),
+          Text(title, style: const TextStyle(fontSize: 20.0), textAlign: TextAlign.center),
+          Text(description, style: const TextStyle(fontSize: 12.0), textAlign: TextAlign.center),
         ],
       ),
     );

@@ -9,15 +9,15 @@ class SignUpFieldGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+    return const Padding(
+      padding: EdgeInsets.only(bottom: 16.0),
       child: Column(
         spacing: 8.0,
         children: [
           SignUpUsernameField(),
           SignUpEmailField(),
           SignUpPasswordField(),
-          SignUpConfirmPasswordField()
+          SignUpConfirmPasswordField(),
         ],
       ),
     );

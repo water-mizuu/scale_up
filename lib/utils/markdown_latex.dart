@@ -72,7 +72,7 @@ class LatexNode extends SpanNode {
 
           return Container(
             width: double.infinity,
-            margin: EdgeInsets.symmetric(vertical: 16),
+            margin: const EdgeInsets.symmetric(vertical: 16),
             child: Center(child: latex),
           );
         },

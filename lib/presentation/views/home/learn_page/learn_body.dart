@@ -12,13 +12,13 @@ class LearnBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           LearnTopRow(progressBarKey: progressBarKey),
-          Flexible(child: LearnInstructions()),
+          const Flexible(child: LearnInstructions()),
           const Column(
             spacing: 18.0,
             crossAxisAlignment: CrossAxisAlignment.stretch,

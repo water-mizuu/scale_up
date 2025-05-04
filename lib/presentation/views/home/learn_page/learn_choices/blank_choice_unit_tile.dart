@@ -19,7 +19,7 @@ class BlankChoiceUnitTile extends StatelessWidget {
           borderRadius: borderRadius,
           border: Border.all(color: Colors.grey[200]!.borderColor),
         ),
-        padding: EdgeInsets.all(8.0) + EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 8.0),
         child: Opacity(
           opacity: 0.0,
           child: Text(unit.shortcut, style: GoogleFonts.notoSansMath()),

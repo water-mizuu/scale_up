@@ -14,16 +14,16 @@ class SignInWithGoogleButton extends StatelessWidget {
             onPressed: () {
               context //
                   .read<AuthenticationBloc>()
-                  .add(GoogleSignInAuthenticationEvent());
+                  .add(const GoogleSignInAuthenticationEvent());
             },
             child: Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 8.0,
                 children: [
                   Image.asset("assets/logos/google.png", height: 18.0, width: 18.0),
-                  Text("Log in with Google", style: TextStyle(fontSize: 16.0)),
+                  const Text("Log in with Google", style: TextStyle(fontSize: 16.0)),
                 ],
               ),
             ),

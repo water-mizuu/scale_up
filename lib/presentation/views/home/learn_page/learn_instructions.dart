@@ -53,7 +53,7 @@ class PlainLearnInstructions extends HookWidget {
     var scrollController = useAnimatedScrollController();
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 24.0),
+      padding: const EdgeInsets.symmetric(vertical: 24.0),
       child: _AnimatedQuestionPanel(
         isRetry: false,
         hint: "Read the lesson:",
@@ -98,7 +98,7 @@ class DirectFormulaInstructions extends StatelessWidget {
                       style: GoogleFonts.notoSansMath(),
                       children: [
                         TextSpan(text: to.shortcut),
-                        TextSpan(text: " = "),
+                        const TextSpan(text: " = "),
                         TextSpan(text: answer.substituteString("from", from.shortcut).str),
                       ],
                     ),
@@ -108,7 +108,7 @@ class DirectFormulaInstructions extends StatelessWidget {
             ),
             child: Text.rich(
               TextSpan(
-                style: TextStyle(
+                style: const TextStyle(
                   decoration: TextDecoration.underline,
                   decorationStyle: TextDecorationStyle.dashed,
                 ),
@@ -117,7 +117,7 @@ class DirectFormulaInstructions extends StatelessWidget {
                     text: "${from.name} (${from.shortcut})",
                     style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(text: " to ", style: Styles.subtitle),
+                  const TextSpan(text: " to ", style: Styles.subtitle),
                   TextSpan(
                     text: "${to.name} (${to.shortcut})",
                     style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
@@ -157,16 +157,16 @@ class ImportantNumbersInstructions extends StatelessWidget {
           ToolTip(
             content: IntrinsicWidth(child: Styles.subtitle(answer.join(", "))),
             child: Text.rich(
-              style: TextStyle(
+              style: const TextStyle(
                 decoration: TextDecoration.underline,
                 decorationStyle: TextDecorationStyle.dashed,
               ),
               TextSpan(
                 children: [
                   if (answer.length == 1)
-                    TextSpan(text: "number", style: Styles.subtitle)
+                    const TextSpan(text: "number", style: Styles.subtitle)
                   else
-                    TextSpan(text: "numbers", style: Styles.subtitle),
+                    const TextSpan(text: "numbers", style: Styles.subtitle),
                 ],
               ),
             ),
@@ -191,7 +191,7 @@ class IndirectStepsInstructions extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisSize: MainAxisSize.min,
       spacing: 32.0,
       children: [IndirectStepsQuestionPanel(), IndirectStepsAnswerSpots()],
@@ -220,7 +220,7 @@ class IndirectStepsQuestionPanel extends HookWidget {
             content: IndirectStepsToolTipContent(steps: steps),
             child: Text.rich(
               TextSpan(
-                style: TextStyle(
+                style: const TextStyle(
                   decoration: TextDecoration.underline,
                   decorationStyle: TextDecorationStyle.dashed,
                 ),
@@ -229,7 +229,7 @@ class IndirectStepsQuestionPanel extends HookWidget {
                     text: "${from.name} (${from.shortcut})",
                     style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(text: " to ", style: Styles.subtitle),
+                  const TextSpan(text: " to ", style: Styles.subtitle),
                   TextSpan(
                     text: "${to.name} (${to.shortcut})",
                     style: Styles.subtitle.copyWith(fontWeight: FontWeight.bold),
@@ -277,7 +277,7 @@ class IndirectStepsAnswerSpots extends HookWidget {
                 AnswerTile(key: answerKeys[2 * i - 1], index: 2 * i - 1, unit: from),
 
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: Styles.subtitle(" to "),
               ),
 
@@ -292,7 +292,7 @@ class IndirectStepsAnswerSpots extends HookWidget {
               else
                 AnswerTile(key: answerKeys[2 * i], index: 2 * i, unit: from),
 
-              Padding(padding: EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
+              Padding(padding: const EdgeInsets.only(left: 4.0), child: Styles.subtitle(".")),
             ],
           ),
       ],
@@ -365,11 +365,17 @@ class IndirectStepsToolTipContent extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(text: "${i + 1}."),
-                  TextSpan(text: " From "),
-                  TextSpan(text: from.shortcut, style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: " to "),
-                  TextSpan(text: to.shortcut, style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: ":"),
+                  const TextSpan(text: " From "),
+                  TextSpan(
+                    text: from.shortcut,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: " to "),
+                  TextSpan(
+                    text: to.shortcut,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(text: ":"),
                 ],
               ),
             ),

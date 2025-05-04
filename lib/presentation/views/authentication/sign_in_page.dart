@@ -57,7 +57,7 @@ class SignInPage extends StatelessWidget {
             context.showBasicSnackbar(message);
           }
         },
-        child: LoginPageView(),
+        child: const LoginPageView(),
       ),
     );
   }

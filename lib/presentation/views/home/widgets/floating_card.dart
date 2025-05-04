@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
 import "package:scale_up/utils/extensions/fade_slide_in.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 
 class FloatingCardWithHint extends StatelessWidget {
   const FloatingCardWithHint({
@@ -50,7 +50,7 @@ class FloatingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),

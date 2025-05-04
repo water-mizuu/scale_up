@@ -17,3 +17,7 @@ final class ForgotPasswordSubmitting implements ForgotPasswordEvent {
 final class ForgotPasswordSubmitted implements ForgotPasswordEvent {
   const ForgotPasswordSubmitted();
 }
+
+final class ForgotPasswordReset implements ForgotPasswordEvent {
+  const ForgotPasswordReset();
+}

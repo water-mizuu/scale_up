@@ -8,7 +8,7 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/title_case_extension.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
@@ -72,14 +72,14 @@ class OngoingLessonTile extends StatelessWidget {
                 fontSize: 10,
               ),
             ),
-            SizedBox(width: 12.0),
+            const SizedBox(width: 12.0),
             Container(
               height: 36.0,
               decoration: BoxDecoration(
                 color: HSLColor.fromColor(foreground).withLightness(0.5).toColor(),
                 borderRadius: BorderRadius.circular(6.0),
               ),
-              child: AspectRatio(
+              child: const AspectRatio(
                 aspectRatio: 1.0,
                 child: Center(child: Icon(Icons.keyboard_arrow_right, color: Colors.white)),
               ),
@@ -105,7 +105,7 @@ class OngoingLessonTile extends StatelessWidget {
                 animatedDuration: const Duration(milliseconds: 150),
               ),
             ),
-            Expanded(child: const SizedBox()),
+            const Expanded(child: SizedBox()),
           ],
         ),
       ],
@@ -125,7 +125,7 @@ class OngoingLessonTile extends StatelessWidget {
           return onTap;
         }(),
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [background, background.withValues(alpha: 0.8)],

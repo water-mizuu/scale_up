@@ -51,7 +51,7 @@ class _AllLessonsPageState extends State<AllLessonsPage> {
         BlocProvider(create: (_) => AllLessonsPageCubit(helper, lessons)),
         InheritedProvider.value(value: searchFocusNode),
       ],
-      child: AllLessonsPageView(),
+      child: const AllLessonsPageView(),
     );
   }
 }
@@ -65,7 +65,7 @@ class AllLessonsPageView extends StatelessWidget {
       appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
         padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
-        child: Column(
+        child: const Column(
           spacing: 16.0,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

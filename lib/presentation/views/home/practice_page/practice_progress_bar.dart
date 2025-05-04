@@ -11,8 +11,8 @@ class PracticeProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var LoadedPracticePageState(:progress, :lesson) =
-        context.read<PracticePageBloc>().loadedState;
+    var LoadedPracticePageState(:progress, :lesson) = context //
+        .select((PracticePageBloc bloc) => bloc.loadedState);
 
     var hslColor = lesson.hslColor;
 

@@ -10,7 +10,7 @@ class SearchBar extends StatelessWidget {
     return TextField(
       focusNode: context.read<FocusNode>(),
       onChanged: (value) => context.read<AllLessonsPageCubit>().updateType(value),
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         prefixIcon: Padding(padding: EdgeInsets.all(8), child: Icon(Icons.search, size: 18)),
         border: OutlineInputBorder(),
         hintText: "Search",

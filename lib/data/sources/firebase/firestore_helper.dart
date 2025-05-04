@@ -3,6 +3,7 @@ import "dart:collection";
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter_animate/flutter_animate.dart";
 
 /// A wrapper class that is the only one that has access to the
 ///   [FirebaseFirestore] instance. All interactions with cloud
@@ -86,7 +87,7 @@ class FirestoreHelper {
       _registerDebounce?.cancel();
     }
 
-    _registerDebounce = Timer(Duration(seconds: 1), () async {
+    _registerDebounce = Timer(1.seconds, () async {
       var doc = await _createUserDocumentIfNotExists(user);
       var changes = <String, Object>{};
 

@@ -52,8 +52,8 @@ class _SignUpPasswordFieldState extends State<SignUpPasswordField> with SignupPa
                     });
                   },
                 ),
-                border: OutlineInputBorder(),
-                label: Text("Password"),
+                border: const OutlineInputBorder(),
+                label: const Text("Password"),
               ),
             ),
             // if (state.passwordStrength.isNotEmpty)

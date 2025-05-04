@@ -14,7 +14,10 @@ class SignUpConfirmPasswordField extends StatelessWidget with SignupPageValidato
       obscureText: true,
       validator: (v) => validateConfirmPassword(v, signUpPageBloc.state.password),
       onChanged: (v) => signUpPageBloc.add(SignUpPageConfirmPasswordChanged(v)),
-      decoration: InputDecoration(border: OutlineInputBorder(), label: Text("Confirm Password")),
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        label: Text("Confirm Password"),
+      ),
     );
   }
 }

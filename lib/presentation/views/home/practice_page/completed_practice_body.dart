@@ -17,7 +17,7 @@ class CompletedPracticeBody extends StatelessWidget {
     var currentChapter = chapters[state.chapterIndex];
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         spacing: 8.0,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,7 +36,7 @@ class CompletedPracticeBody extends StatelessWidget {
               ),
             ),
           ),
-          PracticeCheckButton(),
+          const PracticeCheckButton(),
         ],
       ),
     );

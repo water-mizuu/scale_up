@@ -4,6 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/unit_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
+import "package:scale_up/utils/extensions/batch_extension.dart";
 
 class LessonUnits extends StatelessWidget {
   const LessonUnits({super.key});
@@ -31,25 +32,5 @@ class LessonUnits extends StatelessWidget {
           ),
       ],
     );
-  }
-}
-
-extension BatchExtension<T> on Iterable<T> {
-  Iterable<List<T>> batch(int numberOfElementPerBatch) sync* {
-    Iterator<T> iter = iterator;
-    List<T> values = [];
-    while (iter.moveNext()) {
-      values.add(iter.current);
-
-      if (values.length == numberOfElementPerBatch) {
-        yield values;
-        values = [];
-      }
-    }
-
-    if (values.length <= numberOfElementPerBatch) {
-      yield values;
-      values = [];
-    }
   }
 }

@@ -6,10 +6,11 @@ export "forgot_password_event.dart";
 export "forgot_password_state.dart";
 
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
-  ForgotPasswordBloc() : super(ForgotPasswordState.initial(email: "")) {
+  ForgotPasswordBloc() : super(const ForgotPasswordState.initial(email: "")) {
     on<ForgotPasswordEmailChanged>(_onEmailChanged);
     on<ForgotPasswordSubmitting>(_onSubmitting);
     on<ForgotPasswordSubmitted>(_onSubmitted);
+    on<ForgotPasswordReset>(_onReset);
   }
 
   void _onEmailChanged(
@@ -30,6 +31,10 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
   }
 
   void _onSubmitted(ForgotPasswordSubmitted event, Emitter<ForgotPasswordState> emit) async {
-    emit(ForgotPasswordState.success());
+    emit(const ForgotPasswordState.success());
+  }
+
+  void _onReset(ForgotPasswordReset event, Emitter<ForgotPasswordState> emit) async {
+    emit(const ForgotPasswordState.initial(email: ""));
   }
 }

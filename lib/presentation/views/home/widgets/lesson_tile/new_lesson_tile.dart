@@ -6,7 +6,7 @@ import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/extensions/border_color_extension.dart";
+import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/widgets/tap_scale.dart";
 
 class NewLessonTile extends StatelessWidget {
@@ -69,7 +69,7 @@ class NewLessonTile extends StatelessWidget {
           return onTap;
         }(),
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [background, background.withValues(alpha: 0.8)],
@@ -85,7 +85,7 @@ class NewLessonTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
                     decoration: BoxDecoration(
                       color: HSLColor.fromColor(foreground).withLightness(0.9).toColor(),
                       borderRadius: BorderRadius.circular(6.0),

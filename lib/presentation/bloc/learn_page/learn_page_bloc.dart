@@ -16,6 +16,7 @@ import "package:scale_up/utils/extensions/choose_random_extension.dart";
 import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/unindent_extension.dart";
 import "package:scale_up/utils/markdown_latex.dart";
+import "package:scale_up/utils/sound_player.dart";
 
 export "learn_page_event.dart";
 export "learn_page_state.dart";
@@ -23,7 +24,7 @@ export "learn_page_state.dart";
 class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   LearnPageBloc({required LessonsHelper lessonsHelper})
     : _lessonsHelper = lessonsHelper,
-      super(LearnPageState.blank()) {
+      super(const LearnPageState.blank()) {
     on<LearnPageWidgetChanged>(_onLearnPageWidgetChanged);
     on<LearnPageAnswerUpdated>(_onAnswerUpdated);
     on<LearnPageAnswerSubmitted>(_onAnswerSubmitted);
@@ -158,28 +159,30 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         var answer = loadedState.answer;
 
         if (question.comparison(answer, correctAnswer)) {
+          playCorrect();
+
           emit(
             loadedState.copyWith(status: LearnPageStatus.correct, correctAnswer: correctAnswer),
           );
+        } else {
+          playIncorrect();
 
-          return;
+          var questions = loadedState.questions;
+          var removed = questions[loadedState.questionIndex].copyWith(isRetry: true);
+          var newQuestions = questions.followedBy([removed]).toList();
+
+          /// PROBLEM:
+          ///   When the user answers incorrectly, since we update the [questions],
+          ///   The [questionIndex] is not updated.
+          emit(
+            loadedState.copyWith(
+              status: LearnPageStatus.incorrect,
+              correctAnswer: correctAnswer,
+              questions: newQuestions,
+              mistakes: loadedState.mistakes + 1,
+            ),
+          );
         }
-
-        var questions = loadedState.questions;
-        var removed = questions[loadedState.questionIndex].copyWith(isRetry: true);
-        var newQuestions = questions.followedBy([removed]).toList();
-
-        /// PROBLEM:
-        ///   When the user answers incorrectly, since we update the [questions],
-        ///   The [questionIndex] is not updated.
-        emit(
-          loadedState.copyWith(
-            status: LearnPageStatus.incorrect,
-            correctAnswer: correctAnswer,
-            questions: newQuestions,
-            mistakes: loadedState.mistakes + 1,
-          ),
-        );
     }
   }
 
@@ -245,13 +248,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       var isInverse =
           extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id) &&
           !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id));
-      if (kDebugMode) {
-        print((
-          extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id),
-          !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id)),
-          unitGroup.conversions,
-        ));
-      }
 
       /// This block is responsible for generating
       ///    the descriptive (plain) questions.
@@ -413,7 +409,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       } while (false);
 
       /// This block is responsible for generating
-      ///  "What are the important numbers for converting from X to Y?"
+      ///   What are the path steps for converting from X to Y?
       do {
         var steps = path;
 
@@ -475,7 +471,7 @@ Widget _combinedFormulaBox(Color originalColor, List<((Unit, Unit), NumericalExp
           .toColor();
 
   return Container(
-    padding: EdgeInsets.all(12.0),
+    padding: const EdgeInsets.all(12.0),
     decoration: BoxDecoration(
       color: hslColor.backgroundColor,
       borderRadius: BorderRadius.circular(8.0),
@@ -508,7 +504,7 @@ Widget _conversionStepBox(
           .toColor();
 
   return Container(
-    padding: EdgeInsets.all(12.0),
+    padding: const EdgeInsets.all(12.0),
     decoration: BoxDecoration(
       color: hslColor.backgroundColor,
       borderRadius: BorderRadius.circular(8.0),
@@ -525,7 +521,7 @@ Widget _conversionPathBox(Color color, List<((Unit, Unit), NumericalExpression)>
   var backgroundHslColor = HSLColor.fromColor(hslColor.backgroundColor);
 
   return Container(
-    padding: EdgeInsets.all(12.0),
+    padding: const EdgeInsets.all(12.0),
     decoration: BoxDecoration(
       color: hslColor.backgroundColor,
       borderRadius: BorderRadius.circular(8.0),
@@ -533,7 +529,7 @@ Widget _conversionPathBox(Color color, List<((Unit, Unit), NumericalExpression)>
     child: Row(
       children: [
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           decoration: BoxDecoration(
             color: backgroundHslColor.withLightness(backgroundHslColor.lightness * 0.9).toColor(),
             borderRadius: BorderRadius.circular(64.0),

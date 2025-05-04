@@ -8,11 +8,11 @@ import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/home_page/latest_lesson.dart";
 import "package:scale_up/presentation/views/home/home_page/statistics.dart";
 import "package:scale_up/presentation/views/home/home_page/user_bar.dart";
-import "package:scale_up/presentation/views/home/lesson_page/lesson_units.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/new_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/ongoing_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animated_scroll_controller.dart";
+import "package:scale_up/utils/extensions/batch_extension.dart";
 import "package:scale_up/utils/extensions/fade_slide_in.dart";
 
 class HomePage extends StatefulWidget {
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ],
-          child: HomePageView(),
+          child: const HomePageView(),
         );
       },
     );
@@ -91,7 +91,7 @@ class _HomePageViewState extends State<HomePageView> with SingleTickerProviderSt
 
     scrollController = AnimatedScrollController();
     animationController = AnimationController(vsync: this);
-    listKey = ValueKey(0);
+    listKey = const ValueKey(0);
   }
 
   @override
@@ -122,7 +122,7 @@ class _HomePageViewState extends State<HomePageView> with SingleTickerProviderSt
             child: ListView(
               controller: scrollController,
               children: const [
-                Padding(padding: EdgeInsets.symmetric(horizontal: 24.0), child: UserBar()),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
                 SizedBox(height: 12.0),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
                 SizedBox(height: 12.0),

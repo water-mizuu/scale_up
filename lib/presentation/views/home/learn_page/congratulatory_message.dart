@@ -11,6 +11,7 @@ class CongratulatoryMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = context.read<LearnPageBloc>().loadedState;
+    var status = context.select((LearnPageBloc b) => b.loadedState.status);
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
@@ -23,18 +24,18 @@ class CongratulatoryMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (state.status == LearnPageStatus.correct) ...[
+                if (status == LearnPageStatus.correct) ...[
                   Styles.title("Correct!", color: Colors.green),
                   Styles.subtitle(
                     "You got it right!",
                     color: Colors.green,
                     fontWeight: FontWeight.w600,
                   ),
-                ] else if (state.status == LearnPageStatus.incorrect) ...[
+                ] else if (status == LearnPageStatus.incorrect) ...[
                   Styles.title("Oops!", color: Colors.red),
                   Text.rich(
                     TextSpan(
@@ -60,12 +61,16 @@ class CongratulatoryMessage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16.0) - EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
             child: TickerMode(
               enabled: false,
               child: FilledButton(
                 onPressed: null,
-                child: Padding(
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.0),
                   child: Text(
                     "Check",

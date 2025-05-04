@@ -11,6 +11,10 @@ import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/"
     "forgot_password_button.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/"
+    "forgot_password_description.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page/"
+    "forgot_password_email_field.dart";
+import "package:scale_up/presentation/views/authentication/forgot_password_page/"
     "forgot_password_image_container.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/"
     "forgot_password_page_header.dart";
@@ -45,8 +49,9 @@ class ForgotPasswordPage extends HookWidget {
           print("Error: ${error.runtimeType}");
         }
         context.showBasicSnackbar(error.toString());
+        forgotPasswordBloc.add(const ForgotPasswordReset());
       } else {
-        forgotPasswordBloc.add(ForgotPasswordSubmitted());
+        forgotPasswordBloc.add(const ForgotPasswordSubmitted());
       }
     }, listenWhen: (p, _) => p.status == AuthenticationStatus.resettingEmail);
 
@@ -55,7 +60,7 @@ class ForgotPasswordPage extends HookWidget {
         InheritedProvider.value(value: globalKey),
         BlocProvider.value(value: forgotPasswordBloc),
       ],
-      child: ForgotPasswordView(),
+      child: const ForgotPasswordView(),
     );
   }
 }
@@ -67,39 +72,25 @@ class ForgotPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: ForgotPasswordPageHeader(),
-        leading: SizedBox(
-          height: 24.0,
-          child: IconButton(
-            onPressed: () {
-              router.pop();
-            },
-            icon: Icon(Icons.arrow_back_ios),
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => router.pop(),
         ),
+        title: const ForgotPasswordPageHeader(),
+        elevation: 0.0,
+        scrolledUnderElevation: 0.0,
+        forceMaterialTransparency: true,
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: context.read<GlobalKey<FormState>>(),
-            child: Column(
-              spacing: 16.0,
+            child: const Column(
               children: [
                 ForgotPasswordImageContainer(),
-                Column(
-                  children: [
-                    TextFormField(
-                      onChanged: (v) {
-                        context.read<ForgotPasswordBloc>().add(ForgotPasswordEmailChanged(v));
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Email Address"),
-                      ),
-                    ),
-                  ],
-                ),
+                ForgotPasswordDescription(),
+                ForgotPasswordEmailField(),
                 ForgotPasswordButton(),
               ],
             ),

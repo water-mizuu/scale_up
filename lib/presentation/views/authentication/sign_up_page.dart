@@ -45,7 +45,7 @@ class SignUpPage extends StatelessWidget {
             context.showBasicSnackbar(message);
           }
         },
-        child: SignUpPageView(),
+        child: const SignUpPageView(),
       ),
     );
   }
@@ -58,14 +58,14 @@ class SignUpPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: SignUpPageHeader(),
+        title: const SignUpPageHeader(),
         leading: SizedBox(
           height: 24.0,
           child: IconButton(
             onPressed: () {
               router.pop();
             },
-            icon: Icon(Icons.arrow_back_ios),
+            icon: const Icon(Icons.arrow_back_ios),
           ),
         ),
       ),
@@ -74,7 +74,7 @@ class SignUpPageView extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: context.read<GlobalKey<FormState>>(),
-            child: Column(
+            child: const Column(
               spacing: 16.0,
               children: [ImageContainer(), SignUpFieldGroup(), SignUpButton()],
             ),

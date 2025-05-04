@@ -9,13 +9,13 @@ void useBlocListener<S>(
   BlocComparativeListenerCondition<S>? listenWhen,
   List<Object?>? keys,
 }) {
-  final currentState = useRef(bloc.state);
-  final context = useContext();
+  var currentState = useRef(bloc.state);
+  var context = useContext();
 
   useEffect(() {
-    final subscription = bloc.stream
+    return bloc.stream
         .where((nextState) {
-          final shouldInvokeAction = listenWhen?.call(currentState.value, nextState) ?? true;
+          var shouldInvokeAction = listenWhen?.call(currentState.value, nextState) ?? true;
           currentState.value = nextState;
           return shouldInvokeAction;
         })
@@ -23,8 +23,7 @@ void useBlocListener<S>(
           if (context.mounted) {
             return listener(state);
           }
-        });
-
-    return subscription.cancel;
+        })
+        .cancel;
   }, [bloc, ...keys ?? []]);
 }

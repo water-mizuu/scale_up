@@ -10,17 +10,14 @@ class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var status = context.select((AuthenticationBloc b) => b.state.status);
+    var isProcessing = status == AuthenticationStatus.signingUp;
 
     return Row(
       children: [
         Expanded(
           child: FilledButton(
             onPressed: () {
-              var isProcessing = status == AuthenticationStatus.signingUp;
-
-              if (isProcessing) {
-                return null;
-              }
+              if (isProcessing) return null;
 
               return () async {
                 /// Validate the form.
@@ -53,8 +50,30 @@ class SignUpButton extends StatelessWidget {
               };
             }(),
             child: Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text("Sign Up", style: TextStyle(fontSize: 16.0)),
+              padding: const EdgeInsets.all(12.0),
+              child: Builder(
+                builder: (context) {
+                  if (isProcessing) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            strokeWidth: 2.0,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text("Signing Up", style: TextStyle(fontSize: 16.0)),
+                      ],
+                    );
+                  } else {
+                    return const Text("Sign Up", style: TextStyle(fontSize: 16.0));
+                  }
+                },
+              ),
             ),
           ),
         ),

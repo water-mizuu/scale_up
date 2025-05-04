@@ -5,6 +5,10 @@ class ForgotPasswordPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Reset Password", style: TextStyle(fontSize: 20.0), textAlign: TextAlign.center);
+    return const Text(
+      "Reset Password",
+      style: TextStyle(fontSize: 20.0),
+      textAlign: TextAlign.center,
+    );
   }
 }

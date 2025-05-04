@@ -13,7 +13,7 @@ class Grid extends StatelessWidget {
       child: GridView(
         gridDelegate: gridDelegate,
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: children,
       ),
     );

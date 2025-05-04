@@ -14,9 +14,9 @@ class PracticeInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chapterPageBloc = context.read<PracticePageBloc>();
-    var state = chapterPageBloc.state as LoadedPracticePageState;
-    var LoadedPracticePageState(:questions, :questionIndex) = state;
+    var LoadedPracticePageState(:questions, :questionIndex) = context //
+        .select((PracticePageBloc bloc) => bloc.loadedState);
+
     var (left, right, number, steps, :isRetry) = questions[questionIndex];
 
     var widget = FloatingCardWithHint(
@@ -63,17 +63,17 @@ class PracticeInstructions extends StatelessWidget {
                           TextSpan(
                             children: [
                               TextSpan(text: "${i + 1}."),
-                              TextSpan(text: " From "),
+                              const TextSpan(text: " From "),
                               TextSpan(
                                 text: from.shortcut,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              TextSpan(text: " to "),
+                              const TextSpan(text: " to "),
                               TextSpan(
                                 text: to.shortcut,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              TextSpan(text: ":"),
+                              const TextSpan(text: ":"),
                             ],
                           ),
                         ),
@@ -89,7 +89,7 @@ class PracticeInstructions extends StatelessWidget {
                 ),
                 child: Container(
                   /// There should be an underline under the text.
-                  padding: EdgeInsets.only(bottom: 4.0),
+                  padding: const EdgeInsets.only(bottom: 4.0),
                   child: Styles.title(
                     "$number ${left.shortcut} to ___ ${right.shortcut}?",
                     decoration: TextDecoration.underline,

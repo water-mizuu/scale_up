@@ -40,7 +40,7 @@ class LeadingChapterIndex extends StatelessWidget {
             child: Builder(
               builder: (_) {
                 if (isCompleted) {
-                  return Icon(Icons.check, color: Colors.green);
+                  return const Icon(Icons.check, color: Colors.green);
                 }
                 return Styles.title(
                   "${index + 1}",

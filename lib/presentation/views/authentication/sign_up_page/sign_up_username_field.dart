@@ -11,7 +11,7 @@ class SignUpUsernameField extends StatelessWidget with SignupPageValidator {
     return TextFormField(
       validator: validateUsername,
       onChanged: (v) => context.read<SignupPageBloc>().add(SignupPageUsernameChanged(v)),
-      decoration: InputDecoration(border: OutlineInputBorder(), label: Text("Username")),
+      decoration: const InputDecoration(border: OutlineInputBorder(), label: Text("Username")),
     );
   }
 }

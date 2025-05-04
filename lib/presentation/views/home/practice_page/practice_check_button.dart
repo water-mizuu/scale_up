@@ -28,13 +28,16 @@ class PracticeCheckButton extends StatelessWidget {
         var isFinished = chapterPageBloc.loadedState.status == PracticePageStatus.finished;
 
         return FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: buttonColor),
+          style: FilledButton.styleFrom(
+            backgroundColor: buttonColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          ),
           onPressed: () {
             if (hasAnswered) {
               return () {
                 HapticFeedback.selectionClick();
 
-                chapterPageBloc.add(PracticePageNextQuestionClicked());
+                chapterPageBloc.add(const PracticePageNextQuestionClicked());
               };
             }
 
@@ -42,25 +45,25 @@ class PracticeCheckButton extends StatelessWidget {
                 chapterPageBloc.loadedState.answer != null) {
               return () {
                 HapticFeedback.selectionClick();
-                chapterPageBloc.add(PracticePageAnswerSubmitted());
+                chapterPageBloc.add(const PracticePageAnswerSubmitted());
               };
             }
 
             if (isFinished) {
               return () {
                 HapticFeedback.selectionClick();
-                chapterPageBloc.add(PracticePageReturnToLessonClicked());
+                chapterPageBloc.add(const PracticePageReturnToLessonClicked());
               };
             }
           }(),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 12.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Text(() {
               if (hasAnswered || isFinished) {
                 return "Continue";
               }
               return "Check";
-            }(), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
+            }(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
           ),
         );
       },
