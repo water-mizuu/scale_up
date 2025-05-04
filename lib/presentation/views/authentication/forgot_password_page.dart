@@ -11,7 +11,6 @@ import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_button.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_image_container.dart";
 import "package:scale_up/presentation/views/authentication/forgot_password_page/forgot_password_page_header.dart";
-import "package:scale_up/pseudo_provider/provide_extension.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 class ForgotPasswordPage extends HookWidget {
@@ -22,8 +21,6 @@ class ForgotPasswordPage extends HookWidget {
     var globalKey = useRef(GlobalKey<FormState>()).value;
     var authenticationBloc = context.read<AuthenticationBloc>();
     var forgotPasswordBloc = useCreateNewBloc(() => ForgotPasswordBloc());
-
-    context.pseudoProvide(globalKey);
 
     useBlocListener(forgotPasswordBloc, (state) {
       if (state case SendingForgotPasswordState(:var email)) {
@@ -82,7 +79,7 @@ class ForgotPasswordView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: context.pseudoRead<GlobalKey<FormState>>(),
+            key: context.read<GlobalKey<FormState>>(),
             child: Column(
               spacing: 16.0,
               children: [
