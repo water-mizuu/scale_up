@@ -1,17 +1,19 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
+import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 
+/// This widget is used to show the backdrop of the continue button.
 class CongratulatoryMessage extends StatelessWidget {
   const CongratulatoryMessage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<LearnPageBloc>().loadedState;
-    var status = context.select((LearnPageBloc b) => b.loadedState.status);
+    var state = context.read<PracticePageBloc>().loadedState;
+    var status = context.select((PracticePageBloc b) => b.loadedState.status);
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
@@ -28,14 +30,14 @@ class CongratulatoryMessage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (status == LearnPageStatus.correct) ...[
+                if (status == PracticePageStatus.correct) ...[
                   Styles.title("Correct!", color: Colors.green),
                   Styles.subtitle(
                     "You got it right!",
                     color: Colors.green,
                     fontWeight: FontWeight.w600,
                   ),
-                ] else if (status == LearnPageStatus.incorrect) ...[
+                ] else if (status == PracticePageStatus.incorrect) ...[
                   Styles.title("Oops!", color: Colors.red),
                   Text.rich(
                     TextSpan(
@@ -48,7 +50,7 @@ class CongratulatoryMessage extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: state.questions[state.questionIndex].correctAnswerString,
+                          text: "${state.correctAnswer}",
                           style: Styles.subtitle.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -67,10 +69,10 @@ class CongratulatoryMessage extends StatelessWidget {
               child: Opacity(
                 opacity: 0.0,
                 child: FilledButton(
-                  onPressed: null,
                   style: FilledButton.styleFrom(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                   ),
+                  onPressed: null,
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 12.0),
                     child: Text(

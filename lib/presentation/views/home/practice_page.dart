@@ -1,10 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
@@ -12,10 +14,10 @@ import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/notifications/user_quit_notification.dart";
 import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/congratulatory_message.dart";
+import "package:scale_up/presentation/views/home/practice_page/continue_message.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_check_button.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
-import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
@@ -200,21 +202,15 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
   }
 }
 
-class PracticePageView extends StatefulWidget {
+class PracticePageView extends HookWidget {
   const PracticePageView({super.key});
 
   @override
-  State<PracticePageView> createState() => _PracticePageViewState();
-}
-
-class _PracticePageViewState extends State<PracticePageView> {
-  late final GlobalKey progressBarKey = GlobalKey();
-
-  @override
   Widget build(BuildContext context) {
-    var isFinished = context.select(
-      (PracticePageBloc bloc) => bloc.state.status == PracticePageStatus.finished,
-    );
+    var progressBarKey = useRef(GlobalKey()).value;
+    var isFinished = useSelect((PracticePageBloc b) {
+      return b.state.status == PracticePageStatus.finished;
+    });
 
     return Stack(
       children: [
@@ -228,117 +224,5 @@ class _PracticePageViewState extends State<PracticePageView> {
         ],
       ],
     );
-  }
-}
-
-/// This widget is used to show the continue button.
-class ContinueMessage extends StatelessWidget {
-  const ContinueMessage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PracticePageBloc, PracticePageState>(
-      buildWhen: (p, c) => (p as LoadedPracticePageState).status == PracticePageStatus.evaluating,
-      builder: (context, state) {
-        if (state.status case PracticePageStatus.correct || PracticePageStatus.incorrect) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
-                child: const PracticeCheckButton(),
-              ),
-            ],
-          );
-        }
-
-        return const SizedBox.shrink();
-      },
-    );
-  }
-}
-
-/// This widget is used to show the backdrop of the continue button.
-class CongratulatoryMessage extends StatelessWidget {
-  const CongratulatoryMessage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var state = context.read<PracticePageBloc>().loadedState;
-    var status = context.select((PracticePageBloc b) => b.loadedState.status);
-    var controller = context.read<MessageAnimationController>().controller;
-
-    var widget = DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(4.0),
-        border: Border.all(color: Colors.grey.shade500),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (status == PracticePageStatus.correct) ...[
-                  Styles.title("Correct!", color: Colors.green),
-                  Styles.subtitle(
-                    "You got it right!",
-                    color: Colors.green,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ] else if (status == PracticePageStatus.incorrect) ...[
-                  Styles.title("Oops!", color: Colors.red),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "The answer was ",
-                          style: Styles.subtitle.copyWith(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "${state.correctAnswer}",
-                          style: Styles.subtitle.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
-            child: TickerMode(
-              enabled: false,
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                ),
-                onPressed: null,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12.0),
-                  child: Text(
-                    "Check",
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return widget
-        .animate(controller: controller, autoPlay: false)
-        .slideY(begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
   }
 }

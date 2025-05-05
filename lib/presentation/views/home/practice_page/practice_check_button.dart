@@ -10,7 +10,8 @@ class PracticeCheckButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chapterPageBloc = context.read<PracticePageBloc>();
+    var chapterPageBloc = context.watch<PracticePageBloc>();
+    var state = chapterPageBloc.loadedState;
     var hslColor = chapterPageBloc.loadedState.lesson.hslColor;
     var buttonColor =
         hslColor //
@@ -19,54 +20,50 @@ class PracticeCheckButton extends StatelessWidget {
             .withLightness(0.35)
             .toColor();
 
-    return BlocBuilder<PracticePageBloc, PracticePageState>(
-      builder: (context, state) {
-        var hasAnswered =
-            state.status == PracticePageStatus.correct || //
-            state.status == PracticePageStatus.incorrect;
+    var hasAnswered =
+        state.status == PracticePageStatus.correct || //
+        state.status == PracticePageStatus.incorrect;
 
-        var isFinished = chapterPageBloc.loadedState.status == PracticePageStatus.finished;
+    var isFinished = chapterPageBloc.loadedState.status == PracticePageStatus.finished;
 
-        return FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: buttonColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          ),
-          onPressed: () {
-            if (hasAnswered) {
-              return () {
-                HapticFeedback.selectionClick();
+    return FilledButton(
+      style: FilledButton.styleFrom(
+        backgroundColor: buttonColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
+      onPressed: () {
+        if (hasAnswered) {
+          return () {
+            HapticFeedback.selectionClick();
 
-                chapterPageBloc.add(const PracticePageNextQuestionClicked());
-              };
-            }
+            chapterPageBloc.add(const PracticePageNextQuestionClicked());
+          };
+        }
 
-            if (chapterPageBloc.loadedState.status == PracticePageStatus.waitingForSubmission &&
-                chapterPageBloc.loadedState.answer != null) {
-              return () {
-                HapticFeedback.selectionClick();
-                chapterPageBloc.add(const PracticePageAnswerSubmitted());
-              };
-            }
+        if (chapterPageBloc.loadedState.status == PracticePageStatus.waitingForSubmission &&
+            chapterPageBloc.loadedState.answer != null) {
+          return () {
+            HapticFeedback.selectionClick();
+            chapterPageBloc.add(const PracticePageAnswerSubmitted());
+          };
+        }
 
-            if (isFinished) {
-              return () {
-                HapticFeedback.selectionClick();
-                chapterPageBloc.add(const PracticePageReturnToLessonClicked());
-              };
-            }
-          }(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Text(() {
-              if (hasAnswered || isFinished) {
-                return "Continue";
-              }
-              return "Check";
-            }(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
-          ),
-        );
-      },
+        if (isFinished) {
+          return () {
+            HapticFeedback.selectionClick();
+            chapterPageBloc.add(const PracticePageReturnToLessonClicked());
+          };
+        }
+      }(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Text(() {
+          if (hasAnswered || isFinished) {
+            return "Continue";
+          }
+          return "Check";
+        }(), style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700)),
+      ),
     );
   }
 }

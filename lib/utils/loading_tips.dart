@@ -17,7 +17,7 @@ const loadingTips = [
   "Conversion memory: 1 inch = 2.54 cm (keep this one handy!).",
   "Volume relation: 1 US gallon ≈ 3.785 liters.",
   "Mass equivalence: 1 pound (lb) ≈ 0.4536 kg.",
-  "Temperature trick: To go from °F to °C: (°F - 32) × 5/9.",
+  "Temperature trick: To go from °F to °C: (°F - 32) / 1.8.",
   "Area conversion: 1 hectare = 10 000 m².",
   "Energy insight: 1 kWh = 3.6 million joules.",
   "Length ladder: 1 mm → 1 cm → 1 m → 1 km—move the decimal 3 places each step.",
