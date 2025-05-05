@@ -248,11 +248,7 @@ class FlyingUnit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller =
-        context
-            .select((IndirectStepsCubit c) => c.state as ActiveIndirectStepsState)
-            .animationController;
-
+    var controller = context.select((IndirectStepsCubit c) => c.activeState.animationController);
     var (unit, from, to) = animation;
 
     return AnimatedBuilder(

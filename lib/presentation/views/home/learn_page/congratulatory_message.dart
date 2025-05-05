@@ -68,7 +68,6 @@ class CongratulatoryMessage extends StatelessWidget {
                 onPressed: null,
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                 ),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 12.0),

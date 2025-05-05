@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -102,6 +103,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       } else {
         rethrow;
       }
+    } on FirebaseAuthException {
+      await _repository.signOut();
+
+      emit(state.copyWith(status: AuthenticationStatus.signedOut, error: null, user: null));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.signInFailure, error: e));
     }

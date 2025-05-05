@@ -1,12 +1,12 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:markdown_widget/markdown_widget.dart";
 import "package:provider/provider.dart";
+import "package:scale_up/hooks/use_animated_scroll_controller.dart";
 import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/animated_scroll_controller.dart";
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -40,7 +40,7 @@ const appAbout = """
 - **Dart version:** 3.7.2
 """;
 
-class ProfilePageView extends StatelessWidget {
+class ProfilePageView extends HookWidget {
   const ProfilePageView({super.key});
 
   @override
@@ -65,50 +65,46 @@ class ProfilePageView extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, HSLColor hslColor) {
-    return InheritedProvider(
-      create: (_) => AnimatedScrollController(),
-      dispose: (_, v) => v.dispose(),
-      builder: (context, child) {
-        return SingleChildScrollView(
-          controller: context.read<AnimatedScrollController>(),
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            spacing: 16.0,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildInfoSection(
-                context,
-                "Common Questions (FAQ)",
-                frequentlyAskedQuestions,
-                Icons.question_answer_rounded,
-                hslColor,
-              ),
-              _buildInfoSection(
-                context,
-                "Support Details",
-                developerInformation,
-                Icons.support_agent_rounded,
-                hslColor.withHue((hslColor.hue + 40) % 360),
-              ),
-              _buildInfoSection(
-                context,
-                "About",
-                appAbout,
-                Icons.info_outline_rounded,
-                hslColor.withHue((hslColor.hue + 80) % 360),
-              ),
-              _buildLogoutButton(context, hslColor),
-              Center(
-                child: Text(
-                  "ScaleUp v0.0.1",
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-            ],
+    var scrollController = useAnimatedScrollController();
+
+    return SingleChildScrollView(
+      controller: scrollController,
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        spacing: 8.0,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildInfoSection(
+            context,
+            "Common Questions (FAQ)",
+            frequentlyAskedQuestions,
+            Icons.question_answer_rounded,
+            hslColor,
           ),
-        );
-      },
+          _buildInfoSection(
+            context,
+            "Support Details",
+            developerInformation,
+            Icons.support_agent_rounded,
+            hslColor.withHue((hslColor.hue + 40) % 360),
+          ),
+          _buildInfoSection(
+            context,
+            "About",
+            appAbout,
+            Icons.info_outline_rounded,
+            hslColor.withHue((hslColor.hue + 80) % 360),
+          ),
+          _buildLogoutButton(context, hslColor),
+          Center(
+            child: Text(
+              "ScaleUp v0.0.1",
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+          ),
+          const SizedBox(height: 16.0),
+        ],
+      ),
     );
   }
 
@@ -119,7 +115,7 @@ class ProfilePageView extends StatelessWidget {
     IconData icon,
     HSLColor color,
   ) {
-    var widget = Container(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -165,15 +161,10 @@ class ProfilePageView extends StatelessWidget {
         ),
       ),
     );
-
-    return widget
-        .animate()
-        .fadeIn(duration: 200.ms, delay: 200.ms)
-        .slideY(begin: 0.2, end: 0, duration: 200.ms, delay: 200.ms, curve: Curves.easeOutQuad);
   }
 
   Widget _buildLogoutButton(BuildContext context, HSLColor hslColor) {
-    var widget = Container(
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: FilledButton.icon(
         style: FilledButton.styleFrom(
@@ -201,10 +192,5 @@ class ProfilePageView extends StatelessWidget {
         },
       ),
     );
-
-    return widget
-        .animate()
-        .fadeIn(duration: 200.ms, delay: 200.ms)
-        .slideY(begin: 0.2, end: 0, duration: 200.ms, delay: 200.ms, curve: Curves.easeOutQuad);
   }
 }

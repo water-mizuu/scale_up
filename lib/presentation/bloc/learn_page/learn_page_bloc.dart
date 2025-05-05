@@ -55,6 +55,8 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     var directQuestions = <LearnQuestion>[];
     var indirectQuestions = <LearnQuestion>[];
 
+    /// The local unit group gets the conversions for the units in the specific units.
+    /// The extended unit group gets additionally the inverse conversions.
     var unitGroup = _lessonsHelper.getLocalUnitGroup(lesson.unitsType, learnChapter.units);
     var extendedUnitGroup = _lessonsHelper.getLocalExtendedUnitGroup(
       lesson.unitsType,
@@ -66,6 +68,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     }
 
     var hasEncouragedIndirect = false;
+    var seen = <(Unit, Unit)>{};
 
     /// O(n^2) scan through all units in the learn chapter.
     for (var from in learnChapter.units) {
@@ -84,18 +87,23 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           if (kDebugMode) {
             print("Conversion not found for $fromUnit to $toUnit");
           }
+
+          /// If this happens, then we need to update the lessons.yaml properly.
           throw Exception("Conversion not found");
         }
 
         var isDirect = conversion.length == 1;
+        var isInverse = seen.contains((toUnit, fromUnit));
         var generated = _generateQuestionsForConversion(
           lesson,
           conversion,
           unitGroup,
           extendedUnitGroup,
+          isInverse: isInverse,
           isUserEncouraged: !isDirect && hasEncouragedIndirect,
         );
 
+        seen.add((fromUnit, toUnit));
         if (isDirect) {
           directQuestions.addAll(generated);
         } else {
@@ -237,6 +245,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     List<((Unit, Unit), NumericalExpression)> path,
     UnitGroup unitGroup,
     UnitGroup extendedUnitGroup, {
+    required bool isInverse,
     bool isUserEncouraged = false,
   }) {
     var isDirect = path.length == 1;
@@ -365,6 +374,8 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       /// This block is responsible for generating
       ///    the descriptive (plain) questions.
       do {
+        if (isInverse) break;
+
         var templates = _lessonsHelper.getTemplate("indirect");
         if (templates == null) {
           throw Exception("Template not found for 'indirect'.");
