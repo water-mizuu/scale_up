@@ -1,8 +1,12 @@
 import "package:flutter/material.dart" hide SearchBar;
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/hooks/use_animated_scroll_controller.dart";
+import "package:scale_up/hooks/use_bloc_listener.dart";
+import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/home_page/home_page_cubit.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/home_page/latest_lesson.dart";
@@ -11,11 +15,10 @@ import "package:scale_up/presentation/views/home/home_page/user_bar.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/new_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/lesson_tile/ongoing_lesson_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/animated_scroll_controller.dart";
 import "package:scale_up/utils/extensions/batch_extension.dart";
 import "package:scale_up/utils/extensions/fade_slide_in.dart";
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatefulHookWidget {
   const HomePage({super.key});
 
   @override
@@ -23,102 +26,56 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final HomePageCubit cubit;
-
-  @override
-  void initState() {
-    super.initState();
-
-    cubit = HomePageCubit(
-      state: context.read<UserDataBloc>().state,
-      lessonsHelper: context.read<LessonsHelper>(),
-    );
-  }
-
-  @override
-  void dispose() {
-    cubit.close();
-
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     var userDataBloc = context.read<UserDataBloc>();
+    var homePageCubit = useCreateNewBloc(() {
+      return HomePageCubit(
+        state: context.read<UserDataBloc>().state,
+        lessonsHelper: context.read<LessonsHelper>(),
+      );
+    });
+
+    useBlocListener(userDataBloc, (state) {
+      homePageCubit
+        ..updateFinishedChaptersString(state.finishedChapters)
+        ..updateStatistics(
+          totalTimeInLessons: state.totalTimeInLessons,
+          chaptersFinished: state.finishedChapters.length,
+          correctAnswers: state.correctAnswers,
+          totalAnswers: state.totalAnswers,
+        );
+    });
 
     return MultiProvider(
-      providers: [BlocProvider.value(value: cubit)],
-      builder: (context, _) {
-        return MultiBlocListener(
-          listeners: [
-            BlocListener<UserDataBloc, UserDataState>(
-              bloc: userDataBloc,
-              listener: (context, state) {
-                var homePageCubit = context.read<HomePageCubit>();
-
-                homePageCubit.updateFinishedChaptersString(state.finishedChapters);
-                homePageCubit.updateStatistics(
-                  totalTimeInLessons: state.totalTimeInLessons,
-                  chaptersFinished: state.finishedChapters.length,
-                  correctAnswers: state.correctAnswers,
-                  totalAnswers: state.totalAnswers,
-                );
-              },
-            ),
-          ],
-          child: const HomePageView(),
-        );
-      },
+      providers: [BlocProvider.value(value: homePageCubit)],
+      child: const HomePageView(),
     );
   }
 }
 
-class HomePageView extends StatefulWidget {
+class HomePageView extends HookWidget {
   const HomePageView({super.key});
 
   @override
-  State<HomePageView> createState() => _HomePageViewState();
-}
-
-class _HomePageViewState extends State<HomePageView> with SingleTickerProviderStateMixin {
-  late final AnimatedScrollController scrollController;
-  late final AnimationController animationController;
-  late ValueKey<int> listKey;
-
-  @override
-  void initState() {
-    super.initState();
-
-    scrollController = AnimatedScrollController();
-    animationController = AnimationController(vsync: this);
-    listKey = const ValueKey(0);
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    scrollController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var scrollController = useAnimatedScrollController();
+    var animationController = useAnimationController();
+    var listKey = useState(const ValueKey(0));
+
     return Scaffold(
       appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(500.ms);
-            setState(() {
-              listKey = ValueKey(listKey.value + 1);
-            });
+            await Future.delayed(250.ms);
+            listKey.value = ValueKey(listKey.value.value + 1);
             await animationController.reverse(from: 0.8);
             animationController.reset();
           },
           child: KeyedSubtree(
-            key: listKey,
+            key: listKey.value,
             child: ListView(
               controller: scrollController,
               children: const [
@@ -179,29 +136,8 @@ class OngoingLessons extends StatelessWidget {
   }
 }
 
-class NewLessons extends StatefulWidget {
+class NewLessons extends StatelessWidget {
   const NewLessons({super.key});
-
-  @override
-  State<NewLessons> createState() => _NewLessonsState();
-}
-
-class _NewLessonsState extends State<NewLessons> {
-  late final AnimatedScrollController scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    scrollController = AnimatedScrollController();
-  }
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

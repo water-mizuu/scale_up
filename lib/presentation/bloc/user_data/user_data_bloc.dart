@@ -86,7 +86,14 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
       var finishedDate = DateTime.now();
       var finishedChapters = {...state.finishedChapters, key: finishedDate};
-      emit(state.copyWith(finishedChapters: finishedChapters));
+      emit(
+        state.copyWith(
+          finishedChapters: finishedChapters,
+          totalTimeInLessons: state.totalTimeInLessons + duration,
+          correctAnswers: state.correctAnswers + correctAnswers,
+          totalAnswers: state.totalAnswers + totalAnswers,
+        ),
+      );
 
       unawaited(
         _firestoreHelper.registerChapterAsCompleted(

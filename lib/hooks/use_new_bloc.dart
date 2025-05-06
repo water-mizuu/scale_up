@@ -7,9 +7,7 @@ BLOC useCreateNewBloc<BLOC extends BlocBase<Object?>>(
 ]) {
   var state = useMemoized<BLOC>(factory, keys);
   useEffect(() {
-    return () {
-      state.close();
-    };
+    return state.close;
   }, keys);
 
   return state;

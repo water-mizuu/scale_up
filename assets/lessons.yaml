@@ -312,9 +312,13 @@ lessons:
       - feet
       - mile
     learn:
-      - name: Metric Fundamentals
+      - name: Metric Fundamentals 1
         units:
           - millimeter
+          - centimeter
+          - meter
+      - name: Metric Fundamentals 2
+        units:
           - centimeter
           - meter
           - kilometer
@@ -323,12 +327,15 @@ lessons:
           - inch
           - feet
           - mile
-      - name: Bridging Systems
+      - name: Bridging Systems 1
         units:
           - meter
           - inch
           - feet
-          - kilometer
+      - name: Bridging Systems 2
+        units:
+          - inch
+          - centimeter
           - mile
       - name: Advanced Paths
         units:
@@ -345,19 +352,19 @@ lessons:
           - meter
           - kilometer
       - name: Imperial Practice
-        question_count: 10
+        question_count: 8
         units:
           - inch
           - feet
           - mile
       - name: Mixed Practice
-        question_count: 15
+        question_count: 12
         units:
           - meter
           - feet
           - inch
       - name: Mastery Challenge
-        question_count: 20
+        question_count: 16
         units:
           - millimeter
           - centimeter
@@ -393,7 +400,6 @@ lessons:
           - meter_squared
           - inch_squared
           - feet_squared
-          - kilometer_squared
       - name: Advanced Paths
         units:
           - inch_squared
@@ -441,12 +447,16 @@ lessons:
       - gallon
       - quart
     learn:
-      - name: Metric Volume Fundamentals
+      - name: Metric Volume Fundamentals 1
         units:
           - milliliter
           - liter
           - centimeter_cubed
+      - name: Metric Volume Fundamentals 2
+        units:
+          - liter
           - meter_cubed
+          - centimeter_cubed
       - name: Imperial Volume Fundamentals
         units:
           - gallon

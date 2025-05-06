@@ -131,10 +131,13 @@ class LatestLessonTile extends StatelessWidget {
                             ),
 
                             if (lastStudied?.description case (var amount, var unit))
-                              Text(
-                                "$amount $unit ago",
-                                style: TextStyle(fontSize: 12, color: foreground),
-                              ),
+                              Text(() {
+                                if (unit == "ms") {
+                                  return "Just now";
+                                } else {
+                                  return "$amount $unit ago";
+                                }
+                              }(), style: TextStyle(fontSize: 12, color: foreground)),
                           ],
                         ),
 
