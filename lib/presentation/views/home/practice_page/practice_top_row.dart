@@ -35,7 +35,7 @@ class PracticeTopRow extends HookWidget {
               ConfirmingLeaveChapterWidget(shouldConfirm: shouldConfirm),
               Row(
                 children: [
-                  const Icon(Icons.import_contacts),
+                  const Icon(Icons.import_contacts_outlined),
                   const SizedBox(width: 8.0),
                   Text("${doneRef.value} of $total"),
                 ],

@@ -406,7 +406,7 @@ class PracticeConversionInstructions extends HookWidget {
 
     return _AnimatedQuestionPanel(
       isRetry: isRetry,
-      hint: "Do the computation:",
+      hint: "Try it yourself:",
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -39,20 +39,12 @@ class LessonPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            if (!context.canPop()) {
-              return const SizedBox();
-            }
-
-            return MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => context.pop(),
-                child: const Icon(Icons.arrow_back_ios_new, size: 18.0),
-              ),
-            );
-          },
+        leading: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () => context.pop(),
+            child: const Icon(Icons.arrow_back_ios_new, size: 18.0),
+          ),
         ),
         elevation: 0.0,
         scrolledUnderElevation: 0.0,
