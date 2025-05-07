@@ -224,13 +224,7 @@ class PracticePageView extends HookWidget {
         else ...[
           Positioned.fill(child: PracticeBody(progressBarKey: progressBarKey)),
 
-          const Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: PracticeCongratulatoryBarrier(),
-          ),
+          const Positioned.fill(child: PracticeCongratulatoryBarrier()),
           const Positioned(bottom: 0, left: 0, right: 0, child: PracticeCongratulatoryMessage()),
           const Positioned(bottom: 0, left: 0, right: 0, child: PracticeContinueButton()),
         ],

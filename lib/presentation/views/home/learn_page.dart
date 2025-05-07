@@ -347,13 +347,7 @@ class LearnPageView extends HookWidget {
         else ...[
           Positioned.fill(child: LearnBody(progressBarKey: progressBarKey)),
 
-          const Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: LearnCongratulatoryBarrier(),
-          ),
+          const Positioned.fill(child: LearnCongratulatoryBarrier()),
           const Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
           const Positioned(bottom: 0, left: 0, right: 0, child: LearnContinueButton()),
         ],

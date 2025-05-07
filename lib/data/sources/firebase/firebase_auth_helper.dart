@@ -56,9 +56,12 @@ class _FirebaseAuthHelperWindows implements FirebaseAuthHelper {
 
   @override
   Future<void> signOut() async {
-    var googleSignIn = await _getGoogleSignIn();
-    await googleSignIn.signOut();
-    await _auth.signOut();
+    try {
+      var googleSignIn = await _getGoogleSignIn();
+      await googleSignIn.signOut();
+    } finally {
+      await _auth.signOut();
+    }
   }
 
   /// throws [PlatformException]
@@ -158,8 +161,11 @@ class _FirebaseAuthHelperNotWindows implements FirebaseAuthHelper {
 
   @override
   Future<void> signOut() async {
-    await _googleSignIn.signOut();
-    await _auth.signOut();
+    try {
+      await _googleSignIn.signOut();
+    } finally {
+      await _auth.signOut();
+    }
   }
 
   /// throws [PlatformException]

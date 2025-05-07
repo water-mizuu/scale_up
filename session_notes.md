@@ -54,3 +54,6 @@ However, there are still some things I need to do.
       2. Create variations
       3. Designate the constrained shuffling.
   2. Indicate to the user the locked and stuff.
+
+# May 7, 2025 || 2:25PM.
+After some bugfixing, the application is close to completion. I have given up on parametrized conversions as it is outside the scope of the project.
