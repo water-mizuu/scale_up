@@ -159,6 +159,8 @@ sealed class NumericalExpression {
         SubtractionExpression() => "subtract",
         MultiplicationExpression() => "multiply it by",
         DivisionExpression() => "divide it by",
+        PowerExpression(right: ConstantExpression(value: 2)) => "square it",
+        PowerExpression(right: ConstantExpression(value: 3)) => "cube it",
         PowerExpression() => "raise it to the power of",
         _ => null,
       };

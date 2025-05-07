@@ -7,8 +7,8 @@ import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 
 /// This widget is used to show the backdrop of the continue button.
-class CongratulatoryMessage extends StatelessWidget {
-  const CongratulatoryMessage({super.key});
+class PracticeCongratulatoryMessage extends StatelessWidget {
+  const PracticeCongratulatoryMessage({super.key});
 
   @override
   Widget build(BuildContext context) {

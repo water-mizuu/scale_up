@@ -5,8 +5,8 @@ import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dar
 import "package:scale_up/presentation/views/home/practice_page/practice_check_button.dart";
 
 /// This widget is used to show the continue button.
-class ContinueMessage extends StatelessWidget {
-  const ContinueMessage({super.key});
+class PracticeContinueButton extends StatelessWidget {
+  const PracticeContinueButton({super.key});
 
   @override
   Widget build(BuildContext context) {

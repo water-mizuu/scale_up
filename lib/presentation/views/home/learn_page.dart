@@ -19,9 +19,10 @@ import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/learn_page/completed_learn_body.dart";
 import "package:scale_up/presentation/views/home/learn_page/congratulatory_message.dart";
-import "package:scale_up/presentation/views/home/learn_page/continue_message.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_body.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices/choice_unit_tile.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_congratulatory_barrier.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_continue_button.dart";
 import "package:scale_up/presentation/views/home/notifications/user_quit_notification.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
@@ -346,8 +347,15 @@ class LearnPageView extends HookWidget {
         else ...[
           Positioned.fill(child: LearnBody(progressBarKey: progressBarKey)),
 
+          const Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: LearnCongratulatoryBarrier(),
+          ),
           const Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
-          const Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: LearnContinueButton()),
         ],
       ],
     );

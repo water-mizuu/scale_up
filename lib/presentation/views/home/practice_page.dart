@@ -13,10 +13,15 @@ import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dar
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 import "package:scale_up/presentation/views/home/notifications/user_quit_notification.dart";
-import "package:scale_up/presentation/views/home/practice_page/completed_practice_body.dart";
-import "package:scale_up/presentation/views/home/practice_page/congratulatory_message.dart";
-import "package:scale_up/presentation/views/home/practice_page/continue_message.dart";
-import "package:scale_up/presentation/views/home/practice_page/practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/"
+    "completed_practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/"
+    "practice_body.dart";
+import "package:scale_up/presentation/views/home/practice_page/"
+    "practice_congratulatory_barrier.dart";
+import "package:scale_up/presentation/views/home/practice_page/"
+    "practice_congratulatory_message.dart";
+import "package:scale_up/presentation/views/home/practice_page/practice_continue_button.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
@@ -219,8 +224,15 @@ class PracticePageView extends HookWidget {
         else ...[
           Positioned.fill(child: PracticeBody(progressBarKey: progressBarKey)),
 
-          const Positioned(bottom: 0, left: 0, right: 0, child: CongratulatoryMessage()),
-          const Positioned(bottom: 0, left: 0, right: 0, child: ContinueMessage()),
+          const Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: PracticeCongratulatoryBarrier(),
+          ),
+          const Positioned(bottom: 0, left: 0, right: 0, child: PracticeCongratulatoryMessage()),
+          const Positioned(bottom: 0, left: 0, right: 0, child: PracticeContinueButton()),
         ],
       ],
     );

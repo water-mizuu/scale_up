@@ -96,7 +96,10 @@ class NewLessonTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8.0),
-                  Styles.subtitle(lesson.name, fontSize: 14, color: foreground),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Styles.subtitle(lesson.name, fontSize: 14, color: foreground),
+                  ),
                 ],
               ),
 
