@@ -665,6 +665,106 @@ $UnitCopyWith<$Res> get to {
 /// @nodoc
 
 
+class PracticeConversionLearnQuestion extends LearnQuestion {
+  const PracticeConversionLearnQuestion({required this.from, required this.to, required this.question, required this.answer, required final  List<((Unit, Unit), NumericalExpression)> path, this.isRetry = false}): _path = path,super._();
+  
+
+ final  Unit from;
+ final  Unit to;
+ final  num question;
+ final  num answer;
+ final  List<((Unit, Unit), NumericalExpression)> _path;
+ List<((Unit, Unit), NumericalExpression)> get path {
+  if (_path is EqualUnmodifiableListView) return _path;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_path);
+}
+
+@override@JsonKey() final  bool isRetry;
+
+/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PracticeConversionLearnQuestionCopyWith<PracticeConversionLearnQuestion> get copyWith => _$PracticeConversionLearnQuestionCopyWithImpl<PracticeConversionLearnQuestion>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PracticeConversionLearnQuestion&&(identical(other.from, from) || other.from == from)&&(identical(other.to, to) || other.to == to)&&(identical(other.question, question) || other.question == question)&&(identical(other.answer, answer) || other.answer == answer)&&const DeepCollectionEquality().equals(other._path, _path)&&(identical(other.isRetry, isRetry) || other.isRetry == isRetry));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,from,to,question,answer,const DeepCollectionEquality().hash(_path),isRetry);
+
+@override
+String toString() {
+  return 'LearnQuestion.practiceConversion(from: $from, to: $to, question: $question, answer: $answer, path: $path, isRetry: $isRetry)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PracticeConversionLearnQuestionCopyWith<$Res> implements $LearnQuestionCopyWith<$Res> {
+  factory $PracticeConversionLearnQuestionCopyWith(PracticeConversionLearnQuestion value, $Res Function(PracticeConversionLearnQuestion) _then) = _$PracticeConversionLearnQuestionCopyWithImpl;
+@override @useResult
+$Res call({
+ Unit from, Unit to, num question, num answer, List<((Unit, Unit), NumericalExpression)> path, bool isRetry
+});
+
+
+$UnitCopyWith<$Res> get from;$UnitCopyWith<$Res> get to;
+
+}
+/// @nodoc
+class _$PracticeConversionLearnQuestionCopyWithImpl<$Res>
+    implements $PracticeConversionLearnQuestionCopyWith<$Res> {
+  _$PracticeConversionLearnQuestionCopyWithImpl(this._self, this._then);
+
+  final PracticeConversionLearnQuestion _self;
+  final $Res Function(PracticeConversionLearnQuestion) _then;
+
+/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? from = null,Object? to = null,Object? question = null,Object? answer = null,Object? path = null,Object? isRetry = null,}) {
+  return _then(PracticeConversionLearnQuestion(
+from: null == from ? _self.from : from // ignore: cast_nullable_to_non_nullable
+as Unit,to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
+as Unit,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as num,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
+as num,path: null == path ? _self._path : path // ignore: cast_nullable_to_non_nullable
+as List<((Unit, Unit), NumericalExpression)>,isRetry: null == isRetry ? _self.isRetry : isRetry // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UnitCopyWith<$Res> get from {
+  
+  return $UnitCopyWith<$Res>(_self.from, (value) {
+    return _then(_self.copyWith(from: value));
+  });
+}/// Create a copy of LearnQuestion
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UnitCopyWith<$Res> get to {
+  
+  return $UnitCopyWith<$Res>(_self.to, (value) {
+    return _then(_self.copyWith(to: value));
+  });
+}
+}
+
+/// @nodoc
+
+
 class IndirectStepsLearnQuestion extends LearnQuestion {
   const IndirectStepsLearnQuestion({required this.from, required this.to, required final  List<((Unit, Unit), NumericalExpression)> steps, required final  List<Unit> choices, required final  List<Unit> answer, this.isRetry = false}): _steps = steps,_choices = choices,_answer = answer,super._();
   

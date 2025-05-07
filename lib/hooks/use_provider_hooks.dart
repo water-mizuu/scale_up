@@ -10,6 +10,17 @@ T useRead<T>() {
   return provider;
 }
 
+T? useMaybeRead<T extends Object>() {
+  final context = useContext();
+
+  try {
+    final provider = context.read<T>();
+    return provider;
+  } on Object {
+    return null;
+  }
+}
+
 T useWatch<T>() {
   final context = useContext();
   final provider = context.watch<T>();

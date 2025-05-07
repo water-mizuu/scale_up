@@ -3,20 +3,22 @@ import "dart:async";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/data/sources/lessons/parsers/numerical_expression_parser.dart";
+import "package:scale_up/hooks/use_bloc_listener.dart";
+import "package:scale_up/hooks/use_provider_hooks.dart";
+import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/to_string_as_fixed_max_extension.dart";
 
-class CalculatorWidget extends StatefulWidget {
-  const CalculatorWidget({required this.onEvaluate, super.key});
+class CalculatorWidget extends StatefulHookWidget {
+  const CalculatorWidget({required this.onEvaluate, required this.hslColor, super.key});
 
+  final HSLColor hslColor;
   final FutureOr<void> Function(NumericalExpression) onEvaluate;
 
   @override
@@ -52,7 +54,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     appendOverrides = false;
 
     // Get theme color from the bloc
-    hslColor = context.read<PracticePageBloc>().loadedState.lesson.hslColor;
+    hslColor = widget.hslColor;
 
     // Configure color theme
     backgroundColor =
@@ -74,81 +76,77 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 360;
 
-    final calculatorWidget = BlocListener<PracticePageBloc, PracticePageState>(
-      listener: (context, state) {
+    /// A disgusting hack. Someone should shoot this guy.
+    if (useMaybeRead<PracticePageBloc>() case var practicePageBloc?) {
+      useBlocListener(practicePageBloc, (state) {
         if (state.status == PracticePageStatus.evaluating) {
           _evaluate(submit: false);
         }
         if (state.status == PracticePageStatus.movingIn) {
           _clear();
         }
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Container(
-          padding: const EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [backgroundColor, backgroundColor.withValues(alpha: 0.92)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      });
+    } else if (useMaybeRead<LearnPageBloc>() case var learnPageBloc?) {
+      useBlocListener(learnPageBloc, (state) {
+        if (state is! LoadedLearnPageState) return;
+
+        if (state.status == LearnPageStatus.evaluating) {
+          _evaluate(submit: false);
+        }
+        if (state.status == LearnPageStatus.movingIn) {
+          _clear();
+        }
+      }, listenWhen: (_, c) => c is LoadedLearnPageState);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [backgroundColor, backgroundColor.withValues(alpha: 0.92)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(color: hslColor.borderColor.withValues(alpha: 0.5)),
+          boxShadow: [
+            BoxShadow(
+              color: hslColor.withAlpha(0.08).toColor(),
+              blurRadius: 6.0,
+              offset: const Offset(0, 2),
+              spreadRadius: 1.0,
             ),
-            borderRadius: BorderRadius.circular(16.0),
-            border: Border.all(color: hslColor.borderColor.withValues(alpha: 0.5)),
-            boxShadow: [
-              BoxShadow(
-                color: hslColor.withAlpha(0.08).toColor(),
-                blurRadius: 6.0,
-                offset: const Offset(0, 2),
-                spreadRadius: 1.0,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Calculator display
-              _buildDisplay(),
-              const SizedBox(height: 10.0),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Calculator display
+            _buildDisplay(),
+            const SizedBox(height: 10.0),
 
-              // Calculator buttons
-              _buildKeypad(isSmallScreen),
+            // Calculator buttons
+            _buildKeypad(isSmallScreen),
 
-              // Hint text - Made smaller and more stylish
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.lightbulb_outline, size: 14.0, color: Styles.hint.color),
-                    const SizedBox(width: 4.0),
-                    Styles.hint("Compute your answer here!", fontSize: 14.0),
-                  ],
-                ),
+            // Hint text - Made smaller and more stylish
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.lightbulb_outline, size: 14.0, color: Styles.hint.color),
+                  const SizedBox(width: 4.0),
+                  Styles.hint("Compute your answer here!", fontSize: 14.0),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-
-    // Add animation effects
-    return calculatorWidget
-        .animate(
-          controller: context.read<TransitionOutAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.ms)
-        .slideX(begin: 0.0, end: -0.4, curve: Curves.easeOutQuad)
-        .fadeOut()
-        .animate(
-          controller: context.read<TransitionInAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.ms)
-        .slideX(begin: 0.4, end: 0.0, curve: Curves.easeOutCubic)
-        .fadeIn();
   }
 
   Widget _buildDisplay() {

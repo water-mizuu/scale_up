@@ -17,7 +17,7 @@ class ColoredProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return FAProgressBar(
       key: progressBarKey,
-      size: 16,
+      size: 4,
       currentValue: (progress * 100).floorToDouble(),
       borderRadius: BorderRadius.circular(24.0),
       progressColor: hslColor.toColor(),

@@ -3,6 +3,7 @@ import "package:freezed_annotation/freezed_annotation.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
+import "package:scale_up/utils/extensions/to_string_as_fixed_max_extension.dart";
 
 part "learn_page_state.freezed.dart";
 
@@ -84,6 +85,15 @@ sealed class LearnQuestion with _$LearnQuestion {
     @Default(false) bool isRetry,
   }) = ImportantNumbersLearnQuestion;
 
+  const factory LearnQuestion.practiceConversion({
+    required Unit from,
+    required Unit to,
+    required num question,
+    required num answer,
+    required List<((Unit, Unit), NumericalExpression)> path,
+    @Default(false) bool isRetry,
+  }) = PracticeConversionLearnQuestion;
+
   const factory LearnQuestion.indirectSteps({
     required Unit from,
     required Unit to,
@@ -107,6 +117,8 @@ sealed class LearnQuestion with _$LearnQuestion {
           .map((p) => p.$1)
           .map((p) => "${p.$1.shortcut} to ${p.$2.shortcut}")
           .join(", "),
+
+      PracticeConversionLearnQuestion(:var answer) => answer.toStringAsFixedMax(10),
     };
   }
 
@@ -119,6 +131,7 @@ sealed class LearnQuestion with _$LearnQuestion {
       ImportantNumbersLearnQuestion() => //
         (a, b) =>
             a is Set<num> && b is Set<num> && a.difference(b).isEmpty && b.difference(a).isEmpty,
+
       IndirectStepsLearnQuestion() => (a, b) {
         if (a is! List<Unit> || b is! List<Unit> || a.length != b.length) {
           return false;
@@ -132,6 +145,9 @@ sealed class LearnQuestion with _$LearnQuestion {
 
         return true;
       },
+
+      PracticeConversionLearnQuestion() =>
+        (a, b) => a is num && b is num && a.toStringAsPrecision(4) == b.toStringAsPrecision(4),
     };
   }
 }

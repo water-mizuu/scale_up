@@ -119,17 +119,18 @@ class ProfilePageView extends HookWidget {
       margin: const EdgeInsets.only(bottom: 12.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(8.0),
         border: Border.all(color: Colors.grey.shade100),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(8.0),
         child: Theme(
           data: Theme.of(context).copyWith(
             dividerColor: Colors.transparent,
             colorScheme: ColorScheme.light(primary: color.toColor(), secondary: color.toColor()),
           ),
           child: ExpansionTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
             leading: Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(

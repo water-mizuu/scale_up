@@ -18,7 +18,7 @@ class ForgotPasswordEmailField extends StatelessWidget with ForgotPasswordValida
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           labelText: "Email Address",
-          prefixIcon: Icon(Icons.email_outlined),
+          // prefixIcon: Icon(Icons.email_outlined),
         ),
         keyboardType: TextInputType.emailAddress,
       ),

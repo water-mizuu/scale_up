@@ -62,7 +62,11 @@ class OngoingLessonTile extends StatelessWidget {
     Widget child = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Styles.subtitle(lesson.name, fontSize: 16, fontWeight: FontWeight.w600),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Styles.subtitle(lesson.name, fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -200,6 +200,7 @@ class LearnPage extends HookWidget {
                   case PlainLearnQuestion _:
                   case DirectFormulaLearnQuestion _:
                   case ImportantNumbersLearnQuestion _:
+                  case PracticeConversionLearnQuestion _:
                     return const LearnPageView();
                   case IndirectStepsLearnQuestion question:
                     return IndirectStepsLearnPage(

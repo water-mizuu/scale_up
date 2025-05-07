@@ -5,6 +5,7 @@ import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:provider/single_child_widget.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/hooks/use_animated_scroll_controller.dart";
@@ -38,6 +39,8 @@ class LearnInstructions extends StatelessWidget {
         return ImportantNumbersInstructions(currentQuestion: currentQuestion);
       case IndirectStepsLearnQuestion():
         return IndirectStepsInstructions(currentQuestion: currentQuestion);
+      case PracticeConversionLearnQuestion():
+        return PracticeConversionInstructions(currentQuestion: currentQuestion);
     }
   }
 }
@@ -392,20 +395,114 @@ class IndirectStepsToolTipContent extends StatelessWidget {
   }
 }
 
-class _AnimatedQuestionPanel extends StatelessWidget {
+class PracticeConversionInstructions extends HookWidget {
+  const PracticeConversionInstructions({super.key, required this.currentQuestion});
+
+  final PracticeConversionLearnQuestion currentQuestion;
+
+  @override
+  Widget build(BuildContext context) {
+    var PracticeConversionLearnQuestion(:from, :to, :question, :path, :isRetry) = currentQuestion;
+
+    return _AnimatedQuestionPanel(
+      isRetry: isRetry,
+      hint: "Do the computation:",
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            runAlignment: WrapAlignment.center,
+            children: [
+              Styles.subtitle("Convert the unit from "),
+              Styles.subtitle("${from.name} ", fontWeight: FontWeight.bold),
+              Styles.subtitle(
+                "(${from.shortcut})",
+                fontWeight: FontWeight.w600,
+                fontFamily: GoogleFonts.notoSansMath().fontFamily,
+              ),
+              Styles.subtitle(" to "),
+              Styles.subtitle("${to.name} ", fontWeight: FontWeight.bold),
+              Styles.subtitle(
+                "(${to.shortcut})",
+                fontWeight: FontWeight.w600,
+                fontFamily: GoogleFonts.notoSansMath().fontFamily,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18.0),
+            child: Center(
+              child: ToolTip(
+                content: IntrinsicWidth(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Styles.subtitle("Conversion steps"),
+
+                      /// IntrinsicHeight tells the Row to take the height of the tallest child,
+                      ///   and impose that as a Constraint on the entire widget.
+                      for (var (i, ((from, to), expr)) in path.indexed) ...[
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(text: "${i + 1}."),
+                              const TextSpan(text: " From "),
+                              TextSpan(
+                                text: from.shortcut,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(text: " to "),
+                              TextSpan(
+                                text: to.shortcut,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(text: ":"),
+                            ],
+                          ),
+                        ),
+
+                        Styles.body(
+                          "      "
+                          "${to.shortcut} = ${expr.substituteString("from", from.shortcut)}",
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                child: Container(
+                  /// There should be an underline under the text.
+                  padding: const EdgeInsets.only(bottom: 4.0),
+                  child: Styles.title(
+                    "$question ${from.shortcut} to ___ ${to.shortcut}?",
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.dashed,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AnimatedQuestionPanel extends SingleChildStatelessWidget {
   const _AnimatedQuestionPanel({
-    required this.child,
+    required Widget super.child,
     required this.isRetry,
     this.hint = "Answer the question: ",
   });
 
-  final Widget child;
   final String hint;
   final bool isRetry;
 
   @override
-  Widget build(BuildContext context) {
-    var widget = FloatingCardWithHint(hint: hint, isRetry: isRetry, child: child);
+  Widget buildWithChild(BuildContext context, Widget? child) {
+    var widget = FloatingCardWithHint(hint: hint, isRetry: isRetry, child: child!);
 
     return widget
         .animate(

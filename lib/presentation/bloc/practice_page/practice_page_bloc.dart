@@ -119,8 +119,7 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
     Emitter<PracticePageState> emit,
   ) async {
     try {
-      var expression = event.input;
-      var parsedInput = expression.evaluate({}).toDouble();
+      var parsedInput = event.input.toDouble();
 
       emit(loadedState.copyWith(answer: parsedInput));
     } on UnsupportedError {

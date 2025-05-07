@@ -4,7 +4,8 @@ import "package:provider/provider.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_choices/blank_choice_unit_tile.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_choices/"
+    "blank_choice_unit_tile.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices/choice_unit_tile.dart";
 
 class IndirectStepsChoice extends StatelessWidget {

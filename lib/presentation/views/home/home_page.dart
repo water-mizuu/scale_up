@@ -69,8 +69,8 @@ class HomePageView extends HookWidget {
         padding: const EdgeInsets.only(top: 16.0),
         child: RefreshIndicator(
           onRefresh: () async {
-            await Future.delayed(250.ms);
-            listKey.value = ValueKey(listKey.value.value + 1);
+            await Future.delayed(1000.ms);
+            listKey.value = ValueKey((listKey.value.value + 1) % 2);
             await animationController.reverse(from: 0.8);
             animationController.reset();
           },

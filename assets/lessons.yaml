@@ -108,22 +108,9 @@ units_present:
       - from: kilometer
         to: mile
         formula: from / 1.60934
-      - from: centimeter
-        to: millimeter
-        formula: from * 10
-      - from: centimeter
-        to: meter
-        formula: from / 100
-      - from: inch
-        to: centimeter
-        formula: from * 2.54
     units:
       - id: meter
         shortcut: m
-      - id: centimeter
-        shortcut: cm
-      - id: millimeter
-        shortcut: mm
       - id: kilometer
         shortcut: km
       - id: mile
@@ -304,22 +291,14 @@ lessons:
     units_type: length
     color: "#1f77b4"
     units:
-      - millimeter
-      - centimeter
       - meter
       - kilometer
       - inch
       - feet
       - mile
     learn:
-      - name: Metric Fundamentals 1
+      - name: Metric Fundamentals
         units:
-          - millimeter
-          - centimeter
-          - meter
-      - name: Metric Fundamentals 2
-        units:
-          - centimeter
           - meter
           - kilometer
       - name: Imperial Fundamentals
@@ -334,21 +313,19 @@ lessons:
           - feet
       - name: Bridging Systems 2
         units:
-          - inch
-          - centimeter
+          - kilometer
+          - meter
           - mile
       - name: Advanced Paths
         units:
-          - millimeter
           - mile
-          - centimeter
           - feet
+          - kilometer
+          - meter
     practice:
       - name: Metric Practice
         question_count: 10
         units:
-          - millimeter
-          - centimeter
           - meter
           - kilometer
       - name: Imperial Practice
@@ -366,8 +343,6 @@ lessons:
       - name: Mastery Challenge
         question_count: 16
         units:
-          - millimeter
-          - centimeter
           - meter
           - kilometer
           - inch

@@ -1,15 +1,20 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_animate/flutter_animate.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
+import "package:functional_widget_annotation/functional_widget_annotation.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/bordered_widget.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_choices/indirect_steps_choice.dart";
+import "package:scale_up/presentation/views/home/practice_page/calculator.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
+
+part "learn_choices.g.dart";
 
 class LearnChoices extends StatelessWidget {
   const LearnChoices({super.key});
@@ -29,6 +34,8 @@ class LearnChoices extends StatelessWidget {
         return ImportantNumbersChoices(currentQuestion: currentQuestion);
       case IndirectStepsLearnQuestion():
         return IndirectStepsChoices(currentQuestion: currentQuestion);
+      case PracticeConversionLearnQuestion():
+        return PracticeConversionChoices(currentQuestion: currentQuestion);
     }
   }
 }
@@ -319,6 +326,42 @@ class ChoicesWrap extends StatelessWidget {
       ],
     );
   }
+}
+
+@hwidget
+Widget practiceConversionChoices({required PracticeConversionLearnQuestion currentQuestion}) {
+  var context = useContext();
+  var learnPageBloc = context.watch<LearnPageBloc>();
+  var hslColor = learnPageBloc.loadedState.lesson.hslColor;
+
+  var widget = CalculatorWidget(
+    hslColor: hslColor,
+    onEvaluate: (expression) {
+      try {
+        var evaluated = expression.evaluate({});
+
+        context.read<LearnPageBloc>().add(LearnPageAnswerUpdated(answer: evaluated));
+      } on UnsupportedError {
+        return;
+      }
+    },
+  );
+
+  return widget
+      .animate(
+        controller: context.read<TransitionOutAnimationController>().controller,
+        autoPlay: false,
+      )
+      .then(delay: 200.ms)
+      .slideX(begin: 0.0, end: -0.4, curve: Curves.easeOutQuad)
+      .fadeOut()
+      .animate(
+        controller: context.read<TransitionInAnimationController>().controller,
+        autoPlay: false,
+      )
+      .then(delay: 250.ms)
+      .slideX(begin: 0.4, end: 0.0, curve: Curves.easeOutCubic)
+      .fadeIn();
 }
 
 final padding = const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 8.0);

@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:math";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -164,6 +165,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       case DirectFormulaLearnQuestion(answer: Object correctAnswer):
       case ImportantNumbersLearnQuestion(answer: Object correctAnswer):
       case IndirectStepsLearnQuestion(answer: Object correctAnswer):
+      case PracticeConversionLearnQuestion(answer: Object correctAnswer):
         var answer = loadedState.answer;
 
         if (question.comparison(answer, correctAnswer)) {
@@ -250,10 +252,12 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   }) {
     var isDirect = path.length == 1;
     var questions = <LearnQuestion>[];
+    var ((from, _), _) = path.first;
+    var ((_, to), _) = path.last;
 
     if (isDirect) {
+      var (_, expression) = path.single;
       var quizQuestions = <LearnQuestion>[];
-      var ((from, to), expression) = path.single;
       var isInverse =
           extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id) &&
           !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id));
@@ -368,9 +372,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       quizQuestions.shuffle();
       questions.addAll(quizQuestions);
     } else {
-      var ((from, _), _) = path.first;
-      var ((_, to), _) = path.last;
-
       /// This block is responsible for generating
       ///    the descriptive (plain) questions.
       do {
@@ -453,6 +454,23 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
         );
       } while (false);
     }
+
+    /// This block is responsible for generating
+    ///   "Try it yourself" questions.
+    do {
+      var questionValue = Random().nextInt(80) + 20;
+      var answer = path.map((p) => p.$2).toList().evaluate(questionValue);
+
+      questions.add(
+        LearnQuestion.practiceConversion(
+          from: from,
+          to: to,
+          question: questionValue,
+          answer: answer,
+          path: path,
+        ),
+      );
+    } while (false);
 
     return questions;
   }

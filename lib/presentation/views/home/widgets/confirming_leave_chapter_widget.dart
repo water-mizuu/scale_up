@@ -8,11 +8,14 @@ class ConfirmingLeaveChapterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back_ios_new),
-      onPressed: () {
-        UserQuitNotification().dispatch(context);
-      },
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          UserQuitNotification().dispatch(context);
+        },
+        child: const Icon(Icons.arrow_back, size: 18.0),
+      ),
     );
   }
 }
