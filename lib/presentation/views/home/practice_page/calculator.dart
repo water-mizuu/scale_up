@@ -76,7 +76,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 360;
 
-    /// A disgusting hack. Someone should shoot this guy.
+    /// A disgusting hack. Someone should rewrite this better.
     if (useMaybeRead<PracticePageBloc>() case var practicePageBloc?) {
       useBlocListener(practicePageBloc, (state) {
         if (state.status == PracticePageStatus.evaluating) {

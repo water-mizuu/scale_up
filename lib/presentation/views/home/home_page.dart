@@ -4,9 +4,9 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/hooks/use_animated_scroll_controller.dart";
 import "package:scale_up/hooks/use_bloc_listener.dart";
-import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/home_page/home_page_cubit.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/home_page/latest_lesson.dart";
@@ -18,25 +18,19 @@ import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/batch_extension.dart";
 import "package:scale_up/utils/extensions/fade_slide_in.dart";
 
-class HomePage extends StatefulHookWidget {
+class HomePage extends ProvidingHookWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
   Widget build(BuildContext context) {
-    var userDataBloc = context.read<UserDataBloc>();
-    var homePageCubit = useCreateNewBloc(() {
-      return HomePageCubit(
+    var homePageCubit = useProvidedBloc(
+      () => HomePageCubit(
         state: context.read<UserDataBloc>().state,
         lessonsHelper: context.read<LessonsHelper>(),
-      );
-    });
+      ),
+    );
 
-    useBlocListener(userDataBloc, (state) {
+    useBlocListener(context.read<UserDataBloc>(), (state) {
       homePageCubit
         ..updateFinishedChaptersString(state.finishedChapters)
         ..updateStatistics(
@@ -47,10 +41,7 @@ class _HomePageState extends State<HomePage> {
         );
     });
 
-    return MultiProvider(
-      providers: [BlocProvider.value(value: homePageCubit)],
-      child: const HomePageView(),
-    );
+    return const HomePageView();
   }
 }
 
@@ -89,11 +80,7 @@ class HomePageView extends HookWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     spacing: 16.0,
-                    children: [
-                      NewLessons(), //
-                      OngoingLessons(), //
-                      FinishedLessons(),
-                    ],
+                    children: [NewLessons(), OngoingLessons(), FinishedLessons()],
                   ),
                 ),
               ],

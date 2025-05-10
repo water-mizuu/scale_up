@@ -5,7 +5,6 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:scale_up/data/models/learn_chapter.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/practice_chapter.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
@@ -43,7 +42,8 @@ class LessonProgression extends HookWidget {
     List<PracticeChapter> practiceChapters,
     List<LearnChapter> learnChapters,
   ) {
-    final completedChapters = useSelect((UserDataBloc bloc) {
+    final context = useContext();
+    final completedChapters = context.select((UserDataBloc bloc) {
       return bloc.state.finishedChapters.keys.where((n) => n.startsWith(lessonId)).length;
     });
 

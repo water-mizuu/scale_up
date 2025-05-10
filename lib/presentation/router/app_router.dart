@@ -7,9 +7,9 @@ import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/learn_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
+import "package:scale_up/presentation/views/home/loading_page.dart";
 import "package:scale_up/presentation/views/home/practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
-import "package:scale_up/presentation/views/home/splash_page.dart";
 import "package:scale_up/presentation/views/home/widgets/app_scaffold.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 
@@ -41,7 +41,7 @@ final GoRouter router = GoRouter(
       builder: (context, state, child) => ContextDialogWidget(child: child),
       routes: [
         /// We add a blank route to have the application load this screen first.
-        GoRoute(path: AppRoutes._blank, builder: (context, state) => const SplashPage()),
+        GoRoute(path: AppRoutes._blank, builder: (context, state) => const LoadingPage()),
         GoRoute(
           path: "/login",
           name: AppRoutes.login,

@@ -3,8 +3,8 @@ import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/choose_random_extension.dart";
 import "package:scale_up/utils/loading_tips.dart";
 
-class SplashPage extends StatelessWidget {
-  const SplashPage({super.key});
+class LoadingPage extends StatelessWidget {
+  const LoadingPage({super.key});
 
   @override
   Widget build(BuildContext context) {

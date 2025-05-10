@@ -9,7 +9,6 @@ import "package:provider/single_child_widget.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/hooks/use_animated_scroll_controller.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
@@ -207,7 +206,7 @@ class IndirectStepsQuestionPanel extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var IndirectStepsLearnQuestion(:from, :to, :steps, :isRetry) = useSelect(
+    var IndirectStepsLearnQuestion(:from, :to, :steps, :isRetry) = context.select(
       (IndirectStepsCubit c) => c.activeState.question,
     );
 
@@ -253,8 +252,8 @@ class IndirectStepsAnswerSpots extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var answerKeys = useSelect((IndirectStepsCubit c) => c.activeState.answerKeys);
-    var steps = useSelect((IndirectStepsCubit c) => c.activeState.question.steps);
+    var answerKeys = context.select((IndirectStepsCubit c) => c.activeState.answerKeys);
+    var steps = context.select((IndirectStepsCubit c) => c.activeState.question.steps);
 
     var child = Table(
       defaultColumnWidth: const IntrinsicColumnWidth(),

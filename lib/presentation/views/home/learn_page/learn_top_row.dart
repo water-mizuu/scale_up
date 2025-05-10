@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/learn_progress_bar.dart";
 import "package:scale_up/presentation/views/home/widgets/confirming_leave_chapter_widget.dart";
@@ -13,7 +13,7 @@ class LearnTopRow extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var doneRef = useRef(0);
-    var (questionIndex, done, total) = useSelect(
+    var (questionIndex, done, total) = context.select(
       (LearnPageBloc b) => (
         b.loadedState.questionIndex,
         b.loadedState.questionIndex - b.loadedState.mistakes + 1,

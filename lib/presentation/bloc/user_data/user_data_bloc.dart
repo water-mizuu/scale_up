@@ -5,6 +5,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_event.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_state.dart";
+import "package:scale_up/utils/sound_player.dart";
 
 export "user_data_event.dart";
 export "user_data_state.dart";
@@ -43,6 +44,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
       var (:finishedChapters, :correctAnswers, :totalAnswers, :totalTimeInLessons) = //
           await _firestoreHelper.getUserData(user: event.user);
+
+      /// This preloads the sounds for the app.
+      preloadSounds();
 
       emit(
         state.copyWith(

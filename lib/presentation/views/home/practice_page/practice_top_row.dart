@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_progress_bar.dart";
 import "package:scale_up/presentation/views/home/widgets/confirming_leave_chapter_widget.dart";
@@ -13,7 +13,7 @@ class PracticeTopRow extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var doneRef = useRef(0);
-    var (questionIndex, done, total) = useSelect(
+    var (questionIndex, done, total) = context.select(
       (PracticePageBloc b) => (
         b.loadedState.questionIndex,
         b.loadedState.questionIndex - b.loadedState.mistakes + 1,

@@ -11,7 +11,6 @@ import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/hooks/use_bloc_builder.dart";
 import "package:scale_up/hooks/use_bloc_listener.dart";
 import "package:scale_up/hooks/use_new_bloc.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
@@ -47,7 +46,7 @@ class LearnPage extends HookWidget {
     var transitionOutAnimation = useAnimationController(duration: 500.ms);
 
     /// Create the bloc.
-    var helper = useRead<LessonsHelper>();
+    var helper = context.read<LessonsHelper>();
     var learnPageBloc = useCreateNewBloc(() => LearnPageBloc(lessonsHelper: helper));
     var indirectStepsCubit = useCreateNewBloc(() => IndirectStepsCubit());
 
@@ -277,16 +276,14 @@ class IndirectStepsLearnPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var controller = useAnimationController(duration: 200.ms);
-    var indirectStepsCubit = useRead<IndirectStepsCubit>();
-    var learnPageBloc = useRead<LearnPageBloc>();
 
     /// We want to set up the question whenever the question changes.
     useEffect(() {
-      indirectStepsCubit.setupQuestion(controller, question);
+      context.read<IndirectStepsCubit>().setupQuestion(controller, question);
     }, [question]);
 
     var state = useBlocBuilder(
-      indirectStepsCubit,
+      context.read<IndirectStepsCubit>(),
       buildWhen: (p, c) {
         if (p is! ActiveIndirectStepsState || c is! ActiveIndirectStepsState) {
           return false;
@@ -297,7 +294,7 @@ class IndirectStepsLearnPage extends HookWidget {
     );
 
     useBlocListener(
-      indirectStepsCubit,
+      context.read<IndirectStepsCubit>(),
       (state) {
         if (state is! ActiveIndirectStepsState) {
           return;
@@ -305,9 +302,13 @@ class IndirectStepsLearnPage extends HookWidget {
 
         var allUnits = state.answers.map((u) => u?.$2).whereType<Unit>().toList();
         if (allUnits.length == question.answer.length) {
-          learnPageBloc.add(LearnPageAnswerUpdated.indirectSteps(answer: allUnits));
+          context.read<LearnPageBloc>().add(
+            LearnPageAnswerUpdated.indirectSteps(answer: allUnits),
+          );
         } else {
-          learnPageBloc.add(const LearnPageAnswerUpdated.indirectSteps(answer: null));
+          context.read<LearnPageBloc>().add(
+            const LearnPageAnswerUpdated.indirectSteps(answer: null),
+          );
         }
       },
       listenWhen: (p, c) {
@@ -339,7 +340,7 @@ class LearnPageView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var progressBarKey = useRef(GlobalKey()).value;
-    var status = useSelect((LearnPageBloc b) => (b.state as LoadedLearnPageState).status);
+    var status = context.select((LearnPageBloc b) => (b.state as LoadedLearnPageState).status);
 
     return Stack(
       children: [

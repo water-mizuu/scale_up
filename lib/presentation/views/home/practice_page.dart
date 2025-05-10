@@ -6,7 +6,6 @@ import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
-import "package:scale_up/hooks/use_provider_hooks.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_bloc.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_event.dart";
 import "package:scale_up/presentation/bloc/practice_page/practice_page_state.dart";
@@ -213,7 +212,7 @@ class PracticePageView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var progressBarKey = useRef(GlobalKey()).value;
-    var isFinished = useSelect((PracticePageBloc b) {
+    var isFinished = context.select((PracticePageBloc b) {
       return b.state.status == PracticePageStatus.finished;
     });
 
