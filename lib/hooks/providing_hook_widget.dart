@@ -9,17 +9,50 @@ import "package:provider/single_child_widget.dart";
 /// A [HookWidget] that provides a [Provider] to its descendants.
 /// This is a [StatelessWidget] that uses the [HookWidget] mixin.
 /// It is used to provide a [Provider] to its descendants.
+abstract class ProvidingWidget extends StatelessWidget {
+  /// Initializes [key] for subclasses.
+  const ProvidingWidget({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  createElement() => _StatelessProvidingElement(this);
+}
+
+class _StatelessProvidingElement extends StatelessElement with _ProvidingElement, HookElement {
+  _StatelessProvidingElement(ProvidingWidget super.widget);
+}
+
+/// A [HookWidget] that provides a [Provider] to its descendants.
+/// This is a [StatelessWidget] that uses the [HookWidget] mixin.
+/// It is used to provide a [Provider] to its descendants.
+abstract class ProvidingStatefulWidget extends StatefulWidget {
+  /// Initializes [key] for subclasses.
+  const ProvidingStatefulWidget({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  createElement() => _StatefulProvidingWidget(this);
+}
+
+class _StatefulProvidingWidget extends StatefulElement with _ProvidingElement, HookElement {
+  _StatefulProvidingWidget(ProvidingStatefulWidget super.widget);
+}
+
+/// A [HookWidget] that provides a [Provider] to its descendants.
+/// This is a [StatelessWidget] that uses the [HookWidget] mixin.
+/// It is used to provide a [Provider] to its descendants.
 abstract class ProvidingHookWidget extends StatelessWidget {
   /// Initializes [key] for subclasses.
   const ProvidingHookWidget({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  createElement() => _StatelessHookElement(this);
+  createElement() => _StatelessProvidingHookElement(this);
 }
 
-class _StatelessHookElement extends StatelessElement with _ProvidingElement, HookElement {
-  _StatelessHookElement(ProvidingHookWidget super.hooks);
+class _StatelessProvidingHookElement extends StatelessElement
+    with _ProvidingElement, HookElement {
+  _StatelessProvidingHookElement(ProvidingHookWidget super.hooks);
 }
 
 /// A [StatefulWidget] that provides a [Provider] to its descendants.
@@ -31,11 +64,11 @@ abstract class StatefulProvidingHookWidget extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  createElement() => _StatefulHookElement(this);
+  createElement() => _StatefulProvidingHookElement(this);
 }
 
-class _StatefulHookElement extends StatefulElement with _ProvidingElement, HookElement {
-  _StatefulHookElement(StatefulProvidingHookWidget super.hooks);
+class _StatefulProvidingHookElement extends StatefulElement with _ProvidingElement, HookElement {
+  _StatefulProvidingHookElement(StatefulProvidingHookWidget super.hooks);
 }
 
 void _provide(SingleChildWidget provider) {
@@ -68,17 +101,13 @@ T useDisposable<T extends Object>(
 ///
 /// See [InheritedProvider] for more information.
 T useInheritedProvide<T extends Object>(T object) {
-  useEffect(() {
-    _provide(InheritedProvider<T>.value(value: object));
-  }, null);
+  _provide(InheritedProvider<T>.value(value: object));
 
   return object;
 }
 
 T useProvide<T extends Object>(T object, {List<Object> dependencies = const []}) {
-  useEffect(() {
-    _provide(Provider<T>.value(value: object));
-  }, null);
+  _provide(Provider<T>.value(value: object));
 
   return object;
 }
@@ -116,6 +145,23 @@ class ProvidingHookBuilder extends ProvidingHookWidget {
 
   @override
   Widget build(BuildContext context) => builder(context);
+}
+
+extension ContextProvidingExtension on BuildContext {
+  /// Provides the value to its descendants.
+  /// It utilizes the [InheritedProvider] to provide the value.
+  /// See [InheritedProvider] for more information.
+  O provideInherited<O>(O value) {
+    _provide(InheritedProvider<O>.value(value: value));
+
+    return value;
+  }
+
+  O provideBloc<O extends BlocBase>(O value) {
+    _provide(BlocProvider<O>.value(value: value));
+
+    return value;
+  }
 }
 
 extension UseProvideExtension<T extends Object> on T {

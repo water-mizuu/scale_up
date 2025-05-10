@@ -216,12 +216,16 @@ class LessonsHelper {
     Unit end,
   ) {
     var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
-    var parent = <Unit, Unit>{};
+    var parent = <Unit, Unit>{
+      for (var MapEntry(key: from, value: rest) in conversionGraph.entries)
+        for (var MapEntry(key: to, value: _) in rest.entries)
+          if (from != to) to: from,
+    };
     var visited = <Unit>{};
     var queue = Queue<Unit>()..add(start);
 
     /// BFS.
-    while (queue.isNotEmpty) {
+    while (conversionGraph[start]?[end] == null && queue.isNotEmpty) {
       var current = queue.removeFirst();
       if (current == end) {
         break;

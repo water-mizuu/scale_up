@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_animate/flutter_animate.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/extensions/choose_random_extension.dart";
 import "package:scale_up/utils/loading_tips.dart";
@@ -20,7 +21,7 @@ class LoadingPage extends StatelessWidget {
             Styles.subtitle("Loading..."),
             Styles.hint(loadingTips.chooseRandom(), textAlign: TextAlign.center),
           ],
-        ),
+        ).animate().fadeIn(duration: 350.ms),
       ),
     );
   }

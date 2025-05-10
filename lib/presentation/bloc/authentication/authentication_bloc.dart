@@ -32,7 +32,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   @override
   void onEvent(AuthenticationEvent event) {
     if (kDebugMode) {
-      print("$AuthenticationBloc: $event");
+      print("[$AuthenticationBloc] $event");
     }
 
     super.onEvent(event);
