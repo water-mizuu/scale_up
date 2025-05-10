@@ -97,6 +97,7 @@ flutter:
     - assets/illustrations/lessons.png
     - assets/illustrations/quizzes.png
     - assets/illustrations/signup.png
+    - assets/logos/
     - secrets/
   #   - images/a_dot_ham.jpeg
 
