@@ -10,6 +10,7 @@ import "package:scale_up/presentation/views/home/lesson_page.dart";
 import "package:scale_up/presentation/views/home/loading_page.dart";
 import "package:scale_up/presentation/views/home/practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
+import "package:scale_up/presentation/views/home/splash_screen.dart"; // Add this import
 import "package:scale_up/presentation/views/home/widgets/app_scaffold.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 
@@ -40,8 +41,11 @@ final GoRouter router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       builder: (context, state, child) => ContextDialogWidget(child: child),
       routes: [
-        /// We add a blank route to have the application load this screen first.
-        GoRoute(path: AppRoutes._blank, builder: (context, state) => const LoadingPage()),
+        /// We modify the blank route to show the splash screen instead of LoadingPage
+        GoRoute(
+          path: AppRoutes._blank, 
+          builder: (context, state) => const SplashScreen()
+        ),
         GoRoute(
           path: "/login",
           name: AppRoutes.login,

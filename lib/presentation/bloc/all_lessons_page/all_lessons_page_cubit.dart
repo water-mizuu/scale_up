@@ -69,7 +69,7 @@ class AllLessonsPageCubit extends Cubit<AllLessonsPageState> {
 
     var scores = <Lesson, int>{};
     for (var lesson in state.lessons) {
-      var score = 1_000_000;
+      var score = 1000000;
       for (var keyword in state.keywords) {
         score = min(score, _editDistance(lesson.category, keyword));
         score = min(score, _editDistance(lesson.name, keyword));
