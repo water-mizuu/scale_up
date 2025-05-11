@@ -41,14 +41,18 @@ class App extends ProvidingHookWidget {
 }
 
 class LoadedApp extends ProvidingHookWidget {
-  const LoadedApp({super.key, required this.authHelper, required FirestoreHelper firestoreHelper})
-    : _firestoreHelper = firestoreHelper;
+  const LoadedApp({
+    super.key, //
+    required this.authHelper,
+    required FirestoreHelper firestoreHelper,
+  }) : _firestoreHelper = firestoreHelper;
 
   final FirebaseAuthHelper authHelper;
   final FirestoreHelper _firestoreHelper;
 
   @override
   Widget build(BuildContext context) {
+    final isFirstLoad = useState(true);
     var authenticationBloc = useProvidedBloc(() => AuthenticationBloc(repository: authHelper));
     var userDataBloc = useProvidedBloc(() => UserDataBloc(firestoreHelper: _firestoreHelper));
 
@@ -63,35 +67,34 @@ class LoadedApp extends ProvidingHookWidget {
       }
     }, listenWhen: (p, c) => p.status != c.status);
 
-    useBlocListener(authenticationBloc, (state) {
-      if (state.status == AuthenticationStatus.signedIn) {
-        if (kDebugMode) {
-          print("Going to splash as signed in.");
-        }
-      } else if (state.status == AuthenticationStatus.signedOut) {
-        if (kDebugMode) {
-          print("Going to login as signed out by token.");
-        }
-        router.goNamed(AppRoutes.login);
-      }
-    }, listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging);
-
     /// We only want to listen if firebase itself initiated a token change.
-    useBlocListener(authenticationBloc, (state) {
-      if (state.user case var user?) {
-        if (kDebugMode) {
-          print("User changed: $user");
-        }
-        userDataBloc.add(SignedInUserDataEvent(user: user));
+    useBlocListener(
+      authenticationBloc,
+      (state) {
+        if (state.user case var user?) {
+          if (kDebugMode) {
+            print("User changed: $user");
+          }
+          userDataBloc.add(SignedInUserDataEvent(user: user));
 
-        router.go(AppRoutes.loading);
-      } else {
-        if (kDebugMode) {
-          print("User changed: null");
+          if (isFirstLoad.value) {
+            isFirstLoad.value = false;
+            router.go("/blank");
+          } else {
+            router.go(AppRoutes.loading);
+          }
+        } else {
+          if (kDebugMode) {
+            print("User changed: null");
+          }
+          userDataBloc.add(const SignedOutUserDataEvent());
+
+          router.goNamed(AppRoutes.login);
         }
-        userDataBloc.add(const SignedOutUserDataEvent());
-      }
-    }, listenWhen: (p, n) => (p.user == null) ^ (n.user == null));
+      },
+      listenWhen: (p, n) => (p.user == null) ^ (n.user == null),
+      keys: [isFirstLoad],
+    );
 
     return const AppView();
   }
