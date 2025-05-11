@@ -211,7 +211,7 @@ class PracticePageView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var progressBarKey = useRef(GlobalKey()).value;
+    var progressBarKey = useMemoized(() => GlobalKey());
     var isFinished = context.select((PracticePageBloc b) {
       return b.state.status == PracticePageStatus.finished;
     });

@@ -339,7 +339,7 @@ class LearnPageView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var progressBarKey = useRef(GlobalKey()).value;
+    var progressBarKey = useMemoized(() => GlobalKey());
     var status = context.select((LearnPageBloc b) => (b.state as LoadedLearnPageState).status);
 
     return Stack(
