@@ -8,7 +8,8 @@ import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
 import "package:scale_up/presentation/views/home/learn_page/bordered_widget.dart";
-import "package:scale_up/presentation/views/home/learn_page/learn_choices/indirect_steps_choice.dart";
+import "package:scale_up/presentation/views/home/learn_page/learn_choices/"
+    "indirect_steps_choice.dart";
 import "package:scale_up/presentation/views/home/practice_page/calculator.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";

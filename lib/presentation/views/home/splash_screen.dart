@@ -153,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 500, // Increase from 400 to 500
             gaplessPlayback: true, // Prevents image flicker
             // Add error handling at the widget level too
-            errorBuilder: (context, error, stackTrace) {
+            errorBuilder: (context, _, _) {
               return const SizedBox(
                 width: 500, // Match the new width
                 height: 500, // Match the new height

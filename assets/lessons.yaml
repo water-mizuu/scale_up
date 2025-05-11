@@ -52,6 +52,23 @@ templates:
           - "Suggestion: practice with sample numbers to internalize **{{ number }}**."
           - "Pro tip: say the phrase '{{ left_conversion_english }}' aloud to reinforce the step."
 
+  - type: do-nothing
+    parts:
+      - type: main_sentence
+        variants:
+          - "To convert from **{{ from_full }}** to **{{ to_full }}**, you don't need to do anything."
+          - "Converting **{{ from_full }}** to **{{ to_full }}**, you don't need to do anything."
+          - "The process of converting **{{ from_full }}** to **{{ to_full }}** requires you to do nothing."
+          - "When converting from **{{ from_full }}** to **{{ to_full }}**, you must do nothing."
+          - "To convert **{{ from_full }}** into **{{ to_full }}**, the operation is to do nothing."
+      - type: explanation
+        variants:
+          - "This is because **{{ from }}** and **{{ to }}** are already the same unit."
+          - "This is because **{{ from }}** and **{{ to }}** are equivalent."
+          - "This is because **{{ from }}** and **{{ to }}** are identical."
+          - "This is because **{{ from }}** and **{{ to }}** are the same measurement."
+          - "This is because **{{ from }}** and **{{ to }}** are the same unit of measure."
+
   - type: indirect
     parts:
       - type: overview_path

@@ -2,7 +2,6 @@ import "dart:ui";
 
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
 import "package:scale_up/data/sources/firebase/firebase_auth_helper.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
@@ -69,7 +68,6 @@ class LoadedApp extends ProvidingHookWidget {
         if (kDebugMode) {
           print("Going to splash as signed in.");
         }
-        router.go("/blank");
       } else if (state.status == AuthenticationStatus.signedOut) {
         if (kDebugMode) {
           print("Going to login as signed out by token.");
@@ -81,8 +79,16 @@ class LoadedApp extends ProvidingHookWidget {
     /// We only want to listen if firebase itself initiated a token change.
     useBlocListener(authenticationBloc, (state) {
       if (state.user case var user?) {
+        if (kDebugMode) {
+          print("User changed: $user");
+        }
         userDataBloc.add(SignedInUserDataEvent(user: user));
+
+        router.go(AppRoutes.loading);
       } else {
+        if (kDebugMode) {
+          print("User changed: null");
+        }
         userDataBloc.add(const SignedOutUserDataEvent());
       }
     }, listenWhen: (p, n) => (p.user == null) ^ (n.user == null));

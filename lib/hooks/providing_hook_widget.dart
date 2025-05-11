@@ -6,6 +6,8 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:provider/provider.dart";
 import "package:provider/single_child_widget.dart";
 
+export "package:flutter_hooks/flutter_hooks.dart";
+
 /// A [HookWidget] that provides a [Provider] to its descendants.
 /// This is a [StatelessWidget] that uses the [HookWidget] mixin.
 /// It is used to provide a [Provider] to its descendants.

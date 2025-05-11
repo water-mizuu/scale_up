@@ -7,6 +7,7 @@ import "package:scale_up/presentation/views/home/all_lessons_page.dart";
 import "package:scale_up/presentation/views/home/home_page.dart";
 import "package:scale_up/presentation/views/home/learn_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page.dart";
+import "package:scale_up/presentation/views/home/loading_page.dart";
 import "package:scale_up/presentation/views/home/practice_page.dart";
 import "package:scale_up/presentation/views/home/profile_page.dart";
 import "package:scale_up/presentation/views/home/splash_screen.dart";
@@ -26,6 +27,7 @@ class AppRoutes {
   static const String practice = "practice";
 
   static const String _blank = "/blank";
+  static const String loading = "/loading";
 }
 
 // ignore: unused_element
@@ -42,6 +44,7 @@ final GoRouter router = GoRouter(
       routes: [
         /// We modify the blank route to show the splash screen instead of LoadingPage
         GoRoute(path: AppRoutes._blank, builder: (context, state) => const SplashScreen()),
+        GoRoute(path: AppRoutes.loading, builder: (context, state) => const LoadingPage()),
         GoRoute(
           path: "/login",
           name: AppRoutes.login,

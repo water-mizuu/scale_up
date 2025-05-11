@@ -269,119 +269,192 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
     if (isDirect) {
       var (_, expression) = path.single;
+
       var quizQuestions = <LearnQuestion>[];
       var isInverse =
           extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id) &&
           !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id));
 
-      /// This block is responsible for generating
-      ///    the descriptive (plain) questions.
-      do {
-        if (!isPlainIncluded) break;
+      print(expression);
+      var isIdentity = expression is VariableExpression && expression.str == "from";
 
-        var templates = _lessonsHelper.getTemplate("direct");
-        if (templates == null) {
-          throw Exception("Template not found for 'direct'.");
-        }
+      /// If the conversion is an identity, we need to account for that.
+      ///  We need to generate the questions for the identity.
+      if (isIdentity) {
+        /// This block is responsible for generating
+        ///    the descriptive (plain) questions.
+        do {
+          if (!isPlainIncluded) break;
 
-        var leftConversion = NumericalExpression.toLeftEnglish(expression);
-        var lhs = to.shortcut;
-        var rhs = expression.substituteString("from", from.shortcut).toString();
+          var templates = _lessonsHelper.getTemplate("do-nothing");
+          if (templates == null) {
+            throw Exception("Template not found for 'do-nothing'.");
+          }
 
-        var fromBase = from.display ?? from.name;
-        var toBase = to.display ?? to.name;
+          var fromBase = from.display ?? from.name;
+          var toBase = to.display ?? to.name;
+          var generated = templates.generateRandom({
+            "from_full": "$fromBase (${from.shortcut})",
+            "to_full": "$toBase (${to.shortcut})",
+            "from": fromBase,
+            "to": toBase,
+          });
 
-        var generated = templates.generateRandom({
-          "from_full": "$fromBase (${from.shortcut})",
-          "to_full": "$toBase (${to.shortcut})",
-          "from": fromBase,
-          "to": toBase,
-          "left_conversion_english": leftConversion ?? "",
-          "number": expression.constants.map((c) => c.value).toSet().join(", "),
-          "equation": "$lhs = $rhs",
-        });
-
-        var children = <Widget>[
-          if (leftConversion != null) ...[
+          var children = <Widget>[
             _markdown(generated["main_sentence"]!),
-            _markdown(generated["equation_display"]!),
-          ] else
-            _markdown(generated["main_sentence_no_conversion"]!),
+            _markdown(generated["explanation"]!),
+          ];
 
-          if (isInverse)
-            _markdown(generated["inverse"]!)
-          else
-            _markdown(generated["important_number"]!),
-        ];
+          questions.add(LearnQuestion.plain(children: children));
+        } while (false);
 
-        questions.add(LearnQuestion.plain(children: children));
-      } while (false);
+        /// This block is responsible for generating
+        ///   "What is the formula for converting from X to Y?"
+        ///   questions.
+        do {
+          var basis = MultiplicationExpression(expression, const ConstantExpression(20));
+          var choices = <NumericalExpression>[expression];
 
-      /// This block is responsible for generating
-      ///  "What are the important numbers for converting from X to Y?"
-      do {
-        if (isInverse) break;
+          for (var i = 0; i < 3; ++i) {
+            NumericalExpression mutated;
 
-        var constants = expression.constants.toSet();
-        var correctAnswer = constants.map((c) => c.value).toSet();
-        var choices = {correctAnswer};
+            /// There is a probability that the mutated expression is unchanged.
+            ///   So, we just keep mutating until we get a different one.
+            ///
+            /// Edge case: What if we have an expression that is merely
+            ///   the same as the original one? to = from.
+            do {
+              mutated = basis.mutate();
+            } while (choices.any((c) => c.str == mutated.str));
 
-        for (var i = 0; i < 3; ++i) {
-          Set<num> mutatedAnswer;
+            choices.add(mutated);
+          }
+          choices.shuffle();
+          assert(choices.contains(expression));
 
-          do {
-            mutatedAnswer =
-                (constants.take(correctAnswer.length))
-                    .map((c) => c.mutate())
-                    .whereType<ConstantExpression>()
-                    .map((c) => c.value)
-                    .toSet();
-          } while (choices.any((c) {
-            return c.difference(mutatedAnswer).isEmpty && mutatedAnswer.difference(c).isEmpty;
-          }));
+          /// To make choices, we have to "mutate" the answer.
+          quizQuestions.add(
+            LearnQuestion.directFormula(
+              from: from, //
+              to: to,
+              choices: choices,
+              answer: expression,
+            ),
+          );
+        } while (false);
+      } else {
+        /// This block is responsible for generating
+        ///    the descriptive (plain) questions.
+        do {
+          if (!isPlainIncluded) break;
 
-          choices.add(mutatedAnswer);
-        }
+          var templates = _lessonsHelper.getTemplate("direct");
+          if (templates == null) {
+            throw Exception("Template not found for 'direct'.");
+          }
 
-        quizQuestions.add(
-          LearnQuestion.importantNumbers(
-            from: from,
-            to: to,
-            choices: choices,
-            answer: correctAnswer,
-          ),
-        );
-      } while (false);
+          var leftConversion = NumericalExpression.toLeftEnglish(expression);
+          var lhs = to.shortcut;
+          var rhs = expression.substituteString("from", from.shortcut).toString();
 
-      /// This block is responsible for generating
-      ///   "What is the formula for converting from X to Y?"
-      ///   questions.
-      do {
-        var choices = [expression];
-        for (var i = 0; i < 3; ++i) {
-          NumericalExpression mutated;
+          var fromBase = from.display ?? from.name;
+          var toBase = to.display ?? to.name;
 
-          /// There is a probability that the mutated expression is unchanged.
-          ///   So, we just keep mutating until we get a different one.
-          do {
-            mutated = expression.mutate();
-          } while (choices.any((c) => c.str == mutated.str));
+          var generated = templates.generateRandom({
+            "from_full": "$fromBase (${from.shortcut})",
+            "to_full": "$toBase (${to.shortcut})",
+            "from": fromBase,
+            "to": toBase,
+            "left_conversion_english": leftConversion ?? "",
+            "number": expression.constants.map((c) => c.value).toSet().join(", "),
+            "equation": "$lhs = $rhs",
+          });
 
-          choices.add(mutated);
-        }
-        choices.shuffle();
-        assert(choices.contains(expression));
+          var children = <Widget>[
+            if (leftConversion != null) ...[
+              _markdown(generated["main_sentence"]!),
+              _markdown(generated["equation_display"]!),
+            ] else
+              _markdown(generated["main_sentence_no_conversion"]!),
 
-        /// To make choices, we have to "mutate" the answer.
-        quizQuestions.add(
-          LearnQuestion.directFormula(
-            from: from, //
-            to: to,
-            choices: choices,
-            answer: expression,
-          ),
-        );
-      } while (false);
+            if (isInverse)
+              _markdown(generated["inverse"]!)
+            else
+              _markdown(generated["important_number"]!),
+          ];
+
+          questions.add(LearnQuestion.plain(children: children));
+        } while (false);
+
+        /// This block is responsible for generating
+        ///  "What are the important numbers for converting from X to Y?"
+        do {
+          if (isInverse) break;
+
+          var constants = expression.constants.toSet();
+          var correctAnswer = constants.map((c) => c.value).toSet();
+          var choices = {correctAnswer};
+
+          for (var i = 0; i < 3; ++i) {
+            Set<num> mutatedAnswer;
+
+            do {
+              mutatedAnswer =
+                  (constants.take(correctAnswer.length))
+                      .map((c) => c.mutate())
+                      .whereType<ConstantExpression>()
+                      .map((c) => c.value)
+                      .toSet();
+            } while (choices.any((c) {
+              return c.difference(mutatedAnswer).isEmpty && mutatedAnswer.difference(c).isEmpty;
+            }));
+
+            choices.add(mutatedAnswer);
+          }
+
+          quizQuestions.add(
+            LearnQuestion.importantNumbers(
+              from: from,
+              to: to,
+              choices: choices,
+              answer: correctAnswer,
+            ),
+          );
+        } while (false);
+
+        /// This block is responsible for generating
+        ///   "What is the formula for converting from X to Y?"
+        ///   questions.
+        do {
+          var choices = [expression];
+          for (var i = 0; i < 3; ++i) {
+            NumericalExpression mutated;
+
+            /// There is a probability that the mutated expression is unchanged.
+            ///   So, we just keep mutating until we get a different one.
+            ///
+            /// Edge case: What if we have an expression that is merely
+            ///   the same as the original one? to = from.
+            do {
+              mutated = expression.mutate();
+            } while (choices.any((c) => c.str == mutated.str));
+
+            choices.add(mutated);
+          }
+          choices.shuffle();
+          assert(choices.contains(expression));
+
+          /// To make choices, we have to "mutate" the answer.
+          quizQuestions.add(
+            LearnQuestion.directFormula(
+              from: from, //
+              to: to,
+              choices: choices,
+              answer: expression,
+            ),
+          );
+        } while (false);
+      }
 
       quizQuestions.shuffle();
       questions.addAll(quizQuestions);
