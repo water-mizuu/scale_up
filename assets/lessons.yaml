@@ -52,13 +52,6 @@ templates:
           - "Suggestion: practice with sample numbers to internalize **{{ number }}**."
           - "Pro tip: say the phrase '{{ left_conversion_english }}' aloud to reinforce the step."
 
-      - type: confidence_booster
-        variants:
-          - "Once you learn this conversion, it’ll feel automatic in no time!"
-          - "You've already seen conversions before—this is just one more building block."
-          - "You’re doing great—mastering this factor means you’re one step closer to fluency in unit conversions."
-          - "Keep at it—understanding this single number can unlock lots of related conversions."
-          - "Every pro once started with just one conversion—just like this one."
   - type: indirect
     parts:
       - type: overview_path
@@ -102,15 +95,26 @@ units_present:
       - from: feet
         to: inch
         formula: from * 12
+      - from: centimeter
+        to: meter
+        formula: from / 100
       - from: meter
         to: feet
         formula: from * 3.28084
       - from: kilometer
         to: mile
         formula: from / 1.60934
+      - from: mile
+        to: yard
+        formula: from * 1760
+      - from: feet
+        to: yard
+        formula: from / 3
     units:
       - id: meter
         shortcut: m
+      - id: centimeter
+        shortcut: cm
       - id: kilometer
         shortcut: km
       - id: mile
@@ -119,6 +123,9 @@ units_present:
         shortcut: ft
       - id: inch
         shortcut: in
+      - id: yard
+        shortcut: yd
+        display: Yard
   - type: area
     conversions:
       - from: meter_squared
@@ -299,13 +306,19 @@ lessons:
     learn:
       - name: Metric Fundamentals
         units:
+          - centimeter
           - meter
           - kilometer
-      - name: Imperial Fundamentals
+      - name: Imperial Fundamentals 1
         units:
           - inch
           - feet
+          - yard
+      - name: Imperial Fundamentals 2
+        units:
           - mile
+          - yard
+          - feet
       - name: Bridging Systems 1
         units:
           - meter
@@ -329,7 +342,7 @@ lessons:
           - meter
           - kilometer
       - name: Imperial Practice
-        question_count: 8
+        question_count: 12
         units:
           - inch
           - feet

@@ -1,6 +1,6 @@
 import "dart:async";
-import "dart:collection";
 
+import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/services.dart";
 import "package:scale_up/data/models/conversion.dart";
@@ -161,7 +161,11 @@ class LessonsHelper {
         .firstOrNull;
   }
 
-  List<((Unit, Unit), NumericalExpression)>? getConversionPathFor(Unit from, Unit to) {
+  List<((Unit, Unit), NumericalExpression)>? getConversionPathFor(
+    Unit from,
+    Unit to, [
+    UnitGroup? localUnitGroup,
+  ]) {
     var unitGroup =
         _unitGroups //
             .where((group) => group.units.contains(from) && group.units.contains(to))
@@ -174,7 +178,7 @@ class LessonsHelper {
       return null;
     }
 
-    return _computeConversionFor(unitGroup, from, to);
+    return _computeConversionFor(unitGroup, from, to, localUnitGroup);
   }
 
   UnitGroup? getUnitGroupForUnits(List<Unit> allUnits) {
@@ -187,11 +191,18 @@ class LessonsHelper {
     return candidates.first;
   }
 
+  final Expando<(Map<String, Unit>, Map<Unit, Map<Unit, NumericalExpression>>)>
+  _computedCanonicalConversionGraph = Expando();
+
   /// The canonical conversion graph is an incomplete graph
   ///   which is derived from the defined conversions and their inverses.
   (Map<String, Unit>, Map<Unit, Map<Unit, NumericalExpression>>) _computeCanonicalConversionGraph(
     UnitGroup group,
   ) {
+    if (_computedCanonicalConversionGraph[group] case var result?) {
+      return result;
+    }
+
     var unitMap = {for (var unit in group.units) unit.id: unit};
     var conversionGraph = <Unit, Map<Unit, NumericalExpression>>{};
     for (var conversion in group.conversions) {
@@ -205,7 +216,7 @@ class LessonsHelper {
       conversionGraph.putIfAbsent(unitMap[to]!, Map.new)[unitMap[from]!] = lhs;
     }
 
-    return (unitMap, conversionGraph);
+    return _computedCanonicalConversionGraph[group] = (unitMap, conversionGraph);
   }
 
   /// This gives a conversion path from [start] to [end] in the form of a list of expressions.
@@ -213,31 +224,42 @@ class LessonsHelper {
   List<((Unit, Unit), NumericalExpression)>? _computeConversionFor(
     UnitGroup group,
     Unit start,
-    Unit end,
-  ) {
+    Unit end, [
+    UnitGroup? localUnitGroup,
+  ]) {
     var (unitMap, conversionGraph) = _computeCanonicalConversionGraph(group);
-    var parent = <Unit, Unit>{
-      for (var MapEntry(key: from, value: rest) in conversionGraph.entries)
-        for (var MapEntry(key: to, value: _) in rest.entries)
-          if (from != to) to: from,
-    };
-    var visited = <Unit>{};
-    var queue = Queue<Unit>()..add(start);
+    var parent = <Unit, Unit>{};
+    var visited = <Unit>{start};
+    var queue = PriorityQueue<Unit>((a, b) {
+      /// We want to prioritize the local unit group.
+      if (localUnitGroup == null) {
+        return 0;
+      }
+
+      var isAIncludedInLocalGroup = localUnitGroup.units.contains(a);
+      var isBIncludedInLocalGroup = localUnitGroup.units.contains(b);
+      if (isAIncludedInLocalGroup && isBIncludedInLocalGroup) {
+        return 0;
+      } else if (isAIncludedInLocalGroup) {
+        return -1;
+      } else if (isBIncludedInLocalGroup) {
+        return 1;
+      }
+      return 0;
+    })..add(start);
 
     /// BFS.
-    while (conversionGraph[start]?[end] == null && queue.isNotEmpty) {
+    while (queue.isNotEmpty) {
       var current = queue.removeFirst();
       if (current == end) {
         break;
       }
 
-      visited.add(current);
-
       if (conversionGraph[current] case var neighbors?) {
         for (var neighbor in neighbors.keys) {
-          if (!visited.contains(neighbor)) {
+          if (visited.add(neighbor)) {
             parent[neighbor] = current;
-            queue.addLast(neighbor);
+            queue.add(neighbor);
           }
         }
       }

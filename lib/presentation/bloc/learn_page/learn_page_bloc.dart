@@ -51,7 +51,13 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   }
 
   /// This generates questions for the given learn chapter.
-  List<LearnQuestion> _generateQuestions(Lesson lesson, LearnChapter learnChapter) {
+  List<LearnQuestion> _generateQuestions(
+    Lesson lesson,
+    List<LearnChapter> learnChapters,
+    int chapterIndex,
+  ) {
+    var learnChapter = learnChapters[chapterIndex];
+
     var questions = <LearnQuestion>[];
     var directQuestions = <LearnQuestion>[];
     var indirectQuestions = <LearnQuestion>[];
@@ -78,12 +84,17 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
 
         var fromUnit = _lessonsHelper.getUnit(lesson.unitsType, from);
         var toUnit = _lessonsHelper.getUnit(lesson.unitsType, to);
-
         if (fromUnit == null || toUnit == null) {
           throw Exception("Unit not found");
         }
 
-        var conversion = _lessonsHelper.getConversionPathFor(fromUnit, toUnit);
+        var hasLearnedPreviously =
+            chapterIndex > 0 &&
+            learnChapters
+                .sublist(0, chapterIndex)
+                .any((chapter) => chapter.units.contains(from) && chapter.units.contains(to));
+
+        var conversion = _lessonsHelper.getConversionPathFor(fromUnit, toUnit, unitGroup);
         if (conversion == null) {
           if (kDebugMode) {
             print("Conversion not found for $fromUnit to $toUnit");
@@ -102,6 +113,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           extendedUnitGroup,
           isInverse: isInverse,
           isUserEncouraged: !isDirect && hasEncouragedIndirect,
+          isPlainIncluded: !hasLearnedPreviously,
         );
 
         seen.add((fromUnit, toUnit));
@@ -127,12 +139,11 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
   ) async {
     try {
       var lesson = event.lesson;
-
       if (lesson == null) {
         throw Exception("Lesson not found");
       }
 
-      var questions = _generateQuestions(lesson, lesson.learnChapters[event.chapterIndex]);
+      var questions = _generateQuestions(lesson, lesson.learnChapters, event.chapterIndex);
 
       emit(
         LearnPageState.loaded(
@@ -249,6 +260,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
     UnitGroup extendedUnitGroup, {
     required bool isInverse,
     bool isUserEncouraged = false,
+    bool isPlainIncluded = true,
   }) {
     var isDirect = path.length == 1;
     var questions = <LearnQuestion>[];
@@ -265,6 +277,8 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       /// This block is responsible for generating
       ///    the descriptive (plain) questions.
       do {
+        if (!isPlainIncluded) break;
+
         var templates = _lessonsHelper.getTemplate("direct");
         if (templates == null) {
           throw Exception("Template not found for 'direct'.");
@@ -375,6 +389,7 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
       /// This block is responsible for generating
       ///    the descriptive (plain) questions.
       do {
+        if (!isPlainIncluded) break;
         if (isInverse) break;
 
         var templates = _lessonsHelper.getTemplate("indirect");

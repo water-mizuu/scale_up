@@ -8,7 +8,6 @@ import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/hooks/use_bloc_listener.dart";
-import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
@@ -22,8 +21,7 @@ class App extends ProvidingHookWidget {
   @override
   Widget build(BuildContext context) {
     final lessonsHelperFuture = useMemoized(() => LessonsHelper.createAsync());
-    final firebaseAuthHelper = useMemoized(() => FirebaseAuthHelper());
-
+    final authHelper = useMemoized(() => FirebaseAuthHelper());
     final snapshot = useFuture(lessonsHelperFuture);
 
     if (snapshot.hasError) {
@@ -37,55 +35,59 @@ class App extends ProvidingHookWidget {
       return const Material(color: Colors.white);
     }
 
-    context.provideInherited(snapshot.data!);
-    return ProvidingHookBuilder(
-      builder: (context) {
-        var authenticationBloc = useCreateNewBloc(
-          () => AuthenticationBloc(repository: firebaseAuthHelper),
-        );
-        context.provideBloc(authenticationBloc);
-        var userDataBloc = useCreateNewBloc(
-          () => UserDataBloc(firestoreHelper: _firestoreHelper),
-        );
-        context.provideBloc(userDataBloc);
+    context.provide(snapshot.data!);
 
-        useBlocListener(userDataBloc, (state) async {
-          if (state.user == null) return;
+    return LoadedApp(authHelper: authHelper, firestoreHelper: _firestoreHelper);
+  }
+}
 
-          if (state.status == UserDataStatus.loaded) {
-            if (kDebugMode) {
-              print("Going home due to user bloc change");
-            }
-            router.goNamed(AppRoutes.home);
-          }
-        }, listenWhen: (p, c) => p.status != c.status);
+class LoadedApp extends ProvidingHookWidget {
+  const LoadedApp({super.key, required this.authHelper, required FirestoreHelper firestoreHelper})
+    : _firestoreHelper = firestoreHelper;
 
-        useBlocListener(authenticationBloc, (state) {
-          if (state.status == AuthenticationStatus.signedIn) {
-            if (kDebugMode) {
-              print("Going to splash as signed in.");
-            }
-            router.go("/blank");
-          } else if (state.status == AuthenticationStatus.signedOut) {
-            if (kDebugMode) {
-              print("Going to login as signed out by token.");
-            }
-            router.goNamed(AppRoutes.login);
-          }
-        }, listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging);
+  final FirebaseAuthHelper authHelper;
+  final FirestoreHelper _firestoreHelper;
 
-        /// We only want to listen if firebase itself initiated a token change.
-        useBlocListener(authenticationBloc, (state) {
-          if (state.user case var user?) {
-            userDataBloc.add(SignedInUserDataEvent(user: user));
-          } else {
-            userDataBloc.add(const SignedOutUserDataEvent());
-          }
-        }, listenWhen: (p, n) => (p.user == null) ^ (n.user == null));
+  @override
+  Widget build(BuildContext context) {
+    var authenticationBloc = useProvidedBloc(() => AuthenticationBloc(repository: authHelper));
+    var userDataBloc = useProvidedBloc(() => UserDataBloc(firestoreHelper: _firestoreHelper));
 
-        return const AppView();
-      },
-    );
+    useBlocListener(userDataBloc, (state) async {
+      if (state.user == null) return;
+
+      if (state.status == UserDataStatus.loaded) {
+        if (kDebugMode) {
+          print("Going home due to user bloc change");
+        }
+        router.goNamed(AppRoutes.home);
+      }
+    }, listenWhen: (p, c) => p.status != c.status);
+
+    useBlocListener(authenticationBloc, (state) {
+      if (state.status == AuthenticationStatus.signedIn) {
+        if (kDebugMode) {
+          print("Going to splash as signed in.");
+        }
+        router.go("/blank");
+      } else if (state.status == AuthenticationStatus.signedOut) {
+        if (kDebugMode) {
+          print("Going to login as signed out by token.");
+        }
+        router.goNamed(AppRoutes.login);
+      }
+    }, listenWhen: (p, _) => p.status == AuthenticationStatus.tokenChanging);
+
+    /// We only want to listen if firebase itself initiated a token change.
+    useBlocListener(authenticationBloc, (state) {
+      if (state.user case var user?) {
+        userDataBloc.add(SignedInUserDataEvent(user: user));
+      } else {
+        userDataBloc.add(const SignedOutUserDataEvent());
+      }
+    }, listenWhen: (p, n) => (p.user == null) ^ (n.user == null));
+
+    return const AppView();
   }
 }
 

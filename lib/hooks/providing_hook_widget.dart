@@ -114,7 +114,6 @@ T useProvide<T extends Object>(T object, {List<Object> dependencies = const []})
 
 /// A hook that provides a [Bloc] to its descendants.
 /// It utilizes the [BlocProvider] to provide the [Bloc].
-/// It is a wrapper around [useInheritedProvide] that provides a [Bloc].
 ///
 /// See [BlocProvider] for more information.
 T useProvidedBloc<T extends BlocBase>(
@@ -148,8 +147,27 @@ class ProvidingHookBuilder extends ProvidingHookWidget {
 }
 
 extension ContextProvidingExtension on BuildContext {
+  void _provide(SingleChildWidget provider) {
+    var element = this;
+    if (element is! _ProvidingElement) {
+      throw Exception("_provide() can only be used in a ProvidingHookWidget");
+    }
+    element._provided.add(_Entry(provider));
+  }
+
+  /// Provides the value to its descendants.
+  /// It utilizes the [Provider] to provide the value.
+  ///
+  /// See [Provider] for more information.
+  O provide<O>(O value) {
+    _provide(Provider<O>.value(value: value));
+
+    return value;
+  }
+
   /// Provides the value to its descendants.
   /// It utilizes the [InheritedProvider] to provide the value.
+  ///
   /// See [InheritedProvider] for more information.
   O provideInherited<O>(O value) {
     _provide(InheritedProvider<O>.value(value: value));
@@ -157,6 +175,10 @@ extension ContextProvidingExtension on BuildContext {
     return value;
   }
 
+  /// Provides the value to its descendants.
+  /// It utilizes the [BlocProvider] to provide the value.
+  ///
+  /// See [BlocProvider] for more information.
   O provideBloc<O extends BlocBase>(O value) {
     _provide(BlocProvider<O>.value(value: value));
 

@@ -36,7 +36,7 @@ class LearnTopRow extends HookWidget {
                 children: [
                   const Icon(Icons.import_contacts_outlined),
                   const SizedBox(width: 8.0),
-                  Text("$done of $total"),
+                  Text("${doneRef.value} of $total"),
                 ],
               ),
             ],
