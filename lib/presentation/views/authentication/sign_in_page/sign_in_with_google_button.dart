@@ -11,6 +11,9 @@ class SignInWithGoogleButton extends StatelessWidget {
       children: [
         Expanded(
           child: OutlinedButton(
+            style: FilledButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            ),
             onPressed: () {
               context //
                   .read<AuthenticationBloc>()

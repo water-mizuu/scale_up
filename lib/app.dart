@@ -7,6 +7,7 @@ import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/hooks/use_bloc_listener.dart";
+import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/authentication/authentication_bloc.dart";
 import "package:scale_up/presentation/bloc/user_data/user_data_bloc.dart";
 import "package:scale_up/presentation/router/app_router.dart";
@@ -34,27 +35,38 @@ class App extends ProvidingHookWidget {
       return const Material(color: Colors.white);
     }
 
-    context.provide(snapshot.data!);
-
-    return LoadedApp(authHelper: authHelper, firestoreHelper: _firestoreHelper);
+    return LoadedApp(
+      lessonsHelper: snapshot.data!,
+      authHelper: authHelper,
+      firestoreHelper: _firestoreHelper,
+    );
   }
 }
 
 class LoadedApp extends ProvidingHookWidget {
   const LoadedApp({
-    super.key, //
+    super.key,
+    required this.lessonsHelper,
     required this.authHelper,
     required FirestoreHelper firestoreHelper,
   }) : _firestoreHelper = firestoreHelper;
 
+  final LessonsHelper lessonsHelper;
   final FirebaseAuthHelper authHelper;
   final FirestoreHelper _firestoreHelper;
 
   @override
   Widget build(BuildContext context) {
+    /// We expose the lessons helper to the tree
+    ///  after it is loaded.
+    context.provide(lessonsHelper);
+
     final isFirstLoad = useState(true);
-    var authenticationBloc = useProvidedBloc(() => AuthenticationBloc(repository: authHelper));
-    var userDataBloc = useProvidedBloc(() => UserDataBloc(firestoreHelper: _firestoreHelper));
+    var authenticationBloc = useCreateBloc(() => AuthenticationBloc(repository: authHelper));
+    context.provideBloc(authenticationBloc);
+
+    var userDataBloc = useCreateBloc(() => UserDataBloc(firestoreHelper: _firestoreHelper));
+    context.provideBloc(userDataBloc);
 
     useBlocListener(userDataBloc, (state) async {
       if (state.user == null) return;
@@ -107,10 +119,7 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget widget = MaterialApp.router(
       theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.white,
-          brightness: Brightness.light,
-        ) //
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black) //
         .copyWith(surface: const Color(0xFFF7F8F9)),
         useMaterial3: true,
       ),

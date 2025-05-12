@@ -3,7 +3,6 @@ import "dart:io" show Platform;
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
 import "package:scale_up/app.dart";
 import "package:window_manager/window_manager.dart";
 

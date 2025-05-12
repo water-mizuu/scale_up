@@ -8,22 +8,25 @@ class SignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late var authenticationBloc = context.watch<AuthenticationBloc>();
-    late var globalKey = context.read<GlobalKey<FormState>>();
-    late var signInPageBloc = context.read<SignInPageBloc>();
-
-    final isProcessing = authenticationBloc.state.status == AuthenticationStatus.signingIn;
+    var authenticationBloc = context.watch<AuthenticationBloc>();
+    var isProcessing = authenticationBloc.state.status == AuthenticationStatus.signingIn;
 
     return Row(
       children: [
         Expanded(
           child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            ),
             onPressed: () {
               if (isProcessing) return null;
 
               return () {
+                var globalKey = context.read<GlobalKey<FormState>>();
                 if (globalKey.currentState?.validate() == true) {
-                  var SignInPageState(:email, :password) = signInPageBloc.state;
+                  var SignInPageState(:email, :password) = context.read<SignInPageBloc>().state;
                   var event = EmailSignInAuthenticationEvent(email: email, password: password);
 
                   authenticationBloc.add(event);

@@ -16,6 +16,11 @@ class SignUpButton extends StatelessWidget {
       children: [
         Expanded(
           child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            ),
             onPressed: () {
               if (isProcessing) return null;
 
