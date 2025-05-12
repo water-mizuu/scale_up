@@ -58,49 +58,52 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MarkdownWidget(
-              data:
-                  """
-                  ### ${state.title}
+        child: SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              MarkdownWidget(
+                data:
+                    """
+                    ### ${state.title}
 
-                  ${state.message}
-                  """.unindent(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 16.0),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: state.cancelButtonColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    ${state.message}
+                    """.unindent(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
               ),
-              onPressed: state.onCancelPressed,
-              child: Text(
-                state.cancelButtonText,
-                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextButton(
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-              ),
-              onPressed: state.onConfirmPressed,
-              child: Text(
-                state.confirmButtonText,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w600,
-                  color: state.confirmButtonColor,
+              const SizedBox(height: 16.0),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: state.cancelButtonColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                onPressed: state.onCancelPressed,
+                child: Text(
+                  state.cancelButtonText,
+                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8.0),
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                onPressed: state.onConfirmPressed,
+                child: Text(
+                  state.confirmButtonText,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: state.confirmButtonColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       ShowInfoDialog() => Container(
@@ -117,33 +120,36 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MarkdownWidget(
-              data:
-                  """
-                  ### ${state.title}
+        child: SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              MarkdownWidget(
+                data:
+                    """
+                    ### ${state.title}
 
-                  ${state.message}
-                  """.unindent(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 16.0),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: state.buttonColor,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    ${state.message}
+                    """.unindent(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
               ),
-              onPressed: state.onPressed,
-              child: Text(
-                state.buttonText,
-                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+              const SizedBox(height: 16.0),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: state.buttonColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                ),
+                onPressed: state.onPressed,
+                child: Text(
+                  state.buttonText,
+                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       HiddenConfirmationDialog() => null as Widget?,
@@ -152,7 +158,7 @@ class _ContextDialogWidgetState extends State<ContextDialogWidget> {
     if (dialog != null) {
       dialog = dialog
           .animate() //
-          .slideY(duration: 250.ms, begin: 1.0, end: 0.0, curve: Curves.easeOutQuad);
+          .slideY(duration: 350.ms, begin: 1.0, end: 0.0, curve: Curves.linearToEaseOut);
     }
 
     return BlocProvider.value(

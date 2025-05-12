@@ -22,7 +22,7 @@ class SignUpPage extends ProvidingHookWidget {
     var formKey = useMemoized(() => GlobalKey<FormState>());
     context.provide(formKey);
 
-    var bloc = useCreateNewBloc(() => SignupPageBloc());
+    var bloc = useCreateBloc(() => SignupPageBloc());
     context.provideBloc(bloc);
 
     useBlocListener(

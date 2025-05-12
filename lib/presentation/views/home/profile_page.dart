@@ -49,16 +49,17 @@ class ProfilePageView extends HookWidget {
     final hslColor = HSLColor.fromColor(primaryColor);
 
     return Scaffold(
-      appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
-        child: Column(
-          spacing: 16.0,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Styles.title("Help Center"),
-            Expanded(child: _buildContent(context, hslColor)),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
+          child: Column(
+            spacing: 16.0,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Styles.title("Help Center"),
+              Expanded(child: _buildContent(context, hslColor)),
+            ],
+          ),
         ),
       ),
     );

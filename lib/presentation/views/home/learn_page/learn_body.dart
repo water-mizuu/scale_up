@@ -13,18 +13,20 @@ class LearnBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          LearnTopRow(progressBarKey: progressBarKey),
-          const Flexible(child: LearnInstructions()),
-          const Column(
-            spacing: 18.0,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [LearnChoices(), LearnCheckButton()],
-          ),
-        ],
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LearnTopRow(progressBarKey: progressBarKey),
+            const Flexible(child: LearnInstructions()),
+            const Column(
+              spacing: 18.0,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [LearnChoices(), LearnCheckButton()],
+            ),
+          ],
+        ),
       ),
     );
   }

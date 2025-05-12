@@ -108,7 +108,7 @@ units_present:
         formula: from / 1000
       - from: meter
         to: inch
-        formula: from * 39.3701
+        formula: from * 39.37
       - from: feet
         to: inch
         formula: from * 12
@@ -117,10 +117,10 @@ units_present:
         formula: from / 100
       - from: meter
         to: feet
-        formula: from * 3.28084
+        formula: from * 3.28
       - from: kilometer
         to: mile
-        formula: from / 1.60934
+        formula: from / 1.61
       - from: mile
         to: yard
         formula: from * 1760
@@ -150,7 +150,7 @@ units_present:
         formula: from / 1000 / 1000
       - from: meter_squared
         to: inch_squared
-        formula: from * 39.3701 * 39.3701
+        formula: from * 39.37 * 39.37
       - from: feet_squared
         to: inch_squared
         formula: from * 12 * 12
@@ -174,7 +174,7 @@ units_present:
         formula: from * 1000
       - from: liter
         to: gallon
-        formula: from / 3.78541
+        formula: from / 3.79
       - from: gallon
         to: quart
         formula: from * 4
@@ -186,10 +186,10 @@ units_present:
         formula: from / 1000
       - from: inch_cubed
         to: liter
-        formula: from / 61.0237
+        formula: from / 61.02
       - from: feet_cubed
         to: liter
-        formula: from / 35.3147
+        formula: from / 35.31
       - from: centimeter_cubed
         to: milliliter
         formula: from
@@ -221,7 +221,7 @@ units_present:
         formula: from / 1000
       - from: kilogram
         to: pound
-        formula: from * 2.20462
+        formula: from * 2.20
       - from: pound
         to: ounce
         formula: from * 16
@@ -283,7 +283,7 @@ units_present:
     conversions:
       - from: joule
         to: calorie
-        formula: from / 4.184
+        formula: from / 4.18
       - from: joule
         to: kilojoule
         formula: from / 1000
@@ -292,7 +292,7 @@ units_present:
         formula: from / 1000
       - from: kilojoule
         to: btu
-        formula: from * 0.948
+        formula: from * 0.95
     units:
       - id: joule
         shortcut: J

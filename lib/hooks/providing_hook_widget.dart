@@ -1,3 +1,9 @@
+/// Some magical code to provide a [Provider] to its descendants.
+/// Without having to put them in the return of the build method.
+///
+/// This code is a mix of [HookWidget] and [StatelessWidget].
+library;
+
 import "dart:collection";
 
 import "package:flutter/material.dart";
@@ -78,7 +84,10 @@ void _provide(SingleChildWidget provider) {
   if (element == null) {
     throw Exception("_provide() can only be used in a ProvidingHookWidget");
   }
-  element._provided.add(_Entry(provider));
+
+  element._wrappers.add((context, child) {
+    return MultiProvider(providers: [provider], child: child);
+  });
 }
 
 /// A hook that manages a disposable resource.
@@ -131,6 +140,40 @@ T useProvidedBloc<T extends BlocBase>(
   return local;
 }
 
+void usePopScope<T>({
+  Key? key,
+  bool canPop = true,
+  final PopInvokedWithResultCallback<T>? onPopInvokedWithResult,
+}) {
+  var element = _ProvidingElement._currentProvidingElement;
+  if (element == null) {
+    throw Exception("usePopScope() can only be used in a ProvidingHookWidget");
+  }
+
+  element._wrappers.add((context, child) {
+    return PopScope<T>(
+      key: key,
+      canPop: canPop,
+      onPopInvokedWithResult: onPopInvokedWithResult,
+      child: child,
+    );
+  });
+}
+
+void useNotificationListener<T extends Notification>(bool Function(T listener) listener) {
+  var element = _ProvidingElement._currentProvidingElement;
+  if (element == null) {
+    throw Exception("useNotificationListener() can only be used in a ProvidingHookWidget");
+  }
+
+  element._wrappers.add((context, child) {
+    return NotificationListener<T>(
+      onNotification: (notification) => listener(notification),
+      child: child,
+    );
+  });
+}
+
 /// A [ProvidingHookWidget] that delegates its `build` to a callback.
 class ProvidingHookBuilder extends ProvidingHookWidget {
   /// Creates a widget that delegates its build to a callback.
@@ -154,7 +197,9 @@ extension ContextProvidingExtension on BuildContext {
     if (element is! _ProvidingElement) {
       throw Exception("_provide() can only be used in a ProvidingHookWidget");
     }
-    element._provided.add(_Entry(provider));
+    element._wrappers.add((context, child) {
+      return MultiProvider(providers: [provider], child: child);
+    });
   }
 
   /// Provides the value to its descendants.
@@ -200,32 +245,24 @@ extension UseProvideExtension<T extends Object> on T {
   }
 }
 
-final class _Entry<T> extends LinkedListEntry<_Entry<T>> {
-  _Entry(this.value);
-  T value;
-}
-
 /// An [Element] that uses a [ProvidingHookWidget] as its configuration.
 mixin _ProvidingElement on ComponentElement {
   static _ProvidingElement? _currentProvidingElement;
 
-  final _provided = LinkedList<_Entry<SingleChildWidget>>();
+  // final _provided = Queue<SingleChildWidget>();
+  final _wrappers = Queue<Widget Function(BuildContext, Widget)>();
 
   @override
   Widget build() {
     _ProvidingElement._currentProvidingElement = this;
 
-    var child = super.build();
-    var widget =
-        _provided.isEmpty
-            ? child
-            : MultiProvider(
-              providers: _provided.map<SingleChildWidget>((entry) => entry.value).toList(),
-              child: child,
-            );
+    var widget = super.build();
+    while (_wrappers.isNotEmpty) {
+      var entry = _wrappers.removeFirst();
+      widget = entry(this, widget);
+    }
 
     _ProvidingElement._currentProvidingElement = null;
-    _provided.clear();
 
     return widget;
   }

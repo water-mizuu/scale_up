@@ -9,8 +9,14 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Padding(
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0.0,
+        scrolledUnderElevation: 0.0,
+        elevation: 0.0,
+        forceMaterialTransparency: true,
+      ),
+      body: Padding(
         padding: const EdgeInsets.all(16.0) + const EdgeInsets.symmetric(horizontal: 48.0),
         child: Column(
           spacing: 8.0,

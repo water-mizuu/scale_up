@@ -21,7 +21,7 @@ final class PracticePageLessonLoadFailure extends PracticePageEvent {
 }
 
 final class PracticePageInputChanged extends PracticePageEvent {
-  final num input;
+  final num? input;
 
   const PracticePageInputChanged(this.input);
 }

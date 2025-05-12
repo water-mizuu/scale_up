@@ -86,8 +86,14 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: PopScope(
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0.0,
+        scrolledUnderElevation: 0.0,
+        elevation: 0.0,
+        forceMaterialTransparency: true,
+      ),
+      body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, _) async {
           if (didPop) return;

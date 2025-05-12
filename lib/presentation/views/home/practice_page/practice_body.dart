@@ -18,18 +18,20 @@ class PracticeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PracticeTopRow(progressBarKey: progressBarKey),
-          const PracticeInstructions(),
-          Column(
-            spacing: 24.0,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [_calculatorWidget(context), const PracticeCheckButton()],
-          ),
-        ],
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PracticeTopRow(progressBarKey: progressBarKey),
+            const PracticeInstructions(),
+            Column(
+              spacing: 24.0,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [_calculatorWidget(context), const PracticeCheckButton()],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -43,7 +45,7 @@ class PracticeBody extends StatelessWidget {
 
           context.read<PracticePageBloc>().add(PracticePageInputChanged(evaluated));
         } on UnsupportedError {
-          return;
+          context.read<PracticePageBloc>().add(const PracticePageInputChanged(null));
         }
       },
     );

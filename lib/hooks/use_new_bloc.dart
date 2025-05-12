@@ -1,7 +1,7 @@
 import "package:bloc/bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 
-BLOC useCreateNewBloc<BLOC extends BlocBase<Object?>>(
+BLOC useCreateBloc<BLOC extends BlocBase<Object?>>(
   BLOC Function() factory, [
   List<Object?> keys = const [],
 ]) {

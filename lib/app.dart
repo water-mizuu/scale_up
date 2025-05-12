@@ -105,10 +105,14 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = MaterialApp.router(
+    Widget widget = MaterialApp.router(
       theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black) //
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.white,
+          brightness: Brightness.light,
+        ) //
         .copyWith(surface: const Color(0xFFF7F8F9)),
+        useMaterial3: true,
       ),
 
       scrollBehavior: const MaterialScrollBehavior().copyWith(
@@ -125,17 +129,17 @@ class AppView extends StatelessWidget {
       /// This is useful for testing purposes only, and should not be used in production.
       var size = MediaQuery.sizeOf(context);
       if (size.width / size.height > 0.6) {
-        child = Center(
+        widget = Center(
           child: Container(
             height: 820,
             width: 380,
             decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-            child: child,
+            child: widget,
           ),
         );
       }
     }
 
-    return child;
+    return widget;
   }
 }

@@ -111,7 +111,7 @@ class PracticeTile extends StatelessWidget {
                   title: "Skipping Ahead?",
                   message:
                       "Are you sure you want to start this chapter? "
-                      "These chapters are structured to increse in difficulty. "
+                      "These chapters are structured to increase in difficulty. "
                       "You may find this chapter difficult if you haven't "
                       "completed the previous one.",
                   cancelButtonText: "No, thanks",

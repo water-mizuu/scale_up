@@ -51,9 +51,11 @@ class LessonPageView extends StatelessWidget {
         backgroundColor: lesson.color,
         foregroundColor: lesson.foregroundColor,
       ),
-      body: const Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [LessonHeader(), Expanded(child: LessonInformation())],
+      body: const SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [LessonHeader(), Expanded(child: LessonInformation())],
+        ),
       ),
     );
   }

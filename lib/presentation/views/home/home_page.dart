@@ -54,37 +54,44 @@ class HomePageView extends HookWidget {
     var listKey = useState(const ValueKey(0));
 
     return Scaffold(
-      appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            await Future.delayed(1000.ms);
-            listKey.value = ValueKey((listKey.value.value + 1) % 2);
-            await animationController.reverse(from: 0.8);
-            animationController.reset();
-          },
-          child: KeyedSubtree(
-            key: listKey.value,
-            child: ListView(
-              controller: scrollController,
-              children: const [
-                Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
-                SizedBox(height: 12.0),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
-                SizedBox(height: 12.0),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: LatestLesson()),
-                SizedBox(height: 12.0),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    spacing: 16.0,
-                    children: [NewLessons(), OngoingLessons(), FinishedLessons()],
+      appBar: AppBar(
+        toolbarHeight: 0.0,
+        scrolledUnderElevation: 0.0,
+        elevation: 0.0,
+        forceMaterialTransparency: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await Future.delayed(1000.ms);
+              listKey.value = ValueKey((listKey.value.value + 1) % 2);
+              await animationController.reverse(from: 0.8);
+              animationController.reset();
+            },
+            child: KeyedSubtree(
+              key: listKey.value,
+              child: ListView(
+                controller: scrollController,
+                children: const [
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
+                  SizedBox(height: 12.0),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
+                  SizedBox(height: 12.0),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: LatestLesson()),
+                  SizedBox(height: 12.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      spacing: 16.0,
+                      children: [NewLessons(), OngoingLessons(), FinishedLessons()],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ).animate(controller: animationController, autoPlay: false).fadeOut(begin: 1.0),
+                ],
+              ),
+            ).animate(controller: animationController, autoPlay: false).fadeOut(begin: 1.0),
+          ),
         ),
       ),
     );

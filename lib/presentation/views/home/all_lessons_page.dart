@@ -62,22 +62,29 @@ class AllLessonsPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(forceMaterialTransparency: true, elevation: 0, scrolledUnderElevation: 0),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
-        child: const Column(
-          spacing: 16.0,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TitleBar(),
-            Expanded(
-              child: Column(
-                spacing: 16.0,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [SearchBar(), Expanded(child: AllLessonsBody())],
+      appBar: AppBar(
+        toolbarHeight: 0.0,
+        scrolledUnderElevation: 0.0,
+        elevation: 0.0,
+        forceMaterialTransparency: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(bottom: 16.0),
+          child: const Column(
+            spacing: 16.0,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TitleBar(),
+              Expanded(
+                child: Column(
+                  spacing: 16.0,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [SearchBar(), Expanded(child: AllLessonsBody())],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

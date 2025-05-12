@@ -343,7 +343,7 @@ Widget practiceConversionChoices({required PracticeConversionLearnQuestion curre
 
         context.read<LearnPageBloc>().add(LearnPageAnswerUpdated(answer: evaluated));
       } on UnsupportedError {
-        return;
+        context.read<LearnPageBloc>().add(const LearnPageAnswerUpdated(answer: null));
       }
     },
   );

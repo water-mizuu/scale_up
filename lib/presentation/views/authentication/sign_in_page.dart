@@ -68,9 +68,8 @@ class LoginPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: const SafeArea(
+    return const Scaffold(
+      body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(

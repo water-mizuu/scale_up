@@ -173,7 +173,7 @@ class ImportantNumbersInstructions extends StatelessWidget {
               ),
             ),
           ),
-          Styles.subtitle("used when converting from "),
+          Styles.subtitle(" used when converting from "),
           Styles.subtitle("${from.name} (${from.shortcut})", fontWeight: FontWeight.bold),
           Styles.subtitle(" to "),
           Styles.subtitle("${to.name} (${to.shortcut})", fontWeight: FontWeight.bold),
