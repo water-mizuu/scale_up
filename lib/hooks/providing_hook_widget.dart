@@ -79,15 +79,13 @@ class _StatefulProvidingHookElement extends StatefulElement with _ProvidingEleme
   _StatefulProvidingHookElement(StatefulProvidingHookWidget super.hooks);
 }
 
-void _provide(SingleChildWidget provider) {
+void _provide(SingleChildWidget Function(BuildContext, Widget) provider) {
   var element = _ProvidingElement._currentProvidingElement;
   if (element == null) {
     throw Exception("_provide() can only be used in a ProvidingHookWidget");
   }
 
-  element._wrappers.add((context, child) {
-    return MultiProvider(providers: [provider], child: child);
-  });
+  element._wrappers.add(provider);
 }
 
 /// A hook that manages a disposable resource.
@@ -112,13 +110,13 @@ T useDisposable<T extends Object>(
 ///
 /// See [InheritedProvider] for more information.
 T useInheritedProvide<T extends Object>(T object) {
-  _provide(InheritedProvider<T>.value(value: object));
+  _provide((context, child) => InheritedProvider<T>.value(value: object, child: child));
 
   return object;
 }
 
 T useProvide<T extends Object>(T object, {List<Object> dependencies = const []}) {
-  _provide(Provider<T>.value(value: object));
+  _provide((context, child) => Provider<T>.value(value: object, child: child));
 
   return object;
 }
@@ -134,7 +132,7 @@ T useProvidedBloc<T extends BlocBase>(
 }) {
   var local = useDisposable(blocFactory, (b) => b.close(), dependencies);
   useEffect(() {
-    _provide(BlocProvider<T>.value(value: local, key: key));
+    _provide((context, child) => BlocProvider<T>.value(value: local, key: key, child: child));
   }, null);
 
   return local;
@@ -192,14 +190,12 @@ class ProvidingHookBuilder extends ProvidingHookWidget {
 }
 
 extension ContextProvidingExtension on BuildContext {
-  void _provide(SingleChildWidget provider) {
+  void _provide(SingleChildWidget Function(BuildContext, Widget) provider) {
     var element = this;
     if (element is! _ProvidingElement) {
       throw Exception("_provide() can only be used in a ProvidingHookWidget");
     }
-    element._wrappers.add((context, child) {
-      return MultiProvider(providers: [provider], child: child);
-    });
+    element._wrappers.add(provider);
   }
 
   /// Provides the value to its descendants.
@@ -207,7 +203,7 @@ extension ContextProvidingExtension on BuildContext {
   ///
   /// See [Provider] for more information.
   O provide<O>(O value) {
-    _provide(Provider<O>.value(value: value));
+    _provide((context, child) => Provider<O>.value(value: value, child: child));
 
     return value;
   }
@@ -217,7 +213,7 @@ extension ContextProvidingExtension on BuildContext {
   ///
   /// See [InheritedProvider] for more information.
   O provideInherited<O>(O value) {
-    _provide(InheritedProvider<O>.value(value: value));
+    _provide((context, child) => InheritedProvider<O>.value(value: value, child: child));
 
     return value;
   }
@@ -227,19 +223,7 @@ extension ContextProvidingExtension on BuildContext {
   ///
   /// See [BlocProvider] for more information.
   O provideBloc<O extends BlocBase>(O value) {
-    _provide(BlocProvider<O>.value(value: value));
-
-    return value;
-  }
-}
-
-extension UseProvideExtension<T extends Object> on T {
-  /// Provides the value to its descendants.
-  /// It utilizes the [InheritedProvider] to provide the value.
-  /// See [InheritedProvider] for more information.
-  O useProvide<O>([O Function(T)? map]) {
-    var value = (map ?? ((e) => e as O)).call(this);
-    _provide(InheritedProvider<O>.value(value: value));
+    _provide((context, child) => BlocProvider<O>.value(value: value, child: child));
 
     return value;
   }
@@ -249,8 +233,7 @@ extension UseProvideExtension<T extends Object> on T {
 mixin _ProvidingElement on ComponentElement {
   static _ProvidingElement? _currentProvidingElement;
 
-  // final _provided = Queue<SingleChildWidget>();
-  final _wrappers = Queue<Widget Function(BuildContext, Widget)>();
+  final _wrappers = DoubleLinkedQueue<Widget Function(BuildContext, Widget)>();
 
   @override
   Widget build() {

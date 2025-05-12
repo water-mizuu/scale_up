@@ -79,10 +79,13 @@ class LoadedApp extends ProvidingHookWidget {
       }
     }, listenWhen: (p, c) => p.status != c.status);
 
-    /// We only want to listen if firebase itself initiated a token change.
     useBlocListener(
       authenticationBloc,
       (state) {
+        if (kDebugMode) {
+          print((isFirstLoad: isFirstLoad));
+        }
+
         if (state.user case var user?) {
           if (kDebugMode) {
             print("User changed: $user");
@@ -101,10 +104,18 @@ class LoadedApp extends ProvidingHookWidget {
           }
           userDataBloc.add(const SignedOutUserDataEvent());
 
-          router.goNamed(AppRoutes.login);
+          if (isFirstLoad.value) {
+            isFirstLoad.value = false;
+            router.go("/blank");
+          } else {
+            router.goNamed(AppRoutes.login);
+          }
         }
       },
-      listenWhen: (p, n) => (p.user == null) ^ (n.user == null),
+      listenWhen:
+          (p, n) =>
+              p.status == AuthenticationStatus.tokenChanging ||
+              (p.user == null) ^ (n.user == null),
       keys: [isFirstLoad],
     );
 
