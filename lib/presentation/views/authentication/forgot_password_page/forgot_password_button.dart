@@ -15,6 +15,11 @@ class ForgotPasswordButton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          ),
           onPressed: () {
             if (isProcessing) return null;
 
