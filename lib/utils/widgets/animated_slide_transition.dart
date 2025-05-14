@@ -126,12 +126,17 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
 
     Animation<Offset> slideAnimation;
     Animation<double> opacityAnimation;
-    if (controller.status == AnimationStatus.completed) {
-      slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
-      opacityAnimation = const AlwaysStoppedAnimation(1.0);
-    } else {
-      slideAnimation = Tween<Offset>(begin: 0.5.dx, end: 0.dx).animate(curve);
-      opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(curve);
+    switch (controller.status) {
+      case AnimationStatus.dismissed:
+        slideAnimation = AlwaysStoppedAnimation(0.5.dx);
+        opacityAnimation = const AlwaysStoppedAnimation(0.0);
+      case AnimationStatus.forward:
+      case AnimationStatus.reverse:
+        slideAnimation = Tween<Offset>(begin: 0.5.dx, end: 0.dx).animate(curve);
+        opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(curve);
+      case AnimationStatus.completed:
+        slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
+        opacityAnimation = const AlwaysStoppedAnimation(1.0);
     }
 
     return Opacity(
@@ -150,12 +155,17 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
 
     Animation<Offset> slideAnimation;
     Animation<double> opacityAnimation;
-    if (controller.isAnimating) {
-      slideAnimation = Tween<Offset>(begin: 0.0.dx, end: -0.5.dx).animate(curve);
-      opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(curve);
-    } else {
-      slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
-      opacityAnimation = const AlwaysStoppedAnimation(1.0);
+    switch (controller.status) {
+      case AnimationStatus.dismissed:
+        slideAnimation = AlwaysStoppedAnimation(0.0.dx);
+        opacityAnimation = const AlwaysStoppedAnimation(1.0);
+      case AnimationStatus.forward:
+      case AnimationStatus.reverse:
+        slideAnimation = Tween<Offset>(begin: 0.0.dx, end: -0.5.dx).animate(curve);
+        opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(curve);
+      case AnimationStatus.completed:
+        slideAnimation = AlwaysStoppedAnimation(-0.5.dx);
+        opacityAnimation = const AlwaysStoppedAnimation(0.0);
     }
 
     return Opacity(
