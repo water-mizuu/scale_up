@@ -7,7 +7,7 @@ import "package:scale_up/presentation/views/home/practice_page/calculator.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_check_button.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_instructions.dart";
 import "package:scale_up/presentation/views/home/practice_page/practice_top_row.dart";
-import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/widgets/animated_slide_transition.dart";
 
 class PracticeBody extends StatelessWidget {
   const PracticeBody({required this.progressBarKey, super.key});
@@ -37,33 +37,20 @@ class PracticeBody extends StatelessWidget {
   }
 
   Widget _calculatorWidget(BuildContext context) {
-    var widget = CalculatorWidget(
-      hslColor: context.read<PracticePageBloc>().state.lesson!.hslColor,
-      onEvaluate: (expression) {
-        try {
-          var evaluated = expression.evaluate({});
+    return AnimatedSlideTransition(
+      delay: 120.ms,
+      child: CalculatorWidget(
+        hslColor: context.read<PracticePageBloc>().state.lesson!.hslColor,
+        onInputChange: (expression) {
+          try {
+            var evaluated = expression?.evaluate({});
 
-          context.read<PracticePageBloc>().add(PracticePageInputChanged(evaluated));
-        } on UnsupportedError {
-          context.read<PracticePageBloc>().add(const PracticePageInputChanged(null));
-        }
-      },
+            context.read<PracticePageBloc>().add(PracticePageInputChanged(evaluated));
+          } on UnsupportedError {
+            context.read<PracticePageBloc>().add(const PracticePageInputChanged(null));
+          }
+        },
+      ),
     );
-
-    return widget
-        .animate(
-          controller: context.read<TransitionOutAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.ms)
-        .slideX(begin: 0.0, end: -0.4, curve: Curves.easeOutQuad)
-        .fadeOut()
-        .animate(
-          controller: context.read<TransitionInAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.ms)
-        .slideX(begin: 0.4, end: 0.0, curve: Curves.easeOutCubic)
-        .fadeIn();
   }
 }

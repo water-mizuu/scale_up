@@ -16,10 +16,10 @@ import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
 import "package:scale_up/utils/extensions/to_string_as_fixed_max_extension.dart";
 
 class CalculatorWidget extends StatefulHookWidget {
-  const CalculatorWidget({required this.onEvaluate, required this.hslColor, super.key});
+  const CalculatorWidget({required this.onInputChange, required this.hslColor, super.key});
 
   final HSLColor hslColor;
-  final FutureOr<void> Function(NumericalExpression) onEvaluate;
+  final FutureOr<void> Function(NumericalExpression?) onInputChange;
 
   @override
   State<CalculatorWidget> createState() => _CalculatorWidgetState();
@@ -394,9 +394,7 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
     // Evaluate expression after each input
     if (submit) {
       final expression = expressionParser.parse(display);
-      if (expression != null) {
-        widget.onEvaluate(expression);
-      }
+      widget.onInputChange(expression);
     }
   }
 
@@ -458,13 +456,16 @@ class _CalculatorWidgetState extends State<CalculatorWidget> {
       _append(value.toStringAsFixedMax(3), submit: false);
 
       if (submit) {
-        widget.onEvaluate(expression);
+        widget.onInputChange(expression);
       }
     } on UnsupportedError catch (e) {
       if (kDebugMode) {
         print(e);
       }
       _error();
+      if (submit) {
+        widget.onInputChange(null);
+      }
       return;
     }
   }

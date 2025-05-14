@@ -138,6 +138,8 @@ T useProvidedBloc<T extends BlocBase>(
   return local;
 }
 
+/// A hook that uses a [PopScope] widget to manage the back button behavior.
+///   This can only be used inside a [ProvidingHookWidget].
 void usePopScope<T>({
   Key? key,
   bool canPop = true,
@@ -158,6 +160,8 @@ void usePopScope<T>({
   });
 }
 
+/// A wrapping hook that wraps the widget with a [NotificationListener].
+///   This can only be used inside a [ProvidingHookWidget].
 void useNotificationListener<T extends Notification>(bool Function(T listener) listener) {
   var element = _ProvidingElement._currentProvidingElement;
   if (element == null) {
@@ -165,10 +169,7 @@ void useNotificationListener<T extends Notification>(bool Function(T listener) l
   }
 
   element._wrappers.add((context, child) {
-    return NotificationListener<T>(
-      onNotification: (notification) => listener(notification),
-      child: child,
-    );
+    return NotificationListener<T>(onNotification: listener, child: child);
   });
 }
 

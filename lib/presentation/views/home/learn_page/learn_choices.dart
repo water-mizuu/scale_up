@@ -1,8 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
-import "package:functional_widget_annotation/functional_widget_annotation.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper/numerical_expression.dart";
@@ -12,10 +9,11 @@ import "package:scale_up/presentation/views/home/learn_page/learn_choices/"
     "indirect_steps_choice.dart";
 import "package:scale_up/presentation/views/home/practice_page/calculator.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/hsl_color_scheme_extension.dart";
+import "package:scale_up/utils/widgets/animated_slide_transition.dart";
 
-part "learn_choices.g.dart";
+Duration _itemDelay(int index) => Duration(milliseconds: 60 + (index * 50));
+Duration _slideDuration() => const Duration(milliseconds: 500);
 
 class LearnChoices extends StatelessWidget {
   const LearnChoices({super.key});
@@ -60,21 +58,11 @@ class DirectFormulaChoices extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (var (i, choice) in choices.indexed)
-              DirectFormulaChoice(choice: choice, currentQuestion: currentQuestion)
-                  .animate(
-                    controller: context.read<TransitionOutAnimationController>().controller,
-                    autoPlay: false,
-                  )
-                  .then(delay: (i * 100).ms)
-                  .slideX(begin: 0.0, end: -0.25, curve: Curves.easeInOut)
-                  .fadeOut()
-                  .animate(
-                    controller: context.read<TransitionInAnimationController>().controller,
-                    autoPlay: false,
-                  )
-                  .then(delay: (i * 100).ms)
-                  .slideX(begin: 0.25, end: 0.0, curve: Curves.easeInOut)
-                  .fadeIn(),
+              AnimatedSlideTransition(
+                delay: _itemDelay(i),
+                animationDuration: _slideDuration(),
+                child: DirectFormulaChoice(choice: choice, currentQuestion: currentQuestion),
+              ),
           ],
         ),
 
@@ -172,21 +160,11 @@ class ImportantNumbersChoices extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (var (i, choice) in choices.indexed)
-              ImportantNumbersChoice(choice: choice, currentQuestion: currentQuestion)
-                  .animate(
-                    controller: context.read<TransitionOutAnimationController>().controller,
-                    autoPlay: false,
-                  )
-                  .then(delay: (i * 100).ms)
-                  .slideX(begin: 0.0, end: -0.25, curve: Curves.easeInOut)
-                  .fadeOut()
-                  .animate(
-                    controller: context.read<TransitionInAnimationController>().controller,
-                    autoPlay: false,
-                  )
-                  .then(delay: (i * 100).ms)
-                  .slideX(begin: 0.25, end: 0.0, curve: Curves.easeInOut)
-                  .fadeIn(),
+              AnimatedSlideTransition(
+                delay: _itemDelay(i),
+                animationDuration: _slideDuration(),
+                child: ImportantNumbersChoice(choice: choice, currentQuestion: currentQuestion),
+              ),
           ],
         ),
         Styles.hint("Choose your answer here!", textAlign: TextAlign.center),
@@ -282,27 +260,7 @@ class IndirectStepsChoices extends StatelessWidget {
       spacing: 24.0,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ChoicesWrap(currentQuestion: currentQuestion)
-            .animate(
-              controller: context.read<TransitionOutAnimationController>().controller,
-              autoPlay: false,
-            )
-            /// WARNING: This should not be changed. I don't know why,
-            ///   but without this delay, the animation throws.
-            ///  I have NOT yet found the reason.
-            .then(delay: 200.ms)
-            .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
-            .fadeOut()
-            .animate(
-              controller: context.read<TransitionInAnimationController>().controller,
-              autoPlay: false,
-            )
-            /// WARNING: This should not be changed. I don't know why,
-            ///   but without this delay, the animation throws.
-            ///  I have NOT yet found the reason.
-            .then(delay: 200.ms)
-            .slideX(begin: 0.25, end: 0.0, curve: Curves.easeInOut)
-            .fadeIn(), //
+        ChoicesWrap(currentQuestion: currentQuestion),
         Styles.hint("Tap the units in sequence!", textAlign: TextAlign.center),
       ],
     );
@@ -316,53 +274,49 @@ class ChoicesWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12.0,
-      runSpacing: 12.0,
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      children: [
-        for (var (i, choice) in currentQuestion.choices.indexed)
-          IndirectStepsChoice(index: i, unit: choice),
-      ],
+    return AnimatedSlideTransition(
+      delay: _itemDelay(0),
+      animationDuration: _slideDuration(),
+      child: Wrap(
+        spacing: 12.0,
+        runSpacing: 12.0,
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        children: [
+          for (var (i, choice) in currentQuestion.choices.indexed)
+            IndirectStepsChoice(index: i, unit: choice),
+        ],
+      ),
     );
   }
 }
 
-@hwidget
-Widget practiceConversionChoices({required PracticeConversionLearnQuestion currentQuestion}) {
-  var context = useContext();
-  var learnPageBloc = context.watch<LearnPageBloc>();
-  var hslColor = learnPageBloc.loadedState.lesson.hslColor;
+class PracticeConversionChoices extends StatelessWidget {
+  const PracticeConversionChoices({super.key, required this.currentQuestion});
 
-  var widget = CalculatorWidget(
-    hslColor: hslColor,
-    onEvaluate: (expression) {
-      try {
-        var evaluated = expression.evaluate({});
+  final PracticeConversionLearnQuestion currentQuestion;
 
-        context.read<LearnPageBloc>().add(LearnPageAnswerUpdated(answer: evaluated));
-      } on UnsupportedError {
-        context.read<LearnPageBloc>().add(const LearnPageAnswerUpdated(answer: null));
-      }
-    },
-  );
+  @override
+  Widget build(BuildContext context) {
+    var hslColor = context.select((LearnPageBloc b) => b.loadedState.lesson.hslColor);
 
-  return widget
-      .animate(
-        controller: context.read<TransitionOutAnimationController>().controller,
-        autoPlay: false,
-      )
-      .then(delay: 200.ms)
-      .slideX(begin: 0.0, end: -0.4, curve: Curves.easeOutQuad)
-      .fadeOut()
-      .animate(
-        controller: context.read<TransitionInAnimationController>().controller,
-        autoPlay: false,
-      )
-      .then(delay: 250.ms)
-      .slideX(begin: 0.4, end: 0.0, curve: Curves.easeOutCubic)
-      .fadeIn();
+    return AnimatedSlideTransition(
+      delay: _itemDelay(0),
+      animationDuration: _slideDuration(),
+      child: CalculatorWidget(
+        hslColor: hslColor,
+        onInputChange: (expression) {
+          try {
+            var evaluated = expression?.evaluate({});
+
+            context.read<LearnPageBloc>().add(LearnPageAnswerUpdated(answer: evaluated));
+          } on UnsupportedError {
+            context.read<LearnPageBloc>().add(const LearnPageAnswerUpdated(answer: null));
+          }
+        },
+      ),
+    );
+  }
 }
 
 final padding = const EdgeInsets.all(8.0) + const EdgeInsets.symmetric(horizontal: 8.0);

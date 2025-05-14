@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:go_router/go_router.dart";
@@ -23,6 +22,7 @@ import "package:scale_up/presentation/views/home/practice_page/"
 import "package:scale_up/presentation/views/home/practice_page/practice_continue_button.dart";
 import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/extensions/num_duration_extension.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
 /// We assume that each instance of the ChapterPage is a new set of questions.
@@ -179,6 +179,7 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                     ///   Is there a way to do this in the BLoC itself?
                     if (state.status == PracticePageStatus.movingIn) {
                       transitionOutAnimation.reset();
+                      transitionInAnimation.reset();
                       await transitionInAnimation.forward(from: 0.0);
                       if (bloc.isClosed) return;
 
@@ -186,6 +187,7 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
                     } else if (state.status == PracticePageStatus.movingAway) {
                       /// Just instantly hide the message.
                       messageAnimation.reset();
+                      transitionOutAnimation.reset();
                       await transitionOutAnimation.forward(from: 0.0);
 
                       if (bloc.isClosed) return;

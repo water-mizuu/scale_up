@@ -3,13 +3,14 @@ import "package:flutter/material.dart";
 import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
+import "package:provider/provider.dart";
+import "package:provider/single_child_widget.dart";
 import "package:scale_up/data/models/unit.dart";
 import "package:scale_up/data/sources/firebase/firestore_helper.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
 import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/hooks/use_bloc_builder.dart";
 import "package:scale_up/hooks/use_bloc_listener.dart";
-import "package:scale_up/hooks/use_new_bloc.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_cubit.dart";
 import "package:scale_up/presentation/bloc/indirect_steps/indirect_steps_state.dart";
 import "package:scale_up/presentation/bloc/learn_page/learn_page_bloc.dart";
@@ -26,7 +27,7 @@ import "package:scale_up/presentation/views/home/widgets/context_dialog_widget.d
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
-class LearnPage extends ProvidingHookWidget {
+class LearnPage extends StatefulWidget {
   const LearnPage({
     required this.lessonId,
     required this.chapterIndex,
@@ -39,200 +40,131 @@ class LearnPage extends ProvidingHookWidget {
   final bool isReview;
 
   @override
-  Widget build(BuildContext context) {
-    /// Create the bloc.
-    var helper = context.read<LessonsHelper>();
-    var learnPageBloc = useCreateBloc(() => LearnPageBloc(lessonsHelper: helper));
-    context.provideBloc(learnPageBloc);
+  State<LearnPage> createState() => _LearnPageState();
+}
 
-    var indirectStepsCubit = useCreateBloc(() => IndirectStepsCubit());
-    context.provideBloc(indirectStepsCubit);
+class _LearnPageState extends State<LearnPage> with TickerProviderStateMixin {
+  late final LearnPageBloc learnPageBloc;
+  late final IndirectStepsCubit indirectStepsCubit;
+  late final AnimationController messageAnimation;
+  late final AnimationController transitionInAnimation;
+  late final AnimationController transitionOutAnimation;
 
-    /// Animation controllers.
-    var keys = useMemoized(() {
-      return [
-        if (learnPageBloc.state is LoadedLearnPageState) learnPageBloc.loadedState.questionIndex,
-      ];
-    }, [learnPageBloc.state]);
+  List<SingleChildWidget> get provided => [
+    BlocProvider.value(value: learnPageBloc),
+    BlocProvider.value(value: indirectStepsCubit),
+    Provider.value(value: MessageAnimationController(messageAnimation)),
+    Provider.value(value: TransitionInAnimationController(transitionInAnimation)),
+    Provider.value(value: TransitionOutAnimationController(transitionOutAnimation)),
+  ];
 
-    var messageAnimation = useAnimationController(duration: 500.ms, keys: keys);
-    context.provide(MessageAnimationController(messageAnimation));
+  List<BlocListener> get listeners => [
+    BlocListener<LearnPageBloc, LearnPageState>(
+      bloc: learnPageBloc,
+      listener: (context, state) {
+        switch (state) {
+          /// If there is an error, we show a snackbar.
+          case LoadedLearnPageState(:var error?):
+            context.showBasicSnackbar(error.toString());
 
-    var transitionInAnimation = useAnimationController(duration: 500.ms, keys: keys);
-    context.provide(TransitionInAnimationController(transitionInAnimation));
+          /// This is the state when the user has answered a question.
+          case LoadedLearnPageState(status: LearnPageStatus.correct):
+          case LoadedLearnPageState(status: LearnPageStatus.incorrect):
+            messageAnimation.forward(from: 0.0);
 
-    var transitionOutAnimation = useAnimationController(duration: 500.ms, keys: keys);
-    context.provide(TransitionOutAnimationController(transitionOutAnimation));
+          /// When we are [LearnPageStatus.movingAway], then we
+          ///   reverse the animation.
+          case LoadedLearnPageState(status: LearnPageStatus.movingAway):
+            messageAnimation.reverse(from: 1.0);
 
-    /// Whenever the lessonId or chapterIndex changes, we want to
-    ///   update the bloc with the new lesson and chapter index.
-    useEffect(() {
-      learnPageBloc.add(
-        LearnPageWidgetChanged(
-          lesson: context.read<LessonsHelper>().getLesson(lessonId), //
-          chapterIndex: chapterIndex,
-        ),
-      );
-    }, [lessonId, chapterIndex]);
+          /// If the chapter is finished, then we let the bloc know
+          ///   that the user has completed the chapter.
+          /// This will trigger the UserDataBloc to update the stored local data.
+          ///   This will also asynchronously update the server data.
+          case LoadedLearnPageState(status: LearnPageStatus.finished, :var startDateTime):
+            var duration = DateTime.now().difference(startDateTime);
+            var correctAnswers = state.questions.length - state.mistakes;
+            var totalAnswers = state.questions.length;
 
-    /// LISTENERS.
-    useBlocListener(learnPageBloc, (state) {
-      switch (state) {
-        /// If there is an error, we show a snackbar.
-        case LoadedLearnPageState(:var error?):
-          context.showBasicSnackbar(error.toString());
-
-        /// This is the state when the user has answered a question.
-        case LoadedLearnPageState(status: LearnPageStatus.correct):
-        case LoadedLearnPageState(status: LearnPageStatus.incorrect):
-          messageAnimation.forward(from: 0.0);
-
-        /// When we are [LearnPageStatus.movingAway], then we
-        ///   reverse the animation.
-        case LoadedLearnPageState(status: LearnPageStatus.movingAway):
-          messageAnimation.reverse(from: 1.0);
-
-        /// If the chapter is finished, then we let the bloc know
-        ///   that the user has completed the chapter.
-        /// This will trigger the UserDataBloc to update the stored local data.
-        ///   This will also asynchronously update the server data.
-        case LoadedLearnPageState(status: LearnPageStatus.finished, :var startDateTime):
-          var duration = DateTime.now().difference(startDateTime);
-          var correctAnswers = state.questions.length - state.mistakes;
-          var totalAnswers = state.questions.length;
-
-          context.read<UserDataBloc>().add(
-            ChapterCompletedUserDataEvent(
-              chapterType: ChapterType.learn,
-              lessonId: learnPageBloc.loadedState.lesson.id,
-              chapterIndex: learnPageBloc.loadedState.chapterIndex,
-              correctAnswers: correctAnswers,
-              totalAnswers: totalAnswers,
-              duration: duration,
-            ),
-          );
-
-        case LoadedLearnPageState(status: LearnPageStatus.leaving):
-          if (context.canPop()) {
-            context.pop();
-          } else {
-            if (kDebugMode) {
-              print("Going to lesson: ${learnPageBloc.loadedState.lesson.id}.");
-            }
-            context.goNamed(
-              AppRoutes.lesson,
-              pathParameters: {"lessonId": learnPageBloc.loadedState.lesson.id},
+            context.read<UserDataBloc>().add(
+              ChapterCompletedUserDataEvent(
+                chapterType: ChapterType.learn,
+                lessonId: learnPageBloc.loadedState.lesson.id,
+                chapterIndex: learnPageBloc.loadedState.chapterIndex,
+                correctAnswers: correctAnswers,
+                totalAnswers: totalAnswers,
+                duration: duration,
+              ),
             );
-          }
-          return;
 
-        /// Ignore the other statuses.
-        case _:
-          return;
-      }
-    });
+          case LoadedLearnPageState(status: LearnPageStatus.leaving):
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              if (kDebugMode) {
+                print("Going to lesson: ${learnPageBloc.loadedState.lesson.id}.");
+              }
+              context.goNamed(
+                AppRoutes.lesson,
+                pathParameters: {"lessonId": learnPageBloc.loadedState.lesson.id},
+              );
+            }
+            return;
 
-    useBlocListener(
-      learnPageBloc,
-      (state) async {
+          /// Ignore the other statuses.
+          case _:
+            return;
+        }
+      },
+    ),
+    BlocListener<LearnPageBloc, LearnPageState>(
+      bloc: learnPageBloc,
+      listener: (context, state) {
         if (state is! LoadedLearnPageState) return;
 
         /// Animation engine.
         if (state.status == LearnPageStatus.movingIn) {
-          transitionOutAnimation.reset();
-          transitionInAnimation.reset();
-          try {
-            await transitionInAnimation.forward(from: 0.0);
-          } finally {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!context.mounted) return;
+
+            transitionOutAnimation.reset();
+            transitionInAnimation.reset();
+            try {
+              await transitionInAnimation.forward(from: 0.0);
+            } finally {
+              transitionInAnimation.value = 1.0;
+            }
+            if (!context.mounted) return;
+            if (learnPageBloc.isClosed) return;
+
+            /// This is a bit of a hack, but we need to set the animation to be 1.0
+            ///   so that the animation is completed whether or not the animation completes.
             transitionInAnimation.value = 1.0;
-          }
-          if (learnPageBloc.isClosed) return;
-
-          /// This is a bit of a hack, but we need to set the animation to be 1.0
-          ///   so that the animation is completed whether or not the animation completes.
-          transitionInAnimation.value = 1.0;
-          learnPageBloc.add(const LearnPageMovingInComplete());
+            learnPageBloc.add(const LearnPageMovingInComplete());
+          });
         } else if (state.status == LearnPageStatus.movingAway) {
-          /// Just instantly hide the message.
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!context.mounted) return;
 
-          messageAnimation.reset();
-          // transitionInAnimation.reset();
-          transitionOutAnimation.reset();
-          await transitionOutAnimation.forward(from: 0.0);
-          if (learnPageBloc.isClosed) return;
+            /// Just instantly hide the message.
 
-          learnPageBloc.add(const LearnPageMovingAwayComplete());
+            messageAnimation.reset();
+            // transitionInAnimation.reset();
+            transitionOutAnimation.reset();
+            await transitionOutAnimation.forward(from: 0.0);
+            if (!context.mounted) return;
+            if (learnPageBloc.isClosed) return;
+
+            learnPageBloc.add(const LearnPageMovingAwayComplete());
+          });
         }
       },
       listenWhen: (p, c) {
         return (p is BlankLearnPageState && c is LoadedLearnPageState) ||
             (p is LoadedLearnPageState && c is LoadedLearnPageState && p.status != c.status);
       },
-    );
-
-    usePopScope<void>(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
-        initiateLeave(learnPageBloc, context);
-      },
-    );
-
-    useNotificationListener<UserQuitNotification>((notification) {
-      initiateLeave(learnPageBloc, context);
-      return true;
-    });
-
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.0,
-        scrolledUnderElevation: 0.0,
-        elevation: 0.0,
-        forceMaterialTransparency: true,
-      ),
-      body: BlocBuilder<LearnPageBloc, LearnPageState>(
-        bloc: learnPageBloc,
-        buildWhen: (previous, current) {
-          assert(
-            !(previous is LoadedLearnPageState && current is LoadingLearnPageState),
-            "We should never get in a state where we are loading a page "
-            "while we were already in a loaded state.",
-          );
-          if (previous.runtimeType != current.runtimeType) {
-            return true;
-          }
-
-          try {
-            var p = previous as LoadedLearnPageState;
-            var c = current as LoadedLearnPageState;
-
-            if (p.questions[p.questionIndex] != c.questions[c.questionIndex]) {
-              return true;
-            }
-
-            return false;
-          } on Object {
-            return false;
-          }
-        },
-        builder: (context, state) {
-          if (state is! LoadedLearnPageState) {
-            return const Material(child: Center(child: CircularProgressIndicator()));
-          }
-
-          switch (state.questions[state.questionIndex]) {
-            case PlainLearnQuestion _:
-            case DirectFormulaLearnQuestion _:
-            case ImportantNumbersLearnQuestion _:
-            case PracticeConversionLearnQuestion _:
-              return const LearnPageView();
-            case IndirectStepsLearnQuestion question:
-              return IndirectStepsLearnPage(question: question, child: const LearnPageView());
-          }
-        },
-      ),
-    );
-  }
+    ),
+  ];
 
   static void initiateLeave(LearnPageBloc bloc, BuildContext context) async {
     var lesson = bloc.loadedState.lesson;
@@ -258,6 +190,137 @@ class LearnPage extends ProvidingHookWidget {
         context.pushReplacementNamed(AppRoutes.lesson, pathParameters: {"id": lesson.id});
       }
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    var helper = context.read<LessonsHelper>();
+    learnPageBloc = LearnPageBloc(lessonsHelper: helper);
+
+    indirectStepsCubit = IndirectStepsCubit();
+
+    messageAnimation = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    transitionInAnimation = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    transitionOutAnimation = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    learnPageBloc.add(
+      LearnPageWidgetChanged(
+        lesson: context.read<LessonsHelper>().getLesson(widget.lessonId),
+        chapterIndex: widget.chapterIndex,
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant LearnPage oldWidget) {
+    if (widget.lessonId != oldWidget.lessonId || widget.chapterIndex != oldWidget.chapterIndex) {
+      learnPageBloc.add(
+        LearnPageWidgetChanged(
+          lesson: context.read<LessonsHelper>().getLesson(widget.lessonId),
+          chapterIndex: widget.chapterIndex,
+        ),
+      );
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    learnPageBloc.close();
+    indirectStepsCubit.close();
+    messageAnimation.dispose();
+    transitionInAnimation.dispose();
+    transitionOutAnimation.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: listeners,
+      child: MultiProvider(
+        providers: provided,
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            initiateLeave(learnPageBloc, context);
+          },
+          child: NotificationListener(
+            onNotification: (UserQuitNotification notification) {
+              initiateLeave(learnPageBloc, context);
+              return true;
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                toolbarHeight: 0.0,
+                scrolledUnderElevation: 0.0,
+                elevation: 0.0,
+                forceMaterialTransparency: true,
+              ),
+              body: BlocBuilder(
+                bloc: learnPageBloc,
+                buildWhen: (previous, current) {
+                  assert(
+                    !(previous is LoadedLearnPageState && current is LoadingLearnPageState),
+                    "We should never get in a state where we are loading a page "
+                    "while we were already in a loaded state.",
+                  );
+                  if (previous.runtimeType != current.runtimeType) {
+                    return true;
+                  }
+
+                  try {
+                    var p = previous as LoadedLearnPageState;
+                    var c = current as LoadedLearnPageState;
+
+                    if (p.questions[p.questionIndex] != c.questions[c.questionIndex]) {
+                      return true;
+                    }
+
+                    return false;
+                  } on Object {
+                    return false;
+                  }
+                },
+                builder: (context, state) {
+                  if (state is! LoadedLearnPageState) {
+                    return const Material(child: Center(child: CircularProgressIndicator()));
+                  }
+
+                  return switch (state.questions[state.questionIndex]) {
+                    IndirectStepsLearnQuestion question => IndirectStepsLearnPage(
+                      question: question,
+                      child: const LearnPageView(),
+                    ),
+                    _ => const LearnPageView(),
+                  };
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -287,10 +350,10 @@ class FlyingUnit extends StatelessWidget {
 }
 
 class IndirectStepsLearnPage extends HookWidget {
-  final IndirectStepsLearnQuestion question;
+  const IndirectStepsLearnPage({super.key, required this.child, required this.question});
 
   final Widget child;
-  const IndirectStepsLearnPage({super.key, required this.question, required this.child});
+  final IndirectStepsLearnQuestion question;
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +418,7 @@ class LearnPageView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var progressBarKey = useMemoized(() => GlobalKey());
-    var status = context.select((LearnPageBloc b) => (b.state as LoadedLearnPageState).status);
+    var status = context.select((LearnPageBloc b) => b.loadedState.status);
 
     return Scaffold(
       appBar: AppBar(

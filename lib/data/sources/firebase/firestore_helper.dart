@@ -3,7 +3,7 @@ import "dart:collection";
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:flutter_animate/flutter_animate.dart";
+import "package:scale_up/utils/extensions/num_duration_extension.dart";
 
 /// A wrapper class that is the only one that has access to the
 ///   [FirebaseFirestore] instance. All interactions with cloud

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_animate/flutter_animate.dart";
 import "package:provider/single_child_widget.dart";
+import "package:scale_up/utils/extensions/num_duration_extension.dart";
 
 class TapScale extends SingleChildStatefulWidget {
   const TapScale({super.key, super.child});

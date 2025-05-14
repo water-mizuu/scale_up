@@ -1,7 +1,7 @@
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_animate/flutter_animate.dart";
+// import "package:flutter_animate/flutter_animate.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -17,7 +17,8 @@ import "package:scale_up/presentation/views/home/learn_page/"
 import "package:scale_up/presentation/views/home/learn_page/learn_choices/choice_unit_tile.dart";
 import "package:scale_up/presentation/views/home/widgets/floating_card.dart";
 import "package:scale_up/presentation/views/home/widgets/styles.dart";
-import "package:scale_up/utils/animation_controller_distinction.dart";
+import "package:scale_up/utils/extensions/num_duration_extension.dart";
+import "package:scale_up/utils/widgets/animated_slide_transition.dart";
 import "package:scale_up/utils/widgets/tool_tip.dart";
 
 class LearnInstructions extends StatelessWidget {
@@ -300,21 +301,7 @@ class IndirectStepsAnswerSpots extends HookWidget {
       ],
     );
 
-    return child
-        .animate(
-          controller: context.read<TransitionOutAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.milliseconds)
-        .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
-        .fadeOut()
-        .animate(
-          controller: context.read<TransitionInAnimationController>().controller,
-          autoPlay: false,
-        )
-        .then(delay: 120.milliseconds)
-        .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
-        .fadeIn();
+    return AnimatedSlideTransition(delay: 120.ms, child: child);
   }
 }
 
@@ -501,20 +488,8 @@ class _AnimatedQuestionPanel extends SingleChildStatelessWidget {
 
   @override
   Widget buildWithChild(BuildContext context, Widget? child) {
-    var widget = FloatingCardWithHint(hint: hint, isRetry: isRetry, child: child!);
-
-    return widget
-        .animate(
-          controller: context.read<TransitionOutAnimationController>().controller,
-          autoPlay: false,
-        )
-        .slideX(begin: 0.0, end: -0.5, curve: Curves.easeInOut)
-        .fadeOut()
-        .animate(
-          controller: context.read<TransitionInAnimationController>().controller,
-          autoPlay: false,
-        )
-        .slideX(begin: 0.5, end: 0.0, curve: Curves.easeInOut)
-        .fadeIn();
+    return AnimatedSlideTransition(
+      child: FloatingCardWithHint(hint: hint, isRetry: isRetry, child: child!),
+    );
   }
 }

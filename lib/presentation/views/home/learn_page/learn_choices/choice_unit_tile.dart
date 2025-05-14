@@ -13,7 +13,7 @@ class ChoiceUnitTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hslColor = context.read<LearnPageBloc>().loadedState.lesson.hslColor;
+    var hslColor = context.select((LearnPageBloc b) => b.loadedState.lesson.hslColor);
     var backgroundColor =
         hslColor //
             .withSaturation(hslColor.saturation * 0.8)
