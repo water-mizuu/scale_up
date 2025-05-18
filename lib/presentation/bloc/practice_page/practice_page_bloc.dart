@@ -1,6 +1,7 @@
 import "dart:async";
 import "dart:math";
 
+import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/models/unit.dart";
@@ -41,6 +42,15 @@ class PracticePageBloc extends Bloc<PracticePageEvent, PracticePageState> {
 
   @pragma("vm:prefer-inline")
   LoadedPracticePageState get loadedState => state as LoadedPracticePageState;
+
+  @override
+  void onEvent(PracticePageEvent event) {
+    super.onEvent(event);
+
+    if (kDebugMode) {
+      print("[PRACTICE_PAGE_BLOC] $event");
+    }
+  }
 
   /// Initializes the lesson by loading it from the repository
   ///   and generating random unit pairs.

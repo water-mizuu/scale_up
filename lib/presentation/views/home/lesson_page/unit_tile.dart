@@ -21,7 +21,6 @@ class UnitTile extends StatelessWidget {
   Widget build(BuildContext context) {
     var lesson = context.read<LessonPageCubit>().state.lesson;
     var unit = context.read<LessonsHelper>().getUnit(lesson.unitsType, unitString);
-    const borderRadius = BorderRadius.all(Radius.circular(8.0));
 
     return ToolTip(
       content: UnitToolTip(
@@ -31,7 +30,7 @@ class UnitTile extends StatelessWidget {
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: borderRadius,
+          borderRadius: BorderRadius.circular(8.0),
           color: Colors.white,
           border: Border.all(color: Colors.white.borderColor),
         ),

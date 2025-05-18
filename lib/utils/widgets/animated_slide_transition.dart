@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/offset_extension.dart";
 
@@ -26,8 +27,6 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
   AnimationController? _inParentController;
   AnimationController? _outParentController;
 
-  bool disposed = false;
-
   @override
   void initState() {
     super.initState();
@@ -46,7 +45,7 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    var transitionInAnimationController = context.read<TransitionInAnimationController>();
+    var transitionInAnimationController = context.watch<TransitionInAnimationController>();
     if (_inParentController != transitionInAnimationController.controller) {
       _inParentController?.removeStatusListener(_inParentControllerListener);
       _inParentController = transitionInAnimationController.controller;
@@ -55,7 +54,7 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
       _inParentControllerListener(_inParentController!.status);
     }
 
-    var transitionOutAnimationController = context.read<TransitionOutAnimationController>();
+    var transitionOutAnimationController = context.watch<TransitionOutAnimationController>();
     if (_outParentController != transitionOutAnimationController.controller) {
       _outParentController?.removeStatusListener(_outParentControllerListener);
       _outParentController = transitionOutAnimationController.controller;
@@ -77,7 +76,6 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
 
   @override
   void dispose() {
-    disposed = true;
     _inTransitionController.dispose();
     _outTransitionController.dispose();
     _inParentController?.removeStatusListener(_inParentControllerListener);
@@ -102,9 +100,9 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
   void _inParentControllerListener(AnimationStatus status) async {
     if (status == AnimationStatus.forward) {
       /// We want a delay on our animation.
-      if (disposed) return;
       await Future.delayed(widget.delay);
-      if (disposed) return;
+      if (!mounted) return;
+      _outTransitionController.reset();
       await _inTransitionController.forward(from: 0.0);
     }
   }
@@ -112,9 +110,8 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
   void _outParentControllerListener(AnimationStatus status) async {
     if (status == AnimationStatus.forward) {
       /// We want a delay on our animation.
-      if (disposed) return;
       await Future.delayed(widget.delay);
-      if (disposed) return;
+      if (!mounted) return;
       await _outTransitionController.forward(from: 0.0);
     }
   }

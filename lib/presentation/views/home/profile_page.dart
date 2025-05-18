@@ -19,7 +19,7 @@ class ProfilePage extends StatelessWidget {
 
 const frequentlyAskedQuestions = """
 - **Can the application be used offline?**
-  - No, the application requires an internet connection. Local offline may come in the future.
+  - No, the application requires an internet connection.
 - **How do I contact support?**
   - You can contact support by going to the "Support" section in the app settings.
 - **What units are used in the app?**
@@ -31,8 +31,8 @@ const frequentlyAskedQuestions = """
 """;
 
 const developerInformation = """
-- **Developer Name:** John Doe
-- **Mobile Number:** (+63) 998 012 3456
+- **Developer Name:** John Michael Zuñiga
+- **Mobile Number:** (+63) 998 546 2323
 """;
 
 const appAbout = """

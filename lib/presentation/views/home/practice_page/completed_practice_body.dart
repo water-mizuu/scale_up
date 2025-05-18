@@ -12,32 +12,34 @@ class CompletedPracticeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<PracticePageBloc>().loadedState;
+    var state = context.watch<PracticePageBloc>().loadedState;
     var chapters = state.lesson.practiceChapters;
     var currentChapter = chapters[state.chapterIndex];
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        spacing: 8.0,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PracticeTopRow(progressBarKey: progressBarKey),
-          Expanded(
-            child: Center(
-              child: Column(
-                spacing: 8.0,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset("assets/illustrations/completed_1.png", width: 250),
-                  Styles.subtitle("Congratulations!", fontSize: 26.0),
-                  Styles.subtitle("You have finished '${currentChapter.name}'", fontSize: 14.0),
-                ],
+      child: SafeArea(
+        child: Column(
+          spacing: 8.0,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PracticeTopRow(progressBarKey: progressBarKey),
+            Expanded(
+              child: Center(
+                child: Column(
+                  spacing: 8.0,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset("assets/illustrations/completed_1.png", width: 250),
+                    Styles.subtitle("Congratulations!", fontSize: 26.0),
+                    Styles.subtitle("You have finished '${currentChapter.name}'", fontSize: 14.0),
+                  ],
+                ),
               ),
             ),
-          ),
-          const PracticeCheckButton(),
-        ],
+            const PracticeCheckButton(),
+          ],
+        ),
       ),
     );
   }

@@ -72,23 +72,29 @@ class HomePageView extends HookWidget {
             },
             child: KeyedSubtree(
               key: listKey.value,
-              child: ListView(
+              child: SingleChildScrollView(
                 controller: scrollController,
-                children: const [
-                  Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
-                  SizedBox(height: 12.0),
-                  Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
-                  SizedBox(height: 12.0),
-                  Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: LatestLesson()),
-                  SizedBox(height: 12.0),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      spacing: 16.0,
-                      children: [NewLessons(), OngoingLessons(), FinishedLessons()],
+
+                child: const Column(
+                  children: [
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: UserBar()),
+                    SizedBox(height: 12.0),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 16.0), child: Statistics()),
+                    SizedBox(height: 12.0),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: LatestLesson(),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 12.0),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        spacing: 16.0,
+                        children: [NewLessons(), OngoingLessons(), FinishedLessons()],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ).animate(controller: animationController, autoPlay: false).fadeOut(begin: 1.0),
           ),

@@ -275,7 +275,6 @@ class LearnPageBloc extends Bloc<LearnPageEvent, LearnPageState> {
           extendedUnitGroup.conversions.any((c) => c.from == from.id && c.to == to.id) &&
           !(unitGroup.conversions.any((c) => c.from == from.id && c.to == to.id));
 
-      print(expression);
       var isIdentity = expression is VariableExpression && expression.str == "from";
 
       /// If the conversion is an identity, we need to account for that.

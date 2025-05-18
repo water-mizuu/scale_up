@@ -10,25 +10,14 @@ class LearnContinueButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var learnPageBloc = context.read<LearnPageBloc>();
-    var state = useBlocBuilder(
-      learnPageBloc,
-      buildWhen: (p, c) => (p as LoadedLearnPageState).status == LearnPageStatus.evaluating,
-    );
-
-    if (state is! LoadedLearnPageState) {
-      return const SizedBox.shrink();
-    }
+    var state = context.select((LearnPageBloc b) => b.loadedState);
 
     if (state.status case LearnPageStatus.correct || LearnPageStatus.incorrect) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
-            child: const LearnCheckButton(),
-          ),
-        ],
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0) - const EdgeInsets.only(top: 16.0),
+          child: const LearnCheckButton(),
+        ),
       );
     }
 

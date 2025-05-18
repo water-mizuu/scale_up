@@ -86,116 +86,116 @@ class _PracticePageState extends State<PracticePage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.0,
-        scrolledUnderElevation: 0.0,
-        elevation: 0.0,
-        forceMaterialTransparency: true,
-      ),
-      body: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, _) async {
-          if (didPop) return;
-          _initiateLeave(context);
-        },
-        child: NotificationListener<UserQuitNotification>(
-          onNotification: (notification) {
-            _initiateLeave(context);
-            return true;
-          },
-          child: MultiProvider(
-            providers: [
-              BlocProvider.value(value: bloc),
-              Provider.value(value: bloc.state.lesson!.hslColor),
-              Provider.value(value: MessageAnimationController(messageAnimation)),
-              Provider.value(value: TransitionInAnimationController(transitionInAnimation)),
-              Provider.value(value: TransitionOutAnimationController(transitionOutAnimation)),
-            ],
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<PracticePageBloc, PracticePageState>(
-                  bloc: bloc,
-                  listener: (context, state) async {
-                    switch (state) {
-                      /// If there is an error, we show a snackbar.
-                      case LoadedPracticePageState(:var error?):
-                        await context.showBasicSnackbar(error.toString());
+    return MultiProvider(
+      providers: [
+        BlocProvider.value(value: bloc),
+        Provider.value(value: bloc.state.lesson!.hslColor),
+        Provider.value(value: MessageAnimationController(messageAnimation)),
+        Provider.value(value: TransitionInAnimationController(transitionInAnimation)),
+        Provider.value(value: TransitionOutAnimationController(transitionOutAnimation)),
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<PracticePageBloc, PracticePageState>(
+            bloc: bloc,
+            listener: (context, state) async {
+              switch (state) {
+                /// If there is an error, we show a snackbar.
+                case LoadedPracticePageState(:var error?):
+                  await context.showBasicSnackbar(error.toString());
 
-                      /// This is the state when the user has answered a question.
-                      case LoadedPracticePageState(status: PracticePageStatus.correct):
-                      case LoadedPracticePageState(status: PracticePageStatus.incorrect):
-                        messageAnimation.forward(from: 0.0);
+                /// This is the state when the user has answered a question.
+                case LoadedPracticePageState(status: PracticePageStatus.correct):
+                case LoadedPracticePageState(status: PracticePageStatus.incorrect):
+                  messageAnimation.forward(from: 0.0);
 
-                      /// When we are [PracticePageStatus.movingAway], then we
-                      ///   reverse the animation.
-                      case LoadedPracticePageState(status: PracticePageStatus.movingAway):
-                        messageAnimation.reverse(from: 1.0);
+                /// When we are [PracticePageStatus.movingAway], then we
+                ///   reverse the animation.
+                case LoadedPracticePageState(status: PracticePageStatus.movingAway):
+                  messageAnimation.reverse(from: 1.0);
 
-                      /// If the chapter is finished, then we let the bloc know
-                      ///   that the user has completed the chapter.
-                      /// This will trigger the UserDataBloc to update the stored local data.
-                      ///   This will also asynchronously update the server data.
-                      case LoadedPracticePageState(
-                        status: PracticePageStatus.finished,
-                        :var startDateTime,
-                      ):
-                        var duration = DateTime.now().difference(startDateTime);
-                        var correctAnswers = state.questions.length - state.mistakes;
-                        var totalAnswers = state.questions.length;
+                /// If the chapter is finished, then we let the bloc know
+                ///   that the user has completed the chapter.
+                /// This will trigger the UserDataBloc to update the stored local data.
+                ///   This will also asynchronously update the server data.
+                case LoadedPracticePageState(
+                  status: PracticePageStatus.finished,
+                  :var startDateTime,
+                ):
+                  var duration = DateTime.now().difference(startDateTime);
+                  var correctAnswers = state.questions.length - state.mistakes;
+                  var totalAnswers = state.questions.length;
 
-                        context.read<UserDataBloc>().add(
-                          ChapterCompletedUserDataEvent(
-                            chapterType: ChapterType.practice,
-                            lessonId: bloc.loadedState.lesson.id,
-                            chapterIndex: bloc.loadedState.chapterIndex,
-                            correctAnswers: correctAnswers,
-                            totalAnswers: totalAnswers,
-                            duration: duration,
-                          ),
-                        );
-                      case LoadedPracticePageState(status: PracticePageStatus.leaving):
-                        if (context.canPop()) {
-                          context.pop();
-                        } else {
-                          context.goNamed(
-                            AppRoutes.lesson,
-                            pathParameters: {"lessonId": bloc.loadedState.lesson.id},
-                          );
-                        }
-                        return;
+                  context.read<UserDataBloc>().add(
+                    ChapterCompletedUserDataEvent(
+                      chapterType: ChapterType.practice,
+                      lessonId: bloc.loadedState.lesson.id,
+                      chapterIndex: bloc.loadedState.chapterIndex,
+                      correctAnswers: correctAnswers,
+                      totalAnswers: totalAnswers,
+                      duration: duration,
+                    ),
+                  );
+                case LoadedPracticePageState(status: PracticePageStatus.leaving):
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.goNamed(
+                      AppRoutes.lesson,
+                      pathParameters: {"lessonId": bloc.loadedState.lesson.id},
+                    );
+                  }
+                  return;
 
-                      /// Ignore the other statuses.
-                      case _:
-                        return;
-                    }
-                  },
-                ),
-                BlocListener<PracticePageBloc, PracticePageState>(
-                  bloc: bloc,
-                  listenWhen: (p, c) => p.status != c.status,
-                  listener: (context, state) async {
-                    /// Animation engine.
-                    ///   Is there a way to do this in the BLoC itself?
-                    if (state.status == PracticePageStatus.movingIn) {
-                      transitionOutAnimation.reset();
-                      transitionInAnimation.reset();
-                      await transitionInAnimation.forward(from: 0.0);
-                      if (bloc.isClosed) return;
+                /// Ignore the other statuses.
+                case _:
+                  return;
+              }
+            },
+          ),
+          BlocListener<PracticePageBloc, PracticePageState>(
+            bloc: bloc,
+            listenWhen: (p, c) => p.status != c.status,
+            listener: (context, state) async {
+              /// Animation engine.
+              ///   Is there a way to do this in the BLoC itself?
+              if (state.status == PracticePageStatus.movingIn) {
+                transitionOutAnimation.reset();
+                transitionInAnimation.reset();
+                await transitionInAnimation.forward(from: 0.0);
+                if (!mounted || bloc.isClosed) return;
 
-                      bloc.add(const PracticePageToTransitionComplete());
-                    } else if (state.status == PracticePageStatus.movingAway) {
-                      /// Just instantly hide the message.
-                      messageAnimation.reset();
-                      transitionOutAnimation.reset();
-                      await transitionOutAnimation.forward(from: 0.0);
+                bloc.add(const PracticePageToTransitionComplete());
+              } else if (state.status == PracticePageStatus.movingAway) {
+                /// Just instantly hide the message.
+                messageAnimation.reset();
+                transitionOutAnimation.reset();
+                await transitionOutAnimation.forward(from: 0.0);
+                if (!mounted || bloc.isClosed) return;
 
-                      if (bloc.isClosed) return;
-                      bloc.add(const PracticePageFromTransitionComplete());
-                    }
-                  },
-                ),
-              ],
+                bloc.add(const PracticePageFromTransitionComplete());
+              }
+            },
+          ),
+        ],
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0.0,
+            scrolledUnderElevation: 0.0,
+            elevation: 0.0,
+            forceMaterialTransparency: true,
+          ),
+          body: PopScope(
+            canPop: false,
+            onPopInvokedWithResult: (didPop, _) async {
+              if (didPop) return;
+              _initiateLeave(context);
+            },
+            child: NotificationListener<UserQuitNotification>(
+              onNotification: (notification) {
+                _initiateLeave(context);
+                return true;
+              },
               child: BlocBuilder<PracticePageBloc, PracticePageState>(
                 bloc: bloc,
                 builder: (context, state) {
@@ -233,7 +233,12 @@ class PracticePageView extends HookWidget {
 
           const Positioned.fill(child: PracticeCongratulatoryBarrier()),
           const Positioned(bottom: 0, left: 0, right: 0, child: PracticeCongratulatoryMessage()),
-          const Positioned(bottom: 0, left: 0, right: 0, child: PracticeContinueButton()),
+          const Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(child: PracticeContinueButton()),
+          ),
         ],
       ],
     );

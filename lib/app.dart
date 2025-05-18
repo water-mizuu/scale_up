@@ -119,15 +119,6 @@ class LoadedApp extends ProvidingHookWidget {
       keys: [isFirstLoad],
     );
 
-    return const AppView();
-  }
-}
-
-class AppView extends StatelessWidget {
-  const AppView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
     Widget widget = MaterialApp.router(
       theme: ThemeData.from(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black) //
