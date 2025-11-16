@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "flutter",
+			"command": "dart",
+			"args": [
+				"run",
+				"build_runner",
+				"watch",
+				"-d"
+			],
+			"problemMatcher": [
+				"$dart-build_runner"
+			],
+			"group": "build",
+			"label": "flutter: dart run build_runner watch -d",
+			"detail": "",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent"
+			},
+			"runOptions": {
+				"runOn": "folderOpen",
+				"instanceLimit": 1
+			}
+		}
+	]
+}

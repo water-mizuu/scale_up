@@ -93,14 +93,14 @@ void _provide(SingleChildWidget Function(BuildContext, Widget) provider) {
 T useDisposable<T extends Object>(
   T Function() create,
   void Function(T) dispose, [
-  List<Object> dependencies = const [],
+  List<Object> keys = const [],
 ]) {
   var ref = useRef(null as T?);
   useEffect(() {
     ref.value = create();
 
     return () => dispose(ref.value!);
-  }, dependencies);
+  }, keys);
 
   return ref.value!;
 }
@@ -115,7 +115,7 @@ T useInheritedProvide<T extends Object>(T object) {
   return object;
 }
 
-T useProvide<T extends Object>(T object, {List<Object> dependencies = const []}) {
+T useProvide<T extends Object>(T object, {List<Object> keys = const []}) {
   _provide((context, child) => Provider<T>.value(value: object, child: child));
 
   return object;
@@ -125,15 +125,9 @@ T useProvide<T extends Object>(T object, {List<Object> dependencies = const []})
 /// It utilizes the [BlocProvider] to provide the [Bloc].
 ///
 /// See [BlocProvider] for more information.
-T useProvidedBloc<T extends BlocBase>(
-  T Function() blocFactory, {
-  List<Object> dependencies = const [],
-  Key? key,
-}) {
-  var local = useDisposable(blocFactory, (b) => b.close(), dependencies);
-  useEffect(() {
-    _provide((context, child) => BlocProvider<T>.value(value: local, key: key, child: child));
-  }, null);
+T useProvidedBloc<T extends BlocBase>(T Function() blocFactory, {List<Object> keys = const []}) {
+  var local = useDisposable(blocFactory, (b) => b.close(), keys);
+  _provide((context, child) => BlocProvider<T>.value(value: local, child: child));
 
   return local;
 }

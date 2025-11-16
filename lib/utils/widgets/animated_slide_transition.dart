@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_hooks/flutter_hooks.dart";
 import "package:scale_up/utils/animation_controller_distinction.dart";
 import "package:scale_up/utils/extensions/offset_extension.dart";
 
@@ -118,7 +117,6 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
 
   Widget _animateFadeIn(BuildContext context, Widget? child) {
     var controller = _inTransitionController;
-
     var curve = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
 
     Animation<Offset> slideAnimation;
@@ -147,7 +145,6 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
 
   Widget _animateFadeOut(BuildContext context, Widget? child) {
     var controller = _outTransitionController;
-
     var curve = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
 
     Animation<Offset> slideAnimation;

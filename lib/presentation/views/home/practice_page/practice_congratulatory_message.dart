@@ -12,8 +12,8 @@ class PracticeCongratulatoryMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.read<PracticePageBloc>().loadedState;
     var status = context.select((PracticePageBloc b) => b.loadedState.status);
+    var correctAnswer = context.select((PracticePageBloc b) => b.loadedState.correctAnswer);
     var controller = context.read<MessageAnimationController>().controller;
 
     var widget = DecoratedBox(
@@ -51,7 +51,7 @@ class PracticeCongratulatoryMessage extends StatelessWidget {
                             ),
                           ),
                           TextSpan(
-                            text: "${state.correctAnswer}",
+                            text: "$correctAnswer",
                             style: Styles.subtitle.copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
                             ),

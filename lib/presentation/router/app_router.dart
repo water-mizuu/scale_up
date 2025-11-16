@@ -74,14 +74,8 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: "/all_lessons",
               name: AppRoutes.allLessons,
-              builder: (context, state) => const AllLessonsPage(isFromSearch: false),
+              builder: (context, state) => const AllLessonsPage(),
               routes: [
-                GoRoute(
-                  path: "from_search",
-                  name: AppRoutes.allLessonsSearch,
-                  builder: (context, state) => const AllLessonsPage(isFromSearch: true),
-                ),
-
                 GoRoute(
                   path: ":id",
                   name: AppRoutes.lesson,

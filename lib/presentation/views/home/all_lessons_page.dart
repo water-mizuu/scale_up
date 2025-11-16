@@ -7,36 +7,8 @@ import "package:scale_up/presentation/views/home/all_lessons_page/all_lessons_bo
 import "package:scale_up/presentation/views/home/all_lessons_page/search_bar.dart";
 import "package:scale_up/presentation/views/home/all_lessons_page/title_bar.dart";
 
-class AllLessonsPage extends StatefulWidget {
-  const AllLessonsPage({required this.isFromSearch, super.key});
-
-  final bool isFromSearch;
-
-  @override
-  State<AllLessonsPage> createState() => _AllLessonsPageState();
-}
-
-class _AllLessonsPageState extends State<AllLessonsPage> {
-  late final FocusNode searchFocusNode;
-
-  @override
-  void initState() {
-    super.initState();
-
-    searchFocusNode = FocusNode();
-    if (widget.isFromSearch) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        searchFocusNode.requestFocus();
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    searchFocusNode.dispose();
-
-    super.dispose();
-  }
+class AllLessonsPage extends StatelessWidget {
+  const AllLessonsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +19,7 @@ class _AllLessonsPageState extends State<AllLessonsPage> {
     }
 
     return MultiProvider(
-      providers: [
-        BlocProvider(create: (_) => AllLessonsPageCubit(helper, lessons)),
-        InheritedProvider.value(value: searchFocusNode),
-      ],
+      providers: [BlocProvider(create: (_) => AllLessonsPageCubit(helper, lessons))],
       child: const AllLessonsPageView(),
     );
   }

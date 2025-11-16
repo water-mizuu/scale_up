@@ -4,6 +4,7 @@ import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 import "package:scale_up/data/models/lesson.dart";
 import "package:scale_up/data/sources/lessons/lessons_helper.dart";
+import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/presentation/bloc/lesson_page/lesson_page_bloc.dart";
 import "package:scale_up/presentation/views/home/lesson_page/blank_lesson_page.dart";
 import "package:scale_up/presentation/views/home/lesson_page/lesson_header.dart";
@@ -21,22 +22,20 @@ class LessonPage extends StatelessWidget {
       return const BlankLessonPage(id: "");
     }
 
-    return MultiProvider(
-      providers: [
-        BlocProvider(key: ValueKey(id), create: (_) => LessonPageCubit(context.read(), lesson)),
-      ],
-      child: LessonPageView(lesson: lesson),
-    );
+    return LessonPageView(lesson: lesson);
   }
 }
 
-class LessonPageView extends StatelessWidget {
+class LessonPageView extends ProvidingHookWidget {
   const LessonPageView({required this.lesson, super.key});
 
   final Lesson lesson;
 
   @override
   Widget build(BuildContext context) {
+    var (lessonsHelper, id) = context.select((LessonsHelper h) => (h, lesson.id));
+    useProvidedBloc(() => LessonPageCubit(context.read(), lesson), keys: [id]);
+
     return Scaffold(
       appBar: AppBar(
         leading: MouseRegion(

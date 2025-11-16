@@ -11,7 +11,7 @@ PODS:
     - PromisesObjC (~> 2.4)
   - audioplayers_darwin (0.0.1):
     - FlutterMacOS
-  - cloud_firestore (5.6.7):
+  - cloud_firestore (5.6.8):
     - Firebase/CoreOnly (~> 11.10.0)
     - Firebase/Firestore (~> 11.10.0)
     - firebase_core
@@ -24,12 +24,12 @@ PODS:
   - Firebase/Firestore (11.10.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 11.10.0)
-  - firebase_auth (5.5.3):
+  - firebase_auth (5.5.4):
     - Firebase/Auth (~> 11.10.0)
     - Firebase/CoreOnly (~> 11.10.0)
     - firebase_core
     - FlutterMacOS
-  - firebase_core (3.13.0):
+  - firebase_core (3.13.1):
     - Firebase/CoreOnly (~> 11.10.0)
     - FlutterMacOS
   - FirebaseAppCheckInterop (11.11.0)
@@ -213,10 +213,10 @@ SPEC CHECKSUMS:
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   audioplayers_darwin: dcad41de4fbd0099cb3749f7ab3b0cb8f70b810c
-  cloud_firestore: 7468f132439c3782d499a60dc174ab8b5cd2e06a
+  cloud_firestore: bc865a0f2bbddfe8796a816dd5e6a04bd6e07c70
   Firebase: 1fe1c0a7d9aaea32efe01fbea5f0ebd8d70e53a2
-  firebase_auth: b5fc5da08f862429ad5d29df1113b4ddaa8924ac
-  firebase_core: bb06473757206589a00a36920cbf0f33646e19cc
+  firebase_auth: a81b721121ed6e70c065474d9ed758718dce3ffd
+  firebase_core: 2a91d5383968c70446b882d94e2fa54d11a28661
   FirebaseAppCheckInterop: f23709c9ce92d810aa53ff4ce12ad3e666a3c7be
   FirebaseAuth: c4146bdfdc87329f9962babd24dae89373f49a32
   FirebaseAuthInterop: ac22ed402c2f4e3a8c63ebd3278af9a06073c1be

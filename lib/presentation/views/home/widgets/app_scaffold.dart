@@ -12,11 +12,9 @@ class AppScaffold extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentIndex = useState(0);
-
-    void changeTab(int index) {
+    final currentIndex = useState(0);
+    final changeTab = useCallback((int index) {
       HapticFeedback.selectionClick();
-
       switch (index) {
         case 0:
           if (kDebugMode) {
@@ -41,7 +39,7 @@ class AppScaffold extends HookWidget {
           break;
       }
       currentIndex.value = index;
-    }
+    }, [currentIndex.value]);
 
     return Scaffold(
       body: child,
