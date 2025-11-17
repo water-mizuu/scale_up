@@ -19,13 +19,17 @@ import "package:scale_up/presentation/views/authentication/forgot_password_page/
     "forgot_password_page_header.dart";
 import "package:scale_up/utils/extensions/snackbar_extension.dart";
 
-class ForgotPasswordPage extends ProvidingHookWidget {
+final class ForgotPasswordFormKey {
+  late final GlobalKey<FormState> globalKey = GlobalKey();
+}
+
+class ForgotPasswordPage extends StatelessWidget with ProvidingHookMixin {
   const ForgotPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var globalKey = useMemoized(() => GlobalKey<FormState>());
-    context.provide(globalKey);
+    var formKeyHolder = useMemoized(ForgotPasswordFormKey.new);
+    context.provide(formKeyHolder);
 
     var authenticationBloc = context.read<AuthenticationBloc>();
     var forgotPasswordBloc = useProvidedBloc(() => ForgotPasswordBloc());
@@ -71,7 +75,7 @@ class ForgotPasswordPage extends ProvidingHookWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: globalKey,
+            key: formKeyHolder.globalKey,
             child: const Column(
               children: [
                 ForgotPasswordImageContainer(),

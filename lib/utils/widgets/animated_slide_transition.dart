@@ -119,20 +119,20 @@ class _AnimatedSlideTransitionState extends State<AnimatedSlideTransition>
     var controller = _inTransitionController;
     var curve = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
 
-    Animation<Offset> slideAnimation;
-    Animation<double> opacityAnimation;
-    switch (controller.status) {
-      case AnimationStatus.dismissed:
-        slideAnimation = AlwaysStoppedAnimation(0.5.dx);
-        opacityAnimation = const AlwaysStoppedAnimation(0.0);
-      case AnimationStatus.forward:
-      case AnimationStatus.reverse:
-        slideAnimation = Tween<Offset>(begin: 0.5.dx, end: 0.dx).animate(curve);
-        opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(curve);
-      case AnimationStatus.completed:
-        slideAnimation = const AlwaysStoppedAnimation(Offset.zero);
-        opacityAnimation = const AlwaysStoppedAnimation(1.0);
-    }
+    var (slideAnimation, opacityAnimation) = switch (controller.status) {
+      AnimationStatus.dismissed => (
+        AlwaysStoppedAnimation(0.5.dx),
+        const AlwaysStoppedAnimation(0.0),
+      ),
+      AnimationStatus.forward || AnimationStatus.reverse => (
+        Tween<Offset>(begin: 0.5.dx, end: 0.dx).animate(curve),
+        Tween<double>(begin: 0.0, end: 1.0).animate(curve),
+      ),
+      AnimationStatus.completed => (
+        const AlwaysStoppedAnimation(Offset.zero),
+        const AlwaysStoppedAnimation(1.0),
+      ),
+    };
 
     return Opacity(
       opacity: opacityAnimation.value,

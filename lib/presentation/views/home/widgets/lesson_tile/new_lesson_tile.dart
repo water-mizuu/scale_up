@@ -51,7 +51,6 @@ class NewLessonTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lessonsHelper = context.read<LessonsHelper>();
     var totalChapters = lesson.chapterCount;
     var (:foreground, :background, :progressBackground) = getColors();
 
@@ -107,10 +106,11 @@ class NewLessonTile extends StatelessWidget {
               ),
 
               const SizedBox(height: 4.0),
-              Styles.caption(
-                "Learn about ${lesson.units.map((u) => lessonsHelper.getUnit(lesson.unitsType, u)?.shortcut ?? u).join(", ")}.",
-                fontSize: 12.0,
-              ),
+              if (context.read<LessonsHelper>() case LessonsHelper helper)
+                Styles.caption(
+                  "Learn about ${lesson.units.map((u) => helper.getUnit(lesson.unitsType, u)?.shortcut ?? u).join(", ")}.",
+                  fontSize: 12.0,
+                ),
 
               const SizedBox(height: 8.0),
 

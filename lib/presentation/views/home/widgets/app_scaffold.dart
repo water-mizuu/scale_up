@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:go_router/go_router.dart";
+import "package:scale_up/hooks/providing_hook_widget.dart";
 import "package:scale_up/presentation/router/app_router.dart";
 
 class AppScaffold extends HookWidget {

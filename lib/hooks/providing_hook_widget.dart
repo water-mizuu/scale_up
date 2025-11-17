@@ -26,6 +26,11 @@ abstract class ProvidingWidget extends StatelessWidget {
   createElement() => _StatelessProvidingElement(this);
 }
 
+mixin ProvidingMixin on StatelessWidget implements ProvidingWidget {
+  @override
+  createElement() => _StatelessProvidingElement(this);
+}
+
 class _StatelessProvidingElement extends StatelessElement with _ProvidingElement, HookElement {
   _StatelessProvidingElement(ProvidingWidget super.widget);
 }
@@ -33,17 +38,23 @@ class _StatelessProvidingElement extends StatelessElement with _ProvidingElement
 /// A [HookWidget] that provides a [Provider] to its descendants.
 /// This is a [StatelessWidget] that uses the [HookWidget] mixin.
 /// It is used to provide a [Provider] to its descendants.
-abstract class ProvidingStatefulWidget extends StatefulWidget {
+abstract class StatefulProvidingWidget extends StatefulWidget {
   /// Initializes [key] for subclasses.
-  const ProvidingStatefulWidget({super.key});
+  const StatefulProvidingWidget({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   createElement() => _StatefulProvidingWidget(this);
 }
 
+mixin StatefulProvidingMixin on StatefulWidget implements StatefulProvidingWidget {
+  @override
+  // ignore: library_private_types_in_public_api
+  createElement() => _StatefulProvidingWidget(this);
+}
+
 class _StatefulProvidingWidget extends StatefulElement with _ProvidingElement, HookElement {
-  _StatefulProvidingWidget(ProvidingStatefulWidget super.widget);
+  _StatefulProvidingWidget(StatefulProvidingWidget super.widget);
 }
 
 /// A [HookWidget] that provides a [Provider] to its descendants.
@@ -53,6 +64,12 @@ abstract class ProvidingHookWidget extends StatelessWidget {
   /// Initializes [key] for subclasses.
   const ProvidingHookWidget({super.key});
 
+  @override
+  // ignore: library_private_types_in_public_api
+  createElement() => _StatelessProvidingHookElement(this);
+}
+
+mixin ProvidingHookMixin on StatelessWidget implements ProvidingHookWidget {
   @override
   // ignore: library_private_types_in_public_api
   createElement() => _StatelessProvidingHookElement(this);
@@ -71,7 +88,11 @@ abstract class StatefulProvidingHookWidget extends StatefulWidget {
   const StatefulProvidingHookWidget({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
+  createElement() => _StatefulProvidingHookElement(this);
+}
+
+mixin StatefulProvidingHookMixin on StatefulWidget implements StatefulProvidingHookWidget {
+  @override
   createElement() => _StatefulProvidingHookElement(this);
 }
 
